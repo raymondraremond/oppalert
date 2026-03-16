@@ -40,6 +40,13 @@ export default function DashboardPage() {
   const [prefsSaved, setPrefsSaved] = useState(false)
   const [selectedCats, setSelectedCats] = useState<string[]>(['Scholarships', 'Fellowships', 'Remote Jobs'])
 
+  // Profile Form State
+  const [firstName, setFirstName] = useState('Adewale')
+  const [lastName, setLastName] = useState('Okafor')
+  const [email, setEmail] = useState('adewale@example.com')
+  const [country, setCountry] = useState('Nigeria')
+  const [status, setStatus] = useState('University Student')
+  
   const toggleAlert = (key: keyof typeof alerts) => {
     if (key === 'instant') return // premium only
     setAlerts((prev) => ({ ...prev, [key]: !prev[key] }))
@@ -550,7 +557,7 @@ export default function DashboardPage() {
                   >
                     First Name
                   </label>
-                  <input className="input" defaultValue="Adewale" />
+                  <input className="input" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
                 </div>
                 <div>
                   <label
@@ -564,7 +571,7 @@ export default function DashboardPage() {
                   >
                     Last Name
                   </label>
-                  <input className="input" defaultValue="Okafor" />
+                  <input className="input" value={lastName} onChange={(e) => setLastName(e.target.value)} />
                 </div>
               </div>
               <div style={{ marginBottom: 14 }}>
@@ -573,7 +580,7 @@ export default function DashboardPage() {
                 >
                   Email
                 </label>
-                <input className="input" type="email" defaultValue="adewale@example.com" />
+                <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
               </div>
               <div style={{ marginBottom: 14 }}>
                 <label
@@ -581,7 +588,7 @@ export default function DashboardPage() {
                 >
                   Country
                 </label>
-                <select className="input">
+                <select className="input" value={country} onChange={(e) => setCountry(e.target.value)}>
                   <option>Nigeria</option>
                   <option>Ghana</option>
                   <option>Kenya</option>
@@ -595,7 +602,7 @@ export default function DashboardPage() {
                 >
                   Professional Status
                 </label>
-                <select className="input">
+                <select className="input" value={status} onChange={(e) => setStatus(e.target.value)}>
                   <option>University Student</option>
                   <option>Recent Graduate</option>
                   <option>Job Seeker</option>

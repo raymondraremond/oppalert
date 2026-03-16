@@ -101,10 +101,12 @@ export default function PricingPage() {
           <div
             className="animate-fade-up animate-delay-200"
             style={{
-              background: 'linear-gradient(145deg, #171A13, #141710)',
-              border: '1px solid #2E3530',
+              background: 'linear-gradient(145deg, rgba(23, 26, 19, 0.6), rgba(20, 23, 16, 0.8))',
+              border: '1px solid rgba(255, 255, 255, 0.05)',
               borderRadius: 20,
               padding: '2rem',
+              backdropFilter: 'blur(12px)',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
             }}
           >
             <span className="badge badge-gray">Free</span>
@@ -171,12 +173,13 @@ export default function PricingPage() {
           <div
             className="animate-fade-up animate-delay-300"
             style={{
-              background: 'linear-gradient(145deg, #1A1508, #141710)',
-              border: '2px solid #4A3510',
+              position: 'relative',
+              background: 'linear-gradient(145deg, rgba(30, 25, 10, 0.8), rgba(20, 23, 16, 0.9))',
+              border: '1px solid rgba(232, 160, 32, 0.4)',
               borderRadius: 20,
               padding: '2rem',
-              position: 'relative',
-              boxShadow: '0 0 30px rgba(232,160,32,0.06)',
+              backdropFilter: 'blur(12px)',
+              boxShadow: '0 16px 40px -10px rgba(0,0,0,0.6), 0 0 30px rgba(232, 160, 32, 0.1)',
             }}
           >
             <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 0 }}>

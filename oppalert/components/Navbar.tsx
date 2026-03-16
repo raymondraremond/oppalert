@@ -35,25 +35,25 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" style={{ textDecoration: 'none' }}>
             <div className="flex items-center gap-2 group">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber shadow-[0_0_10px_rgba(232,160,32,0.6)] group-hover:scale-125 transition-transform" />
-              <div className="font-[Syne] text-2xl font-extrabold text-[#F0EDE6] tracking-tight">
-                Opp<span className="text-amber drop-shadow-[0_0_8px_rgba(232,160,32,0.3)]">Alert</span>
+              <span className="w-2.5 h-2.5 rounded-full bg-amber shadow-[0_0_15px_rgba(232,160,32,0.8)] group-hover:scale-125 transition-transform duration-300" />
+              <div className="font-[Syne] text-2xl font-extrabold text-[#F0EDE6] tracking-tight group-hover:text-amber transition-colors duration-300">
+                Opp<span className="text-amber drop-shadow-[0_0_12px_rgba(232,160,32,0.4)]">Alert</span>
               </div>
             </div>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex gap-2 items-center bg-[#141710]/40 backdrop-blur-md px-2 py-1.5 rounded-full border border-white/5">
+          <nav className="hidden md:flex gap-1 items-center bg-[#141710]/60 backdrop-blur-xl px-2 py-1.5 rounded-full border border-white/10 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.5)]">
             <Link href="/opportunities">
-              <div className={`nav-link text-[15px] ${path.startsWith('/opportunities') ? 'active' : ''}`}>
+              <div className={`nav-link text-[14px] font-semibold px-5 py-2 rounded-full ${path.startsWith('/opportunities') ? 'active bg-amber/10 text-amber shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]' : 'hover:bg-white/5'}`}>
                 Opportunities
               </div>
             </Link>
             <Link href="/pricing">
-              <div className={`nav-link text-[15px] ${path === '/pricing' ? 'active' : ''}`}>Pricing</div>
+              <div className={`nav-link text-[14px] font-semibold px-5 py-2 rounded-full ${path === '/pricing' ? 'active bg-amber/10 text-amber shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]' : 'hover:bg-white/5'}`}>Pricing</div>
             </Link>
             <Link href="/admin">
-              <div className={`nav-link text-[15px] ${path === '/admin' ? 'active' : ''}`}>Admin</div>
+              <div className={`nav-link text-[14px] font-semibold px-5 py-2 rounded-full ${path === '/admin' ? 'active bg-amber/10 text-amber shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]' : 'hover:bg-white/5'}`}>Admin</div>
             </Link>
           </nav>
 

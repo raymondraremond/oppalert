@@ -22,50 +22,56 @@ export default function OpportunityCard({ opp }: Props) {
               position: 'absolute',
               top: 12,
               right: 12,
-              background: 'linear-gradient(135deg, #E8A020, #C87020)',
+              background: 'linear-gradient(135deg, #F0B030, #D88030)',
               color: '#0D0F0B',
-              padding: '3px 10px',
+              padding: '4px 12px',
               borderRadius: 100,
               fontSize: 10,
-              fontWeight: 700,
+              fontWeight: 800,
               fontFamily: 'Syne, sans-serif',
-              boxShadow: '0 2px 8px rgba(232,160,32,0.25)',
+              boxShadow: '0 4px 12px rgba(232,160,32,0.4)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
             }}
           >
             Featured
           </div>
         )}
 
-        {/* Category Icon + title */}
+        {/* Category Icon */}
         <div
           style={{
-            width: 44,
-            height: 44,
-            borderRadius: 12,
-            background: 'linear-gradient(135deg, #222820, #1A1F15)',
-            border: '1px solid #2E3530',
+            width: 48,
+            height: 48,
+            borderRadius: 14,
+            background: 'linear-gradient(135deg, rgba(34, 40, 32, 0.8), rgba(26, 31, 21, 0.9))',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            marginBottom: 12,
+            marginBottom: 16,
+            boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.05), 0 4px 8px rgba(0,0,0,0.2)'
           }}
         >
-          <CategoryIcon cat={opp.cat} size={20} style={{ color: '#E8A020' }} />
+          <CategoryIcon cat={opp.cat} size={22} style={{ color: '#E8A020', filter: 'drop-shadow(0 2px 4px rgba(232,160,32,0.3))' }} />
         </div>
 
         <div
           style={{
             fontFamily: 'Syne, sans-serif',
-            fontSize: 15,
-            fontWeight: 700,
+            fontSize: 17,
+            fontWeight: 800,
             color: '#F0EDE6',
             lineHeight: 1.3,
             paddingRight: opp.featured ? 60 : 0,
+            marginBottom: 4,
+            transition: 'color 0.2s ease'
           }}
+          className="group-hover:text-amber"
         >
           {opp.title}
         </div>
-        <div style={{ fontSize: 12, color: '#6A6B62', marginTop: 3 }}>{opp.org}</div>
+        <div style={{ fontSize: 13, color: '#A8A89A', fontWeight: 500 }}>{opp.org}</div>
 
         {/* Description */}
         <p

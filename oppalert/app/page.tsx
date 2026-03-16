@@ -222,18 +222,36 @@ export default function HomePage() {
                 style={{ textDecoration: 'none' }}
               >
                 <div
-                  className="badge badge-gray"
+                  className="badge"
                   style={{
-                    padding: '6px 14px',
+                    background: 'rgba(255,255,255,0.03)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    color: '#F0EDE6',
+                    padding: '8px 18px',
                     cursor: 'pointer',
-                    fontSize: 12,
-                    gap: 5,
+                    fontSize: 13,
+                    gap: 6,
                     display: 'inline-flex',
                     alignItems: 'center',
-                    transition: 'all 0.2s',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    backdropFilter: 'blur(8px)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(232,160,32,0.1)'
+                    e.currentTarget.style.borderColor = 'rgba(232,160,32,0.3)'
+                    e.currentTarget.style.color = '#E8A020'
+                    e.currentTarget.style.transform = 'translateY(-2px)'
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(232,160,32,0.15)'
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.03)'
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
+                    e.currentTarget.style.color = '#F0EDE6'
+                    e.currentTarget.style.transform = 'translateY(0)'
+                    e.currentTarget.style.boxShadow = 'none'
                   }}
                 >
-                  <Icon size={13} />
+                  <Icon size={14} />
                   {c.label}
                 </div>
               </Link>
