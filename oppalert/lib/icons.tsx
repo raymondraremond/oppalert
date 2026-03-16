@@ -25,6 +25,7 @@ import {
   Copy,
   ExternalLink,
   ArrowRight,
+  Loader2,
   type LucideProps,
 } from 'lucide-react'
 import type { Category } from './types'
@@ -74,4 +75,5 @@ export {
   Copy,
   ExternalLink,
   ArrowRight,
+  Loader2,
 }

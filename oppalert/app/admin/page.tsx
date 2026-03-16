@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { opportunities } from '@/lib/data'
 import { getCategoryLabel } from '@/lib/utils'
 import {
@@ -17,15 +17,8 @@ import {
   DollarSign,
   Eye,
   ArrowRight,
+  Loader2,
 } from 'lucide-react'
-
-const mockUsers = [
-  { name: 'Chioma Eze', email: 'chioma@gmail.com', plan: 'Premium', joined: 'Jan 2025', saved: 24 },
-  { name: 'Kwame Asante', email: 'kwame@outlook.com', plan: 'Free', joined: 'Nov 2024', saved: 8 },
-  { name: 'Fatima Al-Hassan', email: 'fatima@yahoo.com', plan: 'Premium', joined: 'Dec 2024', saved: 31 },
-  { name: 'David Osei', email: 'david@proton.me', plan: 'Free', joined: 'Feb 2025', saved: 5 },
-  { name: 'Ngozi Adeyemi', email: 'ngozi@gmail.com', plan: 'Premium', joined: 'Oct 2024', saved: 18 },
-]
 
 const adminStats = [
   { num: '2,408', label: 'Total Listings', change: '+42 this week', color: '#E8A020', icon: TrendingUp },
@@ -41,6 +34,38 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('opps')
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [publishSuccess, setPublishSuccess] = useState(false)
+  const [liveStats, setLiveStats] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch('/api/admin/stats')
+        const data = await res.json()
+        setLiveStats(data)
+      } catch (err) {
+        console.error('Failed to fetch admin stats:', err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchStats()
+  }, [])
+
+  if (isLoading) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
+        <Loader2 className="animate-spin text-amber" size={48} />
+      </div>
+    )
+  }
+
+  const statCards = [
+    { num: '2,408', label: 'Total Listings', change: '+42 this week', color: '#E8A020', icon: TrendingUp },
+    { num: liveStats?.totalUsers || '0', label: 'Total Users', change: '+100% since launch', color: '#3DAA6A', icon: Users },
+    { num: liveStats?.premiumUsers || '0', label: 'Admin/Premium', change: 'Managed Role', color: '#4A9EE8', icon: Crown },
+    { num: '₦847K', label: 'Revenue (MTD)', change: '+18% vs last month', color: '#C45C2A', icon: DollarSign },
+  ]
 
   const tabs = [
     { id: 'opps', label: 'Opportunities' },
@@ -98,7 +123,7 @@ export default function AdminPage() {
           marginBottom: 28,
         }}
       >
-        {adminStats.map((s) => {
+        {statCards.map((s: any) => {
           const StatIcon = s.icon
           return (
             <div
@@ -358,9 +383,9 @@ export default function AdminPage() {
                 </tr>
               </thead>
               <tbody>
-                {mockUsers.map((u) => (
+                {(liveStats?.recentUsers || []).map((u: any) => (
                   <tr
-                    key={u.email}
+                    key={u.id}
                     onMouseEnter={(e) => (e.currentTarget.style.background = '#1A1F15')}
                     onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                   >
@@ -382,27 +407,24 @@ export default function AdminPage() {
                             flexShrink: 0,
                           }}
                         >
-                          {u.name
-                            .split(' ')
-                            .map((n) => n[0])
-                            .join('')}
+                          {u.name?.charAt(0) || 'U'}
                         </div>
-                        <span style={{ fontSize: 13, fontWeight: 600, color: '#F0EDE6' }}>{u.name}</span>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: '#F0EDE6' }}>{u.name || 'Anonymous'}</span>
                       </div>
                     </td>
                     <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15', fontSize: 12, color: '#A8A89A' }}>
                       {u.email}
                     </td>
                     <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
-                      <span className={`badge ${u.plan === 'Premium' ? 'badge-amber' : 'badge-gray'}`}>
-                        {u.plan}
+                      <span className={`badge ${u.role === 'ADMIN' ? 'badge-amber' : 'badge-gray'}`}>
+                        {u.role === 'ADMIN' ? 'Admin' : 'Free'}
                       </span>
                     </td>
                     <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15', fontSize: 12, color: '#A8A89A' }}>
                       {u.joined}
                     </td>
                     <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15', fontSize: 12, color: '#A8A89A' }}>
-                      {u.saved}
+                      {u.lastLogin}
                     </td>
                     <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
                       <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: 11, borderRadius: 6, gap: 4 }} onClick={() => alert(`Viewing ${u.name}`)}>

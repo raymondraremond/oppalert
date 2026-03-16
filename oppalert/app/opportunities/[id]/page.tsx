@@ -1,29 +1,60 @@
-'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { getOpportunity, getRelated } from '@/lib/data'
+import { opportunityService } from '@/lib/services/opportunity-service'
+import { Opportunity } from '@/lib/types'
 import OpportunityCard from '@/components/OpportunityCard'
 import { getCategoryLabel } from '@/lib/utils'
-import { CategoryIcon, MapPin, Calendar, Share2, Heart, Zap, ArrowRight, Check, Copy, ExternalLink } from '@/lib/icons'
+import { CategoryIcon, MapPin, Calendar, Share2, Heart, Zap, ArrowRight, Check, Copy, ExternalLink, Loader2 } from '@/lib/icons'
 
 interface Props {
   params: { id: string }
 }
 
 export default function OpportunityDetailPage({ params }: Props) {
-  const opp = getOpportunity(params.id)
-  if (!opp) notFound()
-
-  const related = getRelated(params.id, opp.cat)
-  const progressPct = Math.max(10, Math.min(95, 100 - (opp.days / 90) * 100))
-
+  const [opp, setOpp] = useState<Opportunity | null>(null)
+  const [related, setRelated] = useState<Opportunity[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [saved, setSaved] = useState(false)
   const [shared, setShared] = useState(false)
 
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true)
+      try {
+        const data = await opportunityService.getOne(params.id)
+        if (data) {
+          setOpp(data)
+          // For related, we search by category if possible
+          const results = await opportunityService.searchAll({ category: data.cat })
+          setRelated(results.filter(r => r.id !== data.id).slice(0, 3))
+        } else {
+          setOpp(null)
+        }
+      } catch (err) {
+        console.error('Error fetching opportunity:', err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchData()
+  }, [params.id])
+
+  if (isLoading) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
+        <Loader2 className="animate-spin text-amber" size={48} />
+      </div>
+    )
+  }
+
+  if (!opp) return notFound()
+
+  const progressPct = Math.max(10, Math.min(95, 100 - (opp.days / 90) * 100))
+
   const handleShare = async () => {
     try {
-      if (navigator.share) {
+      if (typeof window !== 'undefined' && navigator.share) {
         await navigator.share({
           title: opp.title,
           text: opp.desc,

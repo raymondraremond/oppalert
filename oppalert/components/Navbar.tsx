@@ -2,9 +2,11 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import { Menu, X, LogIn, ArrowRight } from 'lucide-react'
+import { Menu, X, LogIn, ArrowRight, User as UserIcon, LogOut } from 'lucide-react'
+import { useSession, signOut } from 'next-auth/react'
 
 export default function Navbar() {
+  const { data: session } = useSession()
   const path = usePathname()
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -59,18 +61,39 @@ export default function Navbar() {
 
           {/* Desktop Auth */}
           <div className="hidden md:flex gap-3 items-center">
-            <Link href="/login">
-              <button className="btn-ghost px-5 py-2.5 text-sm font-semibold hover:text-white" style={{ gap: 6 }}>
-                <LogIn size={15} />
-                Log in
-              </button>
-            </Link>
-            <Link href="/login">
-              <button className="btn-primary px-6 py-2.5 text-sm" style={{ gap: 6 }}>
-                Get Started
-                <ArrowRight size={15} />
-              </button>
-            </Link>
+            {session ? (
+              <>
+                <Link href="/dashboard">
+                  <button className="btn-ghost px-5 py-2.5 text-sm font-semibold hover:text-white" style={{ gap: 6 }}>
+                    <UserIcon size={15} />
+                    {session.user?.name || 'Dashboard'}
+                  </button>
+                </Link>
+                <button 
+                  onClick={() => signOut()}
+                  className="btn-primary px-6 py-2.5 text-sm" 
+                  style={{ gap: 6, background: 'linear-gradient(135deg, #333 0%, #111 100%)' }}
+                >
+                  <LogOut size={15} />
+                  Log out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/login">
+                  <button className="btn-ghost px-5 py-2.5 text-sm font-semibold hover:text-white" style={{ gap: 6 }}>
+                    <LogIn size={15} />
+                    Log in
+                  </button>
+                </Link>
+                <Link href="/login">
+                  <button className="btn-primary px-6 py-2.5 text-sm" style={{ gap: 6 }}>
+                    Get Started
+                    <ArrowRight size={15} />
+                  </button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -124,18 +147,39 @@ export default function Navbar() {
           </nav>
           
           <div className="mt-auto flex flex-col gap-4 pb-8">
-            <Link href="/login" className="w-full">
-              <button className="btn-ghost w-full py-4 text-base font-semibold" style={{ gap: 8 }}>
-                <LogIn size={18} />
-                Log in
-              </button>
-            </Link>
-            <Link href="/login" className="w-full">
-              <button className="btn-primary w-full py-4 text-base shadow-[0_4px_20px_rgba(232,160,32,0.3)]" style={{ gap: 8 }}>
-                Get Started
-                <ArrowRight size={18} />
-              </button>
-            </Link>
+            {session ? (
+              <>
+                <Link href="/dashboard" className="w-full">
+                  <button className="btn-ghost w-full py-4 text-base font-semibold" style={{ gap: 8 }}>
+                    <UserIcon size={18} />
+                    {session.user?.name || 'Dashboard'}
+                  </button>
+                </Link>
+                <button 
+                  onClick={() => signOut()}
+                  className="btn-primary w-full py-4 text-base shadow-[0_4px_20px_rgba(232,160,32,0.1)]" 
+                  style={{ gap: 8, background: 'linear-gradient(135deg, #333 0%, #111 100%)' }}
+                >
+                  <LogOut size={18} />
+                  Log out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/login" className="w-full">
+                  <button className="btn-ghost w-full py-4 text-base font-semibold" style={{ gap: 8 }}>
+                    <LogIn size={18} />
+                    Log in
+                  </button>
+                </Link>
+                <Link href="/login" className="w-full">
+                  <button className="btn-primary w-full py-4 text-base shadow-[0_4px_20px_rgba(232,160,32,0.3)]" style={{ gap: 8 }}>
+                    Get Started
+                    <ArrowRight size={18} />
+                  </button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import Navbar from '@/components/Navbar'
+import { NextAuthProvider } from '@/components/providers'
 
 export const metadata: Metadata = {
   title: 'OppAlert — Never Miss an Opportunity Again',
@@ -30,8 +31,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Navbar />
-        <main style={{ paddingTop: 70 }}>{children}</main>
+        <NextAuthProvider>
+          <Navbar />
+          <main style={{ paddingTop: 70 }}>{children}</main>
+        </NextAuthProvider>
       </body>
     </html>
   )

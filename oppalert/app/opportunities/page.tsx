@@ -1,10 +1,10 @@
-'use client'
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import OpportunityCard from '@/components/OpportunityCard'
 import PremiumBanner from '@/components/PremiumBanner'
-import { opportunities } from '@/lib/data'
-import { Search, SlidersHorizontal, X } from 'lucide-react'
+import { opportunityService } from '@/lib/services/opportunity-service'
+import { Opportunity } from '@/lib/types'
+import { Search, SlidersHorizontal, X, Loader2 } from 'lucide-react'
 
 const categories = [
   { slug: 'all', label: 'All', count: '2,408' },
@@ -28,31 +28,33 @@ export default function OpportunitiesPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('latest')
   const [showMobileFilters, setShowMobileFilters] = useState(false)
+  const [allOpportunities, setAllOpportunities] = useState<Opportunity[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchOpps = async () => {
+      setIsLoading(true)
+      try {
+        const results = await opportunityService.searchAll({
+          category: activeCat === 'all' ? undefined : activeCat as any,
+          keyword: searchQuery,
+          location: activeLoc > 0 ? locations[activeLoc] : undefined
+        })
+        setAllOpportunities(results)
+      } catch (err) {
+        console.error('Failed to fetch opportunities:', err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    
+    // Debounce search
+    const timer = setTimeout(fetchOpps, 500)
+    return () => clearTimeout(timer)
+  }, [activeCat, searchQuery, activeLoc])
 
   const filtered = useMemo(() => {
-    let result = opportunities
-
-    // Category filter
-    if (activeCat !== 'all') {
-      result = result.filter((o) => o.cat === activeCat)
-    }
-
-    // Search filter
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase()
-      result = result.filter(
-        (o) =>
-          o.title.toLowerCase().includes(q) ||
-          o.org.toLowerCase().includes(q) ||
-          o.desc.toLowerCase().includes(q)
-      )
-    }
-
-    // Location filter
-    if (activeLoc > 0) {
-      const locName = locations[activeLoc].toLowerCase()
-      result = result.filter((o) => o.loc.toLowerCase().includes(locName.replace(' / online', '')))
-    }
+    let result = [...allOpportunities]
 
     // Deadline filter
     if (activeDeadline === 1) result = result.filter((o) => o.days <= 7)
@@ -70,7 +72,7 @@ export default function OpportunitiesPage() {
     else if (sortBy === 'popular') result = [...result].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0))
 
     return result
-  }, [activeCat, searchQuery, activeLoc, activeDeadline, activeFunding, sortBy])
+  }, [allOpportunities, activeDeadline, activeFunding, sortBy])
 
   const clearFilters = () => {
     setActiveCat('all')
@@ -252,11 +254,19 @@ export default function OpportunitiesPage() {
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
             gap: 16,
+            minHeight: '400px',
+            position: 'relative'
           }}
         >
-          {filtered.map((opp) => (
-            <OpportunityCard key={opp.id} opp={opp} />
-          ))}
+          {isLoading ? (
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Loader2 className="animate-spin text-amber" size={48} />
+            </div>
+          ) : (
+            filtered.map((opp: Opportunity) => (
+              <OpportunityCard key={opp.id} opp={opp} />
+            ))
+          )}
         </div>
 
         {filtered.length === 0 && (

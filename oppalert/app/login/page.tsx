@@ -1,73 +1,90 @@
-'use client'
 import { useState } from 'react'
 import Link from 'next/link'
-import { Mail, Lock, User, ArrowRight, Eye, EyeOff } from 'lucide-react'
+import { Mail, Lock, User, ArrowRight, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
+  const router = useRouter()
   const [mode, setMode] = useState<'login' | 'signup'>('login')
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
-    // Simulate redirect after brief delay
-    setTimeout(() => {
-      window.location.href = '/dashboard'
-    }, 1500)
+    setIsLoading(true)
+    setError('')
+
+    try {
+      if (mode === 'signup') {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
+        })
+
+        if (!res.ok) {
+          const msg = await res.text()
+          throw new Error(msg || 'Something went wrong')
+        }
+        
+        // Auto sign in after signup
+        const result = await signIn('credentials', {
+          email,
+          password,
+          redirect: false
+        })
+
+        if (result?.error) {
+          throw new Error(result.error)
+        }
+        
+        router.push('/dashboard')
+        router.refresh()
+      } else {
+        const result = await signIn('credentials', {
+          email,
+          password,
+          redirect: false
+        })
+
+        if (result?.error) {
+          throw new Error('Invalid email or password')
+        }
+
+        router.push('/dashboard')
+        router.refresh()
+      }
+    } catch (err: any) {
+      setError(err.message)
+      setIsLoading(false)
+    }
   }
 
-  const handleSocialLogin = () => {
-    setSubmitted(true)
-    setTimeout(() => {
-      window.location.href = '/dashboard'
-    }, 1500)
+  const handleSocialLogin = (provider: string) => {
+    signIn(provider, { callbackUrl: '/dashboard' })
   }
 
-  if (submitted) {
+  if (isLoading && !error) {
     return (
       <div
         style={{
           minHeight: 'calc(100vh - 70px)',
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
           padding: '2rem',
         }}
       >
-        <div style={{ textAlign: 'center' }} className="animate-fade-up">
-          <div
-            style={{
-              width: 64,
-              height: 64,
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, #E8A020, #C87020)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 20px',
-              boxShadow: '0 0 30px rgba(232, 160, 32, 0.4)',
-            }}
-          >
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0D0F0B" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="20 6 9 17 4 12" />
-            </svg>
-          </div>
-          <h2
-            style={{
-              fontFamily: 'Syne, sans-serif',
-              fontSize: 24,
-              fontWeight: 800,
-              marginBottom: 8,
-            }}
-          >
-            {mode === 'login' ? 'Welcome back!' : 'Account created!'}
-          </h2>
-          <p style={{ fontSize: 14, color: '#A8A89A' }}>Redirecting to your dashboard...</p>
-        </div>
+        <Loader2 className="animate-spin mb-4 text-amber" size={48} />
+        <p style={{ fontSize: 14, color: '#A8A89A' }}>
+          {mode === 'login' ? 'Authenticating...' : 'Creating your account...'}
+        </p>
       </div>
     )
   }
@@ -170,6 +187,23 @@ export default function LoginPage() {
               ? 'Sign in to access your saved opportunities and alerts.'
               : 'Join 48,000+ professionals discovering opportunities.'}
           </p>
+
+          {error && (
+            <div 
+              style={{ 
+                background: 'rgba(239, 68, 68, 0.1)', 
+                border: '1px solid rgba(239, 68, 68, 0.2)', 
+                color: '#ef4444', 
+                padding: '12px', 
+                borderRadius: '8px', 
+                fontSize: '13px', 
+                marginBottom: '20px',
+                textAlign: 'center'
+              }}
+            >
+              {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit}>
             {mode === 'signup' && (
@@ -302,16 +336,24 @@ export default function LoginPage() {
             <button
               type="submit"
               className="btn-primary"
+              disabled={isLoading}
               style={{
                 width: '100%',
                 padding: '13px',
                 fontSize: 15,
                 fontWeight: 700,
                 gap: 8,
+                opacity: isLoading ? 0.7 : 1
               }}
             >
-              {mode === 'login' ? 'Log In' : 'Create Account'}
-              <ArrowRight size={16} />
+              {isLoading ? (
+                <Loader2 className="animate-spin" size={18} />
+              ) : (
+                <>
+                  {mode === 'login' ? 'Log In' : 'Create Account'}
+                  <ArrowRight size={16} />
+                </>
+              )}
             </button>
           </form>
 
@@ -364,11 +406,11 @@ export default function LoginPage() {
                 ),
               },
             ].map((provider) => (
-              <button
+               <button
                 key={provider.name}
                 type="button"
                 className="btn-ghost"
-                onClick={handleSocialLogin}
+                onClick={() => handleSocialLogin(provider.name.toLowerCase())}
                 style={{
                   flex: 1,
                   padding: '10px',
