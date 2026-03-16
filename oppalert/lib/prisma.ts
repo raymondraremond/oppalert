@@ -8,8 +8,19 @@ declare global {
   var prisma: undefined | ReturnType<typeof prismaClientSingleton>
 }
 
-const prisma = globalThis.prisma ?? prismaClientSingleton()
+// Lazy initialization using Proxy
+const prisma = new Proxy({} as any, {
+  get: (target, prop) => {
+    if (typeof window !== 'undefined') return undefined
+    if (!globalThis.prisma) {
+      globalThis.prisma = prismaClientSingleton()
+    }
+    return (globalThis.prisma as any)[prop]
+  }
+})
 
 export default prisma
 
-if (process.env.NODE_ENV !== 'production') globalThis.prisma = prisma
+if (process.env.NODE_ENV !== 'production' && typeof window === 'undefined') {
+  globalThis.prisma = prisma
+}
