@@ -2,6 +2,22 @@
 import { useState } from 'react'
 import { opportunities } from '@/lib/data'
 import { getCategoryLabel } from '@/lib/utils'
+import {
+  Plus,
+  Search,
+  Pin,
+  Home,
+  Star,
+  X,
+  Edit2,
+  Trash2,
+  TrendingUp,
+  Users,
+  Crown,
+  DollarSign,
+  Eye,
+  ArrowRight,
+} from 'lucide-react'
 
 const mockUsers = [
   { name: 'Chioma Eze', email: 'chioma@gmail.com', plan: 'Premium', joined: 'Jan 2025', saved: 24 },
@@ -12,10 +28,10 @@ const mockUsers = [
 ]
 
 const adminStats = [
-  { num: '2,408', label: 'Total Listings', change: '+42 this week', color: '#E8A020' },
-  { num: '48,291', label: 'Total Users', change: '+1,204 this week', color: '#3DAA6A' },
-  { num: '3,840', label: 'Premium Users', change: '$11,520/mo MRR', color: '#4A9EE8' },
-  { num: '₦847K', label: 'Revenue (MTD)', change: '+18% vs last month', color: '#C45C2A' },
+  { num: '2,408', label: 'Total Listings', change: '+42 this week', color: '#E8A020', icon: TrendingUp },
+  { num: '48,291', label: 'Total Users', change: '+1,204 this week', color: '#3DAA6A', icon: Users },
+  { num: '3,840', label: 'Premium Users', change: '$11,520/mo MRR', color: '#4A9EE8', icon: Crown },
+  { num: '₦847K', label: 'Revenue (MTD)', change: '+18% vs last month', color: '#C45C2A', icon: DollarSign },
 ]
 
 const barData = [40, 55, 48, 72, 88, 108]
@@ -24,6 +40,7 @@ const barMonths = ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan']
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('opps')
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [publishSuccess, setPublishSuccess] = useState(false)
 
   const tabs = [
     { id: 'opps', label: 'Opportunities' },
@@ -32,8 +49,16 @@ export default function AdminPage() {
     { id: 'analytics', label: 'Analytics' },
   ]
 
+  const handlePublish = () => {
+    setPublishSuccess(true)
+    setTimeout(() => {
+      setShowCreateModal(false)
+      setPublishSuccess(false)
+    }, 1500)
+  }
+
   return (
-    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 1.5rem' }}>
+    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '24px 1.5rem' }}>
       {/* Header */}
       <div
         style={{
@@ -55,15 +80,17 @@ export default function AdminPage() {
         </div>
         <button
           className="btn-primary"
-          style={{ padding: '10px 20px', fontSize: 14, fontWeight: 700 }}
+          style={{ padding: '10px 20px', fontSize: 14, fontWeight: 700, gap: 6 }}
           onClick={() => setShowCreateModal(true)}
         >
-          + New Opportunity
+          <Plus size={16} />
+          New Opportunity
         </button>
       </div>
 
       {/* Stats */}
       <div
+        className="stats-grid-4"
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
@@ -71,30 +98,48 @@ export default function AdminPage() {
           marginBottom: 28,
         }}
       >
-        {adminStats.map((s) => (
-          <div
-            key={s.label}
-            style={{
-              background: '#141710',
-              border: '1px solid #2E3530',
-              borderRadius: 12,
-              padding: '1.25rem',
-            }}
-          >
+        {adminStats.map((s) => {
+          const StatIcon = s.icon
+          return (
             <div
+              key={s.label}
               style={{
-                fontFamily: 'Syne, sans-serif',
-                fontSize: 26,
-                fontWeight: 800,
-                color: s.color,
+                background: 'linear-gradient(145deg, #171A13, #141710)',
+                border: '1px solid #2E3530',
+                borderRadius: 14,
+                padding: '1.25rem',
               }}
             >
-              {s.num}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 10,
+                    background: `${s.color}15`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <StatIcon size={18} style={{ color: s.color }} />
+                </div>
+              </div>
+              <div
+                style={{
+                  fontFamily: 'Syne, sans-serif',
+                  fontSize: 26,
+                  fontWeight: 800,
+                  color: s.color,
+                }}
+              >
+                {s.num}
+              </div>
+              <div style={{ fontSize: 12, color: '#6A6B62', marginTop: 4 }}>{s.label}</div>
+              <div style={{ fontSize: 11, color: '#3DAA6A', marginTop: 6 }}>{s.change}</div>
             </div>
-            <div style={{ fontSize: 12, color: '#6A6B62', marginTop: 4 }}>{s.label}</div>
-            <div style={{ fontSize: 11, color: '#3DAA6A', marginTop: 6 }}>{s.change}</div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       {/* Tabs */}
@@ -104,6 +149,7 @@ export default function AdminPage() {
           gap: 4,
           borderBottom: '1px solid #2E3530',
           marginBottom: 24,
+          overflowX: 'auto',
         }}
       >
         {tabs.map((t) => (
@@ -119,6 +165,7 @@ export default function AdminPage() {
               marginBottom: -1,
               color: activeTab === t.id ? '#E8A020' : '#6A6B62',
               transition: 'all 0.15s',
+              whiteSpace: 'nowrap',
             }}
           >
             {t.label}
@@ -128,15 +175,18 @@ export default function AdminPage() {
 
       {/* ── OPPORTUNITIES TAB ── */}
       {activeTab === 'opps' && (
-        <div>
+        <div className="animate-fade-up">
           <div
             style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}
           >
-            <input
-              className="input"
-              placeholder="Search opportunities..."
-              style={{ maxWidth: 260 }}
-            />
+            <div style={{ position: 'relative', maxWidth: 260, flex: 1 }}>
+              <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#6A6B62' }} />
+              <input
+                className="input"
+                placeholder="Search opportunities..."
+                style={{ paddingLeft: 34 }}
+              />
+            </div>
             <select className="input" style={{ width: 'auto' }}>
               <option>All Categories</option>
               <option>Scholarships</option>
@@ -152,110 +202,211 @@ export default function AdminPage() {
 
           <div
             style={{
-              background: '#141710',
+              background: 'linear-gradient(145deg, #171A13, #141710)',
               border: '1px solid #2E3530',
-              borderRadius: 12,
+              borderRadius: 14,
               overflow: 'hidden',
             }}
           >
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-              <thead>
-                <tr>
-                  {['Opportunity', 'Category', 'Location', 'Deadline', 'Status', 'Actions'].map(
-                    (h) => (
-                      <th
-                        key={h}
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 700 }}>
+                <thead>
+                  <tr>
+                    {['Opportunity', 'Category', 'Location', 'Deadline', 'Status', 'Actions'].map(
+                      (h) => (
+                        <th
+                          key={h}
+                          style={{
+                            textAlign: 'left',
+                            padding: '10px 14px',
+                            fontSize: 11,
+                            fontWeight: 700,
+                            letterSpacing: '0.5px',
+                            textTransform: 'uppercase',
+                            color: '#6A6B62',
+                            borderBottom: '1px solid #2E3530',
+                          }}
+                        >
+                          {h}
+                        </th>
+                      )
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {opportunities.map((opp) => (
+                    <tr
+                      key={opp.id}
+                      style={{ transition: 'background 0.1s' }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.background = '#1A1F15')
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.background = 'transparent')
+                      }
+                    >
+                      <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: '#F0EDE6' }}>
+                          {opp.title}
+                        </div>
+                        <div style={{ fontSize: 11, color: '#6A6B62' }}>{opp.org}</div>
+                      </td>
+                      <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
+                        <span className="badge badge-blue">{opp.cat}</span>
+                      </td>
+                      <td
                         style={{
-                          textAlign: 'left',
-                          padding: '10px 14px',
-                          fontSize: 11,
-                          fontWeight: 700,
-                          letterSpacing: '0.5px',
-                          textTransform: 'uppercase',
-                          color: '#6A6B62',
-                          borderBottom: '1px solid #2E3530',
+                          padding: '12px 14px',
+                          borderBottom: '1px solid #1A1F15',
+                          fontSize: 12,
+                          color: '#A8A89A',
                         }}
                       >
-                        {h}
-                      </th>
-                    )
-                  )}
+                        {opp.loc}
+                      </td>
+                      <td
+                        style={{
+                          padding: '12px 14px',
+                          borderBottom: '1px solid #1A1F15',
+                          fontSize: 12,
+                          color: '#A8A89A',
+                        }}
+                      >
+                        {opp.deadline}
+                      </td>
+                      <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
+                        <span className={`badge ${opp.days > 0 ? 'badge-green' : 'badge-red'}`}>
+                          {opp.days > 0 ? 'Active' : 'Expired'}
+                        </span>
+                        {opp.featured && (
+                          <span className="badge badge-amber" style={{ marginLeft: 4 }}>
+                            Featured
+                          </span>
+                        )}
+                      </td>
+                      <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
+                        <div style={{ display: 'flex', gap: 6 }}>
+                          <button
+                            className="btn-ghost"
+                            style={{ padding: '4px 10px', fontSize: 11, borderRadius: 6, gap: 4 }}
+                          >
+                            <Edit2 size={11} />
+                            Edit
+                          </button>
+                          <button
+                            style={{
+                              padding: '4px 10px',
+                              fontSize: 11,
+                              borderRadius: 6,
+                              background: '#2E1212',
+                              color: '#E05252',
+                              border: '1px solid #3A1A1A',
+                              cursor: 'pointer',
+                              fontFamily: 'DM Sans, sans-serif',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 4,
+                            }}
+                          >
+                            <Trash2 size={11} />
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── USERS TAB ── */}
+      {activeTab === 'users' && (
+        <div className="animate-fade-up"
+          style={{
+            background: 'linear-gradient(145deg, #171A13, #141710)',
+            border: '1px solid #2E3530',
+            borderRadius: 14,
+            overflow: 'hidden',
+          }}
+        >
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 600 }}>
+              <thead>
+                <tr>
+                  {['User', 'Email', 'Plan', 'Joined', 'Saved', 'Actions'].map((h) => (
+                    <th
+                      key={h}
+                      style={{
+                        textAlign: 'left',
+                        padding: '10px 14px',
+                        fontSize: 11,
+                        fontWeight: 700,
+                        letterSpacing: '0.5px',
+                        textTransform: 'uppercase',
+                        color: '#6A6B62',
+                        borderBottom: '1px solid #2E3530',
+                      }}
+                    >
+                      {h}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {opportunities.map((opp) => (
+                {mockUsers.map((u) => (
                   <tr
-                    key={opp.id}
-                    style={{ transition: 'background 0.1s' }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.background = '#1A1F15')
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.background = 'transparent')
-                    }
+                    key={u.email}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = '#1A1F15')}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                   >
                     <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: '#F0EDE6' }}>
-                        {opp.icon} {opp.title}
-                      </div>
-                      <div style={{ fontSize: 11, color: '#6A6B62' }}>{opp.org}</div>
-                    </td>
-                    <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
-                      <span className="badge badge-blue">{opp.cat}</span>
-                    </td>
-                    <td
-                      style={{
-                        padding: '12px 14px',
-                        borderBottom: '1px solid #1A1F15',
-                        fontSize: 12,
-                        color: '#A8A89A',
-                      }}
-                    >
-                      {opp.loc}
-                    </td>
-                    <td
-                      style={{
-                        padding: '12px 14px',
-                        borderBottom: '1px solid #1A1F15',
-                        fontSize: 12,
-                        color: '#A8A89A',
-                      }}
-                    >
-                      {opp.deadline}
-                    </td>
-                    <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
-                      <span className={`badge ${opp.days > 0 ? 'badge-green' : 'badge-red'}`}>
-                        {opp.days > 0 ? 'Active' : 'Expired'}
-                      </span>
-                      {opp.featured && (
-                        <span className="badge badge-amber" style={{ marginLeft: 4 }}>
-                          Featured
-                        </span>
-                      )}
-                    </td>
-                    <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
-                      <div style={{ display: 'flex', gap: 6 }}>
-                        <button
-                          className="btn-ghost"
-                          style={{ padding: '3px 10px', fontSize: 11, borderRadius: 6 }}
-                        >
-                          Edit
-                        </button>
-                        <button
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <div
                           style={{
-                            padding: '3px 10px',
-                            fontSize: 11,
-                            borderRadius: 6,
-                            background: '#2E1212',
-                            color: '#E05252',
-                            border: '1px solid #3A1A1A',
-                            cursor: 'pointer',
-                            fontFamily: 'DM Sans, sans-serif',
+                            width: 30,
+                            height: 30,
+                            borderRadius: '50%',
+                            background: 'linear-gradient(135deg, #3D2E0A, #2A1A06)',
+                            border: '1px solid #4A3510',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: 10,
+                            fontWeight: 700,
+                            color: '#E8A020',
+                            flexShrink: 0,
                           }}
                         >
-                          Delete
-                        </button>
+                          {u.name
+                            .split(' ')
+                            .map((n) => n[0])
+                            .join('')}
+                        </div>
+                        <span style={{ fontSize: 13, fontWeight: 600, color: '#F0EDE6' }}>{u.name}</span>
                       </div>
+                    </td>
+                    <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15', fontSize: 12, color: '#A8A89A' }}>
+                      {u.email}
+                    </td>
+                    <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
+                      <span className={`badge ${u.plan === 'Premium' ? 'badge-amber' : 'badge-gray'}`}>
+                        {u.plan}
+                      </span>
+                    </td>
+                    <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15', fontSize: 12, color: '#A8A89A' }}>
+                      {u.joined}
+                    </td>
+                    <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15', fontSize: 12, color: '#A8A89A' }}>
+                      {u.saved}
+                    </td>
+                    <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
+                      <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: 11, borderRadius: 6, gap: 4 }}>
+                        <Eye size={11} />
+                        View
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -265,136 +416,63 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* ── USERS TAB ── */}
-      {activeTab === 'users' && (
-        <div
-          style={{
-            background: '#141710',
-            border: '1px solid #2E3530',
-            borderRadius: 12,
-            overflow: 'hidden',
-          }}
-        >
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
-            <thead>
-              <tr>
-                {['User', 'Email', 'Plan', 'Joined', 'Saved', 'Actions'].map((h) => (
-                  <th
-                    key={h}
-                    style={{
-                      textAlign: 'left',
-                      padding: '10px 14px',
-                      fontSize: 11,
-                      fontWeight: 700,
-                      letterSpacing: '0.5px',
-                      textTransform: 'uppercase',
-                      color: '#6A6B62',
-                      borderBottom: '1px solid #2E3530',
-                    }}
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {mockUsers.map((u) => (
-                <tr
-                  key={u.email}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = '#1A1F15')}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                >
-                  <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <div
-                        style={{
-                          width: 28,
-                          height: 28,
-                          borderRadius: '50%',
-                          background: '#3D2E0A',
-                          border: '1px solid #4A3510',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: 10,
-                          fontWeight: 700,
-                          color: '#E8A020',
-                          flexShrink: 0,
-                        }}
-                      >
-                        {u.name
-                          .split(' ')
-                          .map((n) => n[0])
-                          .join('')}
-                      </div>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: '#F0EDE6' }}>{u.name}</span>
-                    </div>
-                  </td>
-                  <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15', fontSize: 12, color: '#A8A89A' }}>
-                    {u.email}
-                  </td>
-                  <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
-                    <span className={`badge ${u.plan === 'Premium' ? 'badge-amber' : 'badge-gray'}`}>
-                      {u.plan}
-                    </span>
-                  </td>
-                  <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15', fontSize: 12, color: '#A8A89A' }}>
-                    {u.joined}
-                  </td>
-                  <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15', fontSize: 12, color: '#A8A89A' }}>
-                    {u.saved}
-                  </td>
-                  <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
-                    <button className="btn-ghost" style={{ padding: '3px 10px', fontSize: 11, borderRadius: 6 }}>
-                      View
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
       {/* ── FEATURED LISTINGS TAB ── */}
       {activeTab === 'featured' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
+        <div className="animate-fade-up" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
           {[
-            { icon: '📌', name: 'Basic Featured', price: '$25', desc: '7-day listing highlight in category page', highlight: false },
-            { icon: '🏠', name: 'Homepage Featured', price: '$75', desc: 'Featured slot on homepage for 7 days', highlight: true },
-            { icon: '⭐', name: 'Premium Highlight', price: '$150', desc: 'Top banner + email blast + 14-day feature', highlight: false },
-          ].map((pkg) => (
-            <div
-              key={pkg.name}
-              style={{
-                background: pkg.highlight ? 'linear-gradient(145deg, #131108, #141710)' : '#141710',
-                border: `1px solid ${pkg.highlight ? '#4A3510' : '#2E3530'}`,
-                borderRadius: 12,
-                padding: '1.5rem',
-                textAlign: 'center',
-              }}
-            >
-              <div style={{ fontSize: 32, marginBottom: 10 }}>{pkg.icon}</div>
-              <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, marginBottom: 6 }}>{pkg.name}</div>
-              <div style={{ fontFamily: 'Syne, sans-serif', fontSize: 28, fontWeight: 800, color: '#E8A020', marginBottom: 10 }}>
-                {pkg.price}
-              </div>
-              <div style={{ fontSize: 12, color: '#6A6B62', marginBottom: 16, lineHeight: 1.6 }}>{pkg.desc}</div>
-              <button
-                className={pkg.highlight ? 'btn-primary' : 'btn-ghost'}
-                style={{ width: '100%', padding: '8px', fontSize: 13 }}
+            { icon: Pin, name: 'Basic Featured', price: '$25', desc: '7-day listing highlight in category page', highlight: false },
+            { icon: Home, name: 'Homepage Featured', price: '$75', desc: 'Featured slot on homepage for 7 days', highlight: true },
+            { icon: Star, name: 'Premium Highlight', price: '$150', desc: 'Top banner + email blast + 14-day feature', highlight: false },
+          ].map((pkg) => {
+            const PkgIcon = pkg.icon
+            return (
+              <div
+                key={pkg.name}
+                style={{
+                  background: pkg.highlight ? 'linear-gradient(145deg, #1A1508, #141710)' : 'linear-gradient(145deg, #171A13, #141710)',
+                  border: `1px solid ${pkg.highlight ? '#4A3510' : '#2E3530'}`,
+                  borderRadius: 16,
+                  padding: '1.5rem',
+                  textAlign: 'center',
+                  boxShadow: pkg.highlight ? '0 0 20px rgba(232,160,32,0.06)' : 'none',
+                }}
               >
-                Manage
-              </button>
-            </div>
-          ))}
+                <div
+                  style={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: 12,
+                    background: pkg.highlight ? 'linear-gradient(135deg, #3D2E0A, #2A1A06)' : '#222820',
+                    border: `1px solid ${pkg.highlight ? '#4A3510' : '#2E3530'}`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 12px',
+                  }}
+                >
+                  <PkgIcon size={20} style={{ color: pkg.highlight ? '#E8A020' : '#A8A89A' }} />
+                </div>
+                <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, marginBottom: 6 }}>{pkg.name}</div>
+                <div style={{ fontFamily: 'Syne, sans-serif', fontSize: 28, fontWeight: 800, color: '#E8A020', marginBottom: 10 }}>
+                  {pkg.price}
+                </div>
+                <div style={{ fontSize: 12, color: '#6A6B62', marginBottom: 16, lineHeight: 1.6 }}>{pkg.desc}</div>
+                <button
+                  className={pkg.highlight ? 'btn-primary' : 'btn-ghost'}
+                  style={{ width: '100%', padding: '9px', fontSize: 13 }}
+                >
+                  Manage
+                </button>
+              </div>
+            )
+          })}
         </div>
       )}
 
       {/* ── ANALYTICS TAB ── */}
       {activeTab === 'analytics' && (
-        <div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 24 }}>
+        <div className="animate-fade-up">
+          <div className="stats-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 24 }}>
             {[
               { num: '89,402', label: 'Monthly Page Views' },
               { num: '12.4%', label: 'Free→Premium CVR' },
@@ -403,7 +481,7 @@ export default function AdminPage() {
             ].map((s) => (
               <div
                 key={s.label}
-                style={{ background: '#141710', border: '1px solid #2E3530', borderRadius: 12, padding: '1.25rem' }}
+                style={{ background: 'linear-gradient(145deg, #171A13, #141710)', border: '1px solid #2E3530', borderRadius: 14, padding: '1.25rem' }}
               >
                 <div style={{ fontFamily: 'Syne, sans-serif', fontSize: 26, fontWeight: 800 }}>{s.num}</div>
                 <div style={{ fontSize: 12, color: '#6A6B62', marginTop: 4 }}>{s.label}</div>
@@ -411,7 +489,7 @@ export default function AdminPage() {
             ))}
           </div>
 
-          <div style={{ background: '#141710', border: '1px solid #2E3530', borderRadius: 12, padding: '1.5rem' }}>
+          <div style={{ background: 'linear-gradient(145deg, #171A13, #141710)', border: '1px solid #2E3530', borderRadius: 14, padding: '1.5rem' }}>
             <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 20, fontFamily: 'Syne, sans-serif' }}>
               Monthly Revenue Growth
             </div>
@@ -423,15 +501,15 @@ export default function AdminPage() {
                 >
                   <div
                     style={{
-                      background: i === barData.length - 1 ? '#E8A020' : '#3D2E0A',
+                      background: i === barData.length - 1 ? 'linear-gradient(to top, #C87020, #E8A020)' : '#3D2E0A',
                       width: '100%',
-                      borderRadius: '4px 4px 0 0',
+                      borderRadius: '6px 6px 0 0',
                       height: h,
                       border: i === barData.length - 1 ? 'none' : '1px solid #4A3510',
-                      transition: 'height 0.3s',
+                      transition: 'height 0.5s ease',
                     }}
                   />
-                  <span style={{ fontSize: 10, color: i === barData.length - 1 ? '#E8A020' : '#6A6B62' }}>
+                  <span style={{ fontSize: 10, color: i === barData.length - 1 ? '#E8A020' : '#6A6B62', fontWeight: i === barData.length - 1 ? 700 : 400 }}>
                     {barMonths[i]}
                   </span>
                 </div>
@@ -457,10 +535,11 @@ export default function AdminPage() {
           onClick={() => setShowCreateModal(false)}
         >
           <div
+            className="animate-fade-up"
             style={{
-              background: '#141710',
+              background: 'linear-gradient(145deg, #171A13, #141710)',
               border: '1px solid #3A4238',
-              borderRadius: 16,
+              borderRadius: 20,
               padding: '2rem',
               width: '90%',
               maxWidth: 540,
@@ -469,116 +548,149 @@ export default function AdminPage() {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: 6,
-              }}
-            >
-              <h2 style={{ fontFamily: 'Syne, sans-serif', fontSize: 22, fontWeight: 800 }}>
-                New Opportunity
-              </h2>
-              <button
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  color: '#6A6B62',
-                  fontSize: 22,
-                  cursor: 'pointer',
-                }}
-                onClick={() => setShowCreateModal(false)}
-              >
-                ×
-              </button>
-            </div>
-            <p style={{ fontSize: 14, color: '#A8A89A', marginBottom: 24 }}>
-              Post a new verified opportunity to the platform.
-            </p>
-
-            {[
-              { label: 'Title', placeholder: 'e.g. Chevening Scholarships 2025', type: 'text' },
-              { label: 'Organization', placeholder: 'e.g. UK Government / Chevening', type: 'text' },
-              { label: 'Application URL', placeholder: 'https://...', type: 'url' },
-            ].map((f) => (
-              <div key={f.label} style={{ marginBottom: 14 }}>
-                <label
+            {publishSuccess ? (
+              <div style={{ textAlign: 'center', padding: '2rem 0' }} className="animate-fade-up">
+                <div
                   style={{
-                    fontSize: 13,
-                    color: '#A8A89A',
-                    display: 'block',
-                    marginBottom: 6,
-                    fontWeight: 500,
+                    width: 56,
+                    height: 56,
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #3DAA6A, #2D8A54)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0 auto 16px',
                   }}
                 >
-                  {f.label}
-                </label>
-                <input className="input" type={f.type} placeholder={f.placeholder} />
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0D0F0B" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                </div>
+                <div style={{ fontFamily: 'Syne, sans-serif', fontSize: 18, fontWeight: 800, marginBottom: 4 }}>
+                  Opportunity Published!
+                </div>
+                <p style={{ fontSize: 13, color: '#A8A89A' }}>It's now live on the platform.</p>
               </div>
-            ))}
+            ) : (
+              <>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: 6,
+                  }}
+                >
+                  <h2 style={{ fontFamily: 'Syne, sans-serif', fontSize: 22, fontWeight: 800 }}>
+                    New Opportunity
+                  </h2>
+                  <button
+                    style={{
+                      background: '#222820',
+                      border: '1px solid #2E3530',
+                      color: '#A8A89A',
+                      width: 32,
+                      height: 32,
+                      borderRadius: 8,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    onClick={() => setShowCreateModal(false)}
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+                <p style={{ fontSize: 14, color: '#A8A89A', marginBottom: 24 }}>
+                  Post a new verified opportunity to the platform.
+                </p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
-              <div>
-                <label style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}>
-                  Category
-                </label>
-                <select className="input">
-                  <option>scholarship</option>
-                  <option>job</option>
-                  <option>fellowship</option>
-                  <option>grant</option>
-                  <option>internship</option>
-                  <option>startup</option>
-                </select>
-              </div>
-              <div>
-                <label style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}>
-                  Funding Type
-                </label>
-                <select className="input">
-                  <option>Fully Funded</option>
-                  <option>Partial Funding</option>
-                  <option>Paid Position</option>
-                  <option>Equity / Funding</option>
-                </select>
-              </div>
-            </div>
+                {[
+                  { label: 'Title', placeholder: 'e.g. Chevening Scholarships 2025', type: 'text' },
+                  { label: 'Organization', placeholder: 'e.g. UK Government / Chevening', type: 'text' },
+                  { label: 'Application URL', placeholder: 'https://...', type: 'url' },
+                ].map((f) => (
+                  <div key={f.label} style={{ marginBottom: 14 }}>
+                    <label
+                      style={{
+                        fontSize: 13,
+                        color: '#A8A89A',
+                        display: 'block',
+                        marginBottom: 6,
+                        fontWeight: 500,
+                      }}
+                    >
+                      {f.label}
+                    </label>
+                    <input className="input" type={f.type} placeholder={f.placeholder} />
+                  </div>
+                ))}
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
-              <div>
-                <label style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}>
-                  Location
-                </label>
-                <input className="input" placeholder="e.g. Nigeria, International" />
-              </div>
-              <div>
-                <label style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}>
-                  Deadline
-                </label>
-                <input className="input" type="date" />
-              </div>
-            </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
+                  <div>
+                    <label style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}>
+                      Category
+                    </label>
+                    <select className="input">
+                      <option>scholarship</option>
+                      <option>job</option>
+                      <option>fellowship</option>
+                      <option>grant</option>
+                      <option>internship</option>
+                      <option>startup</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}>
+                      Funding Type
+                    </label>
+                    <select className="input">
+                      <option>Fully Funded</option>
+                      <option>Partial Funding</option>
+                      <option>Paid Position</option>
+                      <option>Equity / Funding</option>
+                    </select>
+                  </div>
+                </div>
 
-            <div style={{ marginBottom: 20 }}>
-              <label style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}>
-                Short Description
-              </label>
-              <textarea
-                className="input"
-                rows={3}
-                placeholder="Brief summary of the opportunity..."
-                style={{ resize: 'vertical' }}
-              />
-            </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
+                  <div>
+                    <label style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}>
+                      Location
+                    </label>
+                    <input className="input" placeholder="e.g. Nigeria, International" />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}>
+                      Deadline
+                    </label>
+                    <input className="input" type="date" />
+                  </div>
+                </div>
 
-            <button
-              className="btn-primary"
-              style={{ width: '100%', padding: '12px', fontSize: 14, fontWeight: 700 }}
-              onClick={() => setShowCreateModal(false)}
-            >
-              Publish Opportunity →
-            </button>
+                <div style={{ marginBottom: 20 }}>
+                  <label style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}>
+                    Short Description
+                  </label>
+                  <textarea
+                    className="input"
+                    rows={3}
+                    placeholder="Brief summary of the opportunity..."
+                    style={{ resize: 'vertical' }}
+                  />
+                </div>
+
+                <button
+                  className="btn-primary"
+                  style={{ width: '100%', padding: '13px', fontSize: 14, fontWeight: 700, gap: 6 }}
+                  onClick={handlePublish}
+                >
+                  Publish Opportunity
+                  <ArrowRight size={15} />
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}

@@ -1,6 +1,8 @@
 'use client'
+import { useState } from 'react'
 import Link from 'next/link'
 import Footer from '@/components/Footer'
+import { Check, Minus, Zap, ChevronDown, ArrowRight } from 'lucide-react'
 
 const freeFeatures = [
   { label: 'Browse all listings', included: true },
@@ -43,12 +45,34 @@ const faqs = [
 ]
 
 export default function PricingPage() {
+  const [openFaq, setOpenFaq] = useState<number | null>(null)
+
   return (
     <div>
-      <div style={{ maxWidth: 860, margin: '0 auto', padding: '60px 1.5rem' }}>
+      <div style={{ maxWidth: 860, margin: '0 auto', padding: '48px 1.5rem' }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 52 }}>
+          <div
+            className="animate-fade-up"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              background: '#3D2E0A',
+              border: '1px solid #4A3510',
+              borderRadius: 100,
+              padding: '5px 14px',
+              fontSize: 12,
+              fontWeight: 600,
+              color: '#E8A020',
+              marginBottom: 20,
+            }}
+          >
+            <Zap size={12} />
+            Simple pricing, powerful features
+          </div>
           <h1
+            className="animate-fade-up animate-delay-100"
             style={{
               fontFamily: 'Syne, sans-serif',
               fontSize: 'clamp(28px, 4vw, 48px)',
@@ -59,7 +83,7 @@ export default function PricingPage() {
           >
             Simple, <span style={{ color: '#E8A020' }}>honest</span> pricing
           </h1>
-          <p style={{ fontSize: 15, color: '#A8A89A' }}>
+          <p className="animate-fade-up animate-delay-200" style={{ fontSize: 15, color: '#A8A89A' }}>
             Start for free. Upgrade when you need more power.
           </p>
         </div>
@@ -75,10 +99,11 @@ export default function PricingPage() {
         >
           {/* FREE */}
           <div
+            className="animate-fade-up animate-delay-200"
             style={{
-              background: '#141710',
+              background: 'linear-gradient(145deg, #171A13, #141710)',
               border: '1px solid #2E3530',
-              borderRadius: 16,
+              borderRadius: 20,
               padding: '2rem',
             }}
           >
@@ -104,42 +129,54 @@ export default function PricingPage() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 10,
-                  padding: '7px 0',
-                  borderBottom: '1px solid #222820',
+                  padding: '8px 0',
+                  borderBottom: '1px solid #1A1F15',
                   fontSize: 13,
                   color: f.included ? '#A8A89A' : '#4A4B42',
                 }}
               >
                 <span
                   style={{
-                    fontSize: 14,
-                    color: f.included ? '#3DAA6A' : '#4A4B42',
                     flexShrink: 0,
+                    width: 18,
+                    height: 18,
+                    borderRadius: 6,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: f.included ? 'rgba(61,170,106,0.15)' : 'transparent',
                   }}
                 >
-                  {f.included ? '✓' : '—'}
+                  {f.included ? (
+                    <Check size={12} style={{ color: '#3DAA6A' }} />
+                  ) : (
+                    <Minus size={12} style={{ color: '#4A4B42' }} />
+                  )}
                 </span>
                 {f.label}
               </div>
             ))}
-            <Link href="/dashboard">
+            <Link href="/login">
               <button
                 className="btn-ghost"
-                style={{ width: '100%', marginTop: 24, padding: '11px', fontSize: 14 }}
+                style={{ width: '100%', marginTop: 24, padding: '12px', fontSize: 14, gap: 6 }}
               >
                 Get Started Free
+                <ArrowRight size={14} />
               </button>
             </Link>
           </div>
 
           {/* PREMIUM */}
           <div
+            className="animate-fade-up animate-delay-300"
             style={{
-              background: 'linear-gradient(145deg, #131108, #141710)',
+              background: 'linear-gradient(145deg, #1A1508, #141710)',
               border: '2px solid #4A3510',
-              borderRadius: 16,
+              borderRadius: 20,
               padding: '2rem',
               position: 'relative',
+              boxShadow: '0 0 30px rgba(232,160,32,0.06)',
             }}
           >
             <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 0 }}>
@@ -168,13 +205,26 @@ export default function PricingPage() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 10,
-                  padding: '7px 0',
+                  padding: '8px 0',
                   borderBottom: '1px solid #1A1F15',
                   fontSize: 13,
                   color: '#A8A89A',
                 }}
               >
-                <span style={{ fontSize: 14, color: '#3DAA6A', flexShrink: 0 }}>✓</span>
+                <span
+                  style={{
+                    flexShrink: 0,
+                    width: 18,
+                    height: 18,
+                    borderRadius: 6,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'rgba(61,170,106,0.15)',
+                  }}
+                >
+                  <Check size={12} style={{ color: '#3DAA6A' }} />
+                </span>
                 <span style={(f as any).bold ? { color: '#F0EDE6', fontWeight: 600 } : {}}>
                   {f.label}
                 </span>
@@ -182,9 +232,10 @@ export default function PricingPage() {
             ))}
             <button
               className="btn-primary"
-              style={{ width: '100%', marginTop: 24, padding: '12px', fontSize: 15, fontWeight: 700 }}
+              style={{ width: '100%', marginTop: 24, padding: '13px', fontSize: 15, fontWeight: 700, gap: 6 }}
             >
-              Upgrade to Premium →
+              Upgrade to Premium
+              <ArrowRight size={15} />
             </button>
             <p style={{ textAlign: 'center', fontSize: 11, color: '#6A6B62', marginTop: 10 }}>
               Cancel anytime. No commitments.
@@ -195,9 +246,9 @@ export default function PricingPage() {
         {/* For Organizations */}
         <div
           style={{
-            background: '#141710',
+            background: 'linear-gradient(145deg, #171A13, #141710)',
             border: '1px solid #2E3530',
-            borderRadius: 16,
+            borderRadius: 20,
             padding: '2rem',
             display: 'flex',
             gap: 32,
@@ -235,9 +286,10 @@ export default function PricingPage() {
                   style={{
                     background: '#222820',
                     border: '1px solid #2E3530',
-                    borderRadius: 10,
+                    borderRadius: 12,
                     padding: '12px 16px',
                     minWidth: 140,
+                    transition: 'all 0.2s',
                   }}
                 >
                   <div style={{ fontSize: 12, color: '#6A6B62', marginBottom: 4 }}>{pkg.name}</div>
@@ -256,12 +308,13 @@ export default function PricingPage() {
               ))}
             </div>
           </div>
-          <button className="btn-ghost" style={{ padding: '10px 20px', fontSize: 13, whiteSpace: 'nowrap' }}>
-            Post a listing →
+          <button className="btn-ghost" style={{ padding: '10px 20px', fontSize: 13, whiteSpace: 'nowrap', gap: 6 }}>
+            Post a listing
+            <ArrowRight size={14} />
           </button>
         </div>
 
-        {/* FAQ */}
+        {/* FAQ - Accordion */}
         <div>
           <h2
             className="section-title"
@@ -269,19 +322,27 @@ export default function PricingPage() {
           >
             Frequently Asked <span>Questions</span>
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: 16 }}>
-            {faqs.map((f) => (
-              <div
-                key={f.q}
-                style={{
-                  background: '#141710',
-                  border: '1px solid #2E3530',
-                  borderRadius: 12,
-                  padding: '1.25rem',
-                }}
-              >
-                <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 8 }}>{f.q}</div>
-                <div style={{ fontSize: 13, color: '#A8A89A', lineHeight: 1.7 }}>{f.a}</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10, maxWidth: 640, margin: '0 auto' }}>
+            {faqs.map((f, i) => (
+              <div key={f.q} className="faq-item">
+                <div
+                  className="faq-question"
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                >
+                  <span>{f.q}</span>
+                  <ChevronDown
+                    size={16}
+                    style={{
+                      color: '#6A6B62',
+                      transition: 'transform 0.2s',
+                      transform: openFaq === i ? 'rotate(180deg)' : 'rotate(0)',
+                      flexShrink: 0,
+                    }}
+                  />
+                </div>
+                <div className={`faq-answer${openFaq === i ? ' open' : ''}`}>
+                  <div style={{ fontSize: 13, color: '#A8A89A', lineHeight: 1.7 }}>{f.a}</div>
+                </div>
               </div>
             ))}
           </div>

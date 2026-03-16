@@ -1,6 +1,8 @@
+'use client'
 import Link from 'next/link'
 import type { Opportunity } from '@/lib/types'
-import { getCategoryLabel } from '@/lib/utils'
+import { getCategoryLabel, getCategoryBadge } from '@/lib/utils'
+import { CategoryIcon, Clock, AlertCircle } from '@/lib/icons'
 
 interface Props {
   opp: Opportunity
@@ -22,33 +24,33 @@ export default function OpportunityCard({ opp }: Props) {
               right: 12,
               background: 'linear-gradient(135deg, #E8A020, #C87020)',
               color: '#0D0F0B',
-              padding: '2px 9px',
+              padding: '3px 10px',
               borderRadius: 100,
               fontSize: 10,
               fontWeight: 700,
               fontFamily: 'Syne, sans-serif',
+              boxShadow: '0 2px 8px rgba(232,160,32,0.25)',
             }}
           >
             Featured
           </div>
         )}
 
-        {/* Logo + title */}
+        {/* Category Icon + title */}
         <div
           style={{
-            width: 42,
-            height: 42,
-            borderRadius: 10,
-            background: '#222820',
+            width: 44,
+            height: 44,
+            borderRadius: 12,
+            background: 'linear-gradient(135deg, #222820, #1A1F15)',
             border: '1px solid #2E3530',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: 20,
             marginBottom: 12,
           }}
         >
-          {opp.icon}
+          <CategoryIcon cat={opp.cat} size={20} style={{ color: '#E8A020' }} />
         </div>
 
         <div
@@ -84,7 +86,9 @@ export default function OpportunityCard({ opp }: Props) {
         {/* Footer */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-            <span className="badge badge-blue">{getCategoryLabel(opp.cat).split(' ').slice(1).join(' ') || opp.cat}</span>
+            <span className={`badge ${getCategoryBadge(opp.cat)}`}>
+              {getCategoryLabel(opp.cat).split(' ').slice(1).join(' ') || opp.cat}
+            </span>
             <span className="badge badge-gray">{opp.fund}</span>
           </div>
           <div
@@ -93,10 +97,16 @@ export default function OpportunityCard({ opp }: Props) {
               alignItems: 'center',
               gap: 4,
               fontSize: 11,
+              fontWeight: 600,
               color: isUrgent ? '#E05252' : isSoon ? '#E8A020' : '#6A6B62',
             }}
           >
-            {isUrgent ? '🔴' : '⏰'} {opp.days}d left
+            {isUrgent ? (
+              <AlertCircle size={12} />
+            ) : (
+              <Clock size={12} />
+            )}
+            {opp.days}d left
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import { Twitter, Linkedin, Instagram } from 'lucide-react'
 
 export default function Footer() {
   return (
@@ -29,10 +30,52 @@ export default function Footer() {
             >
               Opp<span style={{ color: '#E8A020' }}>Alert</span>
             </div>
-            <p style={{ fontSize: 13, color: '#6A6B62', lineHeight: 1.7 }}>
+            <p style={{ fontSize: 13, color: '#6A6B62', lineHeight: 1.7, marginBottom: 16 }}>
               The #1 platform for discovering verified opportunities across Africa.
               Scholarships, jobs, fellowships, grants and more.
             </p>
+            {/* Social Icons */}
+            <div style={{ display: 'flex', gap: 10 }}>
+              {[
+                { icon: <Twitter size={16} />, label: 'Twitter', href: '#' },
+                { icon: <Linkedin size={16} />, label: 'LinkedIn', href: '#' },
+                { icon: <Instagram size={16} />, label: 'Instagram', href: '#' },
+              ].map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  aria-label={s.label}
+                  className="social-icon-link"
+                  style={{
+                    width: 34,
+                    height: 34,
+                    borderRadius: 8,
+                    background: '#222820',
+                    border: '1px solid #2E3530',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#6A6B62',
+                    transition: 'all 0.2s',
+                    cursor: 'pointer',
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLElement).style.background = '#3D2E0A';
+                    (e.currentTarget as HTMLElement).style.borderColor = '#4A3510';
+                    (e.currentTarget as HTMLElement).style.color = '#E8A020';
+                    (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLElement).style.background = '#222820';
+                    (e.currentTarget as HTMLElement).style.borderColor = '#2E3530';
+                    (e.currentTarget as HTMLElement).style.color = '#6A6B62';
+                    (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
+                  }}
+                >
+                  {s.icon}
+                </a>
+              ))}
+            </div>
           </div>
 
           <div>
@@ -63,7 +106,7 @@ export default function Footer() {
                     cursor: 'pointer',
                     transition: 'color 0.15s',
                   }}
-                  onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#A8A89A')}
+                  onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#E8A020')}
                   onMouseLeave={(e) => ((e.target as HTMLElement).style.color = '#6A6B62')}
                 >
                   {l.label}
@@ -93,8 +136,8 @@ export default function Footer() {
                   style={{ textDecoration: 'none' }}
                 >
                   <div
-                    style={{ fontSize: 13, color: '#6A6B62', padding: '4px 0', cursor: 'pointer' }}
-                    onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#A8A89A')}
+                    style={{ fontSize: 13, color: '#6A6B62', padding: '4px 0', cursor: 'pointer', transition: 'color 0.15s' }}
+                    onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#E8A020')}
                     onMouseLeave={(e) => ((e.target as HTMLElement).style.color = '#6A6B62')}
                   >
                     {l}
@@ -120,8 +163,8 @@ export default function Footer() {
             {['About', 'Blog', 'Post an Opportunity', 'Contact'].map((l) => (
               <div
                 key={l}
-                style={{ fontSize: 13, color: '#6A6B62', padding: '4px 0', cursor: 'pointer' }}
-                onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#A8A89A')}
+                style={{ fontSize: 13, color: '#6A6B62', padding: '4px 0', cursor: 'pointer', transition: 'color 0.15s' }}
+                onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#E8A020')}
                 onMouseLeave={(e) => ((e.target as HTMLElement).style.color = '#6A6B62')}
               >
                 {l}
@@ -145,8 +188,18 @@ export default function Footer() {
         >
           <span>© {new Date().getFullYear()} OppAlert. All rights reserved.</span>
           <span style={{ display: 'flex', gap: 16 }}>
-            <span style={{ cursor: 'pointer' }}>Privacy Policy</span>
-            <span style={{ cursor: 'pointer' }}>Terms of Service</span>
+            <span style={{ cursor: 'pointer', transition: 'color 0.15s' }}
+              onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#A8A89A')}
+              onMouseLeave={(e) => ((e.target as HTMLElement).style.color = '#6A6B62')}
+            >
+              Privacy Policy
+            </span>
+            <span style={{ cursor: 'pointer', transition: 'color 0.15s' }}
+              onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#A8A89A')}
+              onMouseLeave={(e) => ((e.target as HTMLElement).style.color = '#6A6B62')}
+            >
+              Terms of Service
+            </span>
           </span>
         </div>
       </div>

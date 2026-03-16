@@ -1,39 +1,14 @@
+'use client'
+import { useState } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import type { Metadata } from 'next'
 import { getOpportunity, getRelated } from '@/lib/data'
 import OpportunityCard from '@/components/OpportunityCard'
 import { getCategoryLabel } from '@/lib/utils'
+import { CategoryIcon, MapPin, Calendar, Share2, Heart, Zap, ArrowRight, Check, Copy, ExternalLink } from '@/lib/icons'
 
 interface Props {
   params: { id: string }
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const opp = getOpportunity(params.id)
-  if (!opp) return {}
-
-  return {
-    title: `${opp.title} — ${opp.org} | OppAlert`,
-    description: opp.desc,
-    openGraph: {
-      title: `${opp.title} | OppAlert`,
-      description: opp.desc,
-      type: 'article',
-    },
-    other: {
-      'application/ld+json': JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': opp.cat === 'job' ? 'JobPosting' : 'EducationalOccupationalProgram',
-        name: opp.title,
-        description: opp.desc,
-        hiringOrganization: { '@type': 'Organization', name: opp.org },
-        applicationDeadline: opp.deadline,
-        jobLocation: { '@type': 'Place', name: opp.loc },
-        employmentType: opp.fund,
-      }),
-    },
-  }
 }
 
 export default function OpportunityDetailPage({ params }: Props) {
@@ -43,12 +18,35 @@ export default function OpportunityDetailPage({ params }: Props) {
   const related = getRelated(params.id, opp.cat)
   const progressPct = Math.max(10, Math.min(95, 100 - (opp.days / 90) * 100))
 
+  const [saved, setSaved] = useState(false)
+  const [shared, setShared] = useState(false)
+
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: opp.title,
+          text: opp.desc,
+          url: window.location.href,
+        })
+      } else {
+        await navigator.clipboard.writeText(window.location.href)
+        setShared(true)
+        setTimeout(() => setShared(false), 2000)
+      }
+    } catch {
+      await navigator.clipboard.writeText(window.location.href)
+      setShared(true)
+      setTimeout(() => setShared(false), 2000)
+    }
+  }
+
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', padding: '32px 1.5rem' }}>
+    <div style={{ maxWidth: 900, margin: '0 auto', padding: '24px 1.5rem' }}>
       {/* Breadcrumb */}
       <div style={{ marginBottom: 16 }}>
         <Link href="/opportunities" style={{ textDecoration: 'none' }}>
-          <span style={{ fontSize: 13, color: '#6A6B62', cursor: 'pointer' }}>
+          <span style={{ fontSize: 13, color: '#6A6B62', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, transition: 'color 0.15s' }}>
             ← Back to opportunities
           </span>
         </Link>
@@ -56,10 +54,11 @@ export default function OpportunityDetailPage({ params }: Props) {
 
       {/* ── HERO CARD ── */}
       <div
+        className="animate-fade-up"
         style={{
-          background: '#141710',
+          background: 'linear-gradient(145deg, #171A13, #141710)',
           border: '1px solid #2E3530',
-          borderRadius: 16,
+          borderRadius: 20,
           padding: '2rem',
           marginBottom: 24,
         }}
@@ -69,17 +68,16 @@ export default function OpportunityDetailPage({ params }: Props) {
             style={{
               width: 60,
               height: 60,
-              background: '#222820',
-              borderRadius: 14,
+              background: 'linear-gradient(135deg, #222820, #1A1F15)',
+              borderRadius: 16,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 28,
               border: '1px solid #2E3530',
               flexShrink: 0,
             }}
           >
-            {opp.icon}
+            <CategoryIcon cat={opp.cat} size={28} style={{ color: '#E8A020' }} />
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 12, color: '#6A6B62', marginBottom: 6 }}>{opp.org}</div>
@@ -89,11 +87,14 @@ export default function OpportunityDetailPage({ params }: Props) {
               {opp.featured && <span className="badge badge-amber">Featured</span>}
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button className="btn-ghost" style={{ padding: '7px 14px', fontSize: 13 }}>
-              Share
-            </button>
-          </div>
+          <button
+            className="btn-ghost"
+            style={{ padding: '7px 14px', fontSize: 13, gap: 6 }}
+            onClick={handleShare}
+          >
+            {shared ? <Check size={14} /> : <Share2 size={14} />}
+            {shared ? 'Copied!' : 'Share'}
+          </button>
         </div>
 
         <h1
@@ -111,12 +112,12 @@ export default function OpportunityDetailPage({ params }: Props) {
         {/* Meta row */}
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
           {[
-            `📍 ${opp.loc}`,
-            `📅 Deadline: ${opp.deadline}`,
-            opp.fund,
-          ].map((m) => (
+            { icon: <MapPin size={13} />, text: opp.loc },
+            { icon: <Calendar size={13} />, text: `Deadline: ${opp.deadline}` },
+            { icon: null, text: opp.fund },
+          ].map((m, i) => (
             <div
-              key={m}
+              key={i}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -129,7 +130,8 @@ export default function OpportunityDetailPage({ params }: Props) {
                 color: '#A8A89A',
               }}
             >
-              {m}
+              {m.icon}
+              {m.text}
             </div>
           ))}
         </div>
@@ -137,6 +139,7 @@ export default function OpportunityDetailPage({ params }: Props) {
 
       {/* ── BODY ── */}
       <div
+        className="detail-grid"
         style={{
           display: 'grid',
           gridTemplateColumns: '1fr 280px',
@@ -153,9 +156,9 @@ export default function OpportunityDetailPage({ params }: Props) {
             <div
               key={section.title}
               style={{
-                background: '#141710',
+                background: 'linear-gradient(145deg, #171A13, #141710)',
                 border: '1px solid #2E3530',
-                borderRadius: 12,
+                borderRadius: 14,
                 padding: '1.5rem',
                 marginBottom: 16,
               }}
@@ -182,14 +185,28 @@ export default function OpportunityDetailPage({ params }: Props) {
                       style={{
                         display: 'flex',
                         alignItems: 'flex-start',
-                        gap: 8,
+                        gap: 10,
                         fontSize: 14,
                         color: '#A8A89A',
-                        padding: '5px 0',
+                        padding: '6px 0',
                         lineHeight: 1.6,
                       }}
                     >
-                      <span style={{ color: '#E8A020', fontWeight: 700, marginTop: 2 }}>›</span>
+                      <span
+                        style={{
+                          flexShrink: 0,
+                          width: 18,
+                          height: 18,
+                          borderRadius: 6,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'rgba(232,160,32,0.12)',
+                          marginTop: 2,
+                        }}
+                      >
+                        <Check size={10} style={{ color: '#E8A020' }} />
+                      </span>
                       {item}
                     </li>
                   ))}
@@ -206,8 +223,8 @@ export default function OpportunityDetailPage({ params }: Props) {
             style={{
               background: 'linear-gradient(135deg, #3D2E0A, #1A1208)',
               border: '1px solid #4A3510',
-              borderRadius: 12,
-              padding: '1.25rem',
+              borderRadius: 14,
+              padding: '1.5rem',
               marginBottom: 16,
               textAlign: 'center',
             }}
@@ -230,6 +247,7 @@ export default function OpportunityDetailPage({ params }: Props) {
                 fontWeight: 800,
                 color: '#E8A020',
                 lineHeight: 1,
+                textShadow: '0 0 30px rgba(232,160,32,0.2)',
               }}
             >
               {opp.days}
@@ -247,9 +265,10 @@ export default function OpportunityDetailPage({ params }: Props) {
                 <div
                   style={{
                     height: '100%',
-                    background: '#E8A020',
+                    background: 'linear-gradient(90deg, #E8A020, #C87020)',
                     borderRadius: 2,
                     width: `${progressPct}%`,
+                    transition: 'width 0.5s ease',
                   }}
                 />
               </div>
@@ -262,9 +281,9 @@ export default function OpportunityDetailPage({ params }: Props) {
           {/* Apply */}
           <div
             style={{
-              background: '#141710',
+              background: 'linear-gradient(145deg, #171A13, #141710)',
               border: '1px solid #2E3530',
-              borderRadius: 12,
+              borderRadius: 14,
               padding: '1.25rem',
               marginBottom: 16,
             }}
@@ -272,25 +291,34 @@ export default function OpportunityDetailPage({ params }: Props) {
             <a href={opp.applyUrl} target="_blank" rel="noopener noreferrer">
               <button
                 className="btn-primary"
-                style={{ width: '100%', padding: 12, fontSize: 14, fontWeight: 700 }}
+                style={{ width: '100%', padding: 13, fontSize: 14, fontWeight: 700, gap: 6 }}
               >
-                Apply Now →
+                Apply Now
+                <ExternalLink size={14} />
               </button>
             </a>
             <button
-              className="btn-ghost"
-              style={{ width: '100%', marginTop: 8, padding: '9px', fontSize: 13 }}
+              className={saved ? 'btn-primary' : 'btn-ghost'}
+              style={{
+                width: '100%',
+                marginTop: 8,
+                padding: '10px',
+                fontSize: 13,
+                gap: 6,
+              }}
+              onClick={() => setSaved(!saved)}
             >
-              ♡ Save for Later
+              <Heart size={14} fill={saved ? 'currentColor' : 'none'} />
+              {saved ? 'Saved!' : 'Save for Later'}
             </button>
           </div>
 
           {/* Quick Info */}
           <div
             style={{
-              background: '#141710',
+              background: 'linear-gradient(145deg, #171A13, #141710)',
               border: '1px solid #2E3530',
-              borderRadius: 12,
+              borderRadius: 14,
               padding: '1.25rem',
               marginBottom: 16,
             }}
@@ -313,8 +341,8 @@ export default function OpportunityDetailPage({ params }: Props) {
                 style={{
                   display: 'flex',
                   justifyContent: 'space-between',
-                  padding: '7px 0',
-                  borderBottom: '1px solid #2E3530',
+                  padding: '8px 0',
+                  borderBottom: '1px solid #1A1F15',
                   fontSize: 12,
                 }}
               >
@@ -327,14 +355,15 @@ export default function OpportunityDetailPage({ params }: Props) {
           {/* Premium upsell */}
           <div
             style={{
-              background: '#3D2E0A',
+              background: 'linear-gradient(135deg, #3D2E0A, #2A1A06)',
               border: '1px solid #4A3510',
-              borderRadius: 12,
+              borderRadius: 14,
               padding: '1.25rem',
             }}
           >
-            <div style={{ fontSize: 13, fontWeight: 700, color: '#E8A020', marginBottom: 6 }}>
-              ⚡ Premium Alert
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#E8A020', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Zap size={14} />
+              Premium Alert
             </div>
             <div style={{ fontSize: 12, color: '#A8A89A', lineHeight: 1.6, marginBottom: 12 }}>
               Get alerts for similar opportunities the moment they're posted.
@@ -342,9 +371,10 @@ export default function OpportunityDetailPage({ params }: Props) {
             <Link href="/pricing">
               <button
                 className="btn-primary"
-                style={{ width: '100%', padding: '8px', fontSize: 12 }}
+                style={{ width: '100%', padding: '9px', fontSize: 12, gap: 4 }}
               >
                 Upgrade to Premium
+                <ArrowRight size={12} />
               </button>
             </Link>
           </div>

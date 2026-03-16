@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, LogIn, ArrowRight } from 'lucide-react'
 
 export default function Navbar() {
   const path = usePathname()
@@ -59,14 +59,16 @@ export default function Navbar() {
 
           {/* Desktop Auth */}
           <div className="hidden md:flex gap-3 items-center">
-            <Link href="/dashboard">
-              <button className="btn-ghost px-5 py-2.5 text-sm font-semibold hover:text-white">
+            <Link href="/login">
+              <button className="btn-ghost px-5 py-2.5 text-sm font-semibold hover:text-white" style={{ gap: 6 }}>
+                <LogIn size={15} />
                 Log in
               </button>
             </Link>
-            <Link href="/dashboard">
-              <button className="btn-primary px-6 py-2.5 text-sm">
+            <Link href="/login">
+              <button className="btn-primary px-6 py-2.5 text-sm" style={{ gap: 6 }}>
                 Get Started
+                <ArrowRight size={15} />
               </button>
             </Link>
           </div>
@@ -122,14 +124,16 @@ export default function Navbar() {
           </nav>
           
           <div className="mt-auto flex flex-col gap-4 pb-8">
-            <Link href="/dashboard" className="w-full">
-              <button className="btn-ghost w-full py-4 text-base font-semibold">
+            <Link href="/login" className="w-full">
+              <button className="btn-ghost w-full py-4 text-base font-semibold" style={{ gap: 8 }}>
+                <LogIn size={18} />
                 Log in
               </button>
             </Link>
-            <Link href="/dashboard" className="w-full">
-              <button className="btn-primary w-full py-4 text-base shadow-[0_4px_20px_rgba(232,160,32,0.3)]">
+            <Link href="/login" className="w-full">
+              <button className="btn-primary w-full py-4 text-base shadow-[0_4px_20px_rgba(232,160,32,0.3)]" style={{ gap: 8 }}>
                 Get Started
+                <ArrowRight size={18} />
               </button>
             </Link>
           </div>
