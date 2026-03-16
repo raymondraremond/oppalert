@@ -14,6 +14,7 @@ import {
   ArrowRight,
   Zap,
   Check,
+  Mail,
 } from 'lucide-react'
 
 const navItems = [
