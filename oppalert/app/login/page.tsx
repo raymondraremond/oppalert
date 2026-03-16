@@ -1,3 +1,4 @@
+'use client'
 import { useState } from 'react'
 import Link from 'next/link'
 import { Mail, Lock, User, ArrowRight, Eye, EyeOff, Loader2 } from 'lucide-react'
