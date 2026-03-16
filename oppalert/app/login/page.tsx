@@ -20,6 +20,13 @@ export default function LoginPage() {
     }, 1500)
   }
 
+  const handleSocialLogin = () => {
+    setSubmitted(true)
+    setTimeout(() => {
+      window.location.href = '/dashboard'
+    }, 1500)
+  }
+
   if (submitted) {
     return (
       <div
@@ -361,6 +368,7 @@ export default function LoginPage() {
                 key={provider.name}
                 type="button"
                 className="btn-ghost"
+                onClick={handleSocialLogin}
                 style={{
                   flex: 1,
                   padding: '10px',
@@ -379,8 +387,8 @@ export default function LoginPage() {
         {/* Bottom text */}
         <p style={{ textAlign: 'center', fontSize: 12, color: '#6A6B62', marginTop: 20 }}>
           By continuing, you agree to OppAlert's{' '}
-          <span style={{ color: '#A8A89A', cursor: 'pointer' }}>Terms of Service</span> and{' '}
-          <span style={{ color: '#A8A89A', cursor: 'pointer' }}>Privacy Policy</span>.
+          <Link href="/terms" style={{ color: '#A8A89A', textDecoration: 'none' }}>Terms of Service</Link> and{' '}
+          <Link href="/privacy" style={{ color: '#A8A89A', textDecoration: 'none' }}>Privacy Policy</Link>.
         </p>
       </div>
     </div>

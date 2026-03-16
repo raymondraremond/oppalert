@@ -276,8 +276,8 @@ export default function OpportunitiesPage() {
 
         {filtered.length > 0 && (
           <div style={{ textAlign: 'center', marginTop: 32 }}>
-            <button className="btn-ghost" style={{ padding: '10px 24px', fontSize: 14 }}>
-              Load More Opportunities
+            <button className="btn-ghost" style={{ padding: '10px 24px', fontSize: 14 }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+              Back to Top
             </button>
           </div>
         )}

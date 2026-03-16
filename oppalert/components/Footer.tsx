@@ -37,9 +37,9 @@ export default function Footer() {
             {/* Social Icons */}
             <div style={{ display: 'flex', gap: 10 }}>
               {[
-                { icon: <Twitter size={16} />, label: 'Twitter', href: '#' },
-                { icon: <Linkedin size={16} />, label: 'LinkedIn', href: '#' },
-                { icon: <Instagram size={16} />, label: 'Instagram', href: '#' },
+                { icon: <Twitter size={16} />, label: 'Twitter', href: 'https://twitter.com' },
+                { icon: <Linkedin size={16} />, label: 'LinkedIn', href: 'https://linkedin.com' },
+                { icon: <Instagram size={16} />, label: 'Instagram', href: 'https://instagram.com' },
               ].map((s) => (
                 <a
                   key={s.label}
@@ -94,8 +94,8 @@ export default function Footer() {
             {[
               { label: 'Opportunities', href: '/opportunities' },
               { label: 'Pricing', href: '/pricing' },
-              { label: 'Newsletter', href: '#newsletter' },
-              { label: 'Mobile App', href: '#' },
+              { label: 'Newsletter', href: '/#newsletter' },
+              { label: 'Mobile App', href: '/' },
             ].map((l) => (
               <Link key={l.label} href={l.href} style={{ textDecoration: 'none' }}>
                 <div
@@ -161,14 +161,19 @@ export default function Footer() {
               Company
             </div>
             {['About', 'Blog', 'Post an Opportunity', 'Contact'].map((l) => (
-              <div
+              <Link 
                 key={l}
-                style={{ fontSize: 13, color: '#6A6B62', padding: '4px 0', cursor: 'pointer', transition: 'color 0.15s' }}
-                onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#E8A020')}
-                onMouseLeave={(e) => ((e.target as HTMLElement).style.color = '#6A6B62')}
+                href={`/${l.toLowerCase().replace(/ /g, '-')}`}
+                style={{ textDecoration: 'none' }}
               >
-                {l}
-              </div>
+                <div
+                  style={{ fontSize: 13, color: '#6A6B62', padding: '4px 0', cursor: 'pointer', transition: 'color 0.15s' }}
+                  onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#E8A020')}
+                  onMouseLeave={(e) => ((e.target as HTMLElement).style.color = '#6A6B62')}
+                >
+                  {l}
+                </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -188,18 +193,22 @@ export default function Footer() {
         >
           <span>© {new Date().getFullYear()} OppAlert. All rights reserved.</span>
           <span style={{ display: 'flex', gap: 16 }}>
-            <span style={{ cursor: 'pointer', transition: 'color 0.15s' }}
-              onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#A8A89A')}
-              onMouseLeave={(e) => ((e.target as HTMLElement).style.color = '#6A6B62')}
-            >
-              Privacy Policy
-            </span>
-            <span style={{ cursor: 'pointer', transition: 'color 0.15s' }}
-              onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#A8A89A')}
-              onMouseLeave={(e) => ((e.target as HTMLElement).style.color = '#6A6B62')}
-            >
-              Terms of Service
-            </span>
+            <Link href="/privacy" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <span style={{ cursor: 'pointer', transition: 'color 0.15s' }}
+                onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#A8A89A')}
+                onMouseLeave={(e) => ((e.target as HTMLElement).style.color = '#6A6B62')}
+              >
+                Privacy Policy
+              </span>
+            </Link>
+            <Link href="/terms" style={{ textDecoration: 'none', color: 'inherit' }}>
+              <span style={{ cursor: 'pointer', transition: 'color 0.15s' }}
+                onMouseEnter={(e) => ((e.target as HTMLElement).style.color = '#A8A89A')}
+                onMouseLeave={(e) => ((e.target as HTMLElement).style.color = '#6A6B62')}
+              >
+                Terms of Service
+              </span>
+            </Link>
           </span>
         </div>
       </div>

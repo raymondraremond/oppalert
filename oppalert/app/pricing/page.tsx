@@ -230,13 +230,15 @@ export default function PricingPage() {
                 </span>
               </div>
             ))}
-            <button
-              className="btn-primary"
-              style={{ width: '100%', marginTop: 24, padding: '13px', fontSize: 15, fontWeight: 700, gap: 6 }}
-            >
-              Upgrade to Premium
-              <ArrowRight size={15} />
-            </button>
+            <Link href="/login" style={{ width: '100%', textDecoration: 'none' }}>
+              <button
+                className="btn-primary"
+                style={{ width: '100%', marginTop: 24, padding: '13px', fontSize: 15, fontWeight: 700, gap: 6 }}
+              >
+                Upgrade to Premium
+                <ArrowRight size={15} />
+              </button>
+            </Link>
             <p style={{ textAlign: 'center', fontSize: 11, color: '#6A6B62', marginTop: 10 }}>
               Cancel anytime. No commitments.
             </p>
@@ -308,10 +310,12 @@ export default function PricingPage() {
               ))}
             </div>
           </div>
-          <button className="btn-ghost" style={{ padding: '10px 20px', fontSize: 13, whiteSpace: 'nowrap', gap: 6 }}>
-            Post a listing
-            <ArrowRight size={14} />
-          </button>
+          <Link href="/contact" style={{ textDecoration: 'none' }}>
+            <button className="btn-ghost" style={{ padding: '10px 20px', fontSize: 13, whiteSpace: 'nowrap', gap: 6 }}>
+              Post a listing
+              <ArrowRight size={14} />
+            </button>
+          </Link>
         </div>
 
         {/* FAQ - Accordion */}

@@ -289,6 +289,7 @@ export default function AdminPage() {
                           <button
                             className="btn-ghost"
                             style={{ padding: '4px 10px', fontSize: 11, borderRadius: 6, gap: 4 }}
+                            onClick={() => alert(`Edit ${opp.title}`)}
                           >
                             <Edit2 size={11} />
                             Edit
@@ -307,6 +308,7 @@ export default function AdminPage() {
                               alignItems: 'center',
                               gap: 4,
                             }}
+                            onClick={() => alert(`Delete ${opp.title}`)}
                           >
                             <Trash2 size={11} />
                             Delete
@@ -403,7 +405,7 @@ export default function AdminPage() {
                       {u.saved}
                     </td>
                     <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
-                      <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: 11, borderRadius: 6, gap: 4 }}>
+                      <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: 11, borderRadius: 6, gap: 4 }} onClick={() => alert(`Viewing ${u.name}`)}>
                         <Eye size={11} />
                         View
                       </button>
@@ -460,6 +462,7 @@ export default function AdminPage() {
                 <button
                   className={pkg.highlight ? 'btn-primary' : 'btn-ghost'}
                   style={{ width: '100%', padding: '9px', fontSize: 13 }}
+                  onClick={() => alert(`Managing ${pkg.name}`)}
                 >
                   Manage
                 </button>
