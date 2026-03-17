@@ -1,15 +1,32 @@
 'use client'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
-import { Menu, X, LogIn, ArrowRight, User as UserIcon, LogOut } from 'lucide-react'
-import { useSession, signOut } from 'next-auth/react'
+import { Menu, X, ArrowRight, User as UserIcon, LogOut } from 'lucide-react'
+
+function getStoredUser() {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem('oppalert_user');
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
 
 export default function Navbar() {
-  const { data: session } = useSession()
   const path = usePathname()
+  const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [user, setUser] = useState<any>(null)
+
+  useEffect(() => {
+    setUser(getStoredUser())
+    const handler = () => setUser(getStoredUser())
+    window.addEventListener('oppalert_auth', handler)
+    return () => window.removeEventListener('oppalert_auth', handler)
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -18,6 +35,15 @@ export default function Navbar() {
   }, [])
 
   useEffect(() => setIsOpen(false), [path])
+
+  const handleLogout = async () => {
+    localStorage.removeItem('oppalert_user')
+    localStorage.removeItem('oppalert_token')
+    // Clear the cookie via API
+    await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {})
+    window.dispatchEvent(new Event('oppalert_auth'))
+    router.push('/')
+  }
 
   return (
     <>
@@ -56,17 +82,17 @@ export default function Navbar() {
 
           {/* Desktop Auth */}
           <div className="hidden md:flex gap-4 items-center">
-            {session ? (
+            {user ? (
               <div className="flex gap-3">
                 <Link href="/dashboard">
-                  <button className="btn-ghost px-5 py-2.5 text-[13px] font-bold uppercase tracking-wider">
+                  <button className="btn-ghost px-5 py-2.5 text-[13px] font-bold uppercase tracking-wider flex items-center gap-2">
                     <UserIcon size={14} className="text-amber" />
                     Dashboard
                   </button>
                 </Link>
-                <button 
-                  onClick={() => signOut()}
-                  className="px-5 py-2.5 text-[13px] font-bold text-muted hover:text-danger hover:bg-danger/10 rounded-xl transition-all"
+                <button
+                  onClick={handleLogout}
+                  className="px-5 py-2.5 text-[13px] font-bold text-muted hover:text-danger hover:bg-danger/10 rounded-xl transition-all flex items-center gap-2"
                 >
                   <LogOut size={14} />
                 </button>
@@ -79,7 +105,7 @@ export default function Navbar() {
                   </button>
                 </Link>
                 <Link href="/login">
-                  <button className="btn-primary px-7 py-3 text-[13px] font-extrabold uppercase tracking-widest">
+                  <button className="btn-primary px-7 py-3 text-[13px] font-extrabold uppercase tracking-widest flex items-center gap-2">
                     Join Free
                     <ArrowRight size={14} />
                   </button>
@@ -110,12 +136,15 @@ export default function Navbar() {
             </Link>
           ))}
           <div className="mt-auto flex flex-col gap-4">
-             {session ? (
-               <Link href="/dashboard" className="btn-primary py-4 text-base uppercase tracking-widest">Dashboard</Link>
+             {user ? (
+               <>
+                 <Link href="/dashboard" className="btn-primary py-4 text-base uppercase tracking-widest text-center">Dashboard</Link>
+                 <button onClick={handleLogout} className="btn-ghost py-4 text-base font-bold text-danger border-danger/20">Sign Out</button>
+               </>
              ) : (
                <>
-                 <Link href="/login" className="btn-ghost py-4 text-base font-bold">Log in</Link>
-                 <Link href="/login" className="btn-primary py-4 text-base font-extrabold uppercase tracking-widest">Join Free</Link>
+                 <Link href="/login" className="btn-ghost py-4 text-base font-bold text-center">Log in</Link>
+                 <Link href="/login" className="btn-primary py-4 text-base font-extrabold uppercase tracking-widest text-center">Join Free</Link>
                </>
              )}
           </div>

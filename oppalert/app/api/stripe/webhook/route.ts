@@ -1,74 +1,67 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
-import pool from '@/lib/db';
-import { Resend } from 'resend';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20' as any,
-});
-
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://oppalert.vercel.app';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
 export async function POST(req: NextRequest) {
   const body = await req.text();
-  const signature = req.headers.get('stripe-signature')!;
+  const signature = req.headers.get('stripe-signature');
 
-  let event: Stripe.Event;
+  if (!signature) {
+    return NextResponse.json({ error: 'No signature' }, { status: 400 });
+  }
+
+  if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
+    return NextResponse.json({ error: 'Stripe not configured' }, { status: 503 });
+  }
+
+  const Stripe = (await import('stripe')).default;
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-06-20' as any });
+
+  let event: any;
 
   try {
-    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+    event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (err: any) {
-    console.error(`Webhook signature verification failed: ${err.message}`);
-    return NextResponse.json({ error: 'Webhook Error' }, { status: 400 });
+    console.error('Webhook signature failed:', err.message);
+    return NextResponse.json({ error: 'Webhook signature failed' }, { status: 400 });
   }
+
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://oppalert.vercel.app';
 
   try {
     switch (event.type) {
       case 'checkout.session.completed': {
-        const session = event.data.object as Stripe.Checkout.Session;
+        const session = event.data.object;
         const userId = session.metadata?.userId;
-        const customerId = session.customer as string;
-        const subscriptionId = session.subscription as string;
+        const customerId = session.customer;
+        const subscriptionId = session.subscription;
 
-        if (userId) {
-          // Update user status
-          await pool.query(
-            'UPDATE users SET status = $1, stripe_customer_id = $2 WHERE id = $3',
-            ['premium', customerId, userId]
+        if (userId && process.env.DATABASE_URL) {
+          const { query } = await import('@/lib/db');
+
+          await query(
+            "UPDATE users SET status = 'premium', stripe_customer_id = $1 WHERE id = $2",
+            [customerId, userId]
           );
 
-          // Get subscription details
-          const subscription: any = await stripe.subscriptions.retrieve(subscriptionId);
-          
-          // Insert into subscriptions table
-          await pool.query(
-            `INSERT INTO subscriptions (user_id, stripe_subscription_id, status, current_period_end)
-             VALUES ($1, $2, $3, $4)`,
-            [
-              userId,
-              subscriptionId,
-              subscription.status,
-              new Date((subscription.current_period_end as number) * 1000)
-            ]
+          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+
+          await query(
+            `INSERT INTO subscriptions (user_id, provider_subscription_id, status, current_period_end)
+             VALUES ($1, $2, $3, $4)
+             ON CONFLICT (provider_subscription_id) DO UPDATE SET status = EXCLUDED.status`,
+            [userId, subscriptionId, subscription.status, new Date((subscription as any).current_period_end * 1000)]
           );
 
-          // Send welcome email
-          const userRes = await pool.query('SELECT email FROM users WHERE id = $1', [userId]);
+          const userRes = await query('SELECT email FROM users WHERE id = $1', [userId]);
           const userEmail = userRes.rows[0]?.email;
-          
-          if (userEmail) {
+
+          if (userEmail && process.env.RESEND_API_KEY) {
+            const { Resend } = await import('resend');
+            const resend = new Resend(process.env.RESEND_API_KEY);
             await resend.emails.send({
               from: process.env.EMAIL_FROM || 'alerts@oppalert.com',
               to: userEmail,
-              subject: "You're now Premium ⚡",
-              html: `
-                <h1>Welcome to OppAlert Premium!</h1>
-                <p>You now have unlimited saved opportunities and instant alerts.</p>
-                <p><a href="${APP_URL}/dashboard">Go to Dashboard</a></p>
-              `
+              subject: "You're now Premium on OppAlert \u26A1",
+              html: `<h1>Welcome to OppAlert Premium!</h1><p>You now have unlimited saved opportunities and instant alerts.</p><p><a href="${APP_URL}/dashboard">Go to Dashboard</a></p>`
             });
           }
         }
@@ -76,31 +69,32 @@ export async function POST(req: NextRequest) {
       }
 
       case 'customer.subscription.deleted': {
-        const subscription = event.data.object as Stripe.Subscription;
-        const customerId = subscription.customer as string;
+        const subscription = event.data.object;
+        const customerId = subscription.customer;
 
-        await pool.query(
-          "UPDATE users SET status = 'free' WHERE stripe_customer_id = $1",
-          [customerId]
-        );
-        
-        await pool.query(
-          "UPDATE subscriptions SET status = 'canceled' WHERE stripe_subscription_id = $1",
-          [subscription.id]
-        );
+        if (process.env.DATABASE_URL) {
+          const { query } = await import('@/lib/db');
+          await query("UPDATE users SET status = 'free' WHERE stripe_customer_id = $1", [customerId]);
+          await query(
+            "UPDATE subscriptions SET status = 'canceled' WHERE provider_subscription_id = $1",
+            [subscription.id]
+          );
+        }
         break;
       }
 
       case 'invoice.payment_failed': {
-        const invoice = event.data.object as Stripe.Invoice;
+        const invoice = event.data.object;
         const customerEmail = invoice.customer_email;
 
-        if (customerEmail) {
+        if (customerEmail && process.env.RESEND_API_KEY) {
+          const { Resend } = await import('resend');
+          const resend = new Resend(process.env.RESEND_API_KEY);
           await resend.emails.send({
             from: process.env.EMAIL_FROM || 'alerts@oppalert.com',
             to: customerEmail,
-            subject: "Action Required: Payment Failed",
-            html: `<p>Your payment for OppAlert Premium failed. Please update your payment method to keep your subscription active.</p>`
+            subject: 'Action Required: OppAlert Payment Failed',
+            html: '<p>Your payment for OppAlert Premium failed. Please update your payment method to keep your subscription active.</p>'
           });
         }
         break;

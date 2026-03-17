@@ -1,35 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20' as any,
-});
-
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://oppalert.vercel.app';
 
 export async function POST(req: NextRequest) {
   try {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return NextResponse.json({ error: 'Stripe is not configured' }, { status: 503 });
+    }
+
     const { userId, email } = await req.json();
 
     if (!userId || !email) {
       return NextResponse.json({ error: 'User ID and email are required' }, { status: 400 });
     }
 
+    const Stripe = (await import('stripe')).default;
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, { apiVersion: '2024-06-20' as any });
+
+    const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://oppalert.vercel.app';
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
-      line_items: [
-        {
-          price: process.env.STRIPE_PREMIUM_PRICE_ID,
-          quantity: 1,
-        },
-      ],
+      line_items: [{ price: process.env.STRIPE_PREMIUM_PRICE_ID, quantity: 1 }],
       mode: 'subscription',
       customer_email: email,
       success_url: `${APP_URL}/dashboard?upgraded=1`,
       cancel_url: `${APP_URL}/pricing`,
-      metadata: {
-        userId,
-      },
+      metadata: { userId },
     });
 
     return NextResponse.json({ url: session.url });

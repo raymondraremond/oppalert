@@ -1,7 +1,11 @@
-import NextAuth from "next-auth";
-export const dynamic = "force-dynamic";
-import { authOptions } from "@/lib/auth";
+import { NextResponse } from 'next/server';
 
-const handler = NextAuth(authOptions);
+// This removes the NextAuth handler completely.
+// Auth is handled by /api/auth/login and /api/auth/register
+export async function GET() {
+  return NextResponse.json({ error: 'Not found' }, { status: 404 });
+}
 
-export { handler as GET, handler as POST };
+export async function POST() {
+  return NextResponse.json({ error: 'Not found' }, { status: 404 });
+}

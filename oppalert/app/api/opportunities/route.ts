@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import pool from '@/lib/db';
-import { verifyToken, getTokenFromRequest } from '@/lib/auth';
+import { getTokenFromRequest, verifyToken } from '@/lib/auth';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   try {
@@ -8,65 +9,48 @@ export async function GET(req: NextRequest) {
     const category = searchParams.get('cat');
     const fundingType = searchParams.get('fund');
     const location = searchParams.get('loc');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const page = parseInt(searchParams.get('page') || '1');
+    const search = searchParams.get('q');
+    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 100);
+    const page = Math.max(parseInt(searchParams.get('page') || '1'), 1);
     const offset = (page - 1) * limit;
 
-    let query = 'SELECT * FROM opportunities WHERE is_active = true';
+    if (!process.env.DATABASE_URL) {
+      // Return mock data when no DB
+      const { opportunities } = await import('@/lib/data');
+      return NextResponse.json({ data: opportunities.slice(0, limit), total: opportunities.length, page, pages: 1 });
+    }
+
+    const { query } = await import('@/lib/db');
+
+    let sql = 'SELECT * FROM opportunities WHERE is_active = true';
     const params: any[] = [];
-    let paramIndex = 1;
+    let idx = 1;
 
-    if (category) {
-      query += ` AND category = $${paramIndex++}`;
-      params.push(category);
-    }
+    if (category) { sql += ` AND category = $${idx++}`; params.push(category); }
+    if (fundingType) { sql += ` AND funding_type = $${idx++}`; params.push(fundingType); }
+    if (location) { sql += ` AND location ILIKE $${idx++}`; params.push(`%${location}%`); }
+    if (search) { sql += ` AND (title ILIKE $${idx++} OR organization ILIKE $${idx++} OR description ILIKE $${idx++})`; params.push(`%${search}%`, `%${search}%`, `%${search}%`); idx += 2; }
 
-    if (fundingType) {
-      query += ` AND funding_type = $${paramIndex++}`;
-      params.push(fundingType);
-    }
-
-    if (location) {
-      query += ` AND location = $${paramIndex++}`;
-      params.push(location);
-    }
-
-    query += ` ORDER BY is_featured DESC, created_at DESC LIMIT $${paramIndex++} OFFSET $${paramIndex++}`;
+    sql += ` ORDER BY is_featured DESC, created_at DESC LIMIT $${idx++} OFFSET $${idx++}`;
     params.push(limit, offset);
 
-    const dataRes = await pool.query(query, params);
-    
-    // Count total for pagination
-    let countQuery = 'SELECT COUNT(*) FROM opportunities WHERE is_active = true';
+    const dataRes = await query(sql, params);
+
+    // Count
+    let countSql = 'SELECT COUNT(*) FROM opportunities WHERE is_active = true';
     const countParams: any[] = [];
-    let countParamIndex = 1;
+    let countIdx = 1;
+    if (category) { countSql += ` AND category = $${countIdx++}`; countParams.push(category); }
+    if (fundingType) { countSql += ` AND funding_type = $${countIdx++}`; countParams.push(fundingType); }
+    if (location) { countSql += ` AND location ILIKE $${countIdx++}`; countParams.push(`%${location}%`); }
+    if (search) { countSql += ` AND (title ILIKE $${countIdx++} OR organization ILIKE $${countIdx++} OR description ILIKE $${countIdx++})`; countParams.push(`%${search}%`, `%${search}%`, `%${search}%`); }
 
-    if (category) {
-      countQuery += ` AND category = $${countParamIndex++}`;
-      countParams.push(category);
-    }
-    if (fundingType) {
-      countQuery += ` AND funding_type = $${countParamIndex++}`;
-      countParams.push(fundingType);
-    }
-    if (location) {
-      countQuery += ` AND location = $${countParamIndex++}`;
-      countParams.push(location);
-    }
-
-    const countRes = await pool.query(countQuery, countParams);
+    const countRes = await query(countSql, countParams);
     const total = parseInt(countRes.rows[0].count);
-    const pages = Math.ceil(total / limit);
 
-    return NextResponse.json({
-      data: dataRes.rows,
-      total,
-      page,
-      pages
-    });
-
+    return NextResponse.json({ data: dataRes.rows, total, page, pages: Math.ceil(total / limit) });
   } catch (error: any) {
-    console.error('Fetch opportunities error:', error);
+    console.error('Opportunities GET error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -74,47 +58,28 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const token = getTokenFromRequest(req);
-    if (!token) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const decoded = verifyToken(token);
-    if (!decoded) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!decoded || decoded.plan !== 'admin') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // Check if admin (simplified for now, usually role-based)
-    // For this project, we'll assume any user with a certain email or status can be admin
-    // In a real prod app, we'd have an is_admin column or role table
-    // The prompt mentions "Add is_admin column to users table or check by email" in Step 13.
-    // I will check for 'premium' or specific email for now, or just assume role check later.
-    // Based on requirement 13: "All routes require JWT + admin check. Add is_admin column to users table or check by email."
-    
+    const { query } = await import('@/lib/db');
     const body = await req.json();
-    const {
-      icon, title, organization, category, location, funding_type,
-      description, about, eligibility, benefits, application_url,
-      deadline, is_featured
-    } = body;
+    const { icon, title, organization, category, location, funding_type, description, about, eligibility, benefits, application_url, deadline, is_featured } = body;
 
-    const insertRes = await pool.query(
-      `INSERT INTO opportunities (
-        icon, title, organization, category, location, funding_type,
-        description, about, eligibility, benefits, application_url,
-        deadline, is_featured
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-      RETURNING *`,
-      [
-        icon, title, organization, category, location, funding_type,
-        description, about, eligibility, benefits, application_url,
-        deadline, is_featured
-      ]
+    if (!title) return NextResponse.json({ error: 'Title is required' }, { status: 400 });
+
+    const insertRes = await query(
+      `INSERT INTO opportunities (icon, title, organization, category, location, funding_type, description, about, eligibility, benefits, application_url, deadline, is_featured)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING *`,
+      [icon || '🌍', title, organization, category, location, funding_type, description, about, eligibility || [], benefits || [], application_url, deadline, is_featured || false]
     );
 
     return NextResponse.json(insertRes.rows[0], { status: 201 });
-
   } catch (error: any) {
-    console.error('Create opportunity error:', error);
+    console.error('Opportunities POST error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

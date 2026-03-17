@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import pool from '@/lib/db';
-import { verifyToken, getTokenFromRequest } from '@/lib/auth';
+import { getTokenFromRequest, verifyToken } from '@/lib/auth';
 
 export async function GET(req: NextRequest) {
   try {
@@ -10,7 +9,9 @@ export async function GET(req: NextRequest) {
     const decoded = verifyToken(token);
     if (!decoded) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const userRes = await pool.query(
+    const { query } = await import('@/lib/db');
+
+    const userRes = await query(
       'SELECT id, email, full_name as "fullName", country, status, created_at as "createdAt" FROM users WHERE id = $1',
       [decoded.id]
     );
@@ -21,7 +22,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(userRes.rows[0]);
   } catch (error) {
-    console.error('Fetch profile error:', error);
+    console.error('Profile GET error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -34,16 +35,23 @@ export async function PATCH(req: NextRequest) {
     const decoded = verifyToken(token);
     if (!decoded) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { fullName, country } = await req.json();
+    const body = await req.json();
+    const { fullName, country } = body;
 
-    const updateRes = await pool.query(
-      'UPDATE users SET full_name = COALESCE($1, full_name), country = COALESCE($2, country) WHERE id = $3 RETURNING id, email, full_name as "fullName", country, status',
-      [fullName, country, decoded.id]
+    const { query } = await import('@/lib/db');
+
+    const updateRes = await query(
+      `UPDATE users
+       SET full_name = COALESCE($1, full_name),
+           country = COALESCE($2, country)
+       WHERE id = $3
+       RETURNING id, email, full_name as "fullName", country, status`,
+      [fullName || null, country || null, decoded.id]
     );
 
     return NextResponse.json(updateRes.rows[0]);
   } catch (error) {
-    console.error('Update profile error:', error);
+    console.error('Profile PATCH error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

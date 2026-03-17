@@ -1,58 +1,53 @@
-import { NextResponse } from "next/server";
-import pool from "@/lib/db";
-import { verifyToken, getTokenFromRequest } from "@/lib/auth";
+import { NextResponse } from 'next/server';
+import { getTokenFromRequest, verifyToken } from '@/lib/auth';
+import { NextRequest } from 'next/server';
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
-export async function GET(req: any) {
+export async function GET(req: NextRequest) {
   try {
     const token = getTokenFromRequest(req);
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const decoded = verifyToken(token);
-    // Role check: In a real app, check for is_admin from DB
-    // For now we'll allow the request if the token is valid, 
-    // but the UI will filter for admin users.
-    if (!decoded) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!decoded || decoded.plan !== 'admin') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    // Fetch Total Users
-    const usersCountRes = await pool.query("SELECT COUNT(*) FROM users");
-    const totalUsers = parseInt(usersCountRes.rows[0].count);
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json({
+        totalUsers: 0,
+        premiumUsers: 0,
+        recentUsers: [],
+        totalOpps: 0,
+        activeOpps: 0
+      });
+    }
 
-    // Fetch Premium/Admin Users
-    const premiumCountRes = await pool.query("SELECT COUNT(*) FROM users WHERE status = 'premium' OR status = 'admin'");
-    const premiumUsers = parseInt(premiumCountRes.rows[0].count);
+    const { query } = await import('@/lib/db');
 
-    // Fetch Recent Users with their last login (simulated from status or recent activity)
-    const recentUsersRes = await pool.query(`
-      SELECT 
-        id, 
-        full_name as "name", 
-        email, 
-        status as "role", 
-        created_at as "joined"
-      FROM users 
-      ORDER BY created_at DESC 
-      LIMIT 5
-    `);
+    const [usersCountRes, premiumCountRes, recentUsersRes, oppsCountRes, activeOppsRes] = await Promise.all([
+      query('SELECT COUNT(*) FROM users'),
+      query("SELECT COUNT(*) FROM users WHERE status IN ('premium', 'admin')"),
+      query(`SELECT id, full_name as "name", email, status as "role", created_at as "joined"
+             FROM users ORDER BY created_at DESC LIMIT 10`),
+      query('SELECT COUNT(*) FROM opportunities'),
+      query('SELECT COUNT(*) FROM opportunities WHERE is_active = true'),
+    ]);
 
-    const stats = {
-      totalUsers,
-      premiumUsers,
-      recentUsers: recentUsersRes.rows.map((user: any) => ({
-        ...user,
-        joined: new Date(user.joined).toLocaleDateString(),
-        lastLogin: "Active" // Simplified for now
+    return NextResponse.json({
+      totalUsers: parseInt(usersCountRes.rows[0].count),
+      premiumUsers: parseInt(premiumCountRes.rows[0].count),
+      totalOpps: parseInt(oppsCountRes.rows[0].count),
+      activeOpps: parseInt(activeOppsRes.rows[0].count),
+      recentUsers: recentUsersRes.rows.map((u: any) => ({
+        ...u,
+        joined: new Date(u.joined).toLocaleDateString(),
+        lastLogin: 'Active'
       }))
-    };
-
-    return NextResponse.json(stats);
+    });
   } catch (error) {
-    console.error("Admin stats error:", error);
-    return NextResponse.json({ error: "Internal Error" }, { status: 500 });
+    console.error('Admin stats error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

@@ -3,27 +3,40 @@ export type FundingType = 'Fully Funded' | 'Partial Funding' | 'Paid Position' |
 
 export interface Opportunity {
   id: string
-  icon: string
+  icon?: string
+  
+  // App/Mock fields
   title: string
-  org: string
-  cat: Category
-  loc: string
-  fund: FundingType
-  deadline: string
-  days: number
-  desc: string
-  featured: boolean
-  about: string
-  elig: string[]
-  benefits: string[]
-  applyUrl: string
-  quickinfo: Record<string, string>
+  org?: string
+  cat?: Category
+  loc?: string
+  fund?: FundingType
+  deadline?: string
+  days?: number
+  desc?: string
+  featured?: boolean
+  about?: string
+  elig?: string[]
+  benefits?: string[]
+  applyUrl?: string
+  quickinfo?: Record<string, string>
+
+  // DB Fields (snake_case from Postgres)
+  organization?: string
+  category?: Category
+  location?: string
+  funding_type?: FundingType
+  days_remaining?: number
+  description?: string
+  is_featured?: boolean
+  is_active?: boolean
+  created_at?: string
 }
 
 export interface User {
   id: string
   name: string
   email: string
-  plan: 'free' | 'premium'
-  savedIds: string[]
+  plan: 'free' | 'premium' | 'admin'
+  savedIds?: string[]
 }
