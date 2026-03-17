@@ -26,6 +26,7 @@ import {
   ExternalLink,
   ArrowRight,
   ArrowUpRight,
+  ChevronLeft,
   Loader2,
   type LucideProps,
 } from 'lucide-react'
@@ -76,5 +77,7 @@ export {
   Copy,
   ExternalLink,
   ArrowRight,
+  ArrowUpRight,
+  ChevronLeft,
   Loader2,
 }

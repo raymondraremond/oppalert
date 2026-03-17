@@ -4,7 +4,7 @@ import pool from '@/lib/db';
 import { Resend } from 'resend';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20',
+  apiVersion: '2026-02-25.clover' as any,
 });
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
           );
 
           // Get subscription details
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+          const subscription: any = await stripe.subscriptions.retrieve(subscriptionId);
           
           // Insert into subscriptions table
           await pool.query(
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
               userId,
               subscriptionId,
               subscription.status,
-              new Date(subscription.current_period_end * 1000)
+              new Date((subscription.current_period_end as number) * 1000)
             ]
           );
 
@@ -111,10 +111,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
-
-// Ensure the body is not parsed as JSON by Next.js automatically
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};

@@ -24,6 +24,18 @@ export function verifyToken(token: string): any {
   }
 }
 
+export const authOptions = {
+  providers: [], // User should configure this based on their needs
+  callbacks: {
+    session: ({ session, token }: any) => {
+      if (session?.user) {
+        (session.user as any).id = token.sub;
+      }
+      return session;
+    },
+  },
+};
+
 export function getTokenFromRequest(request: NextRequest): string | null {
   const authHeader = request.headers.get('Authorization');
   if (authHeader && authHeader.startsWith('Bearer ')) {
