@@ -11,175 +11,113 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
-  // Handle scroll effect
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 10)
-    }
+    const handleScroll = () => setScrolled(window.scrollY > 20)
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Close mobile menu on route change
-  useEffect(() => {
-    setIsOpen(false)
-  }, [path])
+  useEffect(() => setIsOpen(false), [path])
 
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? 'glass border-b border-white/5 shadow-lg' : 'bg-transparent'
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 h-[80px] flex items-center ${
+          scrolled ? 'glass border-b border-white/10 shadow-premium' : 'bg-transparent'
         }`}
-        style={{ height: 70 }}
       >
-        <div className="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-6 w-full flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" style={{ textDecoration: 'none' }}>
-            <div className="flex items-center gap-2 group">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber shadow-[0_0_15px_rgba(232,160,32,0.8)] group-hover:scale-125 transition-transform duration-300" />
-              <div className="font-[Syne] text-2xl font-extrabold text-[#F0EDE6] tracking-tight group-hover:text-amber transition-colors duration-300">
-                Opp<span className="text-amber drop-shadow-[0_0_12px_rgba(232,160,32,0.4)]">Alert</span>
-              </div>
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-xl bg-amber-gradient flex items-center justify-center shadow-glow-amber group-hover:scale-110 transition-transform duration-500">
+               <span className="w-2 h-2 rounded-full bg-bg shadow-inner animate-pulse" />
+            </div>
+            <div className="font-syne text-2xl font-extrabold text-[#F0EDE6] tracking-tight">
+              Opp<span className="text-amber drop-shadow-glow-amber">Alert</span>
             </div>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex gap-1 items-center bg-[#141710]/60 backdrop-blur-xl px-2 py-1.5 rounded-full border border-white/10 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.5)]">
-            <Link href="/opportunities">
-              <div className={`nav-link text-[14px] font-semibold px-5 py-2 rounded-full ${path.startsWith('/opportunities') ? 'active bg-amber/10 text-amber shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]' : 'hover:bg-white/5'}`}>
-                Opportunities
-              </div>
-            </Link>
-            <Link href="/pricing">
-              <div className={`nav-link text-[14px] font-semibold px-5 py-2 rounded-full ${path === '/pricing' ? 'active bg-amber/10 text-amber shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]' : 'hover:bg-white/5'}`}>Pricing</div>
-            </Link>
-            <Link href="/admin">
-              <div className={`nav-link text-[14px] font-semibold px-5 py-2 rounded-full ${path === '/admin' ? 'active bg-amber/10 text-amber shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]' : 'hover:bg-white/5'}`}>Admin</div>
-            </Link>
+          <nav className="hidden md:flex items-center bg-white/5 backdrop-blur-xl px-2 py-1.5 rounded-2xl border border-white/10">
+            {[
+              { label: 'Opportunities', href: '/opportunities' },
+              { label: 'Pricing', href: '/pricing' },
+              { label: 'Admin', href: '/admin' }
+            ].map((link) => (
+              <Link key={link.href} href={link.href}>
+                <div className={`text-[13px] font-bold px-6 py-2.5 rounded-xl transition-all duration-300 ${
+                  path === link.href ? 'bg-amber text-bg shadow-glow-amber' : 'text-muted hover:text-primary hover:bg-white/5'
+                }`}>
+                  {link.label}
+                </div>
+              </Link>
+            ))}
           </nav>
 
           {/* Desktop Auth */}
-          <div className="hidden md:flex gap-3 items-center">
+          <div className="hidden md:flex gap-4 items-center">
             {session ? (
-              <>
+              <div className="flex gap-3">
                 <Link href="/dashboard">
-                  <button className="btn-ghost px-5 py-2.5 text-sm font-semibold hover:text-white" style={{ gap: 6 }}>
-                    <UserIcon size={15} />
-                    {session.user?.name || 'Dashboard'}
+                  <button className="btn-ghost px-5 py-2.5 text-[13px] font-bold uppercase tracking-wider">
+                    <UserIcon size={14} className="text-amber" />
+                    Dashboard
                   </button>
                 </Link>
                 <button 
                   onClick={() => signOut()}
-                  className="btn-primary px-6 py-2.5 text-sm" 
-                  style={{ gap: 6, background: 'linear-gradient(135deg, #333 0%, #111 100%)' }}
+                  className="px-5 py-2.5 text-[13px] font-bold text-muted hover:text-danger hover:bg-danger/10 rounded-xl transition-all"
                 >
-                  <LogOut size={15} />
-                  Log out
+                  <LogOut size={14} />
                 </button>
-              </>
+              </div>
             ) : (
               <>
                 <Link href="/login">
-                  <button className="btn-ghost px-5 py-2.5 text-sm font-semibold hover:text-white" style={{ gap: 6 }}>
-                    <LogIn size={15} />
+                  <button className="text-[13px] font-bold text-muted hover:text-primary transition-colors px-4 py-2">
                     Log in
                   </button>
                 </Link>
                 <Link href="/login">
-                  <button className="btn-primary px-6 py-2.5 text-sm" style={{ gap: 6 }}>
-                    Get Started
-                    <ArrowRight size={15} />
+                  <button className="btn-primary px-7 py-3 text-[13px] font-extrabold uppercase tracking-widest">
+                    Join Free
+                    <ArrowRight size={14} />
                   </button>
                 </Link>
               </>
             )}
           </div>
 
-          {/* Mobile Menu Toggle */}
-          <button 
-            className="md:hidden p-2 text-gray-300 hover:text-white transition-colors"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
-          >
+          {/* Mobile Toggle */}
+          <button className="md:hidden p-2 text-muted hover:text-amber" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
-      <div 
-        className={`fixed inset-0 z-40 bg-black/80 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
-          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
-        onClick={() => setIsOpen(false)}
-      />
-
-      {/* Mobile Menu Panel */}
-      <div 
-        className={`fixed top-0 right-0 w-[80%] max-w-sm h-full z-50 glass border-l border-white/10 shadow-2xl transition-transform duration-300 ease-out md:hidden flex flex-col ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        <div className="flex-1 overflow-y-auto py-24 px-6 flex flex-col gap-6">
-          <nav className="flex flex-col gap-2">
-            <Link href="/opportunities">
-              <div className={`p-4 rounded-xl text-lg font-medium transition-colors ${
-                path.startsWith('/opportunities') ? 'bg-amber/10 text-amber' : 'text-gray-300 hover:bg-white/5'
-              }`}>
-                Opportunities
-              </div>
+      {/* Mobile Menu */}
+      <div className={`fixed inset-0 z-50 glass transition-all duration-500 flex flex-col md:hidden ${
+        isOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
+      }`}>
+        <div className="p-6 flex justify-between items-center h-[80px]">
+          <div className="font-syne text-xl font-extrabold">Opp<span className="text-amber">Alert</span></div>
+          <button onClick={() => setIsOpen(false)}><X size={28} /></button>
+        </div>
+        <div className="flex-1 flex flex-col p-8 gap-4 overflow-y-auto">
+          {['Opportunities', 'Pricing', 'Admin'].map((l) => (
+            <Link key={l} href={`/${l.toLowerCase()}`} className="text-3xl font-syne font-extrabold hover:text-amber transition-colors">
+              {l}
             </Link>
-            <Link href="/pricing">
-              <div className={`p-4 rounded-xl text-lg font-medium transition-colors ${
-                path === '/pricing' ? 'bg-amber/10 text-amber' : 'text-gray-300 hover:bg-white/5'
-              }`}>
-                Pricing
-              </div>
-            </Link>
-            <Link href="/admin">
-              <div className={`p-4 rounded-xl text-lg font-medium transition-colors ${
-                path === '/admin' ? 'bg-amber/10 text-amber' : 'text-gray-300 hover:bg-white/5'
-              }`}>
-                Admin
-              </div>
-            </Link>
-          </nav>
-          
-          <div className="mt-auto flex flex-col gap-4 pb-8">
-            {session ? (
-              <>
-                <Link href="/dashboard" className="w-full">
-                  <button className="btn-ghost w-full py-4 text-base font-semibold" style={{ gap: 8 }}>
-                    <UserIcon size={18} />
-                    {session.user?.name || 'Dashboard'}
-                  </button>
-                </Link>
-                <button 
-                  onClick={() => signOut()}
-                  className="btn-primary w-full py-4 text-base shadow-[0_4px_20px_rgba(232,160,32,0.1)]" 
-                  style={{ gap: 8, background: 'linear-gradient(135deg, #333 0%, #111 100%)' }}
-                >
-                  <LogOut size={18} />
-                  Log out
-                </button>
-              </>
-            ) : (
-              <>
-                <Link href="/login" className="w-full">
-                  <button className="btn-ghost w-full py-4 text-base font-semibold" style={{ gap: 8 }}>
-                    <LogIn size={18} />
-                    Log in
-                  </button>
-                </Link>
-                <Link href="/login" className="w-full">
-                  <button className="btn-primary w-full py-4 text-base shadow-[0_4px_20px_rgba(232,160,32,0.3)]" style={{ gap: 8 }}>
-                    Get Started
-                    <ArrowRight size={18} />
-                  </button>
-                </Link>
-              </>
-            )}
+          ))}
+          <div className="mt-auto flex flex-col gap-4">
+             {session ? (
+               <Link href="/dashboard" className="btn-primary py-4 text-base uppercase tracking-widest">Dashboard</Link>
+             ) : (
+               <>
+                 <Link href="/login" className="btn-ghost py-4 text-base font-bold">Log in</Link>
+                 <Link href="/login" className="btn-primary py-4 text-base font-extrabold uppercase tracking-widest">Join Free</Link>
+               </>
+             )}
           </div>
         </div>
       </div>

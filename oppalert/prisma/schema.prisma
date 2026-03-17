@@ -1,69 +1,77 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  role          String    @default("USER")
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  accounts      Account[]
-  sessions      Session[]
-  loginLogs     LoginLog[]
+  id                String             @id @default(uuid())
+  email             String             @unique
+  passwordHash      String             @map("password_hash")
+  fullName          String             @map("full_name")
+  status            String             @default("free") // 'free', 'premium', 'admin'
+  stripeCustomerId  String?            @map("stripe_customer_id")
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+  savedOpportunities SavedOpportunity[]
+  subscriptions     Subscription[]
+
+  @@map("users")
 }
 
-model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
+model Opportunity {
+  id              String             @id @default(uuid())
+  icon            String?
+  title           String
+  organization    String
+  category        String             // 'scholarship', 'job', 'fellowship', etc.
+  location        String
+  fundingType     String?            @map("funding_type")
+  description     String?
+  about           String?
+  eligibility     String?
+  benefits        String?
+  applicationUrl  String             @map("application_url")
+  deadline        DateTime?
+  isActive        Boolean            @default(true) @map("is_active")
+  isFeatured      Boolean            @default(false) @map("is_featured")
+  createdAt       DateTime           @default(now()) @map("created_at")
+  savedByUsers    SavedOpportunity[]
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
+  @@map("opportunities")
 }
 
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model SavedOpportunity {
+  id            String      @id @default(uuid())
+  userId        String      @map("user_id")
+  opportunityId String      @map("opportunity_id")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, opportunityId])
+  @@map("saved_opportunities")
 }
 
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+model Subscription {
+  id                    String   @id @default(uuid())
+  userId                String   @map("user_id")
+  stripeSubscriptionId String   @unique @map("stripe_subscription_id")
+  status                String
+  currentPeriodEnd      DateTime @map("current_period_end")
+  createdAt             DateTime @default(now()) @map("created_at")
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([identifier, token])
+  @@map("subscriptions")
 }
 
-model LoginLog {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  timestamp DateTime @default(now())
-  ipAddress String?
-  userAgent String?
+model NewsletterSub {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  subscribedAt DateTime @default(now()) @map("subscribed_at")
+
+  @@map("newsletter_subs")
 }

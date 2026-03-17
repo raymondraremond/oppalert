@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
-import { Mail, Lock, User, ArrowRight, Eye, EyeOff, Loader2 } from 'lucide-react'
+import { Mail, Lock, User, ArrowRight, Eye, EyeOff, Loader2, Github, Globe } from 'lucide-react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
@@ -33,16 +33,13 @@ export default function LoginPage() {
           throw new Error(msg || 'Something went wrong')
         }
         
-        // Auto sign in after signup
         const result = await signIn('credentials', {
           email,
           password,
           redirect: false
         })
 
-        if (result?.error) {
-          throw new Error(result.error)
-        }
+        if (result?.error) throw new Error(result.error)
         
         router.push('/dashboard')
         router.refresh()
@@ -53,9 +50,7 @@ export default function LoginPage() {
           redirect: false
         })
 
-        if (result?.error) {
-          throw new Error('Invalid email or password')
-        }
+        if (result?.error) throw new Error('Invalid email or password')
 
         router.push('/dashboard')
         router.refresh()
@@ -66,374 +61,171 @@ export default function LoginPage() {
     }
   }
 
-  const handleSocialLogin = (provider: string) => {
-    signIn(provider, { callbackUrl: '/dashboard' })
-  }
-
-  if (isLoading && !error) {
-    return (
-      <div
-        style={{
-          minHeight: 'calc(100vh - 70px)',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '2rem',
-        }}
-      >
-        <Loader2 className="animate-spin mb-4 text-amber" size={48} />
-        <p style={{ fontSize: 14, color: '#A8A89A' }}>
-          {mode === 'login' ? 'Authenticating...' : 'Creating your account...'}
-        </p>
-      </div>
-    )
-  }
-
   return (
-    <div
-      style={{
-        minHeight: 'calc(100vh - 70px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '2rem',
-        position: 'relative',
-      }}
-    >
-      {/* Background glow */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '20%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: 400,
-          height: 400,
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(232,160,32,0.08) 0%, transparent 70%)',
-          pointerEvents: 'none',
-        }}
-      />
+    <main className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
+      {/* Background Decorative Elements */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[600px] bg-amber/5 blur-[120px] rounded-full pointer-events-none -z-10" />
+      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-primary/5 blur-[100px] rounded-full pointer-events-none -z-10" />
 
-      <div
-        style={{ width: '100%', maxWidth: 420, position: 'relative' }}
-        className="animate-fade-up"
-      >
-        {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: 32 }}>
-          <Link href="/" style={{ textDecoration: 'none' }}>
-            <div style={{ fontFamily: 'Syne, sans-serif', fontSize: 28, fontWeight: 800, color: '#F0EDE6' }}>
-              Opp<span style={{ color: '#E8A020' }}>Alert</span>
-            </div>
+      <div className="w-full max-w-[480px] animate-fade-up">
+        {/* Logo Section */}
+        <div className="text-center mb-10">
+          <Link href="/" className="inline-block group">
+            <h2 className="font-syne text-4xl font-black text-[#F0EDE6] tracking-tighter transition-all group-hover:scale-105">
+              Opp<span className="text-amber">Alert</span>
+            </h2>
+            <div className="h-1 w-0 group-hover:w-full bg-amber-gradient mx-auto transition-all duration-500 rounded-full" />
           </Link>
         </div>
 
-        {/* Mode Tabs */}
-        <div
-          style={{
-            display: 'flex',
-            background: '#141710',
-            borderRadius: 12,
-            padding: 4,
-            marginBottom: 28,
-            border: '1px solid #2E3530',
-          }}
-        >
-          {(['login', 'signup'] as const).map((m) => (
-            <button
-              key={m}
-              onClick={() => setMode(m)}
-              style={{
-                flex: 1,
-                padding: '10px 0',
-                borderRadius: 9,
-                border: 'none',
-                fontSize: 14,
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                fontFamily: 'DM Sans, sans-serif',
-                background: mode === m ? 'linear-gradient(135deg, #E8A020, #C87020)' : 'transparent',
-                color: mode === m ? '#0D0F0B' : '#6A6B62',
-              }}
-            >
-              {m === 'login' ? 'Log In' : 'Sign Up'}
-            </button>
-          ))}
-        </div>
+        {/* Auth Card */}
+        <div className="glass-gradient border border-white/10 rounded-[2.5rem] p-8 md:p-12 shadow-premium relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-amber/5 blur-3xl -z-10" />
+          
+          <div className="mb-10 text-center">
+            <h1 className="font-syne text-2xl font-black text-white mb-2">
+              {mode === 'login' ? 'Welcome back' : 'Create Account'}
+            </h1>
+            <p className="text-sm text-subtle font-medium">
+              {mode === 'login' 
+                ? 'Join 48,000+ others chasing excellence.' 
+                : 'Your journey to a global career starts here.'}
+            </p>
+          </div>
 
-        {/* Form Card */}
-        <div
-          style={{
-            background: 'rgba(20, 23, 16, 0.8)',
-            backdropFilter: 'blur(16px)',
-            border: '1px solid #2E3530',
-            borderRadius: 16,
-            padding: '2rem',
-          }}
-        >
-          <h1
-            style={{
-              fontFamily: 'Syne, sans-serif',
-              fontSize: 22,
-              fontWeight: 800,
-              marginBottom: 6,
-            }}
-          >
-            {mode === 'login' ? 'Welcome back' : 'Create your account'}
-          </h1>
-          <p style={{ fontSize: 14, color: '#A8A89A', marginBottom: 24 }}>
-            {mode === 'login'
-              ? 'Sign in to access your saved opportunities and alerts.'
-              : 'Join 48,000+ professionals discovering opportunities.'}
-          </p>
+          {/* Combined Tabs */}
+          <div className="grid grid-cols-2 bg-white/5 border border-white/5 p-1 rounded-2xl mb-8">
+            <button 
+              onClick={() => setMode('login')}
+              className={`py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${mode === 'login' ? 'bg-amber-gradient text-bg shadow-glow-amber' : 'text-muted-dark hover:text-white'}`}
+            >
+              Log In
+            </button>
+            <button 
+              onClick={() => setMode('signup')}
+              className={`py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${mode === 'signup' ? 'bg-amber-gradient text-bg shadow-glow-amber' : 'text-muted-dark hover:text-white'}`}
+            >
+              Sign Up
+            </button>
+          </div>
 
           {error && (
-            <div 
-              style={{ 
-                background: 'rgba(239, 68, 68, 0.1)', 
-                border: '1px solid rgba(239, 68, 68, 0.2)', 
-                color: '#ef4444', 
-                padding: '12px', 
-                borderRadius: '8px', 
-                fontSize: '13px', 
-                marginBottom: '20px',
-                textAlign: 'center'
-              }}
-            >
+            <div className="mb-6 p-4 rounded-xl bg-danger/10 border border-danger/20 text-danger text-xs font-bold text-center animate-fade-up">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="space-y-5">
             {mode === 'signup' && (
-              <div style={{ marginBottom: 16 }}>
-                <label
-                  style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}
-                >
-                  Full Name
-                </label>
-                <div style={{ position: 'relative' }}>
-                  <User
-                    size={16}
-                    style={{
-                      position: 'absolute',
-                      left: 14,
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      color: '#6A6B62',
-                    }}
-                  />
+              <div className="space-y-2">
+                <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted-dark ml-1">Full Name</label>
+                <div className="relative group">
+                  <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-subtle group-focus-within:text-amber transition-colors" />
                   <input
-                    className="input"
                     type="text"
-                    placeholder="e.g. Adewale Okafor"
+                    placeholder="Adewale Okafor"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
-                    style={{ paddingLeft: 40 }}
+                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-[#F0EDE6] text-sm focus:outline-none focus:border-amber/30 focus:ring-1 focus:ring-amber/10 transition-all font-medium"
                   />
                 </div>
               </div>
             )}
 
-            <div style={{ marginBottom: 16 }}>
-              <label
-                style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}
-              >
-                Email Address
-              </label>
-              <div style={{ position: 'relative' }}>
-                <Mail
-                  size={16}
-                  style={{
-                    position: 'absolute',
-                    left: 14,
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    color: '#6A6B62',
-                  }}
-                />
+            <div className="space-y-2">
+              <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted-dark ml-1">Email Address</label>
+              <div className="relative group">
+                <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-subtle group-focus-within:text-amber transition-colors" />
                 <input
-                  className="input"
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder="you@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  style={{ paddingLeft: 40 }}
+                  className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-[#F0EDE6] text-sm focus:outline-none focus:border-amber/30 focus:ring-1 focus:ring-amber/10 transition-all font-medium"
                 />
               </div>
             </div>
 
-            <div style={{ marginBottom: mode === 'login' ? 8 : 24 }}>
-              <label
-                style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}
-              >
-                Password
-              </label>
-              <div style={{ position: 'relative' }}>
-                <Lock
-                  size={16}
-                  style={{
-                    position: 'absolute',
-                    left: 14,
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    color: '#6A6B62',
-                  }}
-                />
+            <div className="space-y-2">
+              <div className="flex justify-between items-center ml-1">
+                <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted-dark">Password</label>
+                {mode === 'login' && (
+                  <button type="button" className="text-[10px] font-black uppercase tracking-widest text-amber hover:opacity-80">Forgot?</button>
+                )}
+              </div>
+              <div className="relative group">
+                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-subtle group-focus-within:text-amber transition-colors" />
                 <input
-                  className="input"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  minLength={6}
-                  style={{ paddingLeft: 40, paddingRight: 40 }}
+                  className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-12 text-[#F0EDE6] text-sm focus:outline-none focus:border-amber/30 focus:ring-1 focus:ring-amber/10 transition-all font-medium"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  style={{
-                    position: 'absolute',
-                    right: 12,
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    color: '#6A6B62',
-                    padding: 2,
-                  }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-subtle hover:text-white transition-colors"
                 >
-                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
 
-            {mode === 'login' && (
-              <div
-                style={{
-                  textAlign: 'right',
-                  marginBottom: 24,
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: 13,
-                    color: '#E8A020',
-                    cursor: 'pointer',
-                    fontWeight: 500,
-                  }}
-                >
-                  Forgot password?
-                </span>
-              </div>
-            )}
-
             <button
               type="submit"
-              className="btn-primary"
               disabled={isLoading}
-              style={{
-                width: '100%',
-                padding: '13px',
-                fontSize: 15,
-                fontWeight: 700,
-                gap: 8,
-                opacity: isLoading ? 0.7 : 1
-              }}
+              className="w-full btn-primary py-5 rounded-2xl shadow-glow-amber text-bg font-black uppercase tracking-[0.2em] text-xs hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
             >
               {isLoading ? (
-                <Loader2 className="animate-spin" size={18} />
+                <div className="w-5 h-5 border-2 border-bg/30 border-t-bg rounded-full animate-spin" />
               ) : (
                 <>
-                  {mode === 'login' ? 'Log In' : 'Create Account'}
-                  <ArrowRight size={16} />
+                  {mode === 'login' ? 'Proceed to Dashboard' : 'Confirm & Create'}
+                  <ArrowRight size={18} className="stroke-[2.5]" />
                 </>
               )}
             </button>
           </form>
 
-          {/* Divider */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 12,
-              margin: '20px 0',
-            }}
-          >
-            <div style={{ flex: 1, height: 1, background: '#2E3530' }} />
-            <span style={{ fontSize: 12, color: '#6A6B62' }}>or continue with</span>
-            <div style={{ flex: 1, height: 1, background: '#2E3530' }} />
+          {/* Social Proof/Login Divider */}
+          <div className="flex items-center gap-4 my-10">
+            <div className="flex-1 h-px bg-white/5" />
+            <span className="text-[10px] font-black uppercase tracking-widest text-muted-dark">Social Connect</span>
+            <div className="flex-1 h-px bg-white/5" />
           </div>
 
-          {/* Social Login */}
-          <div style={{ display: 'flex', gap: 10 }}>
-            {[
-              {
-                name: 'Google',
-                svg: (
-                  <svg width="18" height="18" viewBox="0 0 24 24">
-                    <path
-                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
-                      fill="#4285F4"
-                    />
-                    <path
-                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                      fill="#34A853"
-                    />
-                    <path
-                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                      fill="#FBBC05"
-                    />
-                    <path
-                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                      fill="#EA4335"
-                    />
-                  </svg>
-                ),
-              },
-              {
-                name: 'GitHub',
-                svg: (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="#F0EDE6">
-                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                  </svg>
-                ),
-              },
-            ].map((provider) => (
-               <button
-                key={provider.name}
-                type="button"
-                className="btn-ghost"
-                onClick={() => handleSocialLogin(provider.name.toLowerCase())}
-                style={{
-                  flex: 1,
-                  padding: '10px',
-                  fontSize: 13,
-                  fontWeight: 500,
-                  gap: 8,
-                }}
-              >
-                {provider.svg}
-                {provider.name}
-              </button>
-            ))}
+          <div className="grid grid-cols-2 gap-4">
+            <button 
+              onClick={() => signIn('google')}
+              className="flex items-center justify-center gap-3 py-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/5 transition-all group"
+            >
+              <svg className="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+              </svg>
+              <span className="text-[10px] font-black uppercase tracking-widest text-[#F0EDE6]">Google</span>
+            </button>
+            <button 
+              onClick={() => signIn('github')}
+              className="flex items-center justify-center gap-3 py-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/5 transition-all group"
+            >
+              <Github size={20} className="text-[#F0EDE6] group-hover:scale-110 transition-transform" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-[#F0EDE6]">GitHub</span>
+            </button>
           </div>
         </div>
 
-        {/* Bottom text */}
-        <p style={{ textAlign: 'center', fontSize: 12, color: '#6A6B62', marginTop: 20 }}>
-          By continuing, you agree to OppAlert's{' '}
-          <Link href="/terms" style={{ color: '#A8A89A', textDecoration: 'none' }}>Terms of Service</Link> and{' '}
-          <Link href="/privacy" style={{ color: '#A8A89A', textDecoration: 'none' }}>Privacy Policy</Link>.
+        {/* Legal Text */}
+        <p className="text-[10px] text-center text-muted-dark font-medium mt-10 max-w-xs mx-auto leading-relaxed uppercase tracking-widest">
+          By continuing, you agree to our <Link href="/terms" className="text-subtle hover:text-white transition-colors underline decoration-white/20 underline-offset-4">Terms</Link> & <Link href="/privacy" className="text-subtle hover:text-white transition-colors underline decoration-white/20 underline-offset-4">Privacy</Link>.
         </p>
       </div>
-    </div>
+    </main>
   )
 }

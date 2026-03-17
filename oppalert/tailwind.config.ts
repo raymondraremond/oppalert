@@ -44,6 +44,18 @@ const config: Config = {
           DEFAULT: '#4A9EE8',
           dim: '#0D2035',
         }
+      },
+      boxShadow: {
+        'premium': '0 20px 50px -12px rgba(0, 0, 0, 0.5)',
+        'glow-amber': '0 0 20px rgba(232, 160, 32, 0.2)',
+        'glow-amber-strong': '0 0 40px rgba(232, 160, 32, 0.4)',
+      },
+      backgroundImage: {
+        'glass-gradient': 'linear-gradient(145deg, rgba(34, 40, 32, 0.4) 0%, rgba(20, 23, 16, 0.6) 100%)',
+        'amber-gradient': 'linear-gradient(135deg, #F0B030 0%, #D88030 100%)',
+      },
+      backdropBlur: {
+        'xs': '2px',
       }
     },
   },

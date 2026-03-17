@@ -1,40 +1,35 @@
 import Link from 'next/link'
-import { Zap } from 'lucide-react'
+import { Zap, ArrowRight } from 'lucide-react'
 
 export default function PremiumBanner() {
   return (
-    <div
-      style={{
-        background: 'linear-gradient(135deg, #3D2E0A, #1A1208, #0F1208)',
-        border: '1px solid #4A3510',
-        borderRadius: 14,
-        padding: '16px 20px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 16,
-        marginBottom: 20,
-        flexWrap: 'wrap',
-      }}
-    >
-      <div>
-        <div style={{ fontSize: 13, fontWeight: 700, color: '#E8A020', marginBottom: 2, display: 'flex', alignItems: 'center', gap: 6 }}>
-          <Zap size={14} />
-          Go Premium
+    <div className="relative overflow-hidden glass-gradient border border-amber/20 rounded-2xl p-6 mb-8 group">
+      {/* Background glow */}
+      <div className="absolute top-0 right-0 w-32 h-32 bg-amber/10 blur-3xl -z-10 group-hover:scale-150 transition-transform duration-1000" />
+      
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative z-10">
+        <div className="flex gap-4">
+          <div className="w-12 h-12 rounded-xl bg-amber-gradient text-bg flex items-center justify-center shrink-0 shadow-glow-amber group-hover:rotate-3 transition-transform">
+            <Zap size={24} className="stroke-[2.5]" />
+          </div>
+          <div>
+            <h3 className="font-syne text-lg font-black text-amber uppercase tracking-wider mb-1">
+              Unlock Elite Opportunities
+            </h3>
+            <p className="text-sm text-subtle font-medium leading-relaxed max-w-xl">
+              Get <span className="text-white font-bold">instant Telegram & Email alerts</span>. 
+              Be the first to apply to scholarships and remote jobs before they go viral.
+            </p>
+          </div>
         </div>
-        <p style={{ fontSize: 13, color: '#A8A89A', margin: 0 }}>
-          Get <strong style={{ color: '#E8A020' }}>instant alerts</strong> for new listings before
-          free users. Early access, unlimited saves.
-        </p>
+        
+        <Link href="/pricing" className="shrink-0 w-full md:w-auto">
+          <button className="btn-primary w-full py-3.5 px-8 text-sm font-black uppercase tracking-widest rounded-xl shadow-glow-amber hover:scale-[1.02] active:scale-[0.98] transition-all">
+            Upgrade for ₦1,500
+            <ArrowRight size={16} className="ml-2 stroke-[3]" />
+          </button>
+        </Link>
       </div>
-      <Link href="/pricing">
-        <button
-          className="btn-primary"
-          style={{ padding: '8px 18px', fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap' }}
-        >
-          Upgrade ₦1,500/mo
-        </button>
-      </Link>
     </div>
   )
 }

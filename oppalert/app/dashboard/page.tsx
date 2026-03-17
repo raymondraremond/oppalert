@@ -15,13 +15,16 @@ import {
   Zap,
   Check,
   Mail,
+  ChevronRight,
+  ShieldCheck,
+  Settings,
 } from 'lucide-react'
 
 const navItems = [
   { id: 'overview', label: 'Overview', icon: BarChart3 },
-  { id: 'saved', label: 'Saved (3)', icon: Heart },
-  { id: 'alerts', label: 'Alert Settings', icon: Bell },
-  { id: 'profile', label: 'Profile', icon: User },
+  { id: 'saved', label: 'Saved Items', icon: Heart },
+  { id: 'alerts', label: 'Smart Alerts', icon: Bell },
+  { id: 'profile', label: 'My Profile', icon: User },
 ]
 
 const deadlines = opportunities.filter((o) => o.days <= 20).slice(0, 3)
@@ -39,7 +42,7 @@ export default function DashboardPage() {
   const [profileSaved, setProfileSaved] = useState(false)
   const [prefsSaved, setPrefsSaved] = useState(false)
   const [selectedCats, setSelectedCats] = useState<string[]>(['Scholarships', 'Fellowships', 'Remote Jobs'])
-
+  
   // Profile Form State
   const [firstName, setFirstName] = useState('Adewale')
   const [lastName, setLastName] = useState('Okafor')
@@ -68,606 +71,361 @@ export default function DashboardPage() {
     setTimeout(() => setPrefsSaved(false), 2000)
   }
 
-  const sidebar = (
-    <>
-      {/* User info */}
-      <div
-        style={{
-          marginBottom: 20,
-          paddingBottom: 16,
-          borderBottom: '1px solid #2E3530',
-        }}
-      >
-        <div
-          style={{
-            width: 48,
-            height: 48,
-            borderRadius: '50%',
-            background: 'linear-gradient(135deg, #3D2E0A, #2A1A06)',
-            border: '2px solid #E8A020',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: 800,
-            fontSize: 16,
-            color: '#E8A020',
-            marginBottom: 10,
-            fontFamily: 'Syne, sans-serif',
-            boxShadow: '0 0 15px rgba(232,160,32,0.15)',
-          }}
-        >
-          AO
-        </div>
-        <div style={{ fontSize: 14, fontWeight: 700 }}>Adewale Okafor</div>
-        <div style={{ fontSize: 12, color: '#6A6B62', marginTop: 2 }}>Free Plan</div>
-        <Link href="/pricing">
-          <button
-            className="btn-primary"
-            style={{ marginTop: 10, padding: '5px 14px', fontSize: 11, fontWeight: 700, gap: 4 }}
-          >
-            <Zap size={11} />
-            Upgrade
-          </button>
-        </Link>
-      </div>
-
-      {navItems.map((item) => {
-        const Icon = item.icon
-        return (
-          <div
-            key={item.id}
-            onClick={() => setActiveTab(item.id)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 10,
-              padding: '10px 14px',
-              borderRadius: 10,
-              cursor: 'pointer',
-              fontSize: 13,
-              fontWeight: 500,
-              transition: 'all 0.15s',
-              marginBottom: 2,
-              background: activeTab === item.id ? '#3D2E0A' : 'transparent',
-              color: activeTab === item.id ? '#E8A020' : '#A8A89A',
-            }}
-          >
-            <Icon size={16} />
-            {item.label}
-          </div>
-        )
-      })}
-      <Link href="/login" style={{ textDecoration: 'none' }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 10,
-            padding: '10px 14px',
-            borderRadius: 10,
-            cursor: 'pointer',
-            fontSize: 13,
-            fontWeight: 500,
-            color: '#E05252',
-            marginTop: 16,
-            opacity: 0.7,
-            transition: 'opacity 0.15s',
-          }}
-        >
-          <LogOut size={16} />
-          Log Out
-        </div>
-      </Link>
-    </>
-  )
-
   return (
-    <div
-      style={{
-        maxWidth: 1100,
-        margin: '0 auto',
-        padding: '24px 1.5rem',
-        display: 'grid',
-        gridTemplateColumns: '220px 1fr',
-        gap: 24,
-        minHeight: 'calc(100vh - 70px)',
-      }}
-    >
-      {/* ── SIDEBAR (Desktop) ── */}
-      <aside className="sidebar-desktop">{sidebar}</aside>
-
-      {/* Mobile tabs */}
-      <div
-        className="mobile-filters"
-        style={{
-          overflowX: 'auto',
-          gap: 6,
-          paddingBottom: 12,
-          borderBottom: '1px solid #2E3530',
-          marginBottom: 16,
-          gridColumn: '1 / -1',
-        }}
-      >
-        {navItems.map((item) => {
-          const Icon = item.icon
-          return (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              style={{
-                padding: '8px 14px',
-                borderRadius: 8,
-                border: `1px solid ${activeTab === item.id ? '#4A3510' : '#2E3530'}`,
-                background: activeTab === item.id ? '#3D2E0A' : 'transparent',
-                color: activeTab === item.id ? '#E8A020' : '#A8A89A',
-                fontSize: 12,
-                fontWeight: 600,
-                cursor: 'pointer',
-                whiteSpace: 'nowrap',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                fontFamily: 'DM Sans, sans-serif',
-              }}
-            >
-              <Icon size={13} />
-              {item.label}
-            </button>
-          )
-        })}
-      </div>
-
-      {/* ── MAIN CONTENT ── */}
-      <div>
-        {/* OVERVIEW */}
-        {activeTab === 'overview' && (
-          <div className="animate-fade-up">
-            <h2
-              style={{
-                fontFamily: 'Syne, sans-serif',
-                fontSize: 22,
-                fontWeight: 800,
-                marginBottom: 24,
-              }}
-            >
-              Good morning, Adewale 👋
-            </h2>
-
-            {/* Stats */}
-            <div
-              className="stats-grid-4"
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(4, 1fr)',
-                gap: 16,
-                marginBottom: 28,
-              }}
-            >
-              {[
-                { num: '3', label: 'Saved', change: '+1 this week', color: '#F0EDE6', changeColor: '#3DAA6A' },
-                { num: '2', label: 'Applied', change: '1 pending review', color: '#F0EDE6', changeColor: '#3DAA6A' },
-                { num: '3', label: 'Deadlines soon', change: 'Within 7 days', color: '#E05252', changeColor: '#E05252' },
-                { num: '28', label: 'Alerts received', change: 'This month', color: '#F0EDE6', changeColor: '#3DAA6A' },
-              ].map((s) => (
-                <div
-                  key={s.label}
-                  style={{
-                    background: 'linear-gradient(145deg, #171A13, #141710)',
-                    border: '1px solid #2E3530',
-                    borderRadius: 14,
-                    padding: '1.25rem',
-                  }}
-                >
-                  <div
-                    style={{
-                      fontFamily: 'Syne, sans-serif',
-                      fontSize: 28,
-                      fontWeight: 800,
-                      color: s.color,
-                    }}
-                  >
-                    {s.num}
-                  </div>
-                  <div style={{ fontSize: 12, color: '#6A6B62', marginTop: 4 }}>{s.label}</div>
-                  <div style={{ fontSize: 11, color: s.changeColor, marginTop: 6 }}>
-                    {s.change}
-                  </div>
+    <main className="min-h-screen pt-24 pb-20 px-6">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-10">
+        
+        {/* ── SIDEBAR ── */}
+        <aside className="w-full lg:w-72 shrink-0 space-y-6">
+          <div className="glass-gradient border border-white/5 rounded-[2.5rem] p-8 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-amber/5 blur-3xl -z-10" />
+            
+            <div className="flex flex-col items-center text-center">
+              <div className="w-20 h-20 rounded-[1.5rem] bg-amber-gradient p-1 mb-4 shadow-glow-amber/20 group-hover:rotate-6 transition-transform">
+                <div className="w-full h-full rounded-[1.2rem] bg-bg flex items-center justify-center font-syne text-2xl font-black text-amber">
+                  AO
                 </div>
-              ))}
-            </div>
-
-            {/* Deadlines */}
-            <div
-              style={{
-                background: 'linear-gradient(145deg, #171A13, #141710)',
-                border: '1px solid #2E3530',
-                borderRadius: 14,
-                padding: '1.25rem',
-                marginBottom: 24,
-              }}
-            >
-              <div
-                style={{ fontSize: 14, fontWeight: 700, marginBottom: 14, fontFamily: 'Syne, sans-serif', display: 'flex', alignItems: 'center', gap: 8 }}
-              >
-                <Clock size={16} style={{ color: '#E8A020' }} />
-                Deadlines This Week
               </div>
-              {deadlines.map((opp) => (
-                <Link
-                  key={opp.id}
-                  href={`/opportunities/${opp.id}`}
-                  style={{ textDecoration: 'none' }}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      padding: '10px 0',
-                      borderBottom: '1px solid #1A1F15',
-                      cursor: 'pointer',
-                      transition: 'background 0.1s',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                      <div
-                        style={{
-                          width: 36,
-                          height: 36,
-                          borderRadius: 10,
-                          background: '#222820',
-                          border: '1px solid #2E3530',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                      >
-                        <span style={{ fontSize: 16 }}>{opp.icon}</span>
-                      </div>
-                      <div>
-                        <div style={{ fontSize: 13, fontWeight: 600 }}>{opp.title}</div>
-                        <div style={{ fontSize: 11, color: '#6A6B62' }}>{opp.org}</div>
-                      </div>
-                    </div>
-                    <span className={`badge ${opp.days <= 7 ? 'badge-red' : 'badge-amber'}`}>
-                      {opp.days}d left
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-
-            {/* Recommended */}
-            <div>
-              <div
-                style={{ fontSize: 14, fontWeight: 700, marginBottom: 14, fontFamily: 'Syne, sans-serif', display: 'flex', alignItems: 'center', gap: 8 }}
-              >
-                <Sparkles size={16} style={{ color: '#E8A020' }} />
-                Recommended For You
-              </div>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                  gap: 16,
-                }}
-              >
-                {recommended.map((opp) => (
-                  <OpportunityCard key={opp.id} opp={opp} />
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* SAVED */}
-        {activeTab === 'saved' && (
-          <div className="animate-fade-up">
-            <h2
-              style={{
-                fontFamily: 'Syne, sans-serif',
-                fontSize: 22,
-                fontWeight: 800,
-                marginBottom: 24,
-              }}
-            >
-              Saved Opportunities
-            </h2>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                gap: 16,
-              }}
-            >
-              {savedOpps.map((opp) => (
-                <OpportunityCard key={opp.id} opp={opp} />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ALERTS */}
-        {activeTab === 'alerts' && (
-          <div className="animate-fade-up">
-            <h2
-              style={{ fontFamily: 'Syne, sans-serif', fontSize: 22, fontWeight: 800, marginBottom: 6 }}
-            >
-              Alert Preferences
-            </h2>
-            <p style={{ fontSize: 14, color: '#6A6B62', marginBottom: 24 }}>
-              Control what notifications you receive and how frequently.
-            </p>
-
-            {/* Premium banner */}
-            <div
-              style={{
-                background: 'linear-gradient(135deg, #3D2E0A, #1A1208, #0F1208)',
-                border: '1px solid #4A3510',
-                borderRadius: 14,
-                padding: '16px 20px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: 16,
-                marginBottom: 20,
-                flexWrap: 'wrap',
-              }}
-            >
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#E8A020', marginBottom: 2, display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <Zap size={14} />
-                  Unlock Instant Alerts
-                </div>
-                <p style={{ fontSize: 13, color: '#A8A89A', margin: 0 }}>
-                  Free plan limits you to daily digests. Premium gives real-time notifications.
-                </p>
-              </div>
-              <Link href="/pricing">
-                <button
-                  className="btn-primary"
-                  style={{ padding: '8px 18px', fontSize: 13, fontWeight: 700, gap: 4 }}
-                >
-                  Upgrade
-                  <ArrowRight size={13} />
+              <h3 className="font-syne text-lg font-black text-[#F0EDE6] mb-1">Adewale Okafor</h3>
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted-dark mb-6">Standard Member</p>
+              
+              <Link href="/pricing" className="w-full">
+                <button className="btn-primary w-full py-3 px-6 rounded-xl shadow-glow-amber text-bg font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                  <Zap size={14} className="fill-current" />
+                  Upgrade Elite
                 </button>
               </Link>
             </div>
 
-            {[
-              {
-                key: 'newOpps' as const,
-                icon: Mail,
-                label: 'New opportunity alerts',
-                sub: 'Get notified when new listings match your preferences',
-                premium: false,
-              },
-              {
-                key: 'deadlines' as const,
-                icon: Clock,
-                label: 'Deadline reminders',
-                sub: 'Receive reminders 7 days before saved opportunity deadlines',
-                premium: false,
-              },
-              {
-                key: 'digest' as const,
-                icon: Bell,
-                label: 'Weekly digest',
-                sub: 'A weekly roundup of the best opportunities',
-                premium: false,
-              },
-              {
-                key: 'instant' as const,
-                icon: Zap,
-                label: 'Instant alerts',
-                sub: 'Real-time push + email the moment an opportunity goes live',
-                premium: true,
-              },
-            ].map((a) => {
-              const AlertIcon = a.icon
-              return (
-                <div
-                  key={a.key}
-                  style={{
-                    background: 'linear-gradient(145deg, #171A13, #141710)',
-                    border: '1px solid #2E3530',
-                    borderRadius: 12,
-                    padding: '14px 16px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginBottom: 10,
-                    gap: 12,
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: 10,
-                      background: a.premium ? '#3D2E0A' : '#222820',
-                      border: `1px solid ${a.premium ? '#4A3510' : '#2E3530'}`,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
+            <div className="h-px bg-white/5 my-8" />
+
+            <nav className="space-y-2">
+              {navItems.map((item) => {
+                const Icon = item.icon
+                const isActive = activeTab === item.id
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveTab(item.id)}
+                    className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all font-bold text-sm ${
+                      isActive 
+                        ? 'bg-white/5 text-amber border border-white/10 shadow-inner' 
+                        : 'text-muted-dark hover:text-[#F0EDE6] hover:bg-white/[0.02]'
+                    }`}
                   >
-                    <AlertIcon size={16} style={{ color: a.premium ? '#E8A020' : '#A8A89A' }} />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 13, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8 }}>
-                      {a.label}
-                      {a.premium && (
-                        <span className="badge badge-amber">
-                          Premium
-                        </span>
-                      )}
+                    <div className={`${isActive ? 'text-amber drop-shadow-glow-amber' : ''}`}>
+                      <Icon size={18} />
                     </div>
-                    <div style={{ fontSize: 12, color: '#6A6B62', marginTop: 2 }}>{a.sub}</div>
+                    {item.label}
+                    {isActive && <div className="ml-auto w-1 h-1 rounded-full bg-amber shadow-glow-amber" />}
+                  </button>
+                )
+              })}
+            </nav>
+
+            <div className="h-px bg-white/5 my-8" />
+            
+            <Link href="/login" className="flex items-center gap-4 px-5 py-3 text-danger/60 hover:text-danger font-black uppercase tracking-widest text-[10px] transition-colors group/logout">
+              <LogOut size={16} className="group-hover:-translate-x-1 transition-transform" />
+              Sign Out Securely
+            </Link>
+          </div>
+
+          {/* Sidebar Banner */}
+          <div className="bg-primary/5 border border-primary/20 rounded-[2.5rem] p-8 text-center hidden lg:block overflow-hidden relative group">
+             <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+             <h4 className="font-syne font-black text-white text-sm mb-2">Join the Elite</h4>
+             <p className="text-[10px] text-subtle font-bold mb-4">4,200+ members got hired or funded this month.</p>
+             <Link href="/pricing" className="text-primary text-[10px] font-black uppercase tracking-widest hover:underline block">
+               Learn more →
+             </Link>
+          </div>
+        </aside>
+
+        {/* ── MAIN CONTENT ── */}
+        <div className="flex-1 space-y-10 min-w-0">
+          
+          {/* OVERVIEW TAB */}
+          {activeTab === 'overview' && (
+            <div className="animate-fade-up space-y-10">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div>
+                  <h1 className="font-syne text-4xl md:text-5xl font-black text-[#F0EDE6] tracking-tighter mb-2">
+                    Welcome, <span className="text-amber-gradient drop-shadow-glow-amber">Adewale</span>
+                  </h1>
+                  <p className="text-subtle font-medium">You have 3 deadlines approaching this week.</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="p-3 rounded-2xl bg-white/5 border border-white/5 text-muted-dark cursor-help">
+                    <ShieldCheck size={20} />
                   </div>
-                  <div
-                    className={`toggle-wrap${alerts[a.key] ? ' on' : ''}`}
-                    onClick={() => toggleAlert(a.key)}
-                    style={a.premium ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
-                  />
+                  <div className="p-3 rounded-2xl bg-white/5 border border-white/5 text-muted-dark cursor-help">
+                    <Settings size={20} />
+                  </div>
                 </div>
-              )
-            })}
-          </div>
-        )}
+              </div>
 
-        {/* PROFILE */}
-        {activeTab === 'profile' && (
-          <div className="animate-fade-up">
-            <h2
-              style={{ fontFamily: 'Syne, sans-serif', fontSize: 22, fontWeight: 800, marginBottom: 24 }}
-            >
-              Profile Settings
-            </h2>
-            <div
-              style={{
-                background: 'linear-gradient(145deg, #171A13, #141710)',
-                border: '1px solid #2E3530',
-                borderRadius: 14,
-                padding: '1.5rem',
-                marginBottom: 20,
-              }}
-            >
-              <div
-                style={{ fontSize: 14, fontWeight: 700, marginBottom: 16, fontFamily: 'Syne, sans-serif' }}
-              >
-                Personal Information
+              {/* Quick Stats */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                  { num: '3', label: 'Saved Items', icon: <Heart size={20} />, trend: '+1 this week' },
+                  { num: '2', label: 'Applications', icon: <Check size={20} />, trend: '1 pending review' },
+                  { num: '3', label: 'Urgent Deadlines', icon: <Clock size={20} />, trend: 'Within 7 days', alert: true },
+                  { num: '28', label: 'Alerts Received', icon: <Bell size={20} />, trend: 'Global scan' },
+                ].map((s, idx) => (
+                  <div key={idx} className="glass-gradient border border-white/5 rounded-3xl p-6 relative group overflow-hidden">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 blur-2xl -z-10 group-hover:scale-150 transition-transform" />
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-6 shadow-inner ${s.alert ? 'bg-danger/10 text-danger' : 'bg-white/5 text-subtle'}`}>
+                      {s.icon}
+                    </div>
+                    <div className="font-syne text-4xl font-black text-[#F0EDE6] mb-1">{s.num}</div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-dark mb-4">{s.label}</p>
+                    <p className={`text-[10px] font-bold ${s.alert ? 'text-danger' : 'text-success'}`}>{s.trend}</p>
+                  </div>
+                ))}
               </div>
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: 12,
-                  marginBottom: 14,
-                }}
-              >
-                <div>
-                  <label
-                    style={{
-                      fontSize: 13,
-                      color: '#A8A89A',
-                      display: 'block',
-                      marginBottom: 6,
-                      fontWeight: 500,
-                    }}
-                  >
-                    First Name
-                  </label>
-                  <input className="input" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-                </div>
-                <div>
-                  <label
-                    style={{
-                      fontSize: 13,
-                      color: '#A8A89A',
-                      display: 'block',
-                      marginBottom: 6,
-                      fontWeight: 500,
-                    }}
-                  >
-                    Last Name
-                  </label>
-                  <input className="input" value={lastName} onChange={(e) => setLastName(e.target.value)} />
-                </div>
-              </div>
-              <div style={{ marginBottom: 14 }}>
-                <label
-                  style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}
-                >
-                  Email
-                </label>
-                <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-              </div>
-              <div style={{ marginBottom: 14 }}>
-                <label
-                  style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}
-                >
-                  Country
-                </label>
-                <select className="input" value={country} onChange={(e) => setCountry(e.target.value)}>
-                  <option>Nigeria</option>
-                  <option>Ghana</option>
-                  <option>Kenya</option>
-                  <option>South Africa</option>
-                  <option>Ethiopia</option>
-                </select>
-              </div>
-              <div style={{ marginBottom: 20 }}>
-                <label
-                  style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}
-                >
-                  Professional Status
-                </label>
-                <select className="input" value={status} onChange={(e) => setStatus(e.target.value)}>
-                  <option>University Student</option>
-                  <option>Recent Graduate</option>
-                  <option>Job Seeker</option>
-                  <option>Professional</option>
-                  <option>Startup Founder</option>
-                </select>
-              </div>
-              <button className="btn-primary" style={{ padding: '10px 20px', fontSize: 13, gap: 6 }} onClick={handleSaveProfile}>
-                {profileSaved ? <><Check size={14} /> Saved!</> : 'Save Changes'}
-              </button>
-            </div>
 
-            <div
-              style={{
-                background: 'linear-gradient(145deg, #171A13, #141710)',
-                border: '1px solid #2E3530',
-                borderRadius: 14,
-                padding: '1.5rem',
-              }}
-            >
-              <div
-                style={{ fontSize: 14, fontWeight: 700, marginBottom: 16, fontFamily: 'Syne, sans-serif' }}
-              >
-                Opportunity Preferences
-              </div>
-              <div style={{ marginBottom: 8, fontSize: 13, color: '#A8A89A' }}>
-                Select your interests:
-              </div>
-              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 20 }}>
-                {['Scholarships', 'Fellowships', 'Remote Jobs', 'Grants', 'Internships', 'Startup Funding'].map(
-                  (cat) => {
-                    const isSelected = selectedCats.includes(cat)
-                    return (
-                      <div
-                        key={cat}
-                        onClick={() => toggleCat(cat)}
-                        style={{
-                          background: isSelected ? '#3D2E0A' : '#222820',
-                          color: isSelected ? '#E8A020' : '#A8A89A',
-                          border: `1px solid ${isSelected ? '#4A3510' : '#2E3530'}`,
-                          borderRadius: 8,
-                          padding: '6px 14px',
-                          fontSize: 12,
-                          fontWeight: 500,
-                          cursor: 'pointer',
-                          transition: 'all 0.15s',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 4,
-                        }}
-                      >
-                        {isSelected && <Check size={11} />}
-                        {cat}
+              {/* Deadlines Section */}
+              <div className="glass-gradient border border-white/5 rounded-[2.5rem] p-8 md:p-10">
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-4">
+                    <div className="p-2.5 rounded-xl bg-amber/10 text-amber shadow-inner">
+                      <Clock size={20} />
+                    </div>
+                    <h2 className="font-syne text-xl font-black text-white">Critical Deadlines</h2>
+                  </div>
+                  <Link href="/opportunities" className="text-amber font-black uppercase tracking-widest text-[10px] hover:opacity-80">View All</Link>
+                </div>
+                
+                <div className="space-y-4">
+                  {deadlines.map((opp) => (
+                    <Link key={opp.id} href={`/opportunities/${opp.id}`} className="flex items-center justify-between p-5 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-amber/20 hover:bg-white/[0.05] transition-all group">
+                      <div className="flex items-center gap-5">
+                        <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-xl group-hover:rotate-3 transition-transform">
+                          {opp.icon}
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-bold text-[#F0EDE6] group-hover:text-amber transition-colors">{opp.title}</h4>
+                          <p className="text-xs text-muted-dark font-medium">{opp.org}</p>
+                        </div>
                       </div>
-                    )
-                  }
-                )}
+                      <div className="flex items-center gap-4">
+                        <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${opp.days <= 7 ? 'bg-danger/10 text-danger' : 'bg-amber/10 text-amber'}`}>
+                          {opp.days}d Left
+                        </span>
+                        <ChevronRight size={18} className="text-muted-dark group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
               </div>
-              <button className="btn-primary" style={{ padding: '10px 20px', fontSize: 13, gap: 6 }} onClick={handleSavePrefs}>
-                {prefsSaved ? <><Check size={14} /> Saved!</> : 'Save Preferences'}
-              </button>
+
+              {/* Recommended List */}
+              <div className="section-reveal">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="p-2.5 rounded-xl bg-primary/10 text-primary shadow-inner">
+                    <Sparkles size={20} />
+                  </div>
+                  <h2 className="font-syne text-xl font-black text-white">Recommended For You</h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {recommended.map((opp) => (
+                    <OpportunityCard key={opp.id} opp={opp} />
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+
+          {/* SAVED ITEMS TAB */}
+          {activeTab === 'saved' && (
+            <div className="animate-fade-up space-y-8">
+              <div>
+                <h1 className="font-syne text-4xl font-black text-white tracking-tighter mb-2">Saved <span className="text-amber">Items</span></h1>
+                <p className="text-subtle font-medium">Keep track of opportunities you&apos;re planning to apply for.</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {savedOpps.map((opp) => (
+                  <OpportunityCard key={opp.id} opp={opp} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* SMART ALERTS TAB */}
+          {activeTab === 'alerts' && (
+            <div className="animate-fade-up space-y-8">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div>
+                  <h1 className="font-syne text-4xl font-black text-white tracking-tighter mb-2">Smart <span className="text-amber">Alerts</span></h1>
+                  <p className="text-subtle font-medium">Don&apos;t wait for luck. Get notified before everyone else.</p>
+                </div>
+                <div className="badge badge-amber bg-amber/10 border-amber/20 text-amber px-6 py-2 shadow-glow-amber/10">3 Active Channels</div>
+              </div>
+
+              <div className="glass-gradient border border-amber/20 rounded-[2.5rem] p-8 md:p-10 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-amber/5 blur-[100px] -z-10 group-hover:scale-150 transition-transform duration-1000" />
+                <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 relative z-10">
+                  <div className="w-20 h-20 rounded-[1.5rem] bg-amber/10 flex items-center justify-center text-amber shrink-0 self-start lg:self-center">
+                    <Zap size={40} className="fill-current" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-syne text-xl font-black text-white mb-2">Unlock Zero-Latency Alerts</h3>
+                    <p className="text-subtle text-sm font-medium leading-relaxed">
+                      Our Elite members get instant Telegram and SMS notifications 24-48 hours before opportunities hit our public index. In high-demand roles, speed is your biggest advantage.
+                    </p>
+                  </div>
+                  <Link href="/pricing" className="shrink-0 w-full lg:w-auto">
+                    <button className="btn-primary px-10 py-5 rounded-2xl shadow-glow-amber text-bg font-black uppercase tracking-[0.2em] text-xs hover:scale-[1.05] transition-all">
+                      Upgrade to Elite
+                    </button>
+                  </Link>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4">
+                {[
+                  { key: 'newOpps' as const, icon: Mail, label: 'Opportunity Blast', sub: 'Instant email for matches in your niches', premium: false },
+                  { key: 'deadlines' as const, icon: Clock, label: 'Final Call Reminders', sub: 'Reminders 48h before closing dates', premium: false },
+                  { key: 'digest' as const, icon: BarChart3, label: 'Weekly Performance', sub: 'Summary of all matches and market trends', premium: false },
+                  { key: 'instant' as const, icon: Zap, label: 'Instant Telegram Pushes', sub: 'Real-time verified listing notifications', premium: true },
+                ].map((a) => (
+                  <div key={a.key} className="glass-gradient border border-white/5 p-6 rounded-[2rem] flex items-center gap-6 group hover:border-white/10 transition-all">
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-inner ${a.premium ? 'bg-amber/10 border-amber/20 text-amber' : 'bg-white/5 border-white/5 text-subtle'}`}>
+                      <a.icon size={20} />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-1">
+                        <span className="font-bold text-white text-sm">{a.label}</span>
+                        {a.premium && <span className="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-amber text-bg shadow-glow-amber">Premium</span>}
+                      </div>
+                      <p className="text-xs text-muted-dark font-medium">{a.sub}</p>
+                    </div>
+                    <button 
+                      onClick={() => toggleAlert(a.key)}
+                      disabled={a.premium}
+                      className={`w-12 h-6 rounded-full relative transition-all duration-500 ${alerts[a.key] ? 'bg-amber' : 'bg-white/10'} ${a.premium ? 'opacity-30 grayscale cursor-not-allowed' : 'cursor-pointer'}`}
+                    >
+                      <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-500 ${alerts[a.key] ? 'right-1' : 'left-1'}`} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* PROFILE TAB */}
+          {activeTab === 'profile' && (
+            <div className="animate-fade-up space-y-10">
+              <div>
+                <h1 className="font-syne text-4xl font-black text-white tracking-tighter mb-2">Profile <span className="text-amber">Settings</span></h1>
+                <p className="text-subtle font-medium">Keep your professional profile current for better machine-learning matches.</p>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                {/* Basic Info */}
+                <div className="glass-gradient border border-white/5 rounded-[2.5rem] p-8 md:p-10 space-y-8">
+                  <h3 className="font-syne text-xl font-black text-white flex items-center gap-3">
+                    <User size={20} className="text-amber" />
+                    Identity Details
+                  </h3>
+                  
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-dark ml-1">First Name</label>
+                       <input className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm font-bold text-white focus:outline-none focus:border-amber/30 transition-all" value={firstName} onChange={e => setFirstName(e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-dark ml-1">Last Name</label>
+                       <input className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm font-bold text-white focus:outline-none focus:border-amber/30 transition-all" value={lastName} onChange={e => setLastName(e.target.value)} />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                     <label className="text-[10px] font-black uppercase tracking-widest text-muted-dark ml-1">Global Identifier (Email)</label>
+                     <input className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm font-bold text-white focus:outline-none focus:border-amber/30 transition-all" value={email} onChange={e => setEmail(e.target.value)} />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-dark ml-1">Region</label>
+                       <select className="w-full bg-[#1A1F15] border border-white/10 rounded-2xl p-4 text-sm font-bold text-white focus:outline-none focus:border-amber/30 transition-all cursor-pointer appearance-none" value={country} onChange={e => setCountry(e.target.value)}>
+                         <option>Nigeria</option>
+                         <option>Ghana</option>
+                         <option>Kenya</option>
+                         <option>South Africa</option>
+                       </select>
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-[10px] font-black uppercase tracking-widest text-muted-dark ml-1">Career Status</label>
+                       <select className="w-full bg-[#1A1F15] border border-white/10 rounded-2xl p-4 text-sm font-bold text-white focus:outline-none focus:border-amber/30 transition-all cursor-pointer appearance-none" value={status} onChange={e => setStatus(e.target.value)}>
+                         <option>University Student</option>
+                         <option>Recent Graduate</option>
+                         <option>Professional</option>
+                         <option>Entrepreneur</option>
+                       </select>
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={handleSaveProfile}
+                    className="btn-primary w-full py-4 rounded-2xl shadow-glow-amber text-bg font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2"
+                  >
+                    {profileSaved ? <Check size={18} /> : 'Sync Profile Updates'}
+                  </button>
+                </div>
+
+                {/* Match Preferences */}
+                <div className="glass-gradient border border-white/5 rounded-[2.5rem] p-8 md:p-10 space-y-8">
+                  <h3 className="font-syne text-xl font-black text-white flex items-center gap-3">
+                    <Sparkles size={20} className="text-primary" />
+                    Discovery Filters
+                  </h3>
+                  
+                  <p className="text-xs text-subtle font-medium leading-relaxed">
+                    Select the niches you want our AI engine to monitor. You will prioritize these in your daily digest.
+                  </p>
+
+                  <div className="flex flex-wrap gap-3">
+                    {['Scholarships', 'Fellowships', 'Remote Jobs', 'Grants', 'Internships', 'Startup Funding'].map(cat => {
+                      const isSelected = selectedCats.includes(cat)
+                      return (
+                        <button
+                          key={cat}
+                          onClick={() => toggleCat(cat)}
+                          className={`px-6 py-3 rounded-2xl border text-[10px] font-black uppercase tracking-widest transition-all ${
+                            isSelected 
+                              ? 'bg-primary/20 border-primary/40 text-primary shadow-glow-primary/10' 
+                              : 'bg-white/5 border-white/10 text-muted-dark hover:border-white/20'
+                          }`}
+                        >
+                          {cat}
+                        </button>
+                      )
+                    })}
+                  </div>
+
+                  <div className="bg-white/[0.02] border border-white/5 rounded-[2rem] p-6 text-center space-y-4">
+                    <ShieldCheck size={32} className="mx-auto text-muted-dark" />
+                    <h4 className="font-bold text-sm text-white">Trust & Security</h4>
+                    <p className="text-[10px] text-muted-dark font-medium leading-relaxed">
+                      Your data is encrypted end-to-end. We never sell your personal metrics to third-party advertisers.
+                    </p>
+                  </div>
+
+                  <button 
+                    onClick={handleSavePrefs}
+                    className="btn-ghost !border-primary/20 text-primary w-full py-4 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:bg-primary/5 transition-all"
+                  >
+                    {prefsSaved ? <Check size={18} /> : 'Save Filter Cluster'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+        </div>
       </div>
-    </div>
+    </main>
   )
 }

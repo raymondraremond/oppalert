@@ -1,80 +1,36 @@
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
-import prisma from "./prisma";
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { NextRequest } from 'next/server';
 
-export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma) as any,
-  providers: [
-    CredentialsProvider({
-      name: "credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error("Invalid credentials");
-        }
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret';
 
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email
-          }
-        });
+export async function hashPassword(password: string): Promise<string> {
+  return await bcrypt.hash(password, 12);
+}
 
-        if (!user || !user.password) {
-          throw new Error("Invalid credentials");
-        }
+export async function comparePassword(password: string, hash: string): Promise<boolean> {
+  return await bcrypt.compare(password, hash);
+}
 
-        const isPasswordCorrect = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
+export function signToken(payload: { id: string; email: string; fullName: string; status: string }): string {
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: '30d' });
+}
 
-        if (!isPasswordCorrect) {
-          throw new Error("Invalid credentials");
-        }
-
-        return user;
-      }
-    })
-  ],
-  callbacks: {
-    async jwt({ token, user }: any) {
-      if (user) {
-        token.role = user.role;
-        token.id = user.id;
-      }
-      return token;
-    },
-    async session({ session, token }: any) {
-      if (session?.user) {
-        (session.user as any).role = token.role;
-        (session.user as any).id = token.id;
-      }
-      return session;
-    }
-  },
-  events: {
-    async signIn({ user }) {
-      if (user?.id) {
-        await prisma.loginLog.create({
-          data: {
-            userId: user.id,
-            // We can't easily get IP/UA in this event hook without more complex setup,
-            // but we fulfill the core requirement of 'tracking logins'.
-          }
-        });
-      }
-    }
-  },
-  session: {
-    strategy: "jwt"
-  },
-  secret: process.env.NEXTAUTH_SECRET,
-  pages: {
-    signIn: "/login",
+export function verifyToken(token: string): any {
+  try {
+    return jwt.verify(token, JWT_SECRET);
+  } catch (error) {
+    return null;
   }
-};
+}
+
+export function getTokenFromRequest(request: NextRequest): string | null {
+  const authHeader = request.headers.get('Authorization');
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    return authHeader.substring(7);
+  }
+  
+  // Also check cookies as per requirements
+  const token = request.cookies.get('token')?.value;
+  return token || null;
+}

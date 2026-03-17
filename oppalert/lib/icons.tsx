@@ -25,6 +25,7 @@ import {
   Copy,
   ExternalLink,
   ArrowRight,
+  ArrowUpRight,
   Loader2,
   type LucideProps,
 } from 'lucide-react'

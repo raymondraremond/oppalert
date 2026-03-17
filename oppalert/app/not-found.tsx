@@ -1,65 +1,40 @@
 import Link from 'next/link'
-import { SearchX, ArrowRight } from 'lucide-react'
+import { SearchX, ArrowRight, Home } from 'lucide-react'
 
 export default function NotFound() {
   return (
-    <div
-      style={{
-        minHeight: 'calc(100vh - 70px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '2rem',
-        textAlign: 'center',
-      }}
-    >
-      <div>
-        <div
-          style={{
-            width: 80,
-            height: 80,
-            borderRadius: '50%',
-            background: 'linear-gradient(145deg, #222820, #1A1F15)',
-            border: '1px solid #2E3530',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            margin: '0 auto 24px',
-          }}
-        >
-          <SearchX size={36} style={{ color: '#6A6B62' }} />
+    <main className="min-h-[80vh] flex items-center justify-center p-6 text-center">
+      {/* Background glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl h-[400px] bg-amber/5 blur-[120px] rounded-full pointer-events-none -z-10" />
+
+      <div className="max-w-md animate-fade-up">
+        <div className="w-24 h-24 rounded-[2rem] bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-8 shadow-inner rotate-12 group hover:rotate-0 transition-transform duration-500">
+          <SearchX size={48} className="text-muted-dark group-hover:text-amber transition-colors" />
         </div>
-        <h1
-          style={{
-            fontFamily: 'Syne, sans-serif',
-            fontSize: 32,
-            fontWeight: 800,
-            marginBottom: 10,
-          }}
-        >
-          Page Not Found
+        
+        <h1 className="font-syne text-4xl font-black text-[#F0EDE6] tracking-tighter mb-4">
+          Lost in <span className="text-amber">Space?</span>
         </h1>
-        <p
-          style={{
-            fontSize: 15,
-            color: '#6A6B62',
-            maxWidth: 380,
-            margin: '0 auto 28px',
-            lineHeight: 1.7,
-          }}
-        >
-          The page you're looking for doesn't exist or has been moved. Try browsing our opportunities instead.
+        
+        <p className="text-subtle text-lg font-medium leading-relaxed mb-10">
+          The opportunity you&apos;re looking for might have expired or been moved to a new niche. Let&apos;s get you back on track.
         </p>
-        <Link href="/">
-          <button
-            className="btn-primary"
-            style={{ padding: '13px 28px', fontSize: 14, fontWeight: 700, gap: 8 }}
-          >
-            Go Back Home
-            <ArrowRight size={15} />
-          </button>
-        </Link>
+        
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link href="/opportunities">
+            <button className="btn-primary px-8 py-4 rounded-2xl shadow-glow-amber font-black uppercase tracking-widest text-xs flex items-center gap-2">
+              Browse Listings
+              <ArrowRight size={16} className="stroke-[3]" />
+            </button>
+          </Link>
+          <Link href="/">
+            <button className="btn-ghost px-8 py-4 rounded-2xl border-white/10 text-white font-black uppercase tracking-widest text-xs flex items-center gap-2 hover:bg-white/5 transition-all">
+              <Home size={16} />
+              Return Home
+            </button>
+          </Link>
+        </div>
       </div>
-    </div>
+    </main>
   )
 }

@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import type { Opportunity } from '@/lib/types'
 import { getCategoryLabel, getCategoryBadge } from '@/lib/utils'
-import { CategoryIcon, Clock, AlertCircle } from '@/lib/icons'
+import { CategoryIcon, Clock, AlertCircle, ArrowUpRight } from '@/lib/icons'
 
 interface Props {
   opp: Opportunity
@@ -13,108 +13,57 @@ export default function OpportunityCard({ opp }: Props) {
   const isSoon = opp.days > 7 && opp.days <= 14
 
   return (
-    <Link href={`/opportunities/${opp.id}`} style={{ textDecoration: 'none' }}>
-      <div className={`card-opp${opp.featured ? ' featured' : ''}`}>
+    <Link href={`/opportunities/${opp.id}`} className="group block h-full">
+      <div className={`card-opp h-full flex flex-col ${opp.featured ? 'border-amber/20 ring-1 ring-amber/5' : ''}`}>
         {/* Featured badge */}
         {opp.featured && (
-          <div
-            style={{
-              position: 'absolute',
-              top: 12,
-              right: 12,
-              background: 'linear-gradient(135deg, #F0B030, #D88030)',
-              color: '#0D0F0B',
-              padding: '4px 12px',
-              borderRadius: 100,
-              fontSize: 10,
-              fontWeight: 800,
-              fontFamily: 'Syne, sans-serif',
-              boxShadow: '0 4px 12px rgba(232,160,32,0.4)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px'
-            }}
-          >
-            Featured
+          <div className="absolute top-4 right-4 z-10">
+            <div className="bg-amber-gradient text-bg text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-glow-amber">
+              Featured
+            </div>
           </div>
         )}
 
-        {/* Category Icon */}
-        <div
-          style={{
-            width: 48,
-            height: 48,
-            borderRadius: 14,
-            background: 'linear-gradient(135deg, rgba(34, 40, 32, 0.8), rgba(26, 31, 21, 0.9))',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: 16,
-            boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.05), 0 4px 8px rgba(0,0,0,0.2)'
-          }}
-        >
-          <CategoryIcon cat={opp.cat} size={22} style={{ color: '#E8A020', filter: 'drop-shadow(0 2px 4px rgba(232,160,32,0.3))' }} />
+        {/* Header Icon */}
+        <div className="flex justify-between items-start mb-6">
+          <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform duration-500">
+            <CategoryIcon cat={opp.cat} size={22} className="text-amber drop-shadow-glow-amber" />
+          </div>
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-amber">
+            <ArrowUpRight size={20} />
+          </div>
         </div>
 
-        <div
-          style={{
-            fontFamily: 'Syne, sans-serif',
-            fontSize: 17,
-            fontWeight: 800,
-            color: '#F0EDE6',
-            lineHeight: 1.3,
-            paddingRight: opp.featured ? 60 : 0,
-            marginBottom: 4,
-            transition: 'color 0.2s ease'
-          }}
-          className="group-hover:text-amber"
-        >
-          {opp.title}
+        {/* Content */}
+        <div className="flex-1">
+          <h3 className="font-syne text-lg font-extrabold text-[#F0EDE6] leading-snug mb-2 group-hover:text-amber transition-colors line-clamp-2">
+            {opp.title}
+          </h3>
+          <p className="text-[13px] text-muted font-medium mb-4">{opp.org}</p>
+          <p className="text-[13px] text-subtle leading-relaxed line-clamp-2 mb-6">
+            {opp.desc}
+          </p>
         </div>
-        <div style={{ fontSize: 13, color: '#A8A89A', fontWeight: 500 }}>{opp.org}</div>
-
-        {/* Description */}
-        <p
-          style={{
-            fontSize: 13,
-            color: '#A8A89A',
-            lineHeight: 1.6,
-            margin: '10px 0 14px',
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
-            overflow: 'hidden',
-          }}
-        >
-          {opp.desc}
-        </p>
 
         {/* Footer */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+        <div className="mt-auto pt-6 border-t border-white/5 flex justify-between items-center gap-4">
+          <div className="flex gap-2 flex-wrap">
             <span className={`badge ${getCategoryBadge(opp.cat)}`}>
               {getCategoryLabel(opp.cat).split(' ').slice(1).join(' ') || opp.cat}
             </span>
             <span className="badge badge-gray">{opp.fund}</span>
           </div>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 4,
-              fontSize: 11,
-              fontWeight: 600,
-              color: isUrgent ? '#E05252' : isSoon ? '#E8A020' : '#6A6B62',
-            }}
-          >
-            {isUrgent ? (
-              <AlertCircle size={12} />
-            ) : (
-              <Clock size={12} />
-            )}
-            {opp.days}d left
+          
+          <div className={`flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider ${
+            isUrgent ? 'text-danger' : isSoon ? 'text-amber' : 'text-subtle'
+          }`}>
+            {isUrgent ? <AlertCircle size={14} /> : <Clock size={14} />}
+            {opp.days}d Left
           </div>
         </div>
+        
+        {/* Hover Glow Effect */}
+        <div className="absolute inset-0 bg-amber/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
       </div>
     </Link>
   )

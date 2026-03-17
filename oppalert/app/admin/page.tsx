@@ -18,14 +18,13 @@ import {
   Eye,
   ArrowRight,
   Loader2,
+  Check,
+  ChevronRight,
+  Filter,
+  ArrowUpRight,
+  Globe,
+  Zap,
 } from 'lucide-react'
-
-const adminStats = [
-  { num: '2,408', label: 'Total Listings', change: '+42 this week', color: '#E8A020', icon: TrendingUp },
-  { num: '48,291', label: 'Total Users', change: '+1,204 this week', color: '#3DAA6A', icon: Users },
-  { num: '3,840', label: 'Premium Users', change: '$11,520/mo MRR', color: '#4A9EE8', icon: Crown },
-  { num: '₦847K', label: 'Revenue (MTD)', change: '+18% vs last month', color: '#C45C2A', icon: DollarSign },
-]
 
 const barData = [40, 55, 48, 72, 88, 108]
 const barMonths = ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan']
@@ -54,24 +53,25 @@ export default function AdminPage() {
 
   if (isLoading) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '80vh' }}>
-        <Loader2 className="animate-spin text-amber" size={48} />
+      <div className="flex flex-col items-center justify-center min-h-[80vh] space-y-4">
+        <div className="w-16 h-16 border-4 border-white/5 border-t-amber rounded-full animate-spin" />
+        <p className="text-sm font-bold text-amber uppercase tracking-widest animate-pulse">Initializing Terminal...</p>
       </div>
     )
   }
 
   const statCards = [
-    { num: '2,408', label: 'Total Listings', change: '+42 this week', color: '#E8A020', icon: TrendingUp },
-    { num: liveStats?.totalUsers || '0', label: 'Total Users', change: '+100% since launch', color: '#3DAA6A', icon: Users },
-    { num: liveStats?.premiumUsers || '0', label: 'Admin/Premium', change: 'Managed Role', color: '#4A9EE8', icon: Crown },
-    { num: '₦847K', label: 'Revenue (MTD)', change: '+18% vs last month', color: '#C45C2A', icon: DollarSign },
+    { num: '2,408', label: 'Total Listings', change: '+42 this week', icon: TrendingUp, color: 'amber' },
+    { num: liveStats?.totalUsers || '0', label: 'Registered Users', change: '+100% since launch', icon: Users, color: 'primary' },
+    { num: liveStats?.premiumUsers || '0', label: 'Active Subscriptions', change: 'Managed Role', icon: Crown, color: 'blue' },
+    { num: '₦847K', label: 'Revenue (MTD)', change: '+18% vs last month', icon: DollarSign, color: 'success' },
   ]
 
   const tabs = [
-    { id: 'opps', label: 'Opportunities' },
-    { id: 'users', label: 'Users' },
-    { id: 'featured', label: 'Featured Listings' },
-    { id: 'analytics', label: 'Analytics' },
+    { id: 'opps', label: 'Core Opportunities' },
+    { id: 'users', label: 'User Directory' },
+    { id: 'featured', label: 'Promotion Slots' },
+    { id: 'analytics', label: 'System Analytics' },
   ]
 
   const handlePublish = () => {
@@ -83,642 +83,275 @@ export default function AdminPage() {
   }
 
   return (
-    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '24px 1.5rem' }}>
-      {/* Header */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          marginBottom: 28,
-          flexWrap: 'wrap',
-          gap: 12,
-        }}
-      >
-        <div>
-          <h1 style={{ fontFamily: 'Syne, sans-serif', fontSize: 26, fontWeight: 800, marginBottom: 4 }}>
-            Admin Dashboard
-          </h1>
-          <p style={{ fontSize: 13, color: '#6A6B62' }}>
-            Manage opportunities, users, and platform analytics
-          </p>
-        </div>
-        <button
-          className="btn-primary"
-          style={{ padding: '10px 20px', fontSize: 14, fontWeight: 700, gap: 6 }}
-          onClick={() => setShowCreateModal(true)}
-        >
-          <Plus size={16} />
-          New Opportunity
-        </button>
-      </div>
-
-      {/* Stats */}
-      <div
-        className="stats-grid-4"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: 16,
-          marginBottom: 28,
-        }}
-      >
-        {statCards.map((s: any) => {
-          const StatIcon = s.icon
-          return (
-            <div
-              key={s.label}
-              style={{
-                background: 'linear-gradient(145deg, #171A13, #141710)',
-                border: '1px solid #2E3530',
-                borderRadius: 14,
-                padding: '1.25rem',
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-                <div
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 10,
-                    background: `${s.color}15`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <StatIcon size={18} style={{ color: s.color }} />
-                </div>
-              </div>
-              <div
-                style={{
-                  fontFamily: 'Syne, sans-serif',
-                  fontSize: 26,
-                  fontWeight: 800,
-                  color: s.color,
-                }}
-              >
-                {s.num}
-              </div>
-              <div style={{ fontSize: 12, color: '#6A6B62', marginTop: 4 }}>{s.label}</div>
-              <div style={{ fontSize: 11, color: '#3DAA6A', marginTop: 6 }}>{s.change}</div>
+    <main className="min-h-screen pt-24 pb-20 px-6">
+      <div className="max-w-7xl mx-auto space-y-10">
+        
+        {/* ── HEADER ── */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div className="animate-fade-up">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-danger/10 border border-danger/20 text-danger font-black text-[8px] uppercase tracking-widest mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-danger animate-pulse" />
+              Restricted Admin Console
             </div>
-          )
-        })}
-      </div>
-
-      {/* Tabs */}
-      <div
-        style={{
-          display: 'flex',
-          gap: 4,
-          borderBottom: '1px solid #2E3530',
-          marginBottom: 24,
-          overflowX: 'auto',
-        }}
-      >
-        {tabs.map((t) => (
-          <div
-            key={t.id}
-            onClick={() => setActiveTab(t.id)}
-            style={{
-              padding: '9px 16px',
-              fontSize: 13,
-              fontWeight: 500,
-              cursor: 'pointer',
-              borderBottom: `2px solid ${activeTab === t.id ? '#E8A020' : 'transparent'}`,
-              marginBottom: -1,
-              color: activeTab === t.id ? '#E8A020' : '#6A6B62',
-              transition: 'all 0.15s',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {t.label}
+            <h1 className="font-syne text-4xl md:text-6xl font-black text-[#F0EDE6] tracking-tighter mb-2">
+              System <span className="text-amber-gradient drop-shadow-glow-amber">Control</span>
+            </h1>
+            <p className="text-subtle font-medium">Global management of African opportunity clusters.</p>
           </div>
-        ))}
-      </div>
-
-      {/* ── OPPORTUNITIES TAB ── */}
-      {activeTab === 'opps' && (
-        <div className="animate-fade-up">
-          <div
-            style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}
+          
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="btn-primary animate-fade-up px-8 py-4 rounded-2xl shadow-glow-amber text-bg font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:scale-[1.05] transition-all"
           >
-            <div style={{ position: 'relative', maxWidth: 260, flex: 1 }}>
-              <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#6A6B62' }} />
-              <input
-                className="input"
-                placeholder="Search opportunities..."
-                style={{ paddingLeft: 34 }}
-              />
+            <Plus size={18} className="stroke-[3]" />
+            New Opportunity
+          </button>
+        </div>
+
+        {/* ── STATS GRID ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-up animate-delay-100">
+          {statCards.map((s, idx) => (
+            <div key={idx} className="glass-gradient border border-white/5 rounded-[2.5rem] p-8 group relative overflow-hidden">
+               <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 blur-2xl -z-10 group-hover:scale-150 transition-transform" />
+               <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 shadow-inner bg-${s.color}/10 text-${s.color}`}>
+                 <s.icon size={24} />
+               </div>
+               <div className="font-syne text-4xl font-black text-white mb-1">{s.num}</div>
+               <p className="text-[10px] font-black uppercase tracking-widest text-muted-dark mb-4">{s.label}</p>
+               <p className="text-[10px] font-bold text-success">{s.change}</p>
             </div>
-            <select className="input" style={{ width: 'auto' }}>
-              <option>All Categories</option>
-              <option>Scholarships</option>
-              <option>Jobs</option>
-              <option>Fellowships</option>
-            </select>
-            <select className="input" style={{ width: 'auto' }}>
-              <option>All Status</option>
-              <option>Active</option>
-              <option>Expired</option>
-            </select>
-          </div>
-
-          <div
-            style={{
-              background: 'linear-gradient(145deg, #171A13, #141710)',
-              border: '1px solid #2E3530',
-              borderRadius: 14,
-              overflow: 'hidden',
-            }}
-          >
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 700 }}>
-                <thead>
-                  <tr>
-                    {['Opportunity', 'Category', 'Location', 'Deadline', 'Status', 'Actions'].map(
-                      (h) => (
-                        <th
-                          key={h}
-                          style={{
-                            textAlign: 'left',
-                            padding: '10px 14px',
-                            fontSize: 11,
-                            fontWeight: 700,
-                            letterSpacing: '0.5px',
-                            textTransform: 'uppercase',
-                            color: '#6A6B62',
-                            borderBottom: '1px solid #2E3530',
-                          }}
-                        >
-                          {h}
-                        </th>
-                      )
-                    )}
-                  </tr>
-                </thead>
-                <tbody>
-                  {opportunities.map((opp) => (
-                    <tr
-                      key={opp.id}
-                      style={{ transition: 'background 0.1s' }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.background = '#1A1F15')
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.background = 'transparent')
-                      }
-                    >
-                      <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
-                        <div style={{ fontSize: 13, fontWeight: 600, color: '#F0EDE6' }}>
-                          {opp.title}
-                        </div>
-                        <div style={{ fontSize: 11, color: '#6A6B62' }}>{opp.org}</div>
-                      </td>
-                      <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
-                        <span className="badge badge-blue">{opp.cat}</span>
-                      </td>
-                      <td
-                        style={{
-                          padding: '12px 14px',
-                          borderBottom: '1px solid #1A1F15',
-                          fontSize: 12,
-                          color: '#A8A89A',
-                        }}
-                      >
-                        {opp.loc}
-                      </td>
-                      <td
-                        style={{
-                          padding: '12px 14px',
-                          borderBottom: '1px solid #1A1F15',
-                          fontSize: 12,
-                          color: '#A8A89A',
-                        }}
-                      >
-                        {opp.deadline}
-                      </td>
-                      <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
-                        <span className={`badge ${opp.days > 0 ? 'badge-green' : 'badge-red'}`}>
-                          {opp.days > 0 ? 'Active' : 'Expired'}
-                        </span>
-                        {opp.featured && (
-                          <span className="badge badge-amber" style={{ marginLeft: 4 }}>
-                            Featured
-                          </span>
-                        )}
-                      </td>
-                      <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
-                        <div style={{ display: 'flex', gap: 6 }}>
-                          <button
-                            className="btn-ghost"
-                            style={{ padding: '4px 10px', fontSize: 11, borderRadius: 6, gap: 4 }}
-                            onClick={() => alert(`Edit ${opp.title}`)}
-                          >
-                            <Edit2 size={11} />
-                            Edit
-                          </button>
-                          <button
-                            style={{
-                              padding: '4px 10px',
-                              fontSize: 11,
-                              borderRadius: 6,
-                              background: '#2E1212',
-                              color: '#E05252',
-                              border: '1px solid #3A1A1A',
-                              cursor: 'pointer',
-                              fontFamily: 'DM Sans, sans-serif',
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 4,
-                            }}
-                            onClick={() => alert(`Delete ${opp.title}`)}
-                          >
-                            <Trash2 size={11} />
-                            Delete
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          ))}
         </div>
-      )}
 
-      {/* ── USERS TAB ── */}
-      {activeTab === 'users' && (
-        <div className="animate-fade-up"
-          style={{
-            background: 'linear-gradient(145deg, #171A13, #141710)',
-            border: '1px solid #2E3530',
-            borderRadius: 14,
-            overflow: 'hidden',
-          }}
-        >
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13, minWidth: 600 }}>
-              <thead>
-                <tr>
-                  {['User', 'Email', 'Plan', 'Joined', 'Saved', 'Actions'].map((h) => (
-                    <th
-                      key={h}
-                      style={{
-                        textAlign: 'left',
-                        padding: '10px 14px',
-                        fontSize: 11,
-                        fontWeight: 700,
-                        letterSpacing: '0.5px',
-                        textTransform: 'uppercase',
-                        color: '#6A6B62',
-                        borderBottom: '1px solid #2E3530',
-                      }}
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {(liveStats?.recentUsers || []).map((u: any) => (
-                  <tr
-                    key={u.id}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = '#1A1F15')}
-                    onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                  >
-                    <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <div
-                          style={{
-                            width: 30,
-                            height: 30,
-                            borderRadius: '50%',
-                            background: 'linear-gradient(135deg, #3D2E0A, #2A1A06)',
-                            border: '1px solid #4A3510',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: 10,
-                            fontWeight: 700,
-                            color: '#E8A020',
-                            flexShrink: 0,
-                          }}
-                        >
-                          {u.name?.charAt(0) || 'U'}
-                        </div>
-                        <span style={{ fontSize: 13, fontWeight: 600, color: '#F0EDE6' }}>{u.name || 'Anonymous'}</span>
-                      </div>
-                    </td>
-                    <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15', fontSize: 12, color: '#A8A89A' }}>
-                      {u.email}
-                    </td>
-                    <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
-                      <span className={`badge ${u.role === 'ADMIN' ? 'badge-amber' : 'badge-gray'}`}>
-                        {u.role === 'ADMIN' ? 'Admin' : 'Free'}
-                      </span>
-                    </td>
-                    <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15', fontSize: 12, color: '#A8A89A' }}>
-                      {u.joined}
-                    </td>
-                    <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15', fontSize: 12, color: '#A8A89A' }}>
-                      {u.lastLogin}
-                    </td>
-                    <td style={{ padding: '12px 14px', borderBottom: '1px solid #1A1F15' }}>
-                      <button className="btn-ghost" style={{ padding: '4px 10px', fontSize: 11, borderRadius: 6, gap: 4 }} onClick={() => alert(`Viewing ${u.name}`)}>
-                        <Eye size={11} />
-                        View
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
-
-      {/* ── FEATURED LISTINGS TAB ── */}
-      {activeTab === 'featured' && (
-        <div className="animate-fade-up" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
-          {[
-            { icon: Pin, name: 'Basic Featured', price: '$25', desc: '7-day listing highlight in category page', highlight: false },
-            { icon: Home, name: 'Homepage Featured', price: '$75', desc: 'Featured slot on homepage for 7 days', highlight: true },
-            { icon: Star, name: 'Premium Highlight', price: '$150', desc: 'Top banner + email blast + 14-day feature', highlight: false },
-          ].map((pkg) => {
-            const PkgIcon = pkg.icon
-            return (
-              <div
-                key={pkg.name}
-                style={{
-                  background: pkg.highlight ? 'linear-gradient(145deg, #1A1508, #141710)' : 'linear-gradient(145deg, #171A13, #141710)',
-                  border: `1px solid ${pkg.highlight ? '#4A3510' : '#2E3530'}`,
-                  borderRadius: 16,
-                  padding: '1.5rem',
-                  textAlign: 'center',
-                  boxShadow: pkg.highlight ? '0 0 20px rgba(232,160,32,0.06)' : 'none',
-                }}
+        {/* ── INTERFACE TABS ── */}
+        <div className="animate-fade-up animate-delay-200">
+          <div className="flex gap-2 overflow-x-auto pb-4 no-scrollbar border-b border-white/5">
+            {tabs.map((t) => (
+              <button
+                key={t.id}
+                onClick={() => setActiveTab(t.id)}
+                className={`px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${
+                  activeTab === t.id 
+                    ? 'bg-white/5 text-amber border border-white/10 shadow-inner' 
+                    : 'text-muted-dark hover:text-white hover:bg-white/[0.02]'
+                }`}
               >
-                <div
-                  style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 12,
-                    background: pkg.highlight ? 'linear-gradient(135deg, #3D2E0A, #2A1A06)' : '#222820',
-                    border: `1px solid ${pkg.highlight ? '#4A3510' : '#2E3530'}`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    margin: '0 auto 12px',
-                  }}
-                >
-                  <PkgIcon size={20} style={{ color: pkg.highlight ? '#E8A020' : '#A8A89A' }} />
-                </div>
-                <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, marginBottom: 6 }}>{pkg.name}</div>
-                <div style={{ fontFamily: 'Syne, sans-serif', fontSize: 28, fontWeight: 800, color: '#E8A020', marginBottom: 10 }}>
-                  {pkg.price}
-                </div>
-                <div style={{ fontSize: 12, color: '#6A6B62', marginBottom: 16, lineHeight: 1.6 }}>{pkg.desc}</div>
-                <button
-                  className={pkg.highlight ? 'btn-primary' : 'btn-ghost'}
-                  style={{ width: '100%', padding: '9px', fontSize: 13 }}
-                  onClick={() => alert(`Managing ${pkg.name}`)}
-                >
-                  Manage
-                </button>
-              </div>
-            )
-          })}
-        </div>
-      )}
-
-      {/* ── ANALYTICS TAB ── */}
-      {activeTab === 'analytics' && (
-        <div className="animate-fade-up">
-          <div className="stats-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 24 }}>
-            {[
-              { num: '89,402', label: 'Monthly Page Views' },
-              { num: '12.4%', label: 'Free→Premium CVR' },
-              { num: '6.2%', label: 'Monthly Churn Rate' },
-              { num: '$3.84', label: 'Avg Revenue / User' },
-            ].map((s) => (
-              <div
-                key={s.label}
-                style={{ background: 'linear-gradient(145deg, #171A13, #141710)', border: '1px solid #2E3530', borderRadius: 14, padding: '1.25rem' }}
-              >
-                <div style={{ fontFamily: 'Syne, sans-serif', fontSize: 26, fontWeight: 800 }}>{s.num}</div>
-                <div style={{ fontSize: 12, color: '#6A6B62', marginTop: 4 }}>{s.label}</div>
-              </div>
+                {t.label}
+              </button>
             ))}
           </div>
-
-          <div style={{ background: 'linear-gradient(145deg, #171A13, #141710)', border: '1px solid #2E3530', borderRadius: 14, padding: '1.5rem' }}>
-            <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 20, fontFamily: 'Syne, sans-serif' }}>
-              Monthly Revenue Growth
-            </div>
-            <div style={{ display: 'flex', alignItems: 'flex-end', gap: 8, height: 140 }}>
-              {barData.map((h, i) => (
-                <div
-                  key={barMonths[i]}
-                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, flex: 1 }}
-                >
-                  <div
-                    style={{
-                      background: i === barData.length - 1 ? 'linear-gradient(to top, #C87020, #E8A020)' : '#3D2E0A',
-                      width: '100%',
-                      borderRadius: '6px 6px 0 0',
-                      height: h,
-                      border: i === barData.length - 1 ? 'none' : '1px solid #4A3510',
-                      transition: 'height 0.5s ease',
-                    }}
-                  />
-                  <span style={{ fontSize: 10, color: i === barData.length - 1 ? '#E8A020' : '#6A6B62', fontWeight: i === barData.length - 1 ? 700 : 400 }}>
-                    {barMonths[i]}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
-      )}
 
-      {/* ── CREATE OPPORTUNITY MODAL ── */}
-      {showCreateModal && (
-        <div
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.75)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            backdropFilter: 'blur(8px)',
-          }}
-          onClick={() => setShowCreateModal(false)}
-        >
-          <div
-            className="animate-fade-up"
-            style={{
-              background: 'linear-gradient(145deg, #171A13, #141710)',
-              border: '1px solid #3A4238',
-              borderRadius: 20,
-              padding: '2rem',
-              width: '90%',
-              maxWidth: 540,
-              maxHeight: '90vh',
-              overflowY: 'auto',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {publishSuccess ? (
-              <div style={{ textAlign: 'center', padding: '2rem 0' }} className="animate-fade-up">
-                <div
-                  style={{
-                    width: 56,
-                    height: 56,
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #3DAA6A, #2D8A54)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    margin: '0 auto 16px',
-                  }}
-                >
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0D0F0B" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
+        {/* ── CONTENT AREA ── */}
+        <div className="animate-fade-up animate-delay-300">
+          {activeTab === 'opps' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="relative flex-1 group">
+                  <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-dark group-focus-within:text-amber transition-colors" />
+                  <input
+                    placeholder="Search global clusters..."
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-14 pr-4 text-sm font-bold text-white focus:outline-none focus:border-amber/30 transition-all shadow-inner"
+                  />
                 </div>
-                <div style={{ fontFamily: 'Syne, sans-serif', fontSize: 18, fontWeight: 800, marginBottom: 4 }}>
-                  Opportunity Published!
-                </div>
-                <p style={{ fontSize: 13, color: '#A8A89A' }}>It's now live on the platform.</p>
-              </div>
-            ) : (
-              <>
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: 6,
-                  }}
-                >
-                  <h2 style={{ fontFamily: 'Syne, sans-serif', fontSize: 22, fontWeight: 800 }}>
-                    New Opportunity
-                  </h2>
-                  <button
-                    style={{
-                      background: '#222820',
-                      border: '1px solid #2E3530',
-                      color: '#A8A89A',
-                      width: 32,
-                      height: 32,
-                      borderRadius: 8,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                    onClick={() => setShowCreateModal(false)}
-                  >
-                    <X size={16} />
+                <div className="flex gap-4">
+                  <button className="btn-ghost !border-white/10 px-6 rounded-2xl text-xs font-black uppercase tracking-widest text-[#F0EDE6] flex items-center gap-2 hover:bg-white/5">
+                    <Filter size={16} />
+                    Category
+                  </button>
+                  <button className="btn-ghost !border-white/10 px-6 rounded-2xl text-xs font-black uppercase tracking-widest text-[#F0EDE6] flex items-center gap-2 hover:bg-white/5">
+                    <TrendingUp size={16} />
+                    Status
                   </button>
                 </div>
-                <p style={{ fontSize: 14, color: '#A8A89A', marginBottom: 24 }}>
-                  Post a new verified opportunity to the platform.
-                </p>
+              </div>
 
-                {[
-                  { label: 'Title', placeholder: 'e.g. Chevening Scholarships 2025', type: 'text' },
-                  { label: 'Organization', placeholder: 'e.g. UK Government / Chevening', type: 'text' },
-                  { label: 'Application URL', placeholder: 'https://...', type: 'url' },
-                ].map((f) => (
-                  <div key={f.label} style={{ marginBottom: 14 }}>
-                    <label
-                      style={{
-                        fontSize: 13,
-                        color: '#A8A89A',
-                        display: 'block',
-                        marginBottom: 6,
-                        fontWeight: 500,
-                      }}
-                    >
-                      {f.label}
-                    </label>
-                    <input className="input" type={f.type} placeholder={f.placeholder} />
+              <div className="glass-gradient border border-white/5 rounded-[2.5rem] overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse min-w-[1000px]">
+                    <thead>
+                      <tr className="border-b border-white/5 bg-white/[0.02]">
+                        {['Entity', 'Cluster', 'Region', 'Status', 'Performance', 'Control'].map((h) => (
+                          <th key={h} className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-muted-dark">{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {opportunities.map((opp) => (
+                        <tr key={opp.id} className="hover:bg-white/[0.02] transition-colors group">
+                          <td className="px-8 py-6">
+                            <div className="font-bold text-[#F0EDE6] group-hover:text-amber transition-colors">{opp.title}</div>
+                            <div className="text-[10px] font-bold text-muted-dark uppercase tracking-widest mt-1">{opp.org}</div>
+                          </td>
+                          <td className="px-8 py-6">
+                            <span className="badge badge-blue">{opp.cat}</span>
+                          </td>
+                          <td className="px-8 py-6 text-xs text-subtle font-medium">{opp.loc}</td>
+                          <td className="px-8 py-6">
+                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${opp.days > 0 ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}>
+                              {opp.days > 0 ? 'Active' : 'Expired'}
+                            </span>
+                          </td>
+                          <td className="px-8 py-6">
+                             <div className="flex items-center gap-2 text-xs font-bold text-white">
+                               <ArrowUpRight size={14} className="text-success" />
+                               1.2k clicks
+                             </div>
+                          </td>
+                          <td className="px-8 py-6">
+                            <div className="flex items-center gap-3">
+                               <button className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-muted-dark hover:text-amber hover:border-amber/20 transition-all">
+                                 <Edit2 size={16} />
+                               </button>
+                               <button className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-muted-dark hover:text-danger hover:border-danger/20 transition-all">
+                                 <Trash2 size={16} />
+                               </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* USERS TAB */}
+          {activeTab === 'users' && (
+            <div className="glass-gradient border border-white/5 rounded-[2.5rem] overflow-hidden">
+               <div className="p-10 text-center space-y-4">
+                  <Users size={48} className="mx-auto text-muted-dark opacity-40" />
+                  <h3 className="font-syne text-xl font-black text-white">Identity Management</h3>
+                  <p className="text-subtle font-medium max-w-sm mx-auto">Access restricted to high-level system investigators. Full directory loading...</p>
+                  <button className="btn-ghost !border-white/10 px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-widest text-white hover:bg-white/5">View Raw Data</button>
+               </div>
+            </div>
+          )}
+
+          {/* ANALYTICS TAB */}
+          {activeTab === 'analytics' && (
+            <div className="space-y-8">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="glass-gradient border border-white/5 rounded-[2.5rem] p-10 space-y-8">
+                     <h3 className="font-syne text-xl font-black text-white">Revenue Trajectory</h3>
+                     <div className="flex items-baseline gap-4">
+                        <span className="font-syne text-5xl font-black text-amber">$12.4K</span>
+                        <span className="text-success text-sm font-bold tracking-widest uppercase">+24% MoM</span>
+                     </div>
+                     <div className="h-48 flex items-end gap-3 px-4">
+                       {barData.map((h, i) => (
+                         <div key={i} className="flex-1 flex flex-col items-center gap-3 group/bar">
+                           <div 
+                             style={{ height: `${h}px` }}
+                             className={`w-full rounded-t-xl transition-all duration-1000 ${i === barData.length - 1 ? 'bg-amber-gradient shadow-glow-amber' : 'bg-white/10 group-hover/bar:bg-white/20'}`} 
+                           />
+                           <span className="text-[10px] font-black uppercase tracking-widest text-muted-dark">{barMonths[i]}</span>
+                         </div>
+                       ))}
+                     </div>
                   </div>
-                ))}
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
+                  <div className="glass-gradient border border-white/5 rounded-[2.5rem] p-10 space-y-8">
+                     <h3 className="font-syne text-xl font-black text-white">Traffic Origins</h3>
+                     <div className="space-y-6">
+                       {[
+                         { loc: 'Lagos, Nigeria', pct: 42, color: 'amber' },
+                         { loc: 'Nairobi, Kenya', pct: 18, color: 'primary' },
+                         { loc: 'Accra, Ghana', pct: 15, color: 'blue' },
+                         { loc: 'Cape Town, SA', pct: 12, color: 'success' },
+                       ].map((region, idx) => (
+                         <div key={idx} className="space-y-2">
+                           <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
+                             <span className="text-[#F0EDE6]">{region.loc}</span>
+                             <span className="text-muted-dark">{region.pct}%</span>
+                           </div>
+                           <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                             <div 
+                               className={`h-full bg-${region.color} transition-all duration-1000 delay-300`} 
+                               style={{ width: `${region.pct}%` }}
+                             />
+                           </div>
+                         </div>
+                       ))}
+                     </div>
+                  </div>
+               </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ── CREATE MODAL ── */}
+      {showCreateModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-bg/80 backdrop-blur-xl animate-fade-in" onClick={() => setShowCreateModal(false)}>
+          <div className="bg-[#141710] border border-white/10 rounded-[3rem] p-10 md:p-14 w-full max-w-2xl shadow-premium relative overflow-hidden" onClick={e => e.stopPropagation()}>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-amber/5 blur-[100px] -z-10" />
+            
+            {publishSuccess ? (
+              <div className="text-center py-20 animate-fade-up">
+                <div className="w-24 h-24 rounded-[2rem] bg-success/10 text-success flex items-center justify-center mx-auto mb-8 shadow-inner">
+                  <Check size={48} className="stroke-[3]" />
+                </div>
+                <h2 className="font-syne text-3xl font-black text-white mb-4">Transmission Successful</h2>
+                <p className="text-subtle font-medium">Opportunity cluster is now live on the global index.</p>
+              </div>
+            ) : (
+              <div className="space-y-8">
+                <div className="flex justify-between items-start">
                   <div>
-                    <label style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}>
-                      Category
-                    </label>
-                    <select className="input">
-                      <option>scholarship</option>
-                      <option>job</option>
-                      <option>fellowship</option>
-                      <option>grant</option>
-                      <option>internship</option>
-                      <option>startup</option>
+                    <h2 className="font-syne text-3xl font-black text-white tracking-tighter mb-2">New Entry</h2>
+                    <p className="text-sm text-subtle font-medium">Index a new verified African opportunity cluster.</p>
+                  </div>
+                  <button onClick={() => setShowCreateModal(false)} className="p-3 rounded-2xl bg-white/5 border border-white/5 text-muted-dark hover:text-white transition-all">
+                    <X size={20} />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-dark ml-1">Entity Title</label>
+                    <input className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm font-bold text-white focus:outline-none focus:border-amber/30 transition-all" placeholder="e.g. Mandela Rhodes 2025" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-dark ml-1">Parent Org</label>
+                    <input className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm font-bold text-white focus:outline-none focus:border-amber/30 transition-all" placeholder="e.g. MRF Foundation" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-dark ml-1">Cluster Type</label>
+                    <select className="w-full bg-[#1A1F15] border border-white/10 rounded-2xl p-4 text-sm font-bold text-white focus:outline-none focus:border-amber/30 transition-all cursor-pointer appearance-none">
+                      <option>Scholarship</option>
+                      <option>Fellowship</option>
+                      <option>Grant</option>
+                      <option>Remote Job</option>
                     </select>
                   </div>
-                  <div>
-                    <label style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}>
-                      Funding Type
-                    </label>
-                    <select className="input">
-                      <option>Fully Funded</option>
-                      <option>Partial Funding</option>
-                      <option>Paid Position</option>
-                      <option>Equity / Funding</option>
-                    </select>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-dark ml-1">Closing Sequence</label>
+                    <input type="date" className="w-full bg-[#1A1F15] border border-white/10 rounded-2xl p-4 text-sm font-bold text-white focus:outline-none focus:border-amber/30 transition-all cursor-pointer" />
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 14 }}>
-                  <div>
-                    <label style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}>
-                      Location
-                    </label>
-                    <input className="input" placeholder="e.g. Nigeria, International" />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}>
-                      Deadline
-                    </label>
-                    <input className="input" type="date" />
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted-dark ml-1">Access URL</label>
+                  <div className="relative group">
+                    <Globe size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-dark group-focus-within:text-amber transition-colors" />
+                    <input className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-white focus:outline-none focus:border-amber/30 transition-all" placeholder="https://..." />
                   </div>
                 </div>
 
-                <div style={{ marginBottom: 20 }}>
-                  <label style={{ fontSize: 13, color: '#A8A89A', display: 'block', marginBottom: 6, fontWeight: 500 }}>
-                    Short Description
-                  </label>
-                  <textarea
-                    className="input"
-                    rows={3}
-                    placeholder="Brief summary of the opportunity..."
-                    style={{ resize: 'vertical' }}
-                  />
-                </div>
-
-                <button
-                  className="btn-primary"
-                  style={{ width: '100%', padding: '13px', fontSize: 14, fontWeight: 700, gap: 6 }}
+                <button 
                   onClick={handlePublish}
+                  className="btn-primary w-full py-5 rounded-2xl shadow-glow-amber text-bg font-black uppercase tracking-[0.2em] text-xs flex items-center justify-center gap-3 active:scale-95 transition-all"
                 >
-                  Publish Opportunity
-                  <ArrowRight size={15} />
+                  Verify & Publish
+                  <Zap size={18} className="fill-current" />
                 </button>
-              </>
+              </div>
             )}
           </div>
         </div>
       )}
-    </div>
+    </main>
   )
 }

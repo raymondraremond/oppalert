@@ -5,21 +5,21 @@ import OpportunityCard from '@/components/OpportunityCard'
 import PremiumBanner from '@/components/PremiumBanner'
 import { opportunityService } from '@/lib/services/opportunity-service'
 import { Opportunity } from '@/lib/types'
-import { Search, SlidersHorizontal, X, Loader2 } from 'lucide-react'
+import { Search, SlidersHorizontal, X, Loader2, ChevronDown } from 'lucide-react'
 
 const categories = [
-  { slug: 'all', label: 'All', count: '2,408' },
+  { slug: 'all', label: 'All Opportunities', count: '2.4k+' },
   { slug: 'scholarship', label: 'Scholarships', count: '420' },
   { slug: 'job', label: 'Remote Jobs', count: '830' },
   { slug: 'fellowship', label: 'Fellowships', count: '185' },
   { slug: 'grant', label: 'Grants', count: '240' },
   { slug: 'internship', label: 'Internships', count: '310' },
-  { slug: 'startup', label: 'Startup Funding', count: '92' },
+  { slug: 'startup', label: 'Startup & VC', count: '92' },
 ]
 
-const locations = ['All Locations', 'Remote / Online', 'Nigeria', 'Ghana', 'Kenya', 'International']
-const deadlines = ['Any deadline', 'Closing in 7 days', 'Within 30 days', 'Within 3 months']
-const fundingTypes = ['All Types', 'Fully Funded', 'Partial Funding', 'Paid Position', 'Equity / Funding']
+const locations = ['Any Location', 'Remote', 'Africa (Across)', 'Nigeria', 'Ghana', 'Kenya', 'South Africa', 'International']
+const deadlines = ['Any Deadline', 'Closing Soon (< 7d)', 'This Month', 'Next 3 Months']
+const fundingTypes = ['Any Funding', 'Fully Funded', 'Partial Funding', 'Paid Position', 'Financial Grant']
 
 export default function OpportunitiesPage() {
   const [activeCat, setActiveCat] = useState('all')
@@ -87,212 +87,200 @@ export default function OpportunitiesPage() {
   const hasFilters = activeCat !== 'all' || activeLoc > 0 || activeDeadline > 0 || activeFunding > 0 || searchQuery.trim()
 
   const filterSidebar = (
-    <>
-      {/* Search */}
-      <div style={{ marginBottom: 20, position: 'relative' }}>
-        <Search size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#6A6B62' }} />
-        <input
-          className="input"
-          placeholder="Search opportunities..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          style={{ paddingLeft: 36 }}
-        />
+    <div className="space-y-8 animate-fade-up">
+      {/* Search Input */}
+      <div>
+        <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted-dark block mb-3">
+          Keyword Search
+        </label>
+        <div className="relative group">
+          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-subtle group-focus-within:text-amber transition-colors" />
+          <input
+            type="text"
+            placeholder="Scholarships, jobs..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-white/[0.03] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-[#F0EDE6] text-sm focus:outline-none focus:border-amber/30 focus:ring-1 focus:ring-amber/10 transition-all font-medium"
+          />
+        </div>
       </div>
 
-      {/* Category */}
-      <div style={{ marginBottom: 24 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: '#6A6B62', marginBottom: 10, textTransform: 'uppercase' }}>
-          Category
+      {/* Category List */}
+      <div>
+        <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted-dark block mb-4">
+          Categories
+        </label>
+        <div className="space-y-1">
+          {categories.map((c) => (
+            <button
+              key={c.slug}
+              onClick={() => setActiveCat(c.slug)}
+              className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all group ${
+                activeCat === c.slug 
+                  ? 'bg-amber/10 text-amber font-bold border border-amber/20' 
+                  : 'text-subtle hover:bg-white/[0.03] hover:text-[#F0EDE6]'
+              }`}
+            >
+              <span className="text-sm">{c.label}</span>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                activeCat === c.slug ? 'bg-amber/20 text-amber' : 'bg-white/5 text-muted-dark'
+              }`}>
+                {c.count}
+              </span>
+            </button>
+          ))}
         </div>
-        {categories.map((c) => (
-          <div
-            key={c.slug}
-            className={`filter-item${activeCat === c.slug ? ' active' : ''}`}
-            onClick={() => setActiveCat(c.slug)}
-          >
-            <span>{c.label}</span>
-            <span style={{ fontSize: 11, background: activeCat === c.slug ? 'rgba(232,160,32,0.15)' : '#2A3028', padding: '1px 6px', borderRadius: 100, color: activeCat === c.slug ? '#E8A020' : '#A8A89A' }}>
-              {c.count}
-            </span>
-          </div>
-        ))}
       </div>
 
-      {/* Location */}
-      <div style={{ marginBottom: 24 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: '#6A6B62', marginBottom: 10, textTransform: 'uppercase' }}>
-          Location
-        </div>
-        {locations.map((l, i) => (
-          <div key={l} className={`filter-item${activeLoc === i ? ' active' : ''}`} onClick={() => setActiveLoc(i)}>
-            {l}
-          </div>
-        ))}
-      </div>
-
-      {/* Deadline */}
-      <div style={{ marginBottom: 24 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: '#6A6B62', marginBottom: 10, textTransform: 'uppercase' }}>
-          Deadline
-        </div>
-        {deadlines.map((d, i) => (
-          <div key={d} className={`filter-item${activeDeadline === i ? ' active' : ''}`} onClick={() => setActiveDeadline(i)}>
-            {d}
-          </div>
-        ))}
-      </div>
-
-      {/* Funding */}
-      <div style={{ marginBottom: 24 }}>
-        <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: '#6A6B62', marginBottom: 10, textTransform: 'uppercase' }}>
-          Funding Type
-        </div>
-        {fundingTypes.map((f, i) => (
-          <div key={f} className={`filter-item${activeFunding === i ? ' active' : ''}`} onClick={() => setActiveFunding(i)}>
-            {f}
+      {/* Filter Selects */}
+      <div className="space-y-4">
+        {[
+          { label: 'Location', options: locations, state: activeLoc, setter: setActiveLoc },
+          { label: 'Deadline', options: deadlines, state: activeDeadline, setter: setActiveDeadline },
+          { label: 'Funding', options: fundingTypes, state: activeFunding, setter: setActiveFunding },
+        ].map((filter) => (
+          <div key={filter.label}>
+            <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted-dark block mb-3">
+              {filter.label}
+            </label>
+            <div className="relative">
+              <select
+                value={filter.state}
+                onChange={(e) => filter.setter(parseInt(e.target.value))}
+                className="w-full appearance-none bg-white/[0.03] border border-white/10 rounded-xl py-3 px-4 text-[#F0EDE6] text-sm focus:outline-none focus:border-amber/30 transition-all font-medium cursor-pointer"
+              >
+                {filter.options.map((opt, idx) => (
+                  <option key={opt} value={idx} className="bg-bg text-white">{opt}</option>
+                ))}
+              </select>
+              <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-subtle pointer-events-none" />
+            </div>
           </div>
         ))}
       </div>
 
       {hasFilters && (
-        <button className="btn-ghost" style={{ width: '100%', fontSize: 12, padding: '7px', gap: 6 }} onClick={clearFilters}>
-          <X size={13} />
-          Clear all filters
+        <button 
+          className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-white/5 hover:border-danger/30 hover:bg-danger/5 text-muted-dark hover:text-danger text-xs font-bold uppercase tracking-widest transition-all"
+          onClick={clearFilters}
+        >
+          <X size={14} />
+          Clear All
         </button>
       )}
-    </>
+    </div>
   )
 
   return (
-    <div
-      style={{
-        maxWidth: 1100,
-        margin: '0 auto',
-        padding: '0 1.5rem',
-        display: 'grid',
-        gridTemplateColumns: '240px 1fr',
-        gap: 24,
-        minHeight: 'calc(100vh - 70px)',
-      }}
-      className="opps-layout"
-    >
-      {/* ── SIDEBAR (Desktop) ── */}
-      <aside
-        className="sidebar-desktop"
-        style={{
-          padding: '24px 0',
-          position: 'sticky',
-          top: 70,
-          height: 'calc(100vh - 70px)',
-          overflowY: 'auto',
-        }}
-      >
-        {filterSidebar}
-      </aside>
+    <main className="min-h-screen pt-24 px-6 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-12 pb-20">
+        {/* ── SIDEBAR (Desktop) ── */}
+        <aside className="hidden lg:block sticky top-28 self-start h-[calc(100vh-140px)] overflow-y-auto pr-4 scrollbar-hide">
+          {filterSidebar}
+        </aside>
 
-      {/* ── MAIN CONTENT ── */}
-      <div style={{ padding: '24px 0' }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 16,
-            flexWrap: 'wrap',
-            gap: 10,
-          }}
-        >
-          <h1 style={{ fontFamily: 'Syne, sans-serif', fontSize: 20, fontWeight: 700 }}>
-            All Opportunities{' '}
-            <span style={{ fontSize: 13, color: '#6A6B62', fontWeight: 400 }}>
-              ({filtered.length} results)
-            </span>
-          </h1>
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            {/* Mobile filter toggle */}
-            <button
-              className="btn-ghost mobile-filters"
-              style={{ padding: '7px 12px', fontSize: 12, gap: 6 }}
-              onClick={() => setShowMobileFilters(!showMobileFilters)}
-            >
-              <SlidersHorizontal size={14} />
-              Filters
-            </button>
-            <select
-              className="input"
-              style={{ width: 'auto', padding: '7px 12px', fontSize: 12 }}
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-            >
-              <option value="latest">Latest first</option>
-              <option value="deadline">Deadline soon</option>
-              <option value="popular">Most popular</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Mobile filters panel */}
-        {showMobileFilters && (
-          <div
-            className="mobile-filters animate-fade-up"
-            style={{
-              background: '#141710',
-              border: '1px solid #2E3530',
-              borderRadius: 12,
-              padding: '1rem',
-              marginBottom: 16,
-            }}
-          >
-            {filterSidebar}
-          </div>
-        )}
-
-        <PremiumBanner />
-
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-            gap: 16,
-            minHeight: '400px',
-            position: 'relative'
-          }}
-        >
-          {isLoading ? (
-            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Loader2 className="animate-spin text-amber" size={48} />
+        {/* ── MAIN CONTENT ── */}
+        <section className="space-y-8 animate-fade-up animate-delay-100">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2 border-b border-white/5">
+            <div>
+              <h1 className="font-syne text-3xl font-black text-[#F0EDE6] mb-1">
+                Browse <span className="text-amber">Opportunities</span>
+              </h1>
+              <p className="text-sm text-subtle font-medium">
+                {isLoading ? 'Searching...' : `Found ${filtered.length} verified listings`}
+              </p>
             </div>
-          ) : (
-            filtered.map((opp: Opportunity) => (
-              <OpportunityCard key={opp.id} opp={opp} />
-            ))
+
+            <div className="flex items-center gap-4">
+              {/* Mobile filter toggle */}
+              <button
+                className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/10 text-sm font-bold text-[#F0EDE6] hover:bg-white/5 transition-all"
+                onClick={() => setShowMobileFilters(!showMobileFilters)}
+              >
+                <SlidersHorizontal size={16} />
+                Filters
+              </button>
+
+              <div className="relative group">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="appearance-none bg-white/[0.03] border border-white/10 rounded-xl py-2.5 pl-4 pr-10 text-[#F0EDE6] text-sm focus:outline-none focus:border-amber/30 transition-all font-bold cursor-pointer"
+                >
+                  <option value="latest" className="bg-bg">Latest First</option>
+                  <option value="deadline" className="bg-bg">Deadline Soon</option>
+                  <option value="popular" className="bg-bg">Most Popular</option>
+                </select>
+                <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-subtle pointer-events-none group-focus-within:rotate-180 transition-transform" />
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile filters panel */}
+          {showMobileFilters && (
+            <div className="lg:hidden glass-gradient border border-white/10 rounded-2xl p-6 shadow-premium">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="font-syne font-bold">Filters</h3>
+                <button onClick={() => setShowMobileFilters(false)} className="p-2 text-subtle hover:text-white">
+                  <X size={20} />
+                </button>
+              </div>
+              {filterSidebar}
+            </div>
           )}
-        </div>
 
-        {filtered.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '60px 0' }}>
-            <div style={{ fontSize: 48, marginBottom: 16 }}>
-              <Search size={48} style={{ color: '#3A4238', margin: '0 auto' }} />
+          <PremiumBanner />
+
+          {/* Opportunities Grid */}
+          <div className="relative min-h-[400px]">
+            {isLoading ? (
+              <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4">
+                <div className="relative">
+                  <div className="w-16 h-16 border-4 border-white/5 border-t-amber rounded-full animate-spin" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Loader2 className="text-amber animate-pulse" size={24} />
+                  </div>
+                </div>
+                <p className="text-sm font-bold text-amber uppercase tracking-widest animate-pulse">Syncing Database...</p>
+              </div>
+            ) : filtered.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {filtered.map((opp) => (
+                  <OpportunityCard key={opp.id} opp={opp} />
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-24 px-6 text-center glass-gradient border border-white/5 rounded-[3rem]">
+                <div className="w-24 h-24 bg-white/5 rounded-[2rem] flex items-center justify-center mb-8 rotate-12">
+                  <Search size={48} className="text-muted-dark -rotate-12" />
+                </div>
+                <h3 className="font-syne text-2xl font-black text-white mb-4">No Matches Found</h3>
+                <p className="text-subtle max-w-sm mb-10 font-medium">
+                  We couldn&apos;t find any opportunities matching your current filters. Try broadening your search.
+                </p>
+                <button 
+                  onClick={clearFilters}
+                  className="btn-primary px-10 py-4 rounded-2xl shadow-glow-amber font-black uppercase tracking-widest text-xs"
+                >
+                  Reset All Filters
+                </button>
+              </div>
+            )}
+          </div>
+
+          {filtered.length > 0 && (
+            <div className="pt-12 text-center">
+              <button 
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="inline-flex items-center gap-2 text-muted-dark hover:text-amber font-bold text-xs uppercase tracking-[0.2em] transition-all group"
+              >
+                Back to Top
+                <ChevronDown size={14} className="group-hover:-translate-y-1 rotate-180 transition-transform" />
+              </button>
             </div>
-            <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>No opportunities found</div>
-            <p style={{ fontSize: 14, color: '#6A6B62', marginBottom: 20 }}>
-              Try adjusting your filters or search query.
-            </p>
-            <button className="btn-ghost" style={{ padding: '10px 24px', fontSize: 14 }} onClick={clearFilters}>
-              Clear all filters
-            </button>
-          </div>
-        )}
-
-        {filtered.length > 0 && (
-          <div style={{ textAlign: 'center', marginTop: 32 }}>
-            <button className="btn-ghost" style={{ padding: '10px 24px', fontSize: 14 }} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-              Back to Top
-            </button>
-          </div>
-        )}
+          )}
+        </section>
       </div>
-    </div>
+    </main>
   )
 }
