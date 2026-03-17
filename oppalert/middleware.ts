@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { jwtVerify } from 'jose';
-
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'fallback-secret');
+import { getToken } from 'next-auth/jwt';
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -12,13 +10,10 @@ export async function middleware(req: NextRequest) {
   const isUserApiRoute = pathname.startsWith('/api/user');
 
   if (isDashboardRoute || isAdminRoute || isUserApiRoute) {
-    // Extract token from Authorization header or cookie
-    let token = req.cookies.get('token')?.value;
-    
-    const authHeader = req.headers.get('Authorization');
-    if (!token && authHeader && authHeader.startsWith('Bearer ')) {
-      token = authHeader.substring(7);
-    }
+    const token = await getToken({ 
+      req, 
+      secret: process.env.NEXTAUTH_SECRET || process.env.JWT_SECRET 
+    });
 
     if (!token) {
       if (isUserApiRoute) {
@@ -27,23 +22,12 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL('/login', req.url));
     }
 
-    try {
-      // Verify token
-      const { payload } = await jwtVerify(token, JWT_SECRET);
-      
-      // For admin routes, we might want to check the payload
-      if (isAdminRoute && payload.status !== 'admin') {
-        return NextResponse.redirect(new URL('/dashboard', req.url));
-      }
-
-      return NextResponse.next();
-    } catch (error) {
-      console.error('Middleware token verification failed:', error);
-      if (isUserApiRoute) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-      }
-      return NextResponse.redirect(new URL('/login', req.url));
+    // For admin routes, check the status claim
+    if (isAdminRoute && token.status !== 'admin') {
+      return NextResponse.redirect(new URL('/dashboard', req.url));
     }
+
+    return NextResponse.next();
   }
 
   return NextResponse.next();

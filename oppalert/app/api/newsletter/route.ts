@@ -17,6 +17,8 @@ export async function POST(req: NextRequest) {
       [email, frequency || 'weekly']
     );
 
+    const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://oppalert.vercel.app';
+    
     // Send welcome email
     await resend.emails.send({
       from: process.env.EMAIL_FROM || 'alerts@oppalert.com',
@@ -25,7 +27,7 @@ export async function POST(req: NextRequest) {
       html: `
         <h1>Welcome to OppAlert!</h1>
         <p>Thanks for subscribing to our newsletter. We'll keep you updated with the latest opportunities.</p>
-        <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/opportunities">Browse Opportunities</a></p>
+        <p><a href="${APP_URL}/opportunities">Browse Opportunities</a></p>
       `
     });
 

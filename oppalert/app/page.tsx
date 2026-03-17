@@ -209,7 +209,7 @@ export default function HomePage() {
             Your journey to <span>success</span>
           </h2>
           <p className="text-subtle text-lg font-medium leading-relaxed">
-            We've streamlined discovery into four simple steps so you can focus on what matters: your application.
+            We&apos;ve streamlined discovery into four simple steps so you can focus on what matters: your application.
           </p>
         </div>
 

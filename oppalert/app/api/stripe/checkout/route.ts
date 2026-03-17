@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-02-25.clover' as any,
+  apiVersion: '2024-06-20' as any,
 });
+
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://oppalert.vercel.app';
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,8 +25,8 @@ export async function POST(req: NextRequest) {
       ],
       mode: 'subscription',
       customer_email: email,
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?upgraded=1`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/pricing`,
+      success_url: `${APP_URL}/dashboard?upgraded=1`,
+      cancel_url: `${APP_URL}/pricing`,
       metadata: {
         userId,
       },

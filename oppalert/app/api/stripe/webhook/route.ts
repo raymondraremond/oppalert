@@ -4,8 +4,10 @@ import pool from '@/lib/db';
 import { Resend } from 'resend';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2026-02-25.clover' as any,
+  apiVersion: '2024-06-20' as any,
 });
+
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://oppalert.vercel.app';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
@@ -65,7 +67,7 @@ export async function POST(req: NextRequest) {
               html: `
                 <h1>Welcome to OppAlert Premium!</h1>
                 <p>You now have unlimited saved opportunities and instant alerts.</p>
-                <p><a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard">Go to Dashboard</a></p>
+                <p><a href="${APP_URL}/dashboard">Go to Dashboard</a></p>
               `
             });
           }
