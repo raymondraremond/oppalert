@@ -97,7 +97,9 @@ body {
     @apply bg-white/5 backdrop-blur-md text-primary;
   }
   .btn-ghost:hover {
-    @apply border-amber/40 text-amber bg-amber/10 -translate-y-0.5;
+    @apply text-amber -translate-y-0.5;
+    background-color: rgba(232, 160, 32, 0.1);
+    border-color: rgba(232, 160, 32, 0.4);
   }
 
   /* CARDS */
@@ -120,7 +122,9 @@ body {
     @apply w-full rounded-xl px-4 py-3.5 text-sm bg-surface/40 border border-white/10 outline-none transition-all duration-300;
   }
   .input:focus {
-    @apply border-amber/50 bg-surface/60 ring-4 ring-amber/10 -translate-y-0.5;
+    @apply bg-surface/60 -translate-y-0.5;
+    border-color: rgba(232, 160, 32, 0.5);
+    box-shadow: 0 0 0 4px rgba(232, 160, 32, 0.1);
   }
 }
 
