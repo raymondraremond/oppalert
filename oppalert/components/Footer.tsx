@@ -7,8 +7,8 @@ export default function Footer() {
     <footer className="mt-auto border-t border-white/5 bg-bg">
       <div className="max-w-7xl mx-auto px-6 py-20">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
-          <div className="col-span-2 lg:col-span-1">
-            <Link href="/" className="flex items-center gap-3 mb-6">
+          <div className="col-span-2 lg:col-span-1 flex flex-col items-center lg:items-start text-center lg:text-left">
+            <Link href="/" className="flex items-center justify-center lg:justify-start gap-3 mb-6">
               <div className="w-8 h-8 rounded-lg bg-amber-gradient shadow-glow-amber flex items-center justify-center">
                  <span className="w-1.5 h-1.5 rounded-full bg-bg" />
               </div>
@@ -20,7 +20,7 @@ export default function Footer() {
               The #1 platform for discovering verified opportunities across Africa.
               Empowering the next generation of African leaders.
             </p>
-            <div className="flex gap-4">
+            <div className="flex justify-center lg:justify-start gap-4">
               {[
                 { icon: Twitter, href: '#' },
                 { icon: Linkedin, href: '#' },
@@ -62,7 +62,7 @@ export default function Footer() {
               ]
             }
           ].map((section) => (
-            <div key={section.title}>
+            <div key={section.title} className="flex flex-col items-center lg:items-start text-center lg:text-left">
               <h4 className="text-[11px] font-extrabold uppercase tracking-widest text-muted mb-6">
                 {section.title}
               </h4>
