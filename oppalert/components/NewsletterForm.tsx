@@ -46,7 +46,7 @@ export default function NewsletterForm() {
 
   return (
     <form className="relative group max-w-md mx-auto" onSubmit={handleSubmit}>
-      <div className="glass-gradient rounded-full border border-white/10 flex items-stretch p-1.5 focus-within:border-amber/30 focus-within:ring-1 focus-within:ring-amber/10 transition-all duration-300 shadow-premium">
+      <div className="rounded-full border flex items-stretch p-1.5 transition-all duration-300 shadow-premium" style={{backgroundColor: 'var(--glass)', borderColor: 'var(--border)'}}>
         <input
           type="email"
           placeholder="Enter your email address..."
@@ -58,7 +58,8 @@ export default function NewsletterForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="px-6 rounded-full bg-amber-gradient text-bg font-syne font-black text-xs uppercase tracking-wider flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-glow-amber disabled:opacity-50 disabled:cursor-not-allowed group-hover:shadow-glow-amber/50"
+          className="px-6 rounded-full bg-amber-gradient font-syne font-black text-xs uppercase tracking-wider flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-glow-amber disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{color: '#0D0F0B'}}
         >
           {isLoading ? (
             <div className="w-4 h-4 border-2 border-bg/30 border-t-bg rounded-full animate-spin" />

@@ -22,7 +22,7 @@ export default function OpportunityCard({ opp }: Props) {
 
   return (
     <Link href={`/opportunities/${opp.id}`} className="group block h-full animate-fade-up">
-      <div className={`card-opp h-full flex flex-col ${isFeatured ? 'border-amber/20 ring-1 ring-amber/5' : ''}`}>
+      <div className={`card-opp h-full flex flex-col`} style={isFeatured ? {borderColor: 'rgba(232, 160, 32, 0.2)'} : undefined}>
         {/* Featured badge */}
         {isFeatured && (
           <div className="absolute top-4 right-4 z-10">
@@ -34,7 +34,7 @@ export default function OpportunityCard({ opp }: Props) {
 
         {/* Header Icon */}
         <div className="flex justify-between items-start mb-6">
-          <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform duration-500">
+          <div className="w-12 h-12 rounded-xl icon-box flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform duration-500">
             <CategoryIcon cat={cat} size={22} className="text-amber drop-shadow-glow-amber" />
           </div>
           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-amber">
@@ -54,7 +54,7 @@ export default function OpportunityCard({ opp }: Props) {
         </div>
 
         {/* Footer */}
-        <div className="mt-auto pt-6 border-t border-white/5 flex justify-between items-center gap-4">
+        <div className="mt-auto pt-6 border-t flex justify-between items-center gap-4" style={{borderColor: 'var(--glass-border)'}}>
           <div className="flex gap-2 flex-wrap">
             <span className={`badge ${getCategoryBadge(cat)}`}>
               {getCategoryLabel(cat).split(' ').slice(1).join(' ') || cat}
@@ -71,7 +71,7 @@ export default function OpportunityCard({ opp }: Props) {
         </div>
         
         {/* Hover Glow Effect */}
-        <div className="absolute inset-0 bg-amber/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style={{backgroundColor: 'rgba(232, 160, 32, 0.03)'}} />
       </div>
     </Link>
   )

@@ -50,7 +50,7 @@ export default function Navbar() {
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 h-[80px] flex items-center ${
-          scrolled ? 'glass border-b border-white/10 shadow-premium' : 'bg-transparent'
+          scrolled ? 'glass shadow-premium' : 'bg-transparent'
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 w-full flex items-center justify-between">
@@ -65,7 +65,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center bg-white/5 backdrop-blur-xl px-2 py-1.5 rounded-2xl border border-white/10">
+          <nav className="hidden md:flex items-center backdrop-blur-xl px-2 py-1.5 rounded-2xl border" style={{backgroundColor: 'var(--icon-bg)', borderColor: 'var(--glass-border)'}}>
             {[
               { label: 'Opportunities', href: '/opportunities' },
               { label: 'Pricing', href: '/pricing' },
@@ -73,7 +73,7 @@ export default function Navbar() {
             ].map((link) => (
               <Link key={link.href} href={link.href}>
                 <div className={`text-[13px] font-bold px-6 py-2.5 rounded-xl transition-all duration-300 ${
-                  path === link.href ? 'bg-amber text-bg shadow-glow-amber' : 'text-muted hover:text-primary hover:bg-white/5'
+                  path === link.href ? 'bg-amber text-bg shadow-glow-amber' : 'text-muted hover:text-primary hover:bg-[var(--icon-bg)]'
                 }`}>
                   {link.label}
                 </div>

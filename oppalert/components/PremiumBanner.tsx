@@ -17,7 +17,7 @@ export default function PremiumBanner() {
               Unlock Elite Opportunities
             </h3>
             <p className="text-sm text-subtle font-medium leading-relaxed max-w-xl">
-              Get <span className="text-white font-bold">instant Telegram & Email alerts</span>. 
+              Get <span className="text-primary font-bold">instant Telegram & Email alerts</span>. 
               Be the first to apply to scholarships and remote jobs before they go viral.
             </p>
           </div>

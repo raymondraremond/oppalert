@@ -69,11 +69,11 @@ export default function LoginPage() {
         </div>
 
         {/* Auth Card */}
-        <div className="glass-gradient border border-white/10 rounded-[2.5rem] p-8 md:p-12 shadow-premium relative overflow-hidden">
+        <div className="glass-gradient border border-[var(--glass-border)] rounded-[2.5rem] p-8 md:p-12 shadow-premium relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-amber/5 blur-3xl -z-10" />
 
           <div className="mb-10 text-center">
-            <h1 className="font-syne text-2xl font-black text-white mb-2">
+            <h1 className="font-syne text-2xl font-black text-primary mb-2">
               {mode === 'login' ? 'Welcome back' : 'Create Account'}
             </h1>
             <p className="text-sm text-subtle font-medium">
@@ -84,16 +84,16 @@ export default function LoginPage() {
           </div>
 
           {/* Tabs */}
-          <div className="grid grid-cols-2 bg-white/5 border border-white/5 p-1 rounded-2xl mb-8">
+          <div className="grid grid-cols-2 bg-[var(--icon-bg)] border border-[var(--border)] p-1 rounded-2xl mb-8">
             <button
               onClick={() => setMode('login')}
-              className={`py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${mode === 'login' ? 'bg-amber-gradient text-bg shadow-glow-amber' : 'text-muted-dark hover:text-white'}`}
+              className={`py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${mode === 'login' ? 'bg-amber-gradient text-bg shadow-glow-amber' : 'text-muted hover:text-primary'}`}
             >
               Log In
             </button>
             <button
               onClick={() => setMode('signup')}
-              className={`py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${mode === 'signup' ? 'bg-amber-gradient text-bg shadow-glow-amber' : 'text-muted-dark hover:text-white'}`}
+              className={`py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all ${mode === 'signup' ? 'bg-amber-gradient text-bg shadow-glow-amber' : 'text-muted hover:text-primary'}`}
             >
               Sign Up
             </button>
@@ -108,7 +108,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {mode === 'signup' && (
               <div className="space-y-2">
-                <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted-dark ml-1">Full Name</label>
+                <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted ml-1">Full Name</label>
                 <div className="relative group">
                   <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-subtle group-focus-within:text-amber transition-colors" />
                   <input
@@ -117,14 +117,14 @@ export default function LoginPage() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
-                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-primary text-sm focus:outline-none focus:border-amber/30 focus:ring-1 focus:ring-amber/10 transition-all font-medium"
+                    className="w-full bg-[var(--input-bg)] border border-[var(--glass-border)] rounded-2xl py-4 pl-12 pr-4 text-primary text-sm focus:outline-none focus:border-amber/30 focus:ring-1 focus:ring-amber/10 transition-all font-medium"
                   />
                 </div>
               </div>
             )}
 
             <div className="space-y-2">
-              <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted-dark ml-1">Email Address</label>
+              <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted ml-1">Email Address</label>
               <div className="relative group">
                 <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-subtle group-focus-within:text-amber transition-colors" />
                 <input
@@ -133,14 +133,14 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-primary text-sm focus:outline-none focus:border-amber/30 focus:ring-1 focus:ring-amber/10 transition-all font-medium"
+                  className="w-full bg-[var(--input-bg)] border border-[var(--glass-border)] rounded-2xl py-4 pl-12 pr-4 text-primary text-sm focus:outline-none focus:border-amber/30 focus:ring-1 focus:ring-amber/10 transition-all font-medium"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
               <div className="flex justify-between items-center ml-1">
-                <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted-dark">Password</label>
+                <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted">Password</label>
               </div>
               <div className="relative group">
                 <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-subtle group-focus-within:text-amber transition-colors" />
@@ -151,12 +151,12 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={8}
-                  className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-12 text-primary text-sm focus:outline-none focus:border-amber/30 focus:ring-1 focus:ring-amber/10 transition-all font-medium"
+                  className="w-full bg-[var(--input-bg)] border border-[var(--glass-border)] rounded-2xl py-4 pl-12 pr-12 text-primary text-sm focus:outline-none focus:border-amber/30 focus:ring-1 focus:ring-amber/10 transition-all font-medium"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-subtle hover:text-white transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-subtle hover:text-primary transition-colors"
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -180,8 +180,8 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <p className="text-[10px] text-center text-muted-dark font-medium mt-10 max-w-xs mx-auto leading-relaxed uppercase tracking-widest">
-          By continuing, you agree to our <Link href="/terms" className="text-subtle hover:text-white transition-colors underline decoration-white/20 underline-offset-4">Terms</Link> &amp; <Link href="/privacy" className="text-subtle hover:text-white transition-colors underline decoration-white/20 underline-offset-4">Privacy</Link>.
+        <p className="text-[10px] text-center text-muted font-medium mt-10 max-w-xs mx-auto leading-relaxed uppercase tracking-widest">
+          By continuing, you agree to our <Link href="/terms" className="text-subtle hover:text-primary transition-colors underline decoration-primary/20 underline-offset-4">Terms</Link> &amp; <Link href="/privacy" className="text-subtle hover:text-primary transition-colors underline decoration-primary/20 underline-offset-4">Privacy</Link>.
         </p>
       </div>
     </main>

@@ -90,12 +90,12 @@ export default function HomePage() {
       {/* ── HERO SECTION ── */}
       <section className="relative pt-32 pb-20 px-6 max-w-screen-xl mx-auto overflow-hidden">
         {/* Background glow effects */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[600px] bg-amber/10 blur-[120px] rounded-full pointer-events-none -z-10" />
-        <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary/5 blur-[100px] rounded-full pointer-events-none -z-10" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[600px] blur-[120px] rounded-full pointer-events-none -z-10" style={{backgroundColor: 'rgba(232, 160, 32, 0.08)'}} />
+        <div className="absolute -top-24 -left-24 w-96 h-96 blur-[100px] rounded-full pointer-events-none -z-10" style={{backgroundColor: 'var(--icon-bg)'}} />
 
         <div className="text-center max-w-4xl mx-auto">
           {/* Announcement pill */}
-          <div className="animate-fade-up inline-flex items-center gap-2.5 bg-amber/10 border border-amber/20 rounded-full px-5 py-2 mb-10 group cursor-default">
+          <div className="animate-fade-up inline-flex items-center gap-2.5 rounded-full px-5 py-2 mb-10 group cursor-default" style={{backgroundColor: 'var(--amber-dim)', border: '1px solid rgba(232, 160, 32, 0.2)'}}>
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-amber"></span>
@@ -120,20 +120,20 @@ export default function HomePage() {
               Explore Opportunities
               <ArrowRight size={20} className="stroke-[2.5]" />
             </Link>
-            <Link href="/pricing" className="btn-ghost px-10 py-5 text-base rounded-2xl border-white/10 hover:bg-white/5">
+            <Link href="/pricing" className="btn-ghost px-10 py-5 text-base rounded-2xl">
               <Bell size={20} className="mr-2" />
               Get Alerted Free
             </Link>
           </div>
 
           {/* Quick Stats Grid */}
-          <div className="animate-fade-up animate-delay-400 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 max-w-5xl mx-auto py-12 border-y border-white/5 bg-white/[0.02] backdrop-blur-sm rounded-3xl md:rounded-full">
+          <div className="animate-fade-up animate-delay-400 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 max-w-5xl mx-auto py-12 border-y backdrop-blur-sm rounded-3xl md:rounded-full" style={{borderColor: 'var(--border)', backgroundColor: 'var(--icon-bg)'}}>
             {stats.map((s) => (
               <div key={s.label} className="text-center px-4 group">
                 <div className="font-syne text-3xl md:text-4xl font-black text-amber mb-1 group-hover:scale-110 transition-transform duration-500 drop-shadow-glow-amber/50">
                   {s.num}
                 </div>
-                <div className="text-[10px] uppercase font-black tracking-[0.2em] text-muted-dark group-hover:text-amber/70 transition-colors">
+                <div className="text-[10px] uppercase font-black tracking-[0.2em] text-muted transition-colors">
                   {s.label}
                 </div>
               </div>
@@ -161,13 +161,13 @@ export default function HomePage() {
             return (
               <Link key={c.slug} href={`/opportunities?cat=${c.slug}`} className="group">
                 <div className="cat-card h-full">
-                  <div className="w-14 h-14 rounded-2xl bg-amber/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 shadow-inner">
+                  <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 shadow-inner" style={{backgroundColor: 'var(--amber-dim)'}}>
                     <Icon size={28} className="text-amber drop-shadow-glow-amber" />
                   </div>
                   <h3 className="font-syne text-lg font-extrabold text-primary mb-2 group-hover:text-amber transition-colors">
                     {c.label}
                   </h3>
-                  <p className="text-xs font-bold text-muted-dark uppercase tracking-widest">
+                  <p className="text-xs font-bold text-muted uppercase tracking-widest">
                     {c.count}
                   </p>
                 </div>
@@ -178,7 +178,7 @@ export default function HomePage() {
       </section>
 
       {/* ── FEATURED SECTION ── */}
-      <section className="reveal py-24 px-6 bg-white/[0.01] border-y border-white/5">
+      <section className="reveal py-24 px-6 border-y" style={{borderColor: 'var(--border)', backgroundColor: 'var(--icon-bg)'}}>
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-end mb-16">
             <div>
@@ -241,7 +241,7 @@ export default function HomePage() {
       </section>
 
       {/* ── TESTIMONIALS ── */}
-      <section className="reveal py-32 px-6 bg-white/[0.01]">
+      <section className="reveal py-32 px-6" style={{backgroundColor: 'var(--icon-bg)'}}>
         <div className="max-w-7xl mx-auto">
           <div className="text-center max-w-2xl mx-auto mb-20">
             <h2 className="section-title mb-6">
@@ -276,7 +276,7 @@ export default function HomePage() {
                 color: '#E8A020',
               },
             ].map((review) => (
-              <div key={review.name} className="cat-card !p-10 !rounded-3xl hover:border-amber/20 group">
+              <div key={review.name} className="cat-card !p-10 !rounded-3xl group">
                 <div className="flex gap-1 mb-6 text-amber">
                   {[...Array(5)].map((_, i) => (
                     <svg key={i} width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="drop-shadow-glow-amber"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
@@ -294,7 +294,7 @@ export default function HomePage() {
                   </div>
                   <div>
                     <div className="font-extrabold text-primary text-sm">{review.name}</div>
-                    <div className="text-[11px] font-bold text-muted-dark uppercase tracking-wider">{review.role}</div>
+                    <div className="text-[11px] font-bold text-muted uppercase tracking-wider">{review.role}</div>
                   </div>
                 </div>
               </div>
@@ -305,15 +305,15 @@ export default function HomePage() {
 
       {/* ── FINAL CTA ── */}
       <section id="newsletter" className="reveal py-32 px-6">
-        <div className="max-w-4xl mx-auto rounded-[3rem] p-12 md:p-20 relative overflow-hidden bg-white/[0.02] border border-white/10 group">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-amber/10 blur-[100px] -z-10 group-hover:scale-150 transition-transform duration-1000" />
-          <div className="absolute bottom-0 left-0 w-80 h-80 bg-primary/5 blur-[100px] -z-10 group-hover:scale-150 transition-transform duration-1000" />
+        <div className="max-w-4xl mx-auto rounded-[3rem] p-12 md:p-20 relative overflow-hidden group" style={{backgroundColor: 'var(--icon-bg)', border: '1px solid var(--border)'}}>
+          <div className="absolute top-0 right-0 w-80 h-80 blur-[100px] -z-10 group-hover:scale-150 transition-transform duration-1000" style={{backgroundColor: 'rgba(232, 160, 32, 0.08)'}} />
+          <div className="absolute bottom-0 left-0 w-80 h-80 blur-[100px] -z-10 group-hover:scale-150 transition-transform duration-1000" style={{backgroundColor: 'var(--icon-bg)'}} />
           
           <div className="text-center max-w-xl mx-auto relative z-10">
             <div className="w-20 h-20 rounded-[2rem] bg-amber-gradient text-bg flex items-center justify-center mx-auto mb-10 shadow-glow-amber animate-pulse">
               <Bell size={36} className="stroke-[2.5]" />
             </div>
-            <h2 className="font-syne text-4xl md:text-5xl font-black mb-6 text-[#F0EDE6]">
+            <h2 className="font-syne text-4xl md:text-5xl font-black mb-6 text-primary">
               Weekly alerts, <span className="text-amber">zero noise.</span>
             </h2>
             <p className="text-subtle text-lg font-medium mb-12">

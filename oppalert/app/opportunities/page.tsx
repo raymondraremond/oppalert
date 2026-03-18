@@ -68,9 +68,19 @@ export default function OpportunitiesPage() {
       result = result.filter((o) => o.fund === fundName)
     }
 
-    // Sorting
-    if (sortBy === 'deadline') result = [...result].sort((a, b) => a.days - b.days)
-    else if (sortBy === 'popular') result = [...result].sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0))
+    // Always push closed (days=0) to the bottom
+    result.sort((a, b) => {
+      const aDays = a.days ?? 999
+      const bDays = b.days ?? 999
+      const aClosed = aDays === 0 ? 1 : 0
+      const bClosed = bDays === 0 ? 1 : 0
+      if (aClosed !== bClosed) return aClosed - bClosed
+
+      // Then apply user sorting
+      if (sortBy === 'deadline') return aDays - bDays
+      if (sortBy === 'popular') return (b.featured ? 1 : 0) - (a.featured ? 1 : 0)
+      return 0
+    })
 
     return result
   }, [allOpportunities, activeDeadline, activeFunding, sortBy])
@@ -90,7 +100,7 @@ export default function OpportunitiesPage() {
     <div className="space-y-8 animate-fade-up">
       {/* Search Input */}
       <div>
-        <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted-dark block mb-3">
+        <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted block mb-3">
           Keyword Search
         </label>
         <div className="relative group">
@@ -100,14 +110,15 @@ export default function OpportunitiesPage() {
             placeholder="Scholarships, jobs..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white/[0.03] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-primary text-sm focus:outline-none focus:border-amber/30 focus:ring-1 focus:ring-amber/10 transition-all font-medium"
+            className="w-full border rounded-xl py-3 pl-11 pr-4 text-primary text-sm focus:outline-none transition-all font-medium"
+            style={{backgroundColor: 'var(--input-bg)', borderColor: 'var(--glass-border)'}}
           />
         </div>
       </div>
 
       {/* Category List */}
       <div>
-        <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted-dark block mb-4">
+        <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted block mb-4">
           Categories
         </label>
         <div className="space-y-1">
@@ -118,12 +129,12 @@ export default function OpportunitiesPage() {
               className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all group ${
                 activeCat === c.slug 
                   ? 'bg-amber/10 text-amber font-bold border border-amber/20' 
-                  : 'text-subtle hover:bg-white/[0.03] hover:text-primary'
+                  : 'text-subtle hover:bg-[var(--input-bg)] hover:text-primary'
               }`}
             >
               <span className="text-sm">{c.label}</span>
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                activeCat === c.slug ? 'bg-amber/20 text-amber' : 'bg-white/5 text-muted-dark'
+                activeCat === c.slug ? 'bg-amber/20 text-amber' : 'bg-[var(--icon-bg)] text-muted'
               }`}>
                 {c.count}
               </span>
@@ -140,17 +151,18 @@ export default function OpportunitiesPage() {
           { label: 'Funding', options: fundingTypes, state: activeFunding, setter: setActiveFunding },
         ].map((filter) => (
           <div key={filter.label}>
-            <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted-dark block mb-3">
+            <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted block mb-3">
               {filter.label}
             </label>
             <div className="relative">
               <select
                 value={filter.state}
                 onChange={(e) => filter.setter(parseInt(e.target.value))}
-                className="w-full appearance-none bg-white/[0.03] border border-white/10 rounded-xl py-3 px-4 text-primary text-sm focus:outline-none focus:border-amber/30 transition-all font-medium cursor-pointer"
+                className="w-full appearance-none border rounded-xl py-3 px-4 text-primary text-sm focus:outline-none transition-all font-medium cursor-pointer"
+                style={{backgroundColor: 'var(--input-bg)', borderColor: 'var(--glass-border)'}}
               >
                 {filter.options.map((opt, idx) => (
-                  <option key={opt} value={idx} className="bg-bg text-white">{opt}</option>
+                  <option key={opt} value={idx} className="bg-bg text-primary">{opt}</option>
                 ))}
               </select>
               <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-subtle pointer-events-none" />
@@ -161,7 +173,8 @@ export default function OpportunitiesPage() {
 
       {hasFilters && (
         <button 
-          className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl border border-white/5 hover:border-danger/30 hover:bg-danger/5 text-muted-dark hover:text-danger text-xs font-bold uppercase tracking-widest transition-all"
+          className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl border hover:text-danger text-muted text-xs font-bold uppercase tracking-widest transition-all"
+          style={{borderColor: 'var(--glass-border)'}}
           onClick={clearFilters}
         >
           <X size={14} />
@@ -181,7 +194,7 @@ export default function OpportunitiesPage() {
 
         {/* ── MAIN CONTENT ── */}
         <section className="space-y-8 animate-fade-up animate-delay-100">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2 border-b border-white/5">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2 border-b" style={{borderColor: 'var(--border)'}}>
             <div>
               <h1 className="font-syne text-3xl font-black text-primary mb-1">
                 Browse <span className="text-amber">Opportunities</span>
@@ -194,7 +207,8 @@ export default function OpportunitiesPage() {
             <div className="flex items-center gap-4">
               {/* Mobile filter toggle */}
               <button
-                className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/10 text-sm font-bold text-primary hover:bg-white/5 transition-all"
+                className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-bold text-primary transition-all"
+                style={{backgroundColor: 'var(--icon-bg)', borderColor: 'var(--glass-border)'}}
                 onClick={() => setShowMobileFilters(!showMobileFilters)}
               >
                 <SlidersHorizontal size={16} />
@@ -205,7 +219,8 @@ export default function OpportunitiesPage() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="appearance-none bg-white/[0.03] border border-white/10 rounded-xl py-2.5 pl-4 pr-10 text-primary text-sm focus:outline-none focus:border-amber/30 transition-all font-bold cursor-pointer"
+                  className="appearance-none border rounded-xl py-2.5 pl-4 pr-10 text-primary text-sm focus:outline-none transition-all font-bold cursor-pointer"
+                  style={{backgroundColor: 'var(--input-bg)', borderColor: 'var(--glass-border)'}}
                 >
                   <option value="latest" className="bg-bg">Latest First</option>
                   <option value="deadline" className="bg-bg">Deadline Soon</option>
@@ -218,10 +233,10 @@ export default function OpportunitiesPage() {
 
           {/* Mobile filters panel */}
           {showMobileFilters && (
-            <div className="lg:hidden glass-gradient border border-white/10 rounded-2xl p-6 shadow-premium">
+            <div className="lg:hidden glass-gradient border rounded-2xl p-6 shadow-premium" style={{borderColor: 'var(--border)'}}>
               <div className="flex justify-between items-center mb-6">
                 <h3 className="font-syne font-bold">Filters</h3>
-                <button onClick={() => setShowMobileFilters(false)} className="p-2 text-subtle hover:text-white">
+                <button onClick={() => setShowMobileFilters(false)} className="p-2 text-subtle hover:text-primary">
                   <X size={20} />
                 </button>
               </div>
@@ -236,7 +251,7 @@ export default function OpportunitiesPage() {
             {isLoading ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4">
                 <div className="relative">
-                  <div className="w-16 h-16 border-4 border-white/5 border-t-amber rounded-full animate-spin" />
+                  <div className="w-16 h-16 border-4 border-[var(--border)] border-t-amber rounded-full animate-spin" />
                   <div className="absolute inset-0 flex items-center justify-center">
                     <Loader2 className="text-amber animate-pulse" size={24} />
                   </div>
@@ -250,11 +265,11 @@ export default function OpportunitiesPage() {
                 ))}
               </div>
             ) : (
-              <div className="flex flex-col items-center justify-center py-24 px-6 text-center glass-gradient border border-white/5 rounded-[3rem]">
-                <div className="w-24 h-24 bg-white/5 rounded-[2rem] flex items-center justify-center mb-8 rotate-12">
-                  <Search size={48} className="text-muted-dark -rotate-12" />
+              <div className="flex flex-col items-center justify-center py-24 px-6 text-center glass-gradient border rounded-[3rem]" style={{borderColor: 'var(--border)'}}>
+                <div className="w-24 h-24 rounded-[2rem] flex items-center justify-center mb-8 rotate-12" style={{backgroundColor: 'var(--icon-bg)'}}>
+                  <Search size={48} className="text-muted -rotate-12" />
                 </div>
-                <h3 className="font-syne text-2xl font-black text-white mb-4">No Matches Found</h3>
+                <h3 className="font-syne text-2xl font-black text-primary mb-4">No Matches Found</h3>
                 <p className="text-subtle max-w-sm mb-10 font-medium">
                   We couldn&apos;t find any opportunities matching your current filters. Try broadening your search.
                 </p>
@@ -272,7 +287,7 @@ export default function OpportunitiesPage() {
             <div className="pt-12 text-center">
               <button 
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="inline-flex items-center gap-2 text-muted-dark hover:text-amber font-bold text-xs uppercase tracking-[0.2em] transition-all group"
+                className="inline-flex items-center gap-2 text-muted hover:text-amber font-bold text-xs uppercase tracking-[0.2em] transition-all group"
               >
                 Back to Top
                 <ChevronDown size={14} className="group-hover:-translate-y-1 rotate-180 transition-transform" />

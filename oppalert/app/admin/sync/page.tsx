@@ -82,7 +82,7 @@ export default function AdminSyncPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {syncNodes.map((node) => (
-          <div key={node.id} className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col relative overflow-hidden group">
+          <div key={node.id} className="bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-6 flex flex-col relative overflow-hidden group">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-3 bg-amber/10 rounded-xl text-amber">
                 <node.icon size={24} />
@@ -95,7 +95,7 @@ export default function AdminSyncPage() {
             </p>
 
             <div className="text-xs text-muted mb-6">
-              Last Synced: <span className="font-medium text-white">{lastSyncs[node.id] || 'Never'}</span>
+              Last Synced: <span className="font-medium text-primary">{lastSyncs[node.id] || 'Never'}</span>
             </div>
 
             {results[node.id] && (

@@ -8,8 +8,8 @@ export default function NotFound() {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl h-[400px] bg-amber/5 blur-[120px] rounded-full pointer-events-none -z-10" />
 
       <div className="max-w-md animate-fade-up">
-        <div className="w-24 h-24 rounded-[2rem] bg-white/5 border border-white/10 flex items-center justify-center mx-auto mb-8 shadow-inner rotate-12 group hover:rotate-0 transition-transform duration-500">
-          <SearchX size={48} className="text-muted-dark group-hover:text-amber transition-colors" />
+        <div className="w-24 h-24 rounded-[2rem] bg-[var(--icon-bg)] border border-[var(--glass-border)] flex items-center justify-center mx-auto mb-8 shadow-inner rotate-12 group hover:rotate-0 transition-transform duration-500">
+          <SearchX size={48} className="text-muted group-hover:text-amber transition-colors" />
         </div>
         
         <h1 className="font-syne text-4xl font-black text-primary tracking-tighter mb-4">
@@ -28,7 +28,7 @@ export default function NotFound() {
             </button>
           </Link>
           <Link href="/">
-            <button className="btn-ghost px-8 py-4 rounded-2xl border-white/10 text-white font-black uppercase tracking-widest text-xs flex items-center gap-2 hover:bg-white/5 transition-all">
+            <button className="btn-ghost px-8 py-4 rounded-2xl border-[var(--glass-border)] text-primary font-black uppercase tracking-widest text-xs flex items-center gap-2 hover:bg-[var(--icon-bg)] transition-all">
               <Home size={16} />
               Return Home
             </button>

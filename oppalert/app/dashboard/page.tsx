@@ -166,7 +166,7 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[80vh]">
-        <div className="w-16 h-16 border-4 border-white/5 border-t-amber rounded-full animate-spin" />
+        <div className="w-16 h-16 border-4 border-[var(--border)] border-t-amber rounded-full animate-spin" />
       </div>
     )
   }
@@ -179,7 +179,7 @@ export default function DashboardPage() {
 
         {/* SIDEBAR */}
         <aside className="w-full lg:w-72 shrink-0 space-y-6">
-          <div className="glass-gradient border border-white/5 rounded-[2.5rem] p-8 relative overflow-hidden group">
+          <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-8 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-amber/5 blur-3xl -z-10" />
             <div className="flex flex-col items-center text-center">
               <div className="w-20 h-20 rounded-[1.5rem] bg-amber-gradient p-1 mb-4 shadow-glow-amber/20 group-hover:rotate-6 transition-transform">
@@ -188,7 +188,7 @@ export default function DashboardPage() {
                 </div>
               </div>
               <h3 className="font-syne text-lg font-black text-primary mb-1">{displayName}</h3>
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted-dark mb-6">
+              <p className="text-[10px] font-black uppercase tracking-widest text-muted mb-6">
                 {isPremium ? 'Premium Member' : 'Free Member'}
               </p>
               {!isPremium && (
@@ -199,7 +199,7 @@ export default function DashboardPage() {
               )}
             </div>
 
-            <div className="h-px bg-white/5 my-8" />
+            <div className="h-px bg-[var(--icon-bg)] my-8" />
 
             <nav className="space-y-2">
               {navItems.map((item) => {
@@ -211,8 +211,8 @@ export default function DashboardPage() {
                     onClick={() => setActiveTab(item.id)}
                     className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all font-bold text-sm ${
                       isActive
-                        ? 'bg-white/5 text-amber border border-white/10 shadow-inner'
-                        : 'text-muted-dark hover:text-primary hover:bg-white/[0.02]'
+                        ? 'bg-[var(--icon-bg)] text-amber border border-[var(--glass-border)] shadow-inner'
+                        : 'text-muted hover:text-primary hover:bg-[var(--icon-bg)]'
                     }`}
                   >
                     <div className={isActive ? 'text-amber' : ''}><Icon size={18} /></div>
@@ -223,7 +223,7 @@ export default function DashboardPage() {
               })}
             </nav>
 
-            <div className="h-px bg-white/5 my-8" />
+            <div className="h-px bg-[var(--icon-bg)] my-8" />
 
             <button
               onClick={handleLogout}
@@ -257,12 +257,12 @@ export default function DashboardPage() {
                   { num: String(deadlines.length), label: 'Urgent Deadlines', icon: <Clock size={20} />, alert: deadlines.length > 0 },
                   { num: isPremium ? 'Unlimited' : '5 max', label: 'Save Limit', icon: <Bell size={20} /> },
                 ].map((s, idx) => (
-                  <div key={idx} className="glass-gradient border border-white/5 rounded-3xl p-6 relative group overflow-hidden">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-6 shadow-inner ${s.alert ? 'bg-danger/10 text-danger' : 'bg-white/5 text-subtle'}`}>
+                  <div key={idx} className="glass-gradient border border-[var(--border)] rounded-3xl p-6 relative group overflow-hidden">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-6 shadow-inner ${s.alert ? 'bg-danger/10 text-danger' : 'bg-[var(--icon-bg)] text-subtle'}`}>
                       {s.icon}
                     </div>
                     <div className="font-syne text-4xl font-black text-primary mb-1">{s.num}</div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-muted-dark">{s.label}</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-muted">{s.label}</p>
                   </div>
                 ))}
               </div>
@@ -272,7 +272,7 @@ export default function DashboardPage() {
                 <div>
                   <div className="flex items-center gap-4 mb-8">
                     <div className="p-2.5 rounded-xl bg-primary/10 text-primary shadow-inner"><Sparkles size={20} /></div>
-                    <h2 className="font-syne text-xl font-black text-white">Latest Opportunities</h2>
+                    <h2 className="font-syne text-xl font-black text-primary">Latest Opportunities</h2>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {recommendations.map((opp: any) => <OpportunityCard key={opp.id} opp={opp} />)}
@@ -286,13 +286,13 @@ export default function DashboardPage() {
           {activeTab === 'saved' && (
             <div className="animate-fade-up space-y-8">
               <div>
-                <h1 className="font-syne text-4xl font-black text-white tracking-tighter mb-2">Saved <span className="text-amber">Items</span></h1>
+                <h1 className="font-syne text-4xl font-black text-primary tracking-tighter mb-2">Saved <span className="text-amber">Items</span></h1>
                 <p className="text-subtle font-medium">{savedOpps.length} saved {savedOpps.length === 1 ? 'opportunity' : 'opportunities'}</p>
               </div>
               {savedOpps.length === 0 ? (
-                <div className="glass-gradient border border-white/5 rounded-[3rem] p-16 text-center">
-                  <Heart size={48} className="mx-auto text-muted-dark mb-6 opacity-30" />
-                  <h3 className="font-syne text-xl font-black text-white mb-3">No saved items yet</h3>
+                <div className="glass-gradient border border-[var(--border)] rounded-[3rem] p-16 text-center">
+                  <Heart size={48} className="mx-auto text-muted mb-6 opacity-30" />
+                  <h3 className="font-syne text-xl font-black text-primary mb-3">No saved items yet</h3>
                   <p className="text-subtle mb-8">Browse opportunities and save the ones you want to apply to.</p>
                   <Link href="/opportunities" className="btn-primary px-8 py-3 rounded-2xl font-black uppercase tracking-widest text-xs inline-block">Browse Opportunities</Link>
                 </div>
@@ -308,7 +308,7 @@ export default function DashboardPage() {
           {activeTab === 'alerts' && (
             <div className="animate-fade-up space-y-8">
               <div>
-                <h1 className="font-syne text-4xl font-black text-white tracking-tighter mb-2">Smart <span className="text-amber">Alerts</span></h1>
+                <h1 className="font-syne text-4xl font-black text-primary tracking-tighter mb-2">Smart <span className="text-amber">Alerts</span></h1>
                 <p className="text-subtle font-medium">Get notified before everyone else.</p>
               </div>
 
@@ -319,16 +319,16 @@ export default function DashboardPage() {
                   { key: 'digest' as const, icon: BarChart3, label: 'Weekly Performance', sub: 'Summary of all matches and market trends', premium: false },
                   { key: 'instant' as const, icon: Zap, label: 'Instant Telegram Pushes', sub: 'Real-time verified listing notifications', premium: true },
                 ].map((a) => (
-                  <div key={a.key} className="glass-gradient border border-white/5 p-6 rounded-[2rem] flex items-center gap-6 group hover:border-white/10 transition-all">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-inner ${a.premium ? 'bg-amber/10 border-amber/20 text-amber' : 'bg-white/5 border-white/5 text-subtle'}`}>
+                  <div key={a.key} className="glass-gradient border border-[var(--border)] p-6 rounded-[2rem] flex items-center gap-6 group hover:border-[var(--glass-border)] transition-all">
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-inner ${a.premium ? 'bg-amber/10 border-amber/20 text-amber' : 'bg-[var(--icon-bg)] border-[var(--border)] text-subtle'}`}>
                       <a.icon size={20} />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-1">
-                        <span className="font-bold text-white text-sm">{a.label}</span>
+                        <span className="font-bold text-primary text-sm">{a.label}</span>
                         {a.premium && <span className="text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-amber text-bg shadow-glow-amber">Premium</span>}
                       </div>
-                      <p className="text-xs text-muted-dark font-medium">{a.sub}</p>
+                      <p className="text-xs text-muted font-medium">{a.sub}</p>
                     </div>
                     <button
                       onClick={() => toggleAlert(a.key)}
@@ -347,35 +347,35 @@ export default function DashboardPage() {
           {activeTab === 'profile' && (
             <div className="animate-fade-up space-y-10">
               <div>
-                <h1 className="font-syne text-4xl font-black text-white tracking-tighter mb-2">Profile <span className="text-amber">Settings</span></h1>
+                <h1 className="font-syne text-4xl font-black text-primary tracking-tighter mb-2">Profile <span className="text-amber">Settings</span></h1>
                 <p className="text-subtle font-medium">Keep your professional profile current for better matches.</p>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 {/* Basic Info */}
-                <div className="glass-gradient border border-white/5 rounded-[2.5rem] p-8 md:p-10 space-y-8">
-                  <h3 className="font-syne text-xl font-black text-white flex items-center gap-3">
+                <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-8 md:p-10 space-y-8">
+                  <h3 className="font-syne text-xl font-black text-primary flex items-center gap-3">
                     <User size={20} className="text-amber" /> Identity Details
                   </h3>
                   <div className="grid grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-dark ml-1">First Name</label>
-                      <input className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm font-bold text-white focus:outline-none focus:border-amber/30 transition-all" value={firstName} onChange={e => setFirstName(e.target.value)} />
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted ml-1">First Name</label>
+                      <input className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-amber/30 transition-all" value={firstName} onChange={e => setFirstName(e.target.value)} />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-muted-dark ml-1">Last Name</label>
-                      <input className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm font-bold text-white focus:outline-none focus:border-amber/30 transition-all" value={lastName} onChange={e => setLastName(e.target.value)} />
+                      <label className="text-[10px] font-black uppercase tracking-widest text-muted ml-1">Last Name</label>
+                      <input className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-amber/30 transition-all" value={lastName} onChange={e => setLastName(e.target.value)} />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-dark ml-1">Email</label>
-                    <input className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm font-bold text-white/50 focus:outline-none transition-all cursor-not-allowed" value={user?.email || ''} readOnly />
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted ml-1">Email</label>
+                    <input className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary/50 focus:outline-none transition-all cursor-not-allowed" value={user?.email || ''} readOnly />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-muted-dark ml-1">Country</label>
-                    <select className="w-full bg-[#1A1F15] border border-white/10 rounded-2xl p-4 text-sm font-bold text-white focus:outline-none focus:border-amber/30 transition-all cursor-pointer appearance-none" value={country} onChange={e => setCountry(e.target.value)}>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-muted ml-1">Country</label>
+                    <select className="w-full bg-[#1A1F15] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-amber/30 transition-all cursor-pointer appearance-none" value={country} onChange={e => setCountry(e.target.value)}>
                       {['Nigeria', 'Ghana', 'Kenya', 'South Africa', 'Ethiopia', 'Egypt', 'Tanzania', 'Uganda', 'Rwanda', 'Senegal', 'Other'].map(c => <option key={c}>{c}</option>)}
                     </select>
                   </div>
@@ -386,8 +386,8 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Match Preferences */}
-                <div className="glass-gradient border border-white/5 rounded-[2.5rem] p-8 md:p-10 space-y-8">
-                  <h3 className="font-syne text-xl font-black text-white flex items-center gap-3">
+                <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-8 md:p-10 space-y-8">
+                  <h3 className="font-syne text-xl font-black text-primary flex items-center gap-3">
                     <Sparkles size={20} className="text-primary" /> Discovery Filters
                   </h3>
                   <p className="text-xs text-subtle font-medium leading-relaxed">Select the niches you want our engine to monitor for you.</p>
@@ -400,7 +400,7 @@ export default function DashboardPage() {
                           key={cat}
                           onClick={() => toggleCat(cat)}
                           className={`px-6 py-3 rounded-2xl border text-[10px] font-black uppercase tracking-widest transition-all ${
-                            isSelected ? 'bg-primary/20 border-primary/40 text-primary shadow-glow-primary/10' : 'bg-white/5 border-white/10 text-muted-dark hover:border-white/20'
+                            isSelected ? 'bg-primary/20 border-primary/40 text-primary shadow-glow-primary/10' : 'bg-[var(--icon-bg)] border-[var(--glass-border)] text-muted hover:border-white/20'
                           }`}
                         >
                           {cat}
@@ -409,10 +409,10 @@ export default function DashboardPage() {
                     })}
                   </div>
 
-                  <div className="bg-white/[0.02] border border-white/5 rounded-[2rem] p-6 text-center space-y-4">
-                    <ShieldCheck size={32} className="mx-auto text-muted-dark" />
-                    <h4 className="font-bold text-sm text-white">Trust &amp; Security</h4>
-                    <p className="text-[10px] text-muted-dark font-medium leading-relaxed">Your data is encrypted. We never sell your personal metrics.</p>
+                  <div className="bg-[var(--icon-bg)] border border-[var(--border)] rounded-[2rem] p-6 text-center space-y-4">
+                    <ShieldCheck size={32} className="mx-auto text-muted" />
+                    <h4 className="font-bold text-sm text-primary">Trust &amp; Security</h4>
+                    <p className="text-[10px] text-muted font-medium leading-relaxed">Your data is encrypted. We never sell your personal metrics.</p>
                   </div>
 
                   <button onClick={handleSavePrefs} className="btn-ghost !border-primary/20 text-primary w-full py-4 rounded-2xl font-black uppercase tracking-widest text-xs flex items-center justify-center gap-2 hover:bg-primary/5 transition-all">

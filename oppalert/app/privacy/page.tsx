@@ -34,8 +34,8 @@ export default function PrivacyPage() {
 
         <div className="space-y-12 animate-fade-up animate-delay-100">
           {sections.map((section, idx) => (
-            <div key={idx} className="glass-gradient border border-white/5 rounded-[2.5rem] p-10 group hover:border-white/10 transition-all">
-              <h2 className="font-syne text-2xl font-black text-white mb-6 group-hover:text-amber transition-colors">{section.title}</h2>
+            <div key={idx} className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-10 group hover:border-[var(--glass-border)] transition-all">
+              <h2 className="font-syne text-2xl font-black text-primary mb-6 group-hover:text-amber transition-colors">{section.title}</h2>
               <p className="text-subtle text-lg leading-relaxed font-medium">
                 {section.content}
               </p>
@@ -43,13 +43,13 @@ export default function PrivacyPage() {
           ))}
 
           <div className="bg-primary/5 border border-primary/20 rounded-[2.5rem] p-10 md:p-14 text-center">
-            <h3 className="font-syne text-xl font-black text-white mb-4">Questions about your data?</h3>
+            <h3 className="font-syne text-xl font-black text-primary mb-4">Questions about your data?</h3>
             <p className="text-subtle font-medium mb-8">Detailed information about our security protocols and regional data compliance is available upon request.</p>
             <a href="mailto:privacy@oppalert.com" className="text-primary font-black uppercase tracking-widest text-xs hover:underline underline-offset-8">Contact Security Team</a>
           </div>
         </div>
 
-        <p className="mt-20 text-[10px] text-center text-muted-dark font-black uppercase tracking-widest leading-relaxed">
+        <p className="mt-20 text-[10px] text-center text-muted font-black uppercase tracking-widest leading-relaxed">
           OppAlert complies with global data protection standards (GDPR / NDPR) to ensure your privacy is protected.
         </p>
       </div>

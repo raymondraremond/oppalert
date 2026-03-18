@@ -71,12 +71,12 @@ export default function PricingPage() {
         {/* ── PRICING CARDS ── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-32">
           {/* FREE PLAN */}
-          <div className="animate-fade-up animate-delay-200 glass-gradient border border-white/5 rounded-[3rem] p-10 flex flex-col group transition-all duration-500 hover:border-white/10">
+          <div className="animate-fade-up animate-delay-200 glass-gradient border border-[var(--border)] rounded-[3rem] p-10 flex flex-col group transition-all duration-500 hover:border-[var(--glass-border)]">
             <div className="mb-8">
-              <span className="badge badge-gray px-4 py-1 text-[10px] font-black uppercase tracking-widest bg-white/5 text-subtle border-white/10">Standard</span>
+              <span className="badge badge-gray px-4 py-1 text-[10px] font-black uppercase tracking-widest bg-[var(--icon-bg)] text-subtle border-[var(--glass-border)]">Standard</span>
               <div className="mt-6 flex items-baseline gap-1">
-                <span className="font-syne text-6xl font-black text-white">$0</span>
-                <span className="text-muted-dark font-bold text-sm uppercase tracking-widest">/forever</span>
+                <span className="font-syne text-6xl font-black text-primary">$0</span>
+                <span className="text-muted font-bold text-sm uppercase tracking-widest">/forever</span>
               </div>
               <p className="text-subtle text-sm font-medium mt-4">For occasional opportunity seekers.</p>
             </div>
@@ -84,7 +84,7 @@ export default function PricingPage() {
             <div className="space-y-4 mb-10 flex-1">
               {freeFeatures.map((f) => (
                 <div key={f.label} className={`flex items-start gap-4 text-sm ${f.included ? 'text-subtle' : 'opacity-30'}`}>
-                  <div className={`mt-0.5 w-5 h-5 shrink-0 rounded-full flex items-center justify-center ${f.included ? 'bg-white/5 text-white/50' : 'text-muted-dark'}`}>
+                  <div className={`mt-0.5 w-5 h-5 shrink-0 rounded-full flex items-center justify-center ${f.included ? 'bg-[var(--icon-bg)] text-primary/50' : 'text-muted'}`}>
                     {f.included ? <Check size={12} className="stroke-[3]" /> : <Minus size={12} />}
                   </div>
                   <span className="font-medium">{f.label}</span>
@@ -93,7 +93,7 @@ export default function PricingPage() {
             </div>
 
             <Link href="/register" className="w-full">
-              <button className="btn-ghost w-full py-4 px-8 rounded-2xl border-white/10 text-primary font-black uppercase tracking-widest text-xs hover:bg-white/5 group-hover:border-white/20 transition-all">
+              <button className="btn-ghost w-full py-4 px-8 rounded-2xl border-[var(--glass-border)] text-primary font-black uppercase tracking-widest text-xs hover:bg-[var(--icon-bg)] group-hover:border-white/20 transition-all">
                 Get Started Free
                 <ArrowRight size={16} className="ml-2" />
               </button>
@@ -116,10 +116,10 @@ export default function PricingPage() {
                 </div>
               </div>
               <div className="mt-6 flex items-baseline gap-2">
-                <span className="font-syne text-6xl font-black text-white tracking-tighter">$3</span>
+                <span className="font-syne text-6xl font-black text-primary tracking-tighter">$3</span>
                 <div className="flex flex-col">
                   <span className="text-amber font-black text-sm uppercase tracking-widest">/month</span>
-                  <span className="text-[10px] text-muted-dark font-bold uppercase tracking-wider line-through">or $36/year</span>
+                  <span className="text-[10px] text-muted font-bold uppercase tracking-wider line-through">or $36/year</span>
                 </div>
               </div>
               <p className="text-subtle text-sm font-medium mt-4">Join 4.2k+ premium African students.</p>
@@ -142,14 +142,14 @@ export default function PricingPage() {
                 <Zap size={18} className="fill-current stroke-[2.5]" />
               </button>
             </Link>
-            <p className="text-[10px] text-center text-muted-dark font-bold uppercase tracking-widest mt-6">
+            <p className="text-[10px] text-center text-muted font-bold uppercase tracking-widest mt-6">
               Billed monthly · Cancel anytime
             </p>
           </div>
         </div>
 
         {/* ── ORGANIZATIONS ── */}
-        <div className="animate-fade-up animate-delay-400 reveal glass-gradient border border-white/10 rounded-[4rem] p-10 md:p-16 mb-32 relative overflow-hidden group">
+        <div className="animate-fade-up animate-delay-400 reveal glass-gradient border border-[var(--glass-border)] rounded-[4rem] p-10 md:p-16 mb-32 relative overflow-hidden group">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-primary/5 blur-[120px] -z-10" />
           
           <div className="flex flex-col lg:flex-row items-center gap-16 relative z-10">
@@ -158,7 +158,7 @@ export default function PricingPage() {
                 <Globe size={12} />
                 For Organizations
               </div>
-              <h2 className="font-syne text-4xl md:text-5xl font-black text-white leading-tight mb-6">
+              <h2 className="font-syne text-4xl md:text-5xl font-black text-primary leading-tight mb-6">
                 Amplify your <span className="text-primary italic">impact.</span>
               </h2>
               <p className="text-subtle text-lg font-medium leading-relaxed mb-10">
@@ -169,7 +169,7 @@ export default function PricingPage() {
                 <Link href="/contact" className="btn-ghost !border-primary/30 hover:!bg-primary/5 px-10 py-4 font-black uppercase tracking-widest text-xs rounded-2xl text-primary transition-all">
                   Get Partner Deck
                 </Link>
-                <Link href="/contact" className="btn-ghost px-10 py-4 font-black uppercase tracking-widest text-xs rounded-2xl border-white/10 text-white transition-all">
+                <Link href="/contact" className="btn-ghost px-10 py-4 font-black uppercase tracking-widest text-xs rounded-2xl border-[var(--glass-border)] text-primary transition-all">
                   Post a Listing Free
                 </Link>
               </div>
@@ -180,8 +180,8 @@ export default function PricingPage() {
                 { label: 'Basic Reach', price: '$25', stats: '20k+ impressions' },
                 { label: 'Elite Blast', price: '$150', stats: 'Global Push notification' },
               ].map((item) => (
-                <div key={item.label} className="bg-white/5 border border-white/5 rounded-[2.5rem] p-8 text-center hover:border-primary/30 transition-all group/card">
-                  <p className="text-muted-dark text-[10px] font-black uppercase tracking-widest mb-2">{item.label}</p>
+                <div key={item.label} className="bg-[var(--icon-bg)] border border-[var(--border)] rounded-[2.5rem] p-8 text-center hover:border-primary/30 transition-all group/card">
+                  <p className="text-muted text-[10px] font-black uppercase tracking-widest mb-2">{item.label}</p>
                   <div className="font-syne text-4xl font-black text-primary mb-2 group-hover/card:scale-110 transition-transform">{item.price}</div>
                   <p className="text-subtle text-xs font-bold">{item.stats}</p>
                 </div>
@@ -204,12 +204,12 @@ export default function PricingPage() {
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   className={`w-full text-left p-8 rounded-[2rem] border transition-all flex justify-between items-center gap-6 ${
                     openFaq === i 
-                    ? 'glass-gradient border-white/10 bg-white/5 shadow-premium' 
-                    : 'border-white/5 hover:border-white/10 hover:bg-white/[0.02]'
+                    ? 'glass-gradient border-[var(--glass-border)] bg-[var(--icon-bg)] shadow-premium' 
+                    : 'border-[var(--border)] hover:border-[var(--glass-border)] hover:bg-[var(--icon-bg)]'
                   }`}
                 >
                   <span className="font-syne text-lg font-extrabold text-primary tracking-tight">{f.q}</span>
-                  <div className={`shrink-0 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10 transition-transform duration-500 ${openFaq === i ? 'rotate-180 bg-amber/20 border-amber/30 text-amber' : 'text-subtle'}`}>
+                  <div className={`shrink-0 w-8 h-8 rounded-full bg-[var(--icon-bg)] flex items-center justify-center border border-[var(--glass-border)] transition-transform duration-500 ${openFaq === i ? 'rotate-180 bg-amber/20 border-amber/30 text-amber' : 'text-subtle'}`}>
                     <ChevronDown size={20} />
                   </div>
                 </button>
@@ -226,10 +226,10 @@ export default function PricingPage() {
         {/* ── SECURITY BADGE ── */}
         <div className="mt-32 flex flex-col items-center animate-fade-up">
           <div className="flex items-center gap-12 opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
-            <ShieldCheck size={48} className="text-white" />
-            <span className="font-syne font-black text-2xl tracking-tighter text-white">STRIPE <span className="text-muted-dark">SECURE</span></span>
+            <ShieldCheck size={48} className="text-primary" />
+            <span className="font-syne font-black text-2xl tracking-tighter text-primary">STRIPE <span className="text-muted">SECURE</span></span>
           </div>
-          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-dark mt-8">
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted mt-8">
             Bank-grade encryption · Verified by Google Security
           </p>
         </div>

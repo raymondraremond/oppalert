@@ -4,7 +4,7 @@ import { Twitter, Linkedin, Instagram } from 'lucide-react'
 
 export default function Footer() {
   return (
-    <footer className="mt-auto border-t border-white/5 bg-bg">
+    <footer className="mt-auto border-t bg-bg" style={{borderColor: 'var(--border)'}}>
       <div className="max-w-7xl mx-auto px-6 py-20">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
           <div className="col-span-2 lg:col-span-1 flex flex-col items-center lg:items-start text-center lg:text-left">
@@ -26,7 +26,7 @@ export default function Footer() {
                 { icon: Linkedin, href: '#' },
                 { icon: Instagram, href: '#' }
               ].map((Social, idx) => (
-                <a key={idx} href={Social.href} className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-muted hover:text-amber hover:border-amber/40 hover:bg-amber/10 transition-all duration-300 hover:-translate-y-1">
+                <a key={idx} href={Social.href} className="w-10 h-10 rounded-xl icon-box flex items-center justify-center text-muted hover:text-amber transition-all duration-300 hover:-translate-y-1">
                   <Social.icon size={18} />
                 </a>
               ))}
@@ -79,7 +79,7 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="pt-10 border-t flex flex-col md:flex-row justify-between items-center gap-6" style={{borderColor: 'var(--border)'}}>
           <div className="text-[13px] text-subtle font-medium">
             © {new Date().getFullYear()} OppAlert. Built with ❤️ for Africa.
           </div>

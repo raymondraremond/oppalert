@@ -43,7 +43,7 @@ export default function OpportunityDetailPage({ params }: Props) {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[80vh] space-y-4">
-        <div className="w-16 h-16 border-4 border-white/5 border-t-amber rounded-full animate-spin" />
+        <div className="w-16 h-16 border-4 border-[var(--border)] border-t-amber rounded-full animate-spin" />
         <p className="text-sm font-bold text-amber uppercase tracking-widest animate-pulse">Loading Opportunity...</p>
       </div>
     )
@@ -98,7 +98,7 @@ export default function OpportunityDetailPage({ params }: Props) {
     <main className="min-h-screen pt-24 px-6 max-w-7xl mx-auto pb-20">
       {/* Breadcrumb */}
       <div className="mb-8 animate-fade-up">
-        <Link href="/opportunities" className="inline-flex items-center gap-2 text-muted-dark hover:text-amber font-bold text-xs uppercase tracking-[0.2em] transition-all group">
+        <Link href="/opportunities" className="inline-flex items-center gap-2 text-muted hover:text-amber font-bold text-xs uppercase tracking-[0.2em] transition-all group">
           <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
           Back to Listings
         </Link>
@@ -108,12 +108,12 @@ export default function OpportunityDetailPage({ params }: Props) {
         {/* ── LEFT COLUMN: CONTENT ── */}
         <div className="space-y-8 animate-fade-up animate-delay-100">
           {/* Main Hero Header */}
-          <div className="glass-gradient border border-white/5 rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-amber/5 blur-[80px] -z-10 group-hover:scale-150 transition-transform duration-1000" />
+          <div className="glass-gradient border rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden group" style={{borderColor: 'var(--border)'}}>
+            <div className="absolute top-0 right-0 w-64 h-64 blur-[80px] -z-10 group-hover:scale-150 transition-transform duration-1000" style={{backgroundColor: 'rgba(232, 160, 32, 0.05)'}} />
             
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
               <div className="flex items-center gap-5">
-                <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shadow-inner group-hover:rotate-3 transition-transform">
+                <div className="w-16 h-16 rounded-2xl icon-box flex items-center justify-center shadow-inner group-hover:rotate-3 transition-transform">
                   <CategoryIcon cat={cat} size={32} className="text-amber drop-shadow-glow-amber" />
                 </div>
                 <div>
@@ -126,7 +126,7 @@ export default function OpportunityDetailPage({ params }: Props) {
               </div>
               <button
                 onClick={handleShare}
-                className="btn-ghost !bg-white/5 !border-white/10 hover:!bg-white/10 px-6 py-3 text-xs font-black uppercase tracking-widest rounded-xl gap-2 active:scale-95 transition-all self-start md:self-auto"
+                className="btn-ghost px-6 py-3 text-xs font-black uppercase tracking-widest rounded-xl gap-2 active:scale-95 transition-all self-start md:self-auto"
               >
                 {shared ? <Check size={16} className="text-success" /> : <Share2 size={16} />}
                 {shared ? 'Copied' : 'Share'}
@@ -143,8 +143,8 @@ export default function OpportunityDetailPage({ params }: Props) {
                 { label: 'Closing Date', value: deadlineStr, icon: <Calendar size={16} /> },
                 { label: 'Funding', value: fund, icon: <Zap size={16} /> },
               ].map((item) => (
-                <div key={item.label} className="bg-white/5 border border-white/5 rounded-2xl p-4 group/item hover:border-amber/20 transition-all">
-                  <div className="flex items-center gap-2 text-muted-dark mb-2">
+                <div key={item.label} className="rounded-2xl p-4 group/item transition-all icon-box" style={{borderColor: 'var(--glass-border)'}}>
+                  <div className="flex items-center gap-2 text-muted mb-2">
                     {item.icon}
                     <span className="text-[10px] uppercase font-black tracking-widest">{item.label}</span>
                   </div>
@@ -161,9 +161,9 @@ export default function OpportunityDetailPage({ params }: Props) {
               { id: 'elig', title: 'Eligibility Requirements', icon: <Check size={20} />, content: elig, type: 'list' },
               { id: 'benefits', title: 'Benefits & Funding', icon: <Coins size={20} />, content: benefits, type: 'list' },
             ].map((section) => (
-              <div key={section.id} className="glass-gradient border border-white/5 rounded-[2rem] p-8 md:p-10 group">
+              <div key={section.id} className="glass-gradient border rounded-[2rem] p-8 md:p-10 group" style={{borderColor: 'var(--border)'}}>
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="w-10 h-10 rounded-xl bg-amber/10 flex items-center justify-center text-amber shadow-inner group-hover:scale-110 transition-transform">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center text-amber shadow-inner group-hover:scale-110 transition-transform" style={{backgroundColor: 'var(--amber-dim)'}}>
                     {section.icon}
                   </div>
                   <h2 className="font-syne text-xl font-black text-primary">{section.title}</h2>
@@ -176,7 +176,7 @@ export default function OpportunityDetailPage({ params }: Props) {
                 ) : (
                   <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {(section.content as string[]).map((item, idx) => (
-                      <li key={idx} className="flex items-start gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-amber/10 transition-all group/li">
+                      <li key={idx} className="flex items-start gap-4 p-4 rounded-2xl transition-all group/li" style={{backgroundColor: 'var(--icon-bg)', border: '1px solid var(--glass-border)'}}>
                         <div className="mt-1 w-5 h-5 shrink-0 rounded-full bg-success/10 flex items-center justify-center text-success group-hover/li:bg-success group-hover/li:text-bg transition-colors">
                           <Check size={12} className="stroke-[3]" />
                         </div>
@@ -217,7 +217,7 @@ export default function OpportunityDetailPage({ params }: Props) {
           </div>
 
           {/* Action Card */}
-          <div className="glass-gradient border border-white/10 rounded-[2.5rem] p-8 space-y-4">
+          <div className="glass-gradient border rounded-[2.5rem] p-8 space-y-4" style={{borderColor: 'var(--border)'}}>
             <a 
               href={days === 0 ? '#' : applyUrl} 
               target={days === 0 ? '_self' : '_blank'} 
@@ -234,8 +234,9 @@ export default function OpportunityDetailPage({ params }: Props) {
               className={`w-full py-4 px-8 text-xs font-black uppercase tracking-widest rounded-2xl border transition-all flex items-center justify-center gap-3 ${
                 saved 
                   ? 'bg-danger/10 border-danger/30 text-danger shadow-inner' 
-                  : 'bg-white/5 border-white/10 text-muted-dark hover:bg-white/10 hover:text-white'
+                  : 'text-muted hover:text-primary'
               }`}
+              style={!saved ? {backgroundColor: 'var(--icon-bg)', borderColor: 'var(--glass-border)'} : undefined}
             >
               <Heart size={18} className={saved ? 'fill-current' : ''} />
               {saved ? 'Bookmarked' : 'Save for Later'}
@@ -243,25 +244,25 @@ export default function OpportunityDetailPage({ params }: Props) {
           </div>
 
           {/* Quick Stats Sidebar */}
-          <div className="glass-gradient border border-white/5 rounded-[2.5rem] p-8">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-dark mb-6">Details Summary</h4>
+          <div className="glass-gradient border rounded-[2.5rem] p-8" style={{borderColor: 'var(--border)'}}>
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted mb-6">Details Summary</h4>
             <div className="space-y-4">
               {Object.entries(quickinfo).map(([key, value]) => (
                 <div key={key} className="flex justify-between items-start group">
-                  <span className="text-xs text-muted-dark font-medium">{key}</span>
-                  <span className="text-xs text-subtle font-bold text-right max-w-[140px] group-hover:text-[#F0EDE6] transition-colors">{value}</span>
+                  <span className="text-xs text-muted font-medium">{key}</span>
+                  <span className="text-xs text-subtle font-bold text-right max-w-[140px] group-hover:text-primary transition-colors">{value}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Premium Upsell Small */}
-          <div className="bg-primary/5 border border-primary/20 rounded-[2.5rem] p-8 text-center group overflow-hidden relative">
-            <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-            <div className="w-12 h-12 bg-primary/20 rounded-2xl flex items-center justify-center text-primary mx-auto mb-6 group-hover:rotate-6 transition-transform">
+          <div className="rounded-[2.5rem] p-8 text-center group overflow-hidden relative" style={{backgroundColor: 'var(--icon-bg)', border: '1px solid var(--border)'}}>
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{backgroundColor: 'var(--icon-bg)'}} />
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-primary mx-auto mb-6 group-hover:rotate-6 transition-transform" style={{backgroundColor: 'var(--icon-bg)', border: '1px solid var(--glass-border)'}}>
               <Zap size={24} className="fill-current" />
             </div>
-            <h4 className="font-syne font-black text-white mb-2">Want Instant Updates?</h4>
+            <h4 className="font-syne font-black text-primary mb-2">Want Instant Updates?</h4>
             <p className="text-xs text-subtle font-medium mb-6">Get premium alerts for this organization and related niches.</p>
             <Link href="/pricing" className="text-primary text-[10px] font-black uppercase tracking-widest hover:underline block">
               Upgrade to Premium →
@@ -272,7 +273,7 @@ export default function OpportunityDetailPage({ params }: Props) {
 
       {/* ── RELATED SECTION ── */}
       {related.length > 0 && (
-        <section className="mt-24 pt-20 border-t border-white/5">
+        <section className="mt-24 pt-20 border-t" style={{borderColor: 'var(--border)'}}>
           <div className="flex justify-between items-end mb-12">
             <div>
               <h2 className="section-title text-left mb-4">

@@ -34,8 +34,8 @@ export default function TermsPage() {
 
         <div className="space-y-12 animate-fade-up animate-delay-100">
           {terms.map((term, idx) => (
-            <div key={idx} className="glass-gradient border border-white/5 rounded-[2.5rem] p-10 group hover:border-white/10 transition-all">
-              <h2 className="font-syne text-2xl font-black text-white mb-6 group-hover:text-amber transition-colors">{term.title}</h2>
+            <div key={idx} className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-10 group hover:border-[var(--glass-border)] transition-all">
+              <h2 className="font-syne text-2xl font-black text-primary mb-6 group-hover:text-amber transition-colors">{term.title}</h2>
               <p className="text-subtle text-lg leading-relaxed font-medium">
                 {term.content}
               </p>
@@ -43,13 +43,13 @@ export default function TermsPage() {
           ))}
 
           <div className="bg-amber/5 border border-amber/20 rounded-[2.5rem] p-10 md:p-14 text-center">
-            <h3 className="font-syne text-xl font-black text-white mb-4">Agreement to Terms</h3>
+            <h3 className="font-syne text-xl font-black text-primary mb-4">Agreement to Terms</h3>
             <p className="text-subtle font-medium mb-8">By creating an account or browsing OppAlert, you acknowledge that you have read and agreed to these terms.</p>
             <a href="mailto:hello@oppalert.com" className="text-amber font-black uppercase tracking-widest text-xs hover:underline underline-offset-8">I have a legal question</a>
           </div>
         </div>
 
-        <p className="mt-20 text-[10px] text-center text-muted-dark font-black uppercase tracking-widest leading-relaxed">
+        <p className="mt-20 text-[10px] text-center text-muted font-black uppercase tracking-widest leading-relaxed">
           © {new Date().getFullYear()} OppAlert Inc. All rights reserved. Registered in Lagos, Nigeria.
         </p>
       </div>
