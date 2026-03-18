@@ -107,7 +107,10 @@ body {
     @apply rounded-2xl border border-white/5 p-6 transition-all duration-500 cursor-pointer relative overflow-hidden;
     background: var(--card-bg);
     border-color: var(--border);
-    @apply backdrop-blur-xl shadow-lg hover:shadow-2xl hover:border-amber/30 hover:-translate-y-2;
+    @apply backdrop-blur-xl shadow-lg hover:shadow-2xl hover:-translate-y-2;
+  }
+  .card-opp:hover {
+    border-color: rgba(232, 160, 32, 0.3);
   }
 
   /* GLASSMORPHISM */
@@ -119,10 +122,12 @@ body {
 
   /* INPUTS */
   .input {
-    @apply w-full rounded-xl px-4 py-3.5 text-sm bg-surface/40 border border-white/10 outline-none transition-all duration-300;
+    @apply w-full rounded-xl px-4 py-3.5 text-sm border border-white/10 outline-none transition-all duration-300;
+    background-color: rgba(34, 40, 32, 0.4);
   }
   .input:focus {
-    @apply bg-surface/60 -translate-y-0.5;
+    @apply -translate-y-0.5;
+    background-color: rgba(34, 40, 32, 0.6);
     border-color: rgba(232, 160, 32, 0.5);
     box-shadow: 0 0 0 4px rgba(232, 160, 32, 0.1);
   }
