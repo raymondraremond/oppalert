@@ -187,7 +187,7 @@ export default function DashboardPage() {
                   {initials}
                 </div>
               </div>
-              <h3 className="font-syne text-lg font-black text-[#F0EDE6] mb-1">{displayName}</h3>
+              <h3 className="font-syne text-lg font-black text-primary mb-1">{displayName}</h3>
               <p className="text-[10px] font-black uppercase tracking-widest text-muted-dark mb-6">
                 {isPremium ? 'Premium Member' : 'Free Member'}
               </p>
@@ -212,7 +212,7 @@ export default function DashboardPage() {
                     className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all font-bold text-sm ${
                       isActive
                         ? 'bg-white/5 text-amber border border-white/10 shadow-inner'
-                        : 'text-muted-dark hover:text-[#F0EDE6] hover:bg-white/[0.02]'
+                        : 'text-muted-dark hover:text-primary hover:bg-white/[0.02]'
                     }`}
                   >
                     <div className={isActive ? 'text-amber' : ''}><Icon size={18} /></div>
@@ -242,7 +242,7 @@ export default function DashboardPage() {
           {activeTab === 'overview' && (
             <div className="animate-fade-up space-y-10">
               <div>
-                <h1 className="font-syne text-4xl md:text-5xl font-black text-[#F0EDE6] tracking-tighter mb-2">
+                <h1 className="font-syne text-4xl md:text-5xl font-black text-primary tracking-tighter mb-2">
                   Welcome, <span className="text-amber-gradient drop-shadow-glow-amber">{firstName || 'back'}</span>
                 </h1>
                 <p className="text-subtle font-medium">
@@ -261,7 +261,7 @@ export default function DashboardPage() {
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-6 shadow-inner ${s.alert ? 'bg-danger/10 text-danger' : 'bg-white/5 text-subtle'}`}>
                       {s.icon}
                     </div>
-                    <div className="font-syne text-4xl font-black text-[#F0EDE6] mb-1">{s.num}</div>
+                    <div className="font-syne text-4xl font-black text-primary mb-1">{s.num}</div>
                     <p className="text-[10px] font-black uppercase tracking-widest text-muted-dark">{s.label}</p>
                   </div>
                 ))}

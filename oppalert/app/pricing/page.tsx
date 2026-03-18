@@ -59,7 +59,7 @@ export default function PricingPage() {
             </span>
           </div>
           
-          <h1 className="animate-fade-up animate-delay-100 font-syne text-5xl md:text-7xl font-black tracking-tighter mb-8 text-[#F0EDE6]">
+          <h1 className="animate-fade-up animate-delay-100 font-syne text-5xl md:text-7xl font-black tracking-tighter mb-8 text-primary">
             Transparent <span className="text-amber-gradient drop-shadow-glow-amber">Pricing</span>
           </h1>
           
@@ -93,7 +93,7 @@ export default function PricingPage() {
             </div>
 
             <Link href="/register" className="w-full">
-              <button className="btn-ghost w-full py-4 px-8 rounded-2xl border-white/10 text-[#F0EDE6] font-black uppercase tracking-widest text-xs hover:bg-white/5 group-hover:border-white/20 transition-all">
+              <button className="btn-ghost w-full py-4 px-8 rounded-2xl border-white/10 text-primary font-black uppercase tracking-widest text-xs hover:bg-white/5 group-hover:border-white/20 transition-all">
                 Get Started Free
                 <ArrowRight size={16} className="ml-2" />
               </button>
@@ -127,7 +127,7 @@ export default function PricingPage() {
 
             <div className="space-y-4 mb-10 flex-1">
               {premiumFeatures.map((f) => (
-                <div key={f.label} className="flex items-start gap-4 text-sm text-[#F0EDE6]">
+                <div key={f.label} className="flex items-start gap-4 text-sm text-primary">
                   <div className="mt-0.5 w-5 h-5 shrink-0 rounded-full bg-amber/20 text-amber flex items-center justify-center shadow-glow-amber/20 group-hover:scale-110 transition-transform">
                     <Check size={12} className="stroke-[4]" />
                   </div>
@@ -208,7 +208,7 @@ export default function PricingPage() {
                     : 'border-white/5 hover:border-white/10 hover:bg-white/[0.02]'
                   }`}
                 >
-                  <span className="font-syne text-lg font-extrabold text-[#F0EDE6] tracking-tight">{f.q}</span>
+                  <span className="font-syne text-lg font-extrabold text-primary tracking-tight">{f.q}</span>
                   <div className={`shrink-0 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10 transition-transform duration-500 ${openFaq === i ? 'rotate-180 bg-amber/20 border-amber/30 text-amber' : 'text-subtle'}`}>
                     <ChevronDown size={20} />
                   </div>

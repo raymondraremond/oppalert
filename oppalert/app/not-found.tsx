@@ -12,7 +12,7 @@ export default function NotFound() {
           <SearchX size={48} className="text-muted-dark group-hover:text-amber transition-colors" />
         </div>
         
-        <h1 className="font-syne text-4xl font-black text-[#F0EDE6] tracking-tighter mb-4">
+        <h1 className="font-syne text-4xl font-black text-primary tracking-tighter mb-4">
           Lost in <span className="text-amber">Space?</span>
         </h1>
         

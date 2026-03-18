@@ -47,3 +47,12 @@ export function stripHtml(html: string): string {
     .replace(/\s+/g, ' ')
     .trim()
 }
+
+export function calculateDaysRemaining(deadline?: string): number {
+  if (!deadline) return 30 // Fallback
+  const now = new Date()
+  const end = new Date(deadline)
+  const diffTime = end.getTime() - now.getTime()
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  return Math.max(0, diffDays)
+}

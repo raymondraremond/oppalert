@@ -15,7 +15,7 @@ export default function ContactPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-20 animate-fade-up">
-          <h1 className="font-syne text-5xl md:text-7xl font-black tracking-tighter mb-6 text-[#F0EDE6]">
+          <h1 className="font-syne text-5xl md:text-7xl font-black tracking-tighter mb-6 text-primary">
             Get in <span className="text-amber-gradient drop-shadow-glow-amber">Touch</span>
           </h1>
           <p className="text-subtle text-lg font-medium leading-relaxed">
@@ -43,7 +43,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-widest text-muted-dark mb-1">{item.label}</p>
-                      <p className="text-lg font-bold text-[#F0EDE6] mb-1">{item.value}</p>
+                      <p className="text-lg font-bold text-primary mb-1">{item.value}</p>
                       <p className="text-xs text-subtle font-medium">{item.sub}</p>
                     </div>
                   </div>

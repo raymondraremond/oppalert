@@ -61,7 +61,7 @@ export default function RegisterPage() {
         {/* Logo */}
         <div className="text-center mb-10">
           <Link href="/" className="inline-block group">
-            <h2 className="font-syne text-4xl font-black text-[#F0EDE6] tracking-tighter transition-all group-hover:scale-105">
+            <h2 className="font-syne text-4xl font-black text-primary tracking-tighter transition-all group-hover:scale-105">
               Opp<span className="text-amber">Alert</span>
             </h2>
             <div className="h-1 w-0 group-hover:w-full bg-amber-gradient mx-auto transition-all duration-500 rounded-full" />
@@ -117,7 +117,7 @@ export default function RegisterPage() {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
-                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-[#F0EDE6] text-sm focus:outline-none focus:border-amber/30 focus:ring-1 focus:ring-amber/10 transition-all font-medium"
+                    className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-primary text-sm focus:outline-none focus:border-amber/30 focus:ring-1 focus:ring-amber/10 transition-all font-medium"
                   />
                 </div>
               </div>
@@ -133,7 +133,7 @@ export default function RegisterPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-[#F0EDE6] text-sm focus:outline-none focus:border-amber/30 focus:ring-1 focus:ring-amber/10 transition-all font-medium"
+                  className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-primary text-sm focus:outline-none focus:border-amber/30 focus:ring-1 focus:ring-amber/10 transition-all font-medium"
                 />
               </div>
             </div>
@@ -151,7 +151,7 @@ export default function RegisterPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={8}
-                  className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-12 text-[#F0EDE6] text-sm focus:outline-none focus:border-amber/30 focus:ring-1 focus:ring-amber/10 transition-all font-medium"
+                  className="w-full bg-white/[0.03] border border-white/10 rounded-2xl py-4 pl-12 pr-12 text-primary text-sm focus:outline-none focus:border-amber/30 focus:ring-1 focus:ring-amber/10 transition-all font-medium"
                 />
                 <button
                   type="button"

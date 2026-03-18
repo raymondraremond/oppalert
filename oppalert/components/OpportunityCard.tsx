@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import type { Opportunity } from '@/lib/types'
-import { getCategoryLabel, getCategoryBadge } from '@/lib/utils'
+import { getCategoryLabel, getCategoryBadge, calculateDaysRemaining } from '@/lib/utils'
 import { CategoryIcon, Clock, AlertCircle, ArrowUpRight } from '@/lib/icons'
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 
 export default function OpportunityCard({ opp }: Props) {
   // Handle dual schema (DB vs mock data)
-  const days = opp.days_remaining ?? opp.days ?? 30
+  const days = calculateDaysRemaining(opp.deadline)
   const org = opp.organization || opp.org || 'Unknown Organization'
   const cat = opp.category || opp.cat || 'scholarship'
   const desc = opp.description || opp.desc || ''
@@ -44,7 +44,7 @@ export default function OpportunityCard({ opp }: Props) {
 
         {/* Content */}
         <div className="flex-1">
-          <h3 className="font-syne text-lg font-extrabold text-[#F0EDE6] leading-snug mb-2 group-hover:text-amber transition-colors line-clamp-2">
+          <h3 className="font-syne text-lg font-extrabold text-primary leading-snug mb-2 group-hover:text-amber transition-colors line-clamp-2">
             {opp.title}
           </h3>
           <p className="text-[13px] text-muted font-medium mb-4">{org}</p>
@@ -65,8 +65,8 @@ export default function OpportunityCard({ opp }: Props) {
           <div className={`flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider shrink-0 ${
             isUrgent ? 'text-danger' : isSoon ? 'text-amber' : 'text-subtle'
           }`}>
-            {isUrgent ? <AlertCircle size={14} /> : <Clock size={14} />}
-            {days}d Left
+            {days === 0 ? <AlertCircle size={14} /> : isUrgent ? <AlertCircle size={14} /> : <Clock size={14} />}
+            {days === 0 ? 'Closed' : `${days}d Left`}
           </div>
         </div>
         

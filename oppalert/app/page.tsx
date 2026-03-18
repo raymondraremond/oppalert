@@ -105,7 +105,7 @@ export default function HomePage() {
             </span>
           </div>
 
-          <h1 className="animate-fade-up animate-delay-100 font-syne text-[clamp(40px,7vw,88px)] font-black leading-[0.95] tracking-tighter mb-8 text-[#F0EDE6]">
+          <h1 className="animate-fade-up animate-delay-100 font-syne text-[clamp(40px,7vw,88px)] font-black leading-[0.95] tracking-tighter mb-8 text-primary">
             Never miss an<br />
             <span className="text-amber-gradient drop-shadow-glow-amber">opportunity</span> again
           </h1>
@@ -164,7 +164,7 @@ export default function HomePage() {
                   <div className="w-14 h-14 rounded-2xl bg-amber/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 shadow-inner">
                     <Icon size={28} className="text-amber drop-shadow-glow-amber" />
                   </div>
-                  <h3 className="font-syne text-lg font-extrabold text-[#F0EDE6] mb-2 group-hover:text-amber transition-colors">
+                  <h3 className="font-syne text-lg font-extrabold text-primary mb-2 group-hover:text-amber transition-colors">
                     {c.label}
                   </h3>
                   <p className="text-xs font-bold text-muted-dark uppercase tracking-widest">
@@ -228,7 +228,7 @@ export default function HomePage() {
                 <div className="font-syne text-[10px] font-black text-amber uppercase tracking-[0.3em] mb-4 opacity-70">
                   Phase {s.step}
                 </div>
-                <h3 className="text-xl font-extrabold text-[#F0EDE6] mb-4 group-hover:text-amber transition-colors">
+                <h3 className="text-xl font-extrabold text-primary mb-4 group-hover:text-amber transition-colors">
                   {s.title}
                 </h3>
                 <p className="text-subtle text-sm leading-relaxed font-medium">
@@ -282,7 +282,7 @@ export default function HomePage() {
                     <svg key={i} width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="drop-shadow-glow-amber"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                   ))}
                 </div>
-                <p className="text-subtle italic text-base leading-relaxed mb-10 group-hover:text-[#F0EDE6] transition-colors">
+                <p className="text-subtle italic text-base leading-relaxed mb-10 group-hover:text-primary transition-colors">
                   &ldquo;{review.text}&rdquo;
                 </p>
                 <div className="flex items-center gap-4">
@@ -293,7 +293,7 @@ export default function HomePage() {
                     {review.initials}
                   </div>
                   <div>
-                    <div className="font-extrabold text-[#F0EDE6] text-sm">{review.name}</div>
+                    <div className="font-extrabold text-primary text-sm">{review.name}</div>
                     <div className="text-[11px] font-bold text-muted-dark uppercase tracking-wider">{review.role}</div>
                   </div>
                 </div>

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { Menu, X, ArrowRight, User as UserIcon, LogOut } from 'lucide-react'
+import { ThemeToggle } from './theme-toggle'
 
 function getStoredUser() {
   if (typeof window === 'undefined') return null;
@@ -58,7 +59,7 @@ export default function Navbar() {
             <div className="w-10 h-10 rounded-xl bg-amber-gradient flex items-center justify-center shadow-glow-amber group-hover:scale-110 transition-transform duration-500">
                <span className="w-2 h-2 rounded-full bg-bg shadow-inner animate-pulse" />
             </div>
-            <div className="font-syne text-2xl font-extrabold text-[#F0EDE6] tracking-tight">
+            <div className="font-syne text-2xl font-extrabold text-primary tracking-tight">
               Opp<span className="text-amber drop-shadow-glow-amber">Alert</span>
             </div>
           </Link>
@@ -112,12 +113,16 @@ export default function Navbar() {
                 </Link>
               </>
             )}
+            <ThemeToggle />
           </div>
 
-          {/* Mobile Toggle */}
-          <button className="md:hidden p-2 text-muted hover:text-amber" onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
+          {/* Mobile Toggle Container */}
+          <div className="flex md:hidden items-center gap-3">
+            <ThemeToggle />
+            <button className="p-2 text-muted hover:text-amber" onClick={() => setIsOpen(!isOpen)}>
+              {isOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
+          </div>
         </div>
       </header>
 

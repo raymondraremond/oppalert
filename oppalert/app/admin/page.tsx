@@ -93,7 +93,7 @@ export default function AdminPage() {
               <span className="w-1.5 h-1.5 rounded-full bg-danger animate-pulse" />
               Restricted Admin Console
             </div>
-            <h1 className="font-syne text-4xl md:text-6xl font-black text-[#F0EDE6] tracking-tighter mb-2">
+            <h1 className="font-syne text-4xl md:text-6xl font-black text-primary tracking-tighter mb-2">
               System <span className="text-amber-gradient drop-shadow-glow-amber">Control</span>
             </h1>
             <p className="text-subtle font-medium">Global management of African opportunity clusters.</p>
@@ -155,11 +155,11 @@ export default function AdminPage() {
                   />
                 </div>
                 <div className="flex gap-4">
-                  <button className="btn-ghost !border-white/10 px-6 rounded-2xl text-xs font-black uppercase tracking-widest text-[#F0EDE6] flex items-center gap-2 hover:bg-white/5">
+                  <button className="btn-ghost !border-white/10 px-6 rounded-2xl text-xs font-black uppercase tracking-widest text-primary flex items-center gap-2 hover:bg-white/5">
                     <Filter size={16} />
                     Category
                   </button>
-                  <button className="btn-ghost !border-white/10 px-6 rounded-2xl text-xs font-black uppercase tracking-widest text-[#F0EDE6] flex items-center gap-2 hover:bg-white/5">
+                  <button className="btn-ghost !border-white/10 px-6 rounded-2xl text-xs font-black uppercase tracking-widest text-primary flex items-center gap-2 hover:bg-white/5">
                     <TrendingUp size={16} />
                     Status
                   </button>
@@ -180,7 +180,7 @@ export default function AdminPage() {
                       {opportunities.map((opp) => (
                         <tr key={opp.id} className="hover:bg-white/[0.02] transition-colors group">
                           <td className="px-8 py-6">
-                            <div className="font-bold text-[#F0EDE6] group-hover:text-amber transition-colors">{opp.title}</div>
+                            <div className="font-bold text-primary group-hover:text-amber transition-colors">{opp.title}</div>
                             <div className="text-[10px] font-bold text-muted-dark uppercase tracking-widest mt-1">{opp.org}</div>
                           </td>
                           <td className="px-8 py-6">
@@ -263,7 +263,7 @@ export default function AdminPage() {
                        ].map((region, idx) => (
                          <div key={idx} className="space-y-2">
                            <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-                             <span className="text-[#F0EDE6]">{region.loc}</span>
+                             <span className="text-primary">{region.loc}</span>
                              <span className="text-muted-dark">{region.pct}%</span>
                            </div>
                            <div className="h-2 bg-white/5 rounded-full overflow-hidden">

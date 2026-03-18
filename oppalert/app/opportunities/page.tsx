@@ -100,7 +100,7 @@ export default function OpportunitiesPage() {
             placeholder="Scholarships, jobs..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white/[0.03] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-[#F0EDE6] text-sm focus:outline-none focus:border-amber/30 focus:ring-1 focus:ring-amber/10 transition-all font-medium"
+            className="w-full bg-white/[0.03] border border-white/10 rounded-xl py-3 pl-11 pr-4 text-primary text-sm focus:outline-none focus:border-amber/30 focus:ring-1 focus:ring-amber/10 transition-all font-medium"
           />
         </div>
       </div>
@@ -118,7 +118,7 @@ export default function OpportunitiesPage() {
               className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all group ${
                 activeCat === c.slug 
                   ? 'bg-amber/10 text-amber font-bold border border-amber/20' 
-                  : 'text-subtle hover:bg-white/[0.03] hover:text-[#F0EDE6]'
+                  : 'text-subtle hover:bg-white/[0.03] hover:text-primary'
               }`}
             >
               <span className="text-sm">{c.label}</span>
@@ -147,7 +147,7 @@ export default function OpportunitiesPage() {
               <select
                 value={filter.state}
                 onChange={(e) => filter.setter(parseInt(e.target.value))}
-                className="w-full appearance-none bg-white/[0.03] border border-white/10 rounded-xl py-3 px-4 text-[#F0EDE6] text-sm focus:outline-none focus:border-amber/30 transition-all font-medium cursor-pointer"
+                className="w-full appearance-none bg-white/[0.03] border border-white/10 rounded-xl py-3 px-4 text-primary text-sm focus:outline-none focus:border-amber/30 transition-all font-medium cursor-pointer"
               >
                 {filter.options.map((opt, idx) => (
                   <option key={opt} value={idx} className="bg-bg text-white">{opt}</option>
@@ -183,7 +183,7 @@ export default function OpportunitiesPage() {
         <section className="space-y-8 animate-fade-up animate-delay-100">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-2 border-b border-white/5">
             <div>
-              <h1 className="font-syne text-3xl font-black text-[#F0EDE6] mb-1">
+              <h1 className="font-syne text-3xl font-black text-primary mb-1">
                 Browse <span className="text-amber">Opportunities</span>
               </h1>
               <p className="text-sm text-subtle font-medium">
@@ -194,7 +194,7 @@ export default function OpportunitiesPage() {
             <div className="flex items-center gap-4">
               {/* Mobile filter toggle */}
               <button
-                className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/10 text-sm font-bold text-[#F0EDE6] hover:bg-white/5 transition-all"
+                className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/10 text-sm font-bold text-primary hover:bg-white/5 transition-all"
                 onClick={() => setShowMobileFilters(!showMobileFilters)}
               >
                 <SlidersHorizontal size={16} />
@@ -205,7 +205,7 @@ export default function OpportunitiesPage() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="appearance-none bg-white/[0.03] border border-white/10 rounded-xl py-2.5 pl-4 pr-10 text-[#F0EDE6] text-sm focus:outline-none focus:border-amber/30 transition-all font-bold cursor-pointer"
+                  className="appearance-none bg-white/[0.03] border border-white/10 rounded-xl py-2.5 pl-4 pr-10 text-primary text-sm focus:outline-none focus:border-amber/30 transition-all font-bold cursor-pointer"
                 >
                   <option value="latest" className="bg-bg">Latest First</option>
                   <option value="deadline" className="bg-bg">Deadline Soon</option>

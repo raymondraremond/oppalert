@@ -12,7 +12,7 @@ export default function AboutPage() {
             <Star size={14} className="text-amber fill-amber" />
             <span className="text-amber font-bold text-[10px] uppercase tracking-widest font-syne">Our Mission</span>
           </div>
-          <h1 className="font-syne text-6xl md:text-8xl font-black tracking-tighter mb-10 text-[#F0EDE6] leading-[0.9]">
+          <h1 className="font-syne text-6xl md:text-8xl font-black tracking-tighter mb-10 text-primary leading-[0.9]">
             The Future of <span className="text-amber-gradient drop-shadow-glow-amber">African Talent.</span>
           </h1>
           <p className="text-subtle text-xl md:text-2xl font-medium leading-relaxed max-w-3xl mx-auto">

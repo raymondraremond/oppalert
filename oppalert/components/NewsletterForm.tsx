@@ -53,7 +53,7 @@ export default function NewsletterForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="flex-1 bg-transparent border-none px-5 py-3 text-[#F0EDE6] text-sm focus:outline-none placeholder:text-subtle font-medium"
+          className="flex-1 bg-transparent border-none px-5 py-3 text-primary text-sm focus:outline-none placeholder:text-subtle font-medium"
         />
         <button
           type="submit"

@@ -26,7 +26,7 @@ export default function PrivacyPage() {
     <main className="min-h-screen pt-32 pb-20 px-6">
       <div className="max-w-4xl mx-auto">
         <div className="mb-20 animate-fade-up">
-           <h1 className="font-syne text-5xl md:text-7xl font-black tracking-tighter mb-6 text-[#F0EDE6]">
+           <h1 className="font-syne text-5xl md:text-7xl font-black tracking-tighter mb-6 text-primary">
              Privacy <span className="text-amber-gradient drop-shadow-glow-amber">Policy</span>
            </h1>
            <p className="text-subtle text-lg font-medium">Last updated: March 17, 2026</p>

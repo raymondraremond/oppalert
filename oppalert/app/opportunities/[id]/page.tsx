@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { opportunityService } from '@/lib/services/opportunity-service'
 import { Opportunity } from '@/lib/types'
 import OpportunityCard from '@/components/OpportunityCard'
-import { getCategoryLabel } from '@/lib/utils'
+import { getCategoryLabel, calculateDaysRemaining } from '@/lib/utils'
 import { CategoryIcon, Globe, Coins, MapPin, Calendar, Share2, Heart, Zap, ArrowRight, Check, Copy, ExternalLink, Loader2, ChevronLeft } from '@/lib/icons'
 
 interface Props {
@@ -56,7 +56,7 @@ export default function OpportunityDetailPage({ params }: Props) {
   const loc = opp.location || opp.loc || 'Remote/International'
   const desc = opp.description || opp.desc || ''
   const fund = opp.funding_type || opp.fund || 'Various Funding'
-  const days = opp.days_remaining ?? opp.days ?? 30
+  const days = calculateDaysRemaining(opp.deadline)
   const title = opp.title || 'Untitled Opportunity'
   const about = opp.about || desc
   const elig = opp.elig || ['Open to all applicants who meet the basic requirements.']
@@ -133,7 +133,7 @@ export default function OpportunityDetailPage({ params }: Props) {
               </button>
             </div>
 
-            <h1 className="font-syne text-3xl md:text-5xl font-black text-[#F0EDE6] leading-tight mb-8">
+            <h1 className="font-syne text-3xl md:text-5xl font-black text-primary leading-tight mb-8">
               {title}
             </h1>
 
@@ -148,7 +148,7 @@ export default function OpportunityDetailPage({ params }: Props) {
                     {item.icon}
                     <span className="text-[10px] uppercase font-black tracking-widest">{item.label}</span>
                   </div>
-                  <p className="text-sm font-bold text-[#F0EDE6] group-hover/item:text-amber transition-colors line-clamp-1">{item.value}</p>
+                  <p className="text-sm font-bold text-primary group-hover/item:text-amber transition-colors line-clamp-1">{item.value}</p>
                 </div>
               ))}
             </div>
@@ -166,7 +166,7 @@ export default function OpportunityDetailPage({ params }: Props) {
                   <div className="w-10 h-10 rounded-xl bg-amber/10 flex items-center justify-center text-amber shadow-inner group-hover:scale-110 transition-transform">
                     {section.icon}
                   </div>
-                  <h2 className="font-syne text-xl font-black text-[#F0EDE6]">{section.title}</h2>
+                  <h2 className="font-syne text-xl font-black text-primary">{section.title}</h2>
                 </div>
                 
                 {section.type === 'text' ? (
@@ -180,7 +180,7 @@ export default function OpportunityDetailPage({ params }: Props) {
                         <div className="mt-1 w-5 h-5 shrink-0 rounded-full bg-success/10 flex items-center justify-center text-success group-hover/li:bg-success group-hover/li:text-bg transition-colors">
                           <Check size={12} className="stroke-[3]" />
                         </div>
-                        <span className="text-sm text-subtle font-medium leading-relaxed group-hover/li:text-[#F0EDE6] transition-colors">{item}</span>
+                        <span className="text-sm text-subtle font-medium leading-relaxed group-hover/li:text-primary transition-colors">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -195,11 +195,15 @@ export default function OpportunityDetailPage({ params }: Props) {
           {/* Deadline Countdown */}
           <div className="bg-amber-gradient rounded-[2.5rem] p-8 text-bg text-center shadow-glow-amber relative overflow-hidden group">
             <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/20 blur-3xl rounded-full" />
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 opacity-70">Application Closes In</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 opacity-70">
+              {days === 0 ? 'This Opportunity Has' : 'Application Closes In'}
+            </p>
             <div className="font-syne text-7xl font-black tracking-tighter mb-2 drop-shadow-lg group-hover:scale-110 transition-transform duration-500">
               {days}
             </div>
-            <p className="text-sm font-black uppercase tracking-widest mb-8">Days Remaining</p>
+            <p className="text-sm font-black uppercase tracking-widest mb-8">
+              {days === 0 ? 'Closed' : 'Days Remaining'}
+            </p>
             
             <div className="space-y-3">
               <div className="h-2 bg-bg/20 rounded-full overflow-hidden">
@@ -215,13 +219,15 @@ export default function OpportunityDetailPage({ params }: Props) {
           {/* Action Card */}
           <div className="glass-gradient border border-white/10 rounded-[2.5rem] p-8 space-y-4">
             <a 
-              href={applyUrl} 
-              target="_blank" 
+              href={days === 0 ? '#' : applyUrl} 
+              target={days === 0 ? '_self' : '_blank'} 
               rel="noopener noreferrer"
-              className="btn-primary w-full py-5 px-8 text-sm font-black uppercase tracking-[0.2em] rounded-2xl shadow-glow-amber hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
+              className={`btn-primary w-full py-5 px-8 text-sm font-black uppercase tracking-[0.2em] rounded-2xl shadow-glow-amber hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 ${
+                days === 0 ? 'opacity-50 pointer-events-none grayscale' : ''
+              }`}
             >
-              Apply Official
-              <ExternalLink size={18} className="stroke-[2.5]" />
+              {days === 0 ? 'Application Closed' : 'Apply Official'}
+              {days > 0 && <ExternalLink size={18} className="stroke-[2.5]" />}
             </a>
             <button
               onClick={() => setSaved(!saved)}
