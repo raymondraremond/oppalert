@@ -1,6 +1,6 @@
 import { Opportunity } from '../types';
 import { OpportunityAdapter, OpportunityQuery } from './types';
-import { MockAdapter } from './mock-adapter';
+import { DbAdapter } from './db-adapter';
 import { AdzunaAdapter } from './adzuna-adapter';
 import { JoobleAdapter } from './jooble-adapter';
 
@@ -8,8 +8,7 @@ class OpportunityService {
   private adapters: OpportunityAdapter[] = [];
 
   constructor() {
-    // Initializing with MockAdapter to maintain current functionality
-    this.adapters.push(new MockAdapter());
+    this.adapters.push(new DbAdapter());
     this.adapters.push(new AdzunaAdapter());
     this.adapters.push(new JoobleAdapter());
   }

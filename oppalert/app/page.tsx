@@ -1,10 +1,9 @@
 'use client'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import OpportunityCard from '@/components/OpportunityCard'
 import Footer from '@/components/Footer'
 import NewsletterForm from '@/components/NewsletterForm'
-import { getFeatured } from '@/lib/data'
 import {
   GraduationCap,
   Briefcase,
@@ -63,9 +62,14 @@ const howItWorks = [
 ]
 
 export default function HomePage() {
-  const featured = getFeatured(6)
+  const [featured, setFeatured] = useState<any[]>([])
 
   useEffect(() => {
+    fetch('/api/opportunities?limit=6')
+      .then(res => res.json())
+      .then(data => setFeatured(data.data || []))
+      .catch(console.error)
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
