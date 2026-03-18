@@ -28,6 +28,7 @@ export interface Opportunity {
   funding_type?: FundingType
   days_remaining?: number
   description?: string
+  application_url?: string
   is_featured?: boolean
   is_active?: boolean
   created_at?: string

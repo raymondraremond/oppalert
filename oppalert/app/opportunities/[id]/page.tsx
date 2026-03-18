@@ -51,15 +51,35 @@ export default function OpportunityDetailPage({ params }: Props) {
 
   if (!opp) return notFound()
 
-  const currentOpp = opp as Opportunity
-  const progressPct = Math.max(10, Math.min(95, 100 - (currentOpp.days / 90) * 100))
+  const org = opp.organization || opp.org || 'Unknown Organization'
+  const cat = opp.category || opp.cat || 'scholarship'
+  const loc = opp.location || opp.loc || 'Remote/International'
+  const desc = opp.description || opp.desc || ''
+  const fund = opp.funding_type || opp.fund || 'Various Funding'
+  const days = opp.days_remaining ?? opp.days ?? 30
+  const title = opp.title || 'Untitled Opportunity'
+  const about = opp.about || desc
+  const elig = opp.elig || ['Open to all applicants who meet the basic requirements.']
+  const benefits = opp.benefits || [fund]
+  const applyUrl = opp.application_url || opp.applyUrl || '#'
+  
+  let deadlineStr = 'Rolling'
+  if (opp.deadline) deadlineStr = new Date(opp.deadline).toLocaleDateString()
+  
+  const quickinfo = opp.quickinfo || {
+    'Deadline': deadlineStr,
+    'Location': loc,
+    'Funding': fund
+  }
+
+  const progressPct = Math.max(10, Math.min(95, 100 - (days / 90) * 100))
 
   const handleShare = async () => {
     try {
       if (typeof window !== 'undefined' && navigator.share) {
         await navigator.share({
-          title: currentOpp.title,
-          text: currentOpp.desc,
+          title: title,
+          text: desc,
           url: window.location.href,
         })
       } else {
@@ -94,13 +114,13 @@ export default function OpportunityDetailPage({ params }: Props) {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
               <div className="flex items-center gap-5">
                 <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shadow-inner group-hover:rotate-3 transition-transform">
-                  <CategoryIcon cat={currentOpp.cat} size={32} className="text-amber drop-shadow-glow-amber" />
+                  <CategoryIcon cat={cat} size={32} className="text-amber drop-shadow-glow-amber" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-amber uppercase tracking-widest mb-1">{currentOpp.org}</p>
+                  <p className="text-sm font-bold text-amber uppercase tracking-widest mb-1">{org}</p>
                   <div className="flex gap-2 flex-wrap">
-                    <span className="badge badge-blue">{getCategoryLabel(currentOpp.cat)}</span>
-                    <span className="badge badge-gray">{currentOpp.fund}</span>
+                    <span className="badge badge-blue">{getCategoryLabel(cat)}</span>
+                    <span className="badge badge-gray">{fund}</span>
                   </div>
                 </div>
               </div>
@@ -114,14 +134,14 @@ export default function OpportunityDetailPage({ params }: Props) {
             </div>
 
             <h1 className="font-syne text-3xl md:text-5xl font-black text-[#F0EDE6] leading-tight mb-8">
-              {currentOpp.title}
+              {title}
             </h1>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {[
-                { label: 'Location', value: currentOpp.loc, icon: <MapPin size={16} /> },
-                { label: 'Closing Date', value: currentOpp.deadline, icon: <Calendar size={16} /> },
-                { label: 'Funding', value: currentOpp.fund, icon: <Zap size={16} /> },
+                { label: 'Location', value: loc, icon: <MapPin size={16} /> },
+                { label: 'Closing Date', value: deadlineStr, icon: <Calendar size={16} /> },
+                { label: 'Funding', value: fund, icon: <Zap size={16} /> },
               ].map((item) => (
                 <div key={item.label} className="bg-white/5 border border-white/5 rounded-2xl p-4 group/item hover:border-amber/20 transition-all">
                   <div className="flex items-center gap-2 text-muted-dark mb-2">
@@ -137,9 +157,9 @@ export default function OpportunityDetailPage({ params }: Props) {
           {/* Detailed Content */}
           <div className="space-y-6">
             {[
-              { id: 'about', title: 'About the Opportunity', icon: <Globe size={20} />, content: currentOpp.about, type: 'text' },
-              { id: 'elig', title: 'Eligibility Requirements', icon: <Check size={20} />, content: currentOpp.elig, type: 'list' },
-              { id: 'benefits', title: 'Benefits & Funding', icon: <Coins size={20} />, content: currentOpp.benefits, type: 'list' },
+              { id: 'about', title: 'About the Opportunity', icon: <Globe size={20} />, content: about, type: 'text' },
+              { id: 'elig', title: 'Eligibility Requirements', icon: <Check size={20} />, content: elig, type: 'list' },
+              { id: 'benefits', title: 'Benefits & Funding', icon: <Coins size={20} />, content: benefits, type: 'list' },
             ].map((section) => (
               <div key={section.id} className="glass-gradient border border-white/5 rounded-[2rem] p-8 md:p-10 group">
                 <div className="flex items-center gap-4 mb-6">
@@ -177,7 +197,7 @@ export default function OpportunityDetailPage({ params }: Props) {
             <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/20 blur-3xl rounded-full" />
             <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-4 opacity-70">Application Closes In</p>
             <div className="font-syne text-7xl font-black tracking-tighter mb-2 drop-shadow-lg group-hover:scale-110 transition-transform duration-500">
-              {currentOpp.days}
+              {days}
             </div>
             <p className="text-sm font-black uppercase tracking-widest mb-8">Days Remaining</p>
             
@@ -195,7 +215,7 @@ export default function OpportunityDetailPage({ params }: Props) {
           {/* Action Card */}
           <div className="glass-gradient border border-white/10 rounded-[2.5rem] p-8 space-y-4">
             <a 
-              href={currentOpp.applyUrl} 
+              href={applyUrl} 
               target="_blank" 
               rel="noopener noreferrer"
               className="btn-primary w-full py-5 px-8 text-sm font-black uppercase tracking-[0.2em] rounded-2xl shadow-glow-amber hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
@@ -220,7 +240,7 @@ export default function OpportunityDetailPage({ params }: Props) {
           <div className="glass-gradient border border-white/5 rounded-[2.5rem] p-8">
             <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-dark mb-6">Details Summary</h4>
             <div className="space-y-4">
-              {Object.entries(currentOpp.quickinfo).map(([key, value]) => (
+              {Object.entries(quickinfo).map(([key, value]) => (
                 <div key={key} className="flex justify-between items-start group">
                   <span className="text-xs text-muted-dark font-medium">{key}</span>
                   <span className="text-xs text-subtle font-bold text-right max-w-[140px] group-hover:text-[#F0EDE6] transition-colors">{value}</span>
@@ -252,9 +272,9 @@ export default function OpportunityDetailPage({ params }: Props) {
               <h2 className="section-title text-left mb-4">
                 Similar <span>Opportunities</span>
               </h2>
-              <p className="text-subtle font-medium">Opportunities you might have missed in {getCategoryLabel(currentOpp.cat)}.</p>
+              <p className="text-subtle font-medium">Opportunities you might have missed in {getCategoryLabel(cat)}.</p>
             </div>
-            <Link href={`/opportunities?cat=${currentOpp.cat}`} className="text-amber font-bold text-xs uppercase tracking-[0.2em] hover:opacity-80 transition-opacity">
+            <Link href={`/opportunities?cat=${cat}`} className="text-amber font-bold text-xs uppercase tracking-[0.2em] hover:opacity-80 transition-opacity">
               View All
             </Link>
           </div>
