@@ -104,7 +104,7 @@ export default function Navbar() {
                     Log in
                   </button>
                 </Link>
-                <Link href="/login">
+                <Link href="/register">
                   <button className="btn-primary px-7 py-3 text-[13px] font-extrabold uppercase tracking-widest flex items-center gap-2">
                     Join Free
                     <ArrowRight size={14} />
@@ -144,7 +144,7 @@ export default function Navbar() {
              ) : (
                <>
                  <Link href="/login" className="btn-ghost py-4 text-base font-bold text-center">Log in</Link>
-                 <Link href="/login" className="btn-primary py-4 text-base font-extrabold uppercase tracking-widest text-center">Join Free</Link>
+                 <Link href="/register" className="btn-primary py-4 text-base font-extrabold uppercase tracking-widest text-center">Join Free</Link>
                </>
              )}
           </div>
