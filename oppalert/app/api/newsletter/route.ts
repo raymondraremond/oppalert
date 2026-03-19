@@ -16,12 +16,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (process.env.RESEND_API_KEY) {
-      const { Resend } = await import('resend');
-      const resend = new Resend(process.env.RESEND_API_KEY);
-      const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://oppalert.vercel.app';
-      const { data, error } = await resend.emails.send({
-        from: process.env.EMAIL_FROM || "onboarding@resend.dev",
+    if (process.env.GMAIL_EMAIL && process.env.GMAIL_APP_PASSWORD) {
+      const nodemailer = await import("nodemailer");
+      const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://oppalert.vercel.app";
+      
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.GMAIL_EMAIL,
+          pass: process.env.GMAIL_APP_PASSWORD
+        }
+      });
+
+      await transporter.sendMail({
+        from: `"OppAlert" <${process.env.GMAIL_EMAIL}>`,
         to: email,
         subject: "Welcome to OppAlert \uD83C\uDF93",
         html: `<div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
@@ -33,11 +41,6 @@ export async function POST(req: NextRequest) {
           </div>
         </div>`
       });
-
-      if (error) {
-        console.error("Resend API Error:", error);
-        throw new Error(error.message || "Failed to send email via Resend");
-      }
     }
 
     return NextResponse.json({ success: true });
