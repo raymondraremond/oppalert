@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { calculateDaysRemaining } from '@/lib/utils'
 import OpportunityCard from '@/components/OpportunityCard'
 import AffiliateCard from '@/components/AffiliateCard'
 import {
@@ -131,9 +132,14 @@ export default function DashboardPage() {
       .catch(console.error)
 
     // Fetch recommended opportunities
-    fetch('/api/opportunities?limit=3')
+    fetch('/api/opportunities?limit=10')
       .then(r => r.json())
-      .then(data => { if (data?.data) setRecommendations(data.data) })
+      .then(data => {
+        if (data?.data) {
+          const openOpps = data.data.filter((opp: any) => calculateDaysRemaining(opp.deadline) > 0)
+          setRecommendations(openOpps.slice(0, 3))
+        }
+      })
       .catch(console.error)
 
     // Fetch alert preferences
@@ -260,9 +266,12 @@ export default function DashboardPage() {
               </div>
               <h3 className="font-syne text-lg font-black text-primary mb-1">{displayName}</h3>
               <div className="mb-6">
-                <span style={
+                <span 
+                  className={user?.plan === 'admin' || user?.plan === 'premium' ? 'badge-shimmer' : ''}
+                  style={
                   user?.plan === 'admin' ? {
-                    background: 'linear-gradient(135deg, #E8A020, #C87020)',
+                    background: 'linear-gradient(135deg, #E8A020 0%, #FFDF90 50%, #E8A020 100%)',
+                    backgroundSize: '200% auto',
                     color: '#0D0F0B',
                     fontWeight: 800,
                     letterSpacing: '1px',
@@ -270,7 +279,8 @@ export default function DashboardPage() {
                     padding: '3px 14px',
                     fontSize: 11
                   } : user?.plan === 'premium' ? {
-                    background: '#2A1E06',
+                    background: 'linear-gradient(135deg, #2A1E06 0%, #4A350A 50%, #2A1E06 100%)',
+                    backgroundSize: '200% auto',
                     color: '#E8A020',
                     border: '1px solid rgba(232,160,32,0.3)',
                     fontWeight: 800,

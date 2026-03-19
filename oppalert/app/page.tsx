@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
+import { calculateDaysRemaining } from '@/lib/utils'
 import OpportunityCard from '@/components/OpportunityCard'
 import Footer from '@/components/Footer'
 import ScrollReveal from '@/components/ScrollReveal'
@@ -81,9 +82,16 @@ export default function HomePage() {
   const [featured, setFeatured] = useState<any[]>([])
 
   useEffect(() => {
-    fetch('/api/opportunities?limit=6')
+    fetch('/api/opportunities?limit=15')
       .then(res => res.json())
-      .then(data => setFeatured(data.data || []))
+      .then(data => {
+        if (data?.data) {
+          const openOpps = data.data.filter((opp: any) => calculateDaysRemaining(opp.deadline) > 0)
+          setFeatured(openOpps.slice(0, 6))
+        } else {
+          setFeatured([])
+        }
+      })
       .catch(console.error)
   }, [])
 
