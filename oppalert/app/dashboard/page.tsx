@@ -132,12 +132,12 @@ export default function DashboardPage() {
       .catch(console.error)
 
     // Fetch recommended opportunities
-    fetch('/api/opportunities?limit=10')
+    fetch('/api/opportunities?limit=15')
       .then(r => r.json())
       .then(data => {
         if (data?.data) {
           const openOpps = data.data.filter((opp: any) => calculateDaysRemaining(opp.deadline) > 0)
-          setRecommendations(openOpps.slice(0, 3))
+          setRecommendations(openOpps.slice(0, 6))
         }
       })
       .catch(console.error)
@@ -389,6 +389,12 @@ export default function DashboardPage() {
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {recommendations.map((opp: any) => <OpportunityCard key={opp.id} opp={opp} />)}
+                  </div>
+                  <div className="flex justify-end mt-6">
+                    <Link href="/opportunities" className="inline-flex items-center gap-2 text-sm font-bold text-amber hover:brightness-125 transition-all group">
+                      View all opportunities
+                      <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                    </Link>
                   </div>
                 </div>
               )}
