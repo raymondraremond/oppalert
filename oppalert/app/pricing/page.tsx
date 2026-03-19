@@ -1,6 +1,7 @@
 'use client'
-import { useState } from 'react'
-import Link from 'next/link'
+import { useState } from "react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 import Footer from '@/components/Footer'
 import { Check, Minus, Zap, ChevronDown, ArrowRight, Star, ShieldCheck, Globe } from 'lucide-react'
 
@@ -31,8 +32,8 @@ const faqs = [
     a: 'Premium users get a unique Telegram bot key. Whenever a new opportunity matching your profile is verified, you get a notification instantly—often 24 hours before it hits the public site.',
   },
   {
-    q: 'What payment methods do you accept?',
-    a: 'We process all payments through Stripe for cards and international bank transfers. For West African users, we also support bank transfers in Naira (₦1,500/mo) or Cedi.',
+    q: "What payment methods do you accept?",
+    a: "We process all payments securely through Paystack. You can pay with your card, USSD, or direct bank transfer in Naira (₦1,500/mo) or other supported currencies.",
   },
   {
     q: 'Can I cancel my subscription?',
@@ -46,6 +47,34 @@ const faqs = [
 
 export default function PricingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+
+  const handleUpgrade = async () => {
+    setLoading(true)
+    const user = JSON.parse(
+      localStorage.getItem("user") || "{}"
+    )
+    if (!user.email) {
+      router.push("/login?next=/pricing")
+      return
+    }
+    const res = await fetch(
+      "/api/paystack/initialize",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: user.email,
+          userId: user.id,
+          fullName: user.fullName,
+        })
+      }
+    )
+    const data = await res.json()
+    if (data.url) window.location.href = data.url
+    setLoading(false)
+  }
 
   return (
     <main className="min-h-screen pt-24 pb-20">
@@ -136,12 +165,13 @@ export default function PricingPage() {
               ))}
             </div>
 
-            <Link href="/login" className="w-full">
-              <button className="btn-primary w-full py-5 px-8 rounded-2xl shadow-glow-amber text-bg font-black uppercase tracking-[0.2em] text-xs hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
-                Unlock Elite Access
-                <Zap size={18} className="fill-current stroke-[2.5]" />
-              </button>
-            </Link>
+            <button 
+              onClick={handleUpgrade}
+              disabled={loading}
+              className="btn-primary w-full py-5 px-8 rounded-2xl shadow-glow-amber text-bg font-black uppercase tracking-[0.2em] text-xs hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? "Processing..." : "Upgrade ₦1,500/month →"}
+            </button>
             <p className="text-[10px] text-center text-muted font-bold uppercase tracking-widest mt-6">
               Billed monthly · Cancel anytime
             </p>
@@ -227,7 +257,7 @@ export default function PricingPage() {
         <div className="mt-32 flex flex-col items-center animate-fade-up">
           <div className="flex items-center gap-12 opacity-40 grayscale hover:grayscale-0 transition-all duration-700">
             <ShieldCheck size={48} className="text-primary" />
-            <span className="font-syne font-black text-2xl tracking-tighter text-primary">STRIPE <span className="text-muted">SECURE</span></span>
+            <span className="font-syne font-black text-2xl tracking-tighter text-primary">PAYSTACK <span className="text-muted">SECURE</span></span>
           </div>
           <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted mt-8">
             Bank-grade encryption · Verified by Google Security
