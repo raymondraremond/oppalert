@@ -6,6 +6,7 @@ import OpportunityCardSkeleton from '@/components/OpportunityCardSkeleton'
 import PremiumBanner from '@/components/PremiumBanner'
 import { opportunityService } from '@/lib/services/opportunity-service'
 import { Opportunity } from '@/lib/types'
+import { calculateDaysRemaining } from '@/lib/utils'
 import { Search, SlidersHorizontal, X, Loader2, ChevronDown } from 'lucide-react'
 
 const categories = [
@@ -59,27 +60,35 @@ export default function OpportunitiesPage() {
     let result = [...allOpportunities]
 
     // Deadline filter
-    if (activeDeadline === 1) result = result.filter((o) => o.days <= 7)
-    else if (activeDeadline === 2) result = result.filter((o) => o.days <= 30)
-    else if (activeDeadline === 3) result = result.filter((o) => o.days <= 90)
+    if (activeDeadline > 0) {
+      result = result.filter((o) => {
+        const d = o.days ?? calculateDaysRemaining(o.deadline)
+        if (activeDeadline === 1) return d <= 7
+        if (activeDeadline === 2) return d <= 30
+        if (activeDeadline === 3) return d <= 90
+        return true
+      })
+    }
 
     // Funding filter
     if (activeFunding > 0) {
       const fundName = fundingTypes[activeFunding]
-      result = result.filter((o) => o.fund === fundName)
+      // Support both seed schema (fund) and DB schema (funding_type)
+      result = result.filter((o) => o.fund === fundName || o.funding_type === fundName) 
     }
 
     // Always push closed (days=0) to the bottom
     result.sort((a, b) => {
-      const aDays = a.days ?? 999
-      const bDays = b.days ?? 999
+      const aDays = a.days ?? calculateDaysRemaining(a.deadline)
+      const bDays = b.days ?? calculateDaysRemaining(b.deadline)
+      
       const aClosed = aDays === 0 ? 1 : 0
       const bClosed = bDays === 0 ? 1 : 0
       if (aClosed !== bClosed) return aClosed - bClosed
 
       // Then apply user sorting
       if (sortBy === 'deadline') return aDays - bDays
-      if (sortBy === 'popular') return (b.featured ? 1 : 0) - (a.featured ? 1 : 0)
+      if (sortBy === 'popular') return (b.featured || b.is_featured ? 1 : 0) - (a.featured || a.is_featured ? 1 : 0)
       return 0
     })
 
