@@ -67,7 +67,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
   transition-duration: 300ms;
-  font-family: var(--font-dm), sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
 ::-webkit-scrollbar {
@@ -94,15 +94,20 @@ body {
 
   /* BUTTONS */
   .btn-primary {
-    @apply font-bold rounded-xl transition-all duration-300 active:scale-95 flex items-center justify-center gap-2;
+    @apply font-bold rounded-xl flex items-center justify-center gap-2;
     background: linear-gradient(135deg, #F0B030 0%, #D88030 100%);
     color: #0D0F0B;
     box-shadow: 0 10px 20px -5px rgba(232, 160, 32, 0.4);
+    transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+    transform: translateZ(0);
   }
   .btn-primary:hover {
-    @apply -translate-y-0.5;
+    transform: translateY(-2px) translateZ(0);
     background: linear-gradient(135deg, #F5D080 0%, #E8A020 100%);
-    box-shadow: 0 15px 30px -8px rgba(232, 160, 32, 0.5);
+    box-shadow: 0 4px 20px rgba(232, 160, 32, 0.3);
+  }
+  .btn-primary:active {
+    transform: translateY(0) scale(0.97) translateZ(0);
   }
   
   .btn-ghost {
@@ -118,23 +123,33 @@ body {
 
   /* CARDS */
   .card-opp {
-    @apply rounded-2xl border p-6 transition-all duration-500 cursor-pointer relative overflow-hidden backdrop-blur-xl shadow-lg hover:shadow-2xl hover:-translate-y-2;
-    background: var(--card-bg);
+    @apply rounded-2xl border p-6 cursor-pointer relative overflow-hidden backdrop-blur-xl;
+    background: var(--bg2);
     border-color: var(--border);
+    transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.25s ease, box-shadow 0.25s ease;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    will-change: transform;
   }
   .card-opp:hover {
-    border-color: rgba(232, 160, 32, 0.3);
+    transform: translateY(-4px) translateZ(0);
+    border-color: var(--border2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
   /* Category Cards */
   .cat-card {
-    @apply rounded-2xl border p-6 transition-all duration-500 cursor-pointer relative overflow-hidden;
+    @apply rounded-2xl border p-6 cursor-pointer relative overflow-hidden;
     background: var(--card-bg);
     border-color: var(--border);
+    transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.25s ease, box-shadow 0.25s ease;
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
   .cat-card:hover {
-    border-color: rgba(232, 160, 32, 0.3);
-    @apply shadow-lg -translate-y-1;
+    transform: translateY(-3px) translateZ(0);
+    border-color: var(--border2);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
   }
 
   /* Step Cards */
@@ -150,7 +165,8 @@ body {
 
   /* Section Title */
   .section-title {
-    @apply font-syne text-3xl md:text-4xl font-black text-primary;
+    @apply text-3xl md:text-4xl font-black text-primary;
+    font-family: var(--font-syne), sans-serif;
   }
   .section-title span {
     @apply text-amber;
@@ -218,9 +234,37 @@ body {
   50% { opacity: 1; transform: scale(1.02); }
 }
 
-@keyframes slide-in-right {
-  from { opacity: 0; transform: translateX(30px); }
-  to { opacity: 1; transform: translateX(0); }
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { 
+    opacity: 0.5; 
+    transform: scale(0.9); 
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.1); 
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img {
+  loading: lazy;
 }
 
 .animate-fade-up {

@@ -48,12 +48,21 @@ export default function Navbar() {
 
   return (
     <>
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 h-[80px] flex items-center ${
-          scrolled ? 'glass shadow-premium' : 'bg-transparent'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-6 w-full flex items-center justify-between">
+      <header style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
+        background: scrolled 
+          ? 'rgba(8,10,7,0.97)' 
+          : 'rgba(8,10,7,0.85)',
+        backdropFilter: 'blur(20px)',
+        borderBottom: scrolled 
+          ? '1px solid #2E3530' 
+          : '1px solid transparent',
+        height: 80,
+        transition: 'all 0.3s ease',
+      }}>
+        <div className="max-w-7xl mx-auto px-6 w-full h-full flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-10 h-10 rounded-xl bg-amber-gradient flex items-center justify-center shadow-glow-amber group-hover:scale-110 transition-transform duration-500">

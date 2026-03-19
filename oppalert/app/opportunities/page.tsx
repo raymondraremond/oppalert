@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import OpportunityCard from '@/components/OpportunityCard'
+import OpportunityCardSkeleton from '@/components/OpportunityCardSkeleton'
 import PremiumBanner from '@/components/PremiumBanner'
 import { opportunityService } from '@/lib/services/opportunity-service'
 import { Opportunity } from '@/lib/types'
@@ -249,14 +250,10 @@ export default function OpportunitiesPage() {
           {/* Opportunities Grid */}
           <div className="relative min-h-[400px]">
             {isLoading ? (
-              <div className="absolute inset-0 flex flex-col items-center justify-center space-y-4">
-                <div className="relative">
-                  <div className="w-16 h-16 border-4 border-[var(--border)] border-t-amber rounded-full animate-spin" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <Loader2 className="text-amber animate-pulse" size={24} />
-                  </div>
-                </div>
-                <p className="text-sm font-bold text-amber uppercase tracking-widest animate-pulse">Syncing Database...</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <OpportunityCardSkeleton key={i} />
+                ))}
               </div>
             ) : filtered.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

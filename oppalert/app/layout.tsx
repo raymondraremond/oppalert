@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Syne, DM_Sans } from 'next/font/google'
+import { Syne, Inter } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import { NextAuthProvider } from '@/components/providers'
@@ -27,14 +27,18 @@ export const metadata: Metadata = {
 
 const syne = Syne({
   subsets: ['latin'],
-  variable: '--font-syne',
   weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-syne',
+  display: 'swap',
+  preload: true,
 })
 
-const dmSans = DM_Sans({
+const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-dm',
-  weight: ['300', '400', '500', '600', '700'],
+  weight: ['300', '400', '500', '600'],
+  variable: '--font-inter',
+  display: 'swap',
+  preload: true,
 })
 
 export default function RootLayout({
@@ -43,7 +47,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${syne.variable} ${dmSans.variable}`}>
+    <html lang="en" className={`${syne.variable} ${inter.variable}`}>
       <body>
         <ThemeProvider
           attribute="data-theme"
