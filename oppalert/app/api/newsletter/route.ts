@@ -21,10 +21,17 @@ export async function POST(req: NextRequest) {
       const resend = new Resend(process.env.RESEND_API_KEY);
       const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://oppalert.vercel.app';
       await resend.emails.send({
-        from: process.env.EMAIL_FROM || 'alerts@oppalert.com',
+        from: process.env.EMAIL_FROM || "alerts@oppalert.com",
         to: email,
-        subject: 'Welcome to OppAlert \uD83C\uDF93',
-        html: `<h1>Welcome to OppAlert!</h1><p>Thanks for subscribing. We will keep you updated with the latest opportunities across Africa and beyond.</p><p><a href="${APP_URL}/opportunities">Browse Opportunities</a></p>`
+        subject: "Welcome to OppAlert \uD83C\uDF93",
+        html: `<div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+          <h2 style="color: #333;">Welcome to OppAlert! \uD83C\uDF89</h2>
+          <p style="color: #555; line-height: 1.6;">You have successfully subscribed to our premium alerts.</p>
+          <p style="color: #555; line-height: 1.6;">To ensure you never miss out on exclusive scholarships and jobs, click the link below to verify your subscription and explore opportunities:</p>
+          <div style="margin-top: 25px;">
+            <a href="${APP_URL}/opportunities" style="display:inline-block; padding: 14px 28px; background-color: #E8A020; color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: bold;">Verify & Browse Opportunities</a>
+          </div>
+        </div>`
       });
     }
 

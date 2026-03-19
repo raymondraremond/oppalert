@@ -1,5 +1,20 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { hashPassword, signToken } from '@/lib/auth';
+import { NextRequest, NextResponse } from "next/server";
+import { hashPassword, signToken } from "@/lib/auth";
+import dns from "dns";
+import { promisify } from "util";
+
+const resolveMx = promisify(dns.resolveMx);
+
+async function isValidEmailDomain(email: string) {
+  const domain = email.split("@")[1];
+  if (!domain) return false;
+  try {
+    const records = await resolveMx(domain);
+    return records && records.length > 0;
+  } catch (e) {
+    return false;
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -8,10 +23,15 @@ export async function POST(req: NextRequest) {
 
     // Validation
     if (!email || !fullName) {
-      return NextResponse.json({ error: 'Email and full name are required' }, { status: 400 });
+      return NextResponse.json({ error: "Email and full name are required" }, { status: 400 });
     }
     if (!password || password.length < 8) {
-      return NextResponse.json({ error: 'Password must be at least 8 characters' }, { status: 400 });
+      return NextResponse.json({ error: "Password must be at least 8 characters" }, { status: 400 });
+    }
+
+    const isValidDomain = await isValidEmailDomain(email);
+    if (!isValidDomain) {
+      return NextResponse.json({ error: "Please provide a valid, existing email address." }, { status: 400 });
     }
 
     if (process.env.DATABASE_URL) {

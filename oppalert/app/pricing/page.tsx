@@ -53,7 +53,7 @@ export default function PricingPage() {
   const handleUpgrade = async () => {
     setLoading(true)
     const user = JSON.parse(
-      localStorage.getItem("user") || "{}"
+      localStorage.getItem("oppalert_user") || "{}"
     )
     if (!user.email) {
       router.push("/login?next=/pricing")
