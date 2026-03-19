@@ -20,8 +20,8 @@ export async function POST(req: NextRequest) {
       const { Resend } = await import('resend');
       const resend = new Resend(process.env.RESEND_API_KEY);
       const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://oppalert.vercel.app';
-      await resend.emails.send({
-        from: process.env.EMAIL_FROM || "alerts@oppalert.com",
+      const { data, error } = await resend.emails.send({
+        from: process.env.EMAIL_FROM || "onboarding@resend.dev",
         to: email,
         subject: "Welcome to OppAlert \uD83C\uDF93",
         html: `<div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
@@ -33,6 +33,11 @@ export async function POST(req: NextRequest) {
           </div>
         </div>`
       });
+
+      if (error) {
+        console.error("Resend API Error:", error);
+        throw new Error(error.message || "Failed to send email via Resend");
+      }
     }
 
     return NextResponse.json({ success: true });
