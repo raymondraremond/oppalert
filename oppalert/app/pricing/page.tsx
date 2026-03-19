@@ -72,7 +72,11 @@ export default function PricingPage() {
       }
     )
     const data = await res.json()
-    if (data.url) window.location.href = data.url
+    if (data.url) {
+      window.location.href = data.url
+    } else {
+      alert(data.error || data.message || "Payment initialization failed. Please check your Paystack API keys in .env")
+    }
     setLoading(false)
   }
 

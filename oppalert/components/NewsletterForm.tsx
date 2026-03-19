@@ -36,10 +36,14 @@ export default function NewsletterForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, preferences: prefs }),
       })
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to subscribe')
+      }
       setStep('done')
-    } catch (err) {
+    } catch (err: any) {
       console.error('Newsletter error:', err)
-      setStep('done')
+      alert(err.message || 'Error subscribing. Please check your Resend API keys in .env')
     } finally {
       setIsLoading(false)
     }
