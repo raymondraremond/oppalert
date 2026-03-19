@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { opportunityService } from '@/lib/services/opportunity-service'
 import { Opportunity } from '@/lib/types'
 import OpportunityCard from '@/components/OpportunityCard'
+import AffiliateCard from '@/components/AffiliateCard'
 import { getCategoryLabel, calculateDaysRemaining } from '@/lib/utils'
 import { CategoryIcon, Globe, Coins, MapPin, Calendar, Share2, Heart, Zap, ArrowRight, Check, Copy, ExternalLink, Loader2, ChevronLeft } from '@/lib/icons'
 
@@ -18,8 +19,16 @@ export default function OpportunityDetailPage({ params }: Props) {
   const [isLoading, setIsLoading] = useState(true)
   const [saved, setSaved] = useState(false)
   const [shared, setShared] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
+    if (typeof window !== 'undefined' && localStorage.getItem('oppalert_user')) {
+      setIsLoggedIn(true)
+    }
+
+    const views = parseInt(localStorage.getItem('oppViews') || '0')
+    localStorage.setItem('oppViews', (views + 1).toString())
+
     const fetchData = async () => {
       setIsLoading(true)
       try {
@@ -218,17 +227,29 @@ export default function OpportunityDetailPage({ params }: Props) {
 
           {/* Action Card */}
           <div className="glass-gradient border rounded-[2.5rem] p-8 space-y-4" style={{borderColor: 'var(--border)'}}>
-            <a 
-              href={days === 0 ? '#' : applyUrl} 
-              target={days === 0 ? '_self' : '_blank'} 
-              rel="noopener noreferrer"
-              className={`btn-primary w-full py-5 px-8 text-sm font-black uppercase tracking-[0.2em] rounded-2xl shadow-glow-amber hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 ${
-                days === 0 ? 'opacity-50 pointer-events-none grayscale' : ''
-              }`}
-            >
-              {days === 0 ? 'Application Closed' : 'Apply Official'}
-              {days > 0 && <ExternalLink size={18} className="stroke-[2.5]" />}
-            </a>
+            {isLoggedIn ? (
+              <a 
+                href={days === 0 ? '#' : applyUrl} 
+                target={days === 0 ? '_self' : '_blank'} 
+                rel="noopener noreferrer"
+                className={`btn-primary w-full py-5 px-8 text-sm font-black uppercase tracking-[0.2em] rounded-2xl shadow-glow-amber hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 ${
+                  days === 0 ? 'opacity-50 pointer-events-none grayscale' : ''
+                }`}
+              >
+                {days === 0 ? 'Application Closed' : 'Apply Official'}
+                {days > 0 && <ExternalLink size={18} className="stroke-[2.5]" />}
+              </a>
+            ) : (
+              <Link
+                href="/login"
+                className={`btn-primary w-full py-5 px-8 text-sm font-black uppercase tracking-[0.2em] rounded-2xl shadow-glow-amber hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 ${
+                  days === 0 ? 'opacity-50 pointer-events-none grayscale' : ''
+                }`}
+              >
+                {days === 0 ? 'Application Closed' : 'Login to Apply'}
+                {days > 0 && <ExternalLink size={18} className="stroke-[2.5]" />}
+              </Link>
+            )}
             <button
               onClick={() => setSaved(!saved)}
               className={`w-full py-4 px-8 text-xs font-black uppercase tracking-widest rounded-2xl border transition-all flex items-center justify-center gap-3 ${
@@ -255,6 +276,8 @@ export default function OpportunityDetailPage({ params }: Props) {
               ))}
             </div>
           </div>
+
+          <AffiliateCard />
 
           {/* Premium Upsell Small */}
           <div className="rounded-[2.5rem] p-8 text-center group overflow-hidden relative" style={{backgroundColor: 'var(--icon-bg)', border: '1px solid var(--border)'}}>

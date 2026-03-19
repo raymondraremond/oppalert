@@ -16,20 +16,38 @@ export default function OpportunityCard({ opp }: Props) {
   const desc = opp.description || opp.desc || ''
   const fund = opp.funding_type || opp.fund || 'Various Funding'
   const isFeatured = opp.is_featured || opp.featured || false
+  const isSponsored = opp.sponsored || false
+  const sponsoredBy = opp.sponsoredBy || 'Partner'
 
   const isUrgent = days <= 7
   const isSoon = days > 7 && days <= 14
 
   return (
     <Link href={`/opportunities/${opp.id}`} className="group block h-full animate-fade-up">
-      <div className={`card-opp h-full flex flex-col`} style={isFeatured ? {borderColor: 'rgba(232, 160, 32, 0.2)'} : undefined}>
-        {/* Featured badge */}
+      <div className={`card-opp h-full flex flex-col relative`} style={isFeatured ? {borderColor: 'rgba(232, 160, 32, 0.2)', boxShadow: '0 0 20px rgba(232, 160, 32, 0.05)'} : undefined}>
         {isFeatured && (
-          <div className="absolute top-4 right-4 z-10">
-            <div className="bg-amber-gradient text-bg text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-glow-amber">
-              Featured
+          <>
+            {/* Gold left accent */}
+            <div style={{
+              position: 'absolute', left: 0, top: 0,
+              bottom: 0, width: 3,
+              background: 'linear-gradient(180deg, #E8A020, #C87020)',
+              borderRadius: '16px 0 0 16px',
+            }} />
+            
+            {/* Featured badge */}
+            <div style={{
+              position: 'absolute', top: 12, right: 12,
+              background: 'linear-gradient(135deg, #E8A020, #C87020)',
+              color: '#090A07', padding: '2px 9px',
+              borderRadius: 100, fontSize: 9,
+              fontWeight: 800, letterSpacing: '0.8px',
+              fontFamily: 'var(--font-syne), sans-serif',
+              zIndex: 10,
+            }}>
+              FEATURED
             </div>
-          </div>
+          </>
         )}
 
         {/* Header Icon */}
@@ -47,8 +65,16 @@ export default function OpportunityCard({ opp }: Props) {
           <h3 className="font-syne text-lg font-extrabold text-primary leading-snug mb-2 group-hover:text-amber transition-colors line-clamp-2">
             {opp.title}
           </h3>
-          <p className="text-[13px] text-muted font-medium mb-4">{org}</p>
-          <p className="text-[13px] text-subtle leading-relaxed line-clamp-2 mb-6">
+          <p className="text-[13px] text-muted font-medium mb-1">{org}</p>
+          {isSponsored && (
+            <div style={{
+              fontSize: 9, color: '#555C50',
+              marginTop: 2, marginBottom: 8, letterSpacing: '0.3px',
+            }}>
+              Promoted by {sponsoredBy}
+            </div>
+          )}
+          <p className="text-[13px] text-subtle leading-relaxed line-clamp-2 mb-6 mt-3">
             {desc}
           </p>
         </div>

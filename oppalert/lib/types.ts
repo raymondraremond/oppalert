@@ -15,6 +15,8 @@ export interface Opportunity {
   days?: number
   desc?: string
   featured?: boolean
+  sponsored?: boolean
+  sponsoredBy?: string
   about?: string
   elig?: string[]
   benefits?: string[]

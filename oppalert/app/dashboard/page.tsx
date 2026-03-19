@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import OpportunityCard from '@/components/OpportunityCard'
+import AffiliateCard from '@/components/AffiliateCard'
 import {
   BarChart3, Heart, Bell, User, LogOut, Clock, Sparkles,
   ArrowRight, Zap, Check, Mail, ChevronRight, ShieldCheck, Settings,
@@ -26,6 +27,75 @@ function getStoredUser() {
     const raw = localStorage.getItem('oppalert_user')
     return raw ? JSON.parse(raw) : null
   } catch { return null }
+}
+
+function ReferralCard({ userId }: { userId: string }) {
+  const referralLink = `https://oppalert.vercel.app/register?ref=${userId}`
+  const [copied, setCopied] = useState(false)
+  
+  const copyLink = () => {
+    navigator.clipboard.writeText(referralLink)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+  
+  return (
+    <div style={{
+      background: '#141710',
+      border: '1px solid #252D22',
+      borderRadius: 12, padding: '1.25rem',
+      marginTop: 16,
+    }}>
+      <div style={{
+        fontFamily: 'var(--font-syne), sans-serif',
+        fontSize: 14, fontWeight: 700, marginBottom: 6,
+      }}>
+        🎁 Invite Friends, Earn Rewards
+      </div>
+      <p style={{
+        fontSize: 12, color: '#9A9C8E',
+        marginBottom: 14, lineHeight: 1.6,
+      }}>
+        Invite 3 friends and get 1 month Premium free.
+        They get 7 days Premium on signup.
+      </p>
+      <div style={{
+        display: 'flex', gap: 8,
+        background: '#1C2119',
+        border: '1px solid #252D22',
+        borderRadius: 8, padding: '8px 12px',
+        marginBottom: 10, alignItems: 'center',
+      }}>
+        <span style={{
+          fontSize: 11, color: '#9A9C8E',
+          flex: 1, overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+        }}>
+          {referralLink}
+        </span>
+        <button onClick={copyLink} style={{
+          background: copied ? '#0F2E1C' : '#E8A020',
+          border: 'none', borderRadius: 6,
+          padding: '5px 12px', fontSize: 11,
+          fontWeight: 700,
+          color: copied ? '#34C27A' : '#090A07',
+          cursor: 'pointer', flexShrink: 0,
+          transition: 'all 0.2s',
+        }}>
+          {copied ? '✓ Copied' : 'Copy'}
+        </button>
+      </div>
+      <div style={{
+        display: 'flex', gap: 8,
+        justifyContent: 'space-between',
+        fontSize: 11, color: '#555C50',
+      }}>
+        <span>0 friends referred</span>
+        <span>0 / 3 for free month</span>
+      </div>
+    </div>
+  )
 }
 
 export default function DashboardPage() {
@@ -162,6 +232,7 @@ export default function DashboardPage() {
   const initials = `${firstName[0] || ''}${lastName[0] || ''}`.toUpperCase() || 'U'
   const displayName = `${firstName} ${lastName}`.trim() || user?.email || 'User'
   const isPremium = user?.plan === 'premium' || user?.plan === 'admin'
+  const planName = user?.plan === 'admin' ? 'FOUNDER' : user?.plan === 'premium' ? 'PREMIUM MEMBER' : 'FREE MEMBER'
 
   if (isLoading) {
     return (
@@ -188,9 +259,38 @@ export default function DashboardPage() {
                 </div>
               </div>
               <h3 className="font-syne text-lg font-black text-primary mb-1">{displayName}</h3>
-              <p className="text-[10px] font-black uppercase tracking-widest text-muted mb-6">
-                {isPremium ? 'Premium Member' : 'Free Member'}
-              </p>
+              <div className="mb-6">
+                <span style={
+                  user?.plan === 'admin' ? {
+                    background: 'linear-gradient(135deg, #E8A020, #C87020)',
+                    color: '#0D0F0B',
+                    fontWeight: 800,
+                    letterSpacing: '1px',
+                    borderRadius: 100,
+                    padding: '3px 14px',
+                    fontSize: 11
+                  } : user?.plan === 'premium' ? {
+                    background: '#2A1E06',
+                    color: '#E8A020',
+                    border: '1px solid rgba(232,160,32,0.3)',
+                    fontWeight: 800,
+                    letterSpacing: '1px',
+                    borderRadius: 100,
+                    padding: '3px 14px',
+                    fontSize: 11
+                  } : {
+                    background: '#1C2119',
+                    color: '#9A9C8E',
+                    fontWeight: 800,
+                    letterSpacing: '1px',
+                    borderRadius: 100,
+                    padding: '3px 14px',
+                    fontSize: 11
+                  }
+                }>
+                  {planName}
+                </span>
+              </div>
               {!isPremium && (
                 <button onClick={handleUpgrade} className="btn-primary w-full py-3 px-6 rounded-xl shadow-glow-amber text-bg font-black uppercase tracking-widest text-[10px] flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all">
                   <Zap size={14} className="fill-current" />
@@ -233,6 +333,9 @@ export default function DashboardPage() {
               Sign Out Securely
             </button>
           </div>
+          
+          {user && <ReferralCard userId={user.id} />}
+          <AffiliateCard />
         </aside>
 
         {/* MAIN CONTENT */}
