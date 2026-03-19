@@ -137,7 +137,7 @@ export default function HomePage() {
           </ScrollReveal>
 
           {/* Quick Stats Grid */}
-          <ScrollReveal delay={400}>
+          <ScrollReveal delay={0}>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 max-w-5xl mx-auto py-12 border-y backdrop-blur-sm rounded-3xl md:rounded-full" style={{borderColor: 'var(--border)', backgroundColor: 'var(--icon-bg)'}}>
               {stats.map((s) => (
                 <div key={s.label} className="text-center px-4 group">
@@ -173,7 +173,7 @@ export default function HomePage() {
           {cats.map((c, i) => {
             const Icon = c.icon
             return (
-              <ScrollReveal key={c.slug} delay={i * 80}>
+              <ScrollReveal key={c.slug} delay={i * 60}>
                 <Link href={`/opportunities?cat=${c.slug}`} className="group h-full block">
                   <div className="cat-card h-full">
                     <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 shadow-inner" style={{backgroundColor: 'var(--amber-dim)'}}>
@@ -212,7 +212,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {featured.map((opp, i) => (
-              <ScrollReveal key={opp.id} delay={i * 100}>
+              <ScrollReveal key={opp.id} delay={i * 80}>
                 <OpportunityCard opp={opp} />
               </ScrollReveal>
             ))}
@@ -245,7 +245,7 @@ export default function HomePage() {
           {howItWorks.map((s, i) => {
             const StepIcon = s.icon
             return (
-              <ScrollReveal key={s.step} delay={i * 120} direction="up" className="h-full">
+              <ScrollReveal key={s.step} delay={i * 100} direction="up" className="h-full">
                 <div className="step-card group h-full">
                   <div className="w-16 h-16 rounded-2xl bg-amber-gradient text-bg flex items-center justify-center mb-8 shadow-glow-amber group-hover:scale-110 transition-all duration-500">
                     <StepIcon size={28} className="stroke-[2.5]" />
@@ -272,7 +272,7 @@ export default function HomePage() {
       </ScrollReveal>
 
       {/* ── FINAL CTA ── */}
-      <ScrollReveal delay={200}>
+      <ScrollReveal delay={100}>
         <NewsletterSection />
       </ScrollReveal>
 

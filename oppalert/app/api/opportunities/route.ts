@@ -53,11 +53,21 @@ export async function GET(req: NextRequest) {
     }
 
     if (dbData.length > 0 && !hasDbError) {
-      return NextResponse.json({ data: dbData, total: dbTotal, page, pages: Math.ceil(dbTotal / limit) });
+      return NextResponse.json({ data: dbData, total: dbTotal, page, pages: Math.ceil(dbTotal / limit), source: 'database' });
     } else {
-      // Fallback to seed data
+      // Always fall back to seed data
       const { opportunities } = await import('@/lib/data');
-      return NextResponse.json({ data: opportunities.slice(0, limit), total: opportunities.length, page, pages: 1 });
+      let filtered = [...opportunities];
+      if (category && category !== 'all') {
+        filtered = filtered.filter((o: any) => o.cat === category);
+      }
+      return NextResponse.json({
+        data: filtered.slice(offset, offset + limit),
+        total: filtered.length,
+        page,
+        pages: Math.ceil(filtered.length / limit),
+        source: 'seed'
+      });
     }
   } catch (error: any) {
     console.error('Opportunities GET error:', error);

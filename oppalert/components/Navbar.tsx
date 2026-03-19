@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Menu, X, ArrowRight, User as UserIcon, LogOut } from 'lucide-react'
 import { ThemeToggle } from './theme-toggle'
 
@@ -21,6 +21,8 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [user, setUser] = useState<any>(null)
+  const [showUserMenu, setShowUserMenu] = useState(false)
+  const userMenuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setUser(getStoredUser())
@@ -37,18 +39,37 @@ export default function Navbar() {
 
   useEffect(() => setIsOpen(false), [path])
 
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setShowUserMenu(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
   const handleLogout = async () => {
     localStorage.removeItem('oppalert_user')
     localStorage.removeItem('oppalert_token')
     // Clear the cookie via API
     await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {})
     window.dispatchEvent(new Event('oppalert_auth'))
+    setShowUserMenu(false)
     router.push('/')
   }
 
+  const initials = (() => {
+    if (!user) return ''
+    const name = user.fullName || user.name || user.email || ''
+    const parts = name.split(' ')
+    return `${parts[0]?.[0] || ''}${parts[1]?.[0] || ''}`.toUpperCase() || 'U'
+  })()
+
   return (
     <>
-      <header style={{
+      <header data-navbar style={{
         position: 'sticky',
         top: 0,
         zIndex: 100,
@@ -81,8 +102,8 @@ export default function Navbar() {
               { label: 'Admin', href: '/admin' }
             ].map((link) => (
               <Link key={link.href} href={link.href}>
-                <div className={`text-[13px] font-bold px-6 py-2.5 rounded-xl transition-all duration-300 ${
-                  path === link.href ? 'bg-amber text-bg shadow-glow-amber' : 'text-muted hover:text-primary hover:bg-[var(--icon-bg)]'
+                <div className={`nav-link text-[13px] font-bold px-6 py-2.5 rounded-xl transition-all duration-300 ${
+                  path === link.href ? 'active bg-amber text-bg shadow-glow-amber' : 'text-muted hover:text-primary hover:bg-[var(--icon-bg)]'
                 }`}>
                   {link.label}
                 </div>
@@ -93,19 +114,43 @@ export default function Navbar() {
           {/* Desktop Auth */}
           <div className="hidden md:flex gap-4 items-center">
             {user ? (
-              <div className="flex gap-3">
+              <div className="flex gap-3 items-center">
                 <Link href="/dashboard">
                   <button className="btn-ghost px-5 py-2.5 text-[13px] font-bold uppercase tracking-wider flex items-center gap-2">
                     <UserIcon size={14} className="text-amber" />
                     Dashboard
                   </button>
                 </Link>
-                <button
-                  onClick={handleLogout}
-                  className="px-5 py-2.5 text-[13px] font-bold text-muted hover:text-danger hover:bg-danger/10 rounded-xl transition-all flex items-center gap-2"
-                >
-                  <LogOut size={14} />
-                </button>
+                {/* User Avatar with Dropdown */}
+                <div className="relative" ref={userMenuRef}>
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="w-10 h-10 rounded-full bg-amber-gradient flex items-center justify-center text-bg font-syne text-xs font-black hover:scale-110 transition-transform cursor-pointer"
+                  >
+                    {initials}
+                  </button>
+                  {showUserMenu && (
+                    <div className="absolute right-0 top-14 w-56 rounded-2xl border shadow-2xl overflow-hidden z-50 animate-fade-up" style={{background: 'var(--bg2)', borderColor: 'var(--border)'}}>
+                      <div className="px-5 py-4 border-b" style={{borderColor: 'var(--border)'}}>
+                        <p className="text-sm font-bold text-primary truncate">{user.fullName || user.name || 'User'}</p>
+                        <p className="text-[11px] text-muted truncate">{user.email}</p>
+                      </div>
+                      <div className="py-2">
+                        <Link href="/dashboard" onClick={() => setShowUserMenu(false)} className="flex items-center gap-3 px-5 py-3 text-sm text-muted hover:text-primary hover:bg-[var(--icon-bg)] transition-colors">
+                          <UserIcon size={16} />
+                          My Dashboard
+                        </Link>
+                        <button
+                          onClick={handleLogout}
+                          className="w-full flex items-center gap-3 px-5 py-3 text-sm text-danger/70 hover:text-danger hover:bg-danger/5 transition-colors"
+                        >
+                          <LogOut size={16} />
+                          Sign Out
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             ) : (
               <>

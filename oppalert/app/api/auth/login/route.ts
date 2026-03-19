@@ -29,11 +29,17 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
       }
 
-      const token = signToken({ id: user.id, email: user.email, plan: user.status });
+      // Check if admin email
+      let userStatus = user.status;
+      if (email.toLowerCase() === process.env.ADMIN_EMAIL?.toLowerCase()) {
+        userStatus = 'admin';
+      }
+
+      const token = signToken({ id: user.id, email: user.email, plan: userStatus });
 
       const response = NextResponse.json({
         token,
-        user: { id: user.id, email: user.email, fullName: user.fullName, plan: user.status }
+        user: { id: user.id, email: user.email, fullName: user.fullName, plan: userStatus }
       });
       response.cookies.set('token', token, {
         httpOnly: true,

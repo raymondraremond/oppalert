@@ -2,6 +2,27 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+/* Force navbar to always be dark */
+header[data-navbar] {
+  color-scheme: dark;
+  background: rgba(8,10,7,0.95) !important;
+}
+
+header[data-navbar] a,
+header[data-navbar] button {
+  color: #EDE8DF !important;
+}
+
+header[data-navbar] .nav-link {
+  color: #9A9C8E !important;
+}
+
+header[data-navbar] .nav-link:hover,
+header[data-navbar] .nav-link.active {
+  color: #EDE8DF !important;
+  background: rgba(255,255,255,0.08) !important;
+}
+
 :root {
   /* DARK (Default) */
   --bg: #0D0F0B;
@@ -235,8 +256,8 @@ body {
 }
 
 @keyframes skeleton-pulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.7; }
 }
 
 @keyframes pulse-dot {

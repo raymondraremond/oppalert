@@ -1,58 +1,71 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { jwtVerify } from 'jose';
+import { NextRequest, NextResponse } from 'next/server'
+import { jwtVerify } from 'jose'
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'fallback-secret-change-in-production'
-);
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+  const secret = new TextEncoder().encode(
+    process.env.JWT_SECRET || 'fallback-secret-change-in-production'
+  )
 
-export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
+  const token =
+    request.cookies.get('token')?.value ||
+    request.headers.get('Authorization')
+      ?.replace('Bearer ', '')
 
-  const isDashboardRoute = pathname.startsWith('/dashboard');
-  const isAdminRoute = pathname.startsWith('/admin');
-  const isUserApiRoute = pathname.startsWith('/api/user');
-
-  if (isDashboardRoute || isAdminRoute || isUserApiRoute) {
-    // Get token from cookie or Authorization header
-    let token = req.cookies.get('token')?.value;
+  // Protect API user routes
+  if (pathname.startsWith('/api/user')) {
     if (!token) {
-      const authHeader = req.headers.get('Authorization');
-      if (authHeader && authHeader.startsWith('Bearer ')) {
-        token = authHeader.substring(7);
-      }
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-
-    if (!token) {
-      if (isUserApiRoute) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-      }
-      return NextResponse.redirect(new URL('/login', req.url));
-    }
-
     try {
-      const { payload } = await jwtVerify(token, JWT_SECRET);
-
-      // Admin route check
-      if (isAdminRoute && (payload as any).plan !== 'admin') {
-        return NextResponse.redirect(new URL('/dashboard', req.url));
-      }
-
-      return NextResponse.next();
+      await jwtVerify(token, secret)
     } catch {
-      if (isUserApiRoute) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-      }
-      return NextResponse.redirect(new URL('/login', req.url));
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
   }
 
-  return NextResponse.next();
+  // Protect dashboard — any logged in user
+  if (pathname.startsWith('/dashboard')) {
+    if (!token) {
+      return NextResponse.redirect(
+        new URL('/login', request.url)
+      )
+    }
+    try {
+      await jwtVerify(token, secret)
+    } catch {
+      return NextResponse.redirect(
+        new URL('/login', request.url)
+      )
+    }
+  }
+
+  // Protect admin — ONLY admin users
+  if (pathname.startsWith('/admin')) {
+    if (!token) {
+      return NextResponse.redirect(
+        new URL('/login', request.url)
+      )
+    }
+    try {
+      const { payload } = await jwtVerify(token, secret)
+      const plan = (payload as any).plan
+      if (plan !== 'admin') {
+        // Not admin — redirect to dashboard
+        return NextResponse.redirect(
+          new URL('/dashboard', request.url)
+        )
+      }
+    } catch {
+      return NextResponse.redirect(
+        new URL('/login', request.url)
+      )
+    }
+  }
+
+  return NextResponse.next()
 }
 
 export const config = {
-  matcher: [
-    '/dashboard/:path*',
-    '/admin/:path*',
-    '/api/user/:path*',
-  ],
-};
+  matcher: ['/dashboard/:path*', '/admin/:path*', '/api/user/:path*'],
+}

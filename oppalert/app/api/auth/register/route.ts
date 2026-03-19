@@ -28,7 +28,12 @@ export async function POST(req: NextRequest) {
 
       // Hash and insert
       const passwordHash = await hashPassword(password);
-      const userStatus = status || 'free';
+      let userStatus = status || 'free';
+
+      // Check if admin email
+      if (email.toLowerCase() === process.env.ADMIN_EMAIL?.toLowerCase()) {
+        userStatus = 'admin';
+      }
 
       const insertRes = await query(
         `INSERT INTO users (email, password_hash, full_name, country, status)
