@@ -2,69 +2,107 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
-export default function SaveButton({ oppId }: { oppId: string }) {
+interface Props {
+  oppId: string
+  oppTitle?: string
+}
+
+export default function SaveButton({ oppId, oppTitle }: Props) {
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
+  // Check if already saved on mount
   useEffect(() => {
-    const savedIds = JSON.parse(localStorage.getItem('savedOpps') || '[]')
-    setSaved(savedIds.includes(oppId))
+    const checkSaved = async () => {
+      try {
+        const stored = localStorage.getItem('oppalert_user')
+        if (!stored) return
+        
+        const token = localStorage.getItem('oppalert_token') || document.cookie
+          .split('; ')
+          .find(row => row.startsWith('token='))
+          ?.split('=')[1]
+          
+        if (!token) return
+
+        const res = await fetch('/api/user/saved', {
+          headers: { 
+            Authorization: `Bearer ${token}` 
+          }
+        })
+        if (!res.ok) return
+        const data = await res.json()
+        
+        // Check if this opportunity is in saved list
+        const isSaved = data?.some(
+          (opp: any) => 
+            opp.id === oppId || 
+            opp.opportunity_id === oppId
+        )
+        setSaved(isSaved || false)
+      } catch (e) {
+        // Silent fail
+      }
+    }
+    checkSaved()
   }, [oppId])
 
   const handleSave = async () => {
-    const userStr = localStorage.getItem('oppalert_user')
-    if (!userStr) {
-      router.push('/login?next=/opportunities/' + oppId)
+    // Check if logged in first
+    const stored = localStorage.getItem('oppalert_user')
+    if (!stored) {
+      // Redirect to login
+      localStorage.setItem('loginRedirect', window.location.pathname)
+      router.push('/login?next=' + encodeURIComponent(window.location.pathname))
       return
     }
 
-    const token = localStorage.getItem('oppalert_token') || ''
+    const token = localStorage.getItem('oppalert_token') || document.cookie
+      .split('; ')
+      .find(row => row.startsWith('token='))
+      ?.split('=')[1]
+
+    if (!token) {
+      router.push('/login')
+      return
+    }
 
     setLoading(true)
-    const savedIds = JSON.parse(localStorage.getItem('savedOpps') || '[]')
-    
-    // Optimistic Update
-    if (saved) {
-      setSaved(false)
-      localStorage.setItem('savedOpps', JSON.stringify(savedIds.filter((id: string) => id !== oppId)))
-    } else {
-      setSaved(true)
-      localStorage.setItem('savedOpps', JSON.stringify([...savedIds, oppId]))
-    }
 
     try {
       if (saved) {
-        await fetch('/api/user/saved', {
+        // UNSAVE — DELETE request
+        const res = await fetch('/api/user/saved', {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
+            Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ oppId })
+          body: JSON.stringify({ oppId }),
         })
+        if (res.ok) setSaved(false)
       } else {
+        // SAVE — POST request
         const res = await fetch('/api/user/saved', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
+            Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ oppId })
+          body: JSON.stringify({ oppId }),
         })
-        const data = await res.json()
-        // Rollback and redirect if free limit hit
-        if (data.error && res.status === 403) {
-          setSaved(false)
-          localStorage.setItem('savedOpps', JSON.stringify(savedIds.filter((id: string) => id !== oppId)))
-          router.push('/pricing')
+        
+        if (res.status === 403) {
+          // Free user hit save limit
+          router.push('/pricing?reason=save-limit')
           return
         }
+        
+        if (res.ok) setSaved(true)
       }
     } catch (err) {
       console.error('Save error:', err)
-      // On network failure, optionally rollback here 
-      // but keeping it saved locally for mock UX is fine
     } finally {
       setLoading(false)
     }
@@ -74,14 +112,26 @@ export default function SaveButton({ oppId }: { oppId: string }) {
     <button
       onClick={handleSave}
       disabled={loading}
-      className={`w-full py-4 px-8 text-xs font-black uppercase tracking-widest rounded-2xl border transition-all flex items-center justify-center gap-3 ${
-        saved
-          ? 'bg-amber/10 border-amber/30 text-amber shadow-inner'
-          : 'text-muted hover:text-primary'
-      }`}
-      style={!saved ? {backgroundColor: 'var(--icon-bg)', borderColor: 'var(--glass-border)'} : undefined}
+      style={{
+        width: '100%',
+        padding: '11px',
+        borderRadius: 10,
+        border: saved ? '2px solid #E8A020' : '1px solid #252D22',
+        background: saved ? 'rgba(232,160,32,0.1)' : 'transparent',
+        color: saved ? '#E8A020' : '#9A9C8E',
+        fontSize: 13,
+        fontWeight: 700,
+        cursor: loading ? 'not-allowed' : 'pointer',
+        transition: 'all 0.2s',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 6,
+        fontFamily: 'inherit',
+        opacity: loading ? 0.7 : 1,
+      }}
     >
-      {loading ? '...' : saved ? '♥ Saved' : '♡ Save for Later'}
+      {loading ? 'Saving...' : saved ? '♥ Saved' : '♡ Save for Later'}
     </button>
   )
 }
