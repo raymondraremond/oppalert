@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { calculateDaysRemaining } from '@/lib/utils'
+import { opportunities as seedData } from '@/lib/data'
 import OpportunityCard from '@/components/OpportunityCard'
 import AffiliateCard from '@/components/AffiliateCard'
 import {
@@ -136,8 +137,7 @@ export default function DashboardPage() {
         const localIds = JSON.parse(localStorage.getItem('savedOpps') || '[]')
         
         if (localIds.length > 0) {
-           const { opportunities } = await import('@/lib/data')
-           const localOpps = opportunities.filter((o: any) => 
+           const localOpps = seedData.filter((o: any) => 
                localIds.includes(o.id) && !dbSaved.some((d: any) => d.id === o.id)
            )
            setSavedOpps([...dbSaved, ...localOpps])
