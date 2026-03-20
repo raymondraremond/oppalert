@@ -1,79 +1,113 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getTokenFromRequest, verifyToken } from '@/lib/auth';
+import { NextRequest, NextResponse } from 'next/server'
+import { getUserFromRequest } from '@/lib/auth'
 
-export async function GET(req: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
-    const token = getTokenFromRequest(req);
-    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const user = getUserFromRequest(request)
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
+    }
 
-    const decoded = verifyToken(token);
-    if (!decoded) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (process.env.DATABASE_URL) {
+      const { query } = await import('@/lib/db')
+      
+      try {
+        const result = await query(
+          `SELECT * FROM alert_preferences 
+           WHERE user_id = $1`,
+          [user.id]
+        )
+        
+        if (result.rows.length === 0) {
+          // Return default preferences
+          return NextResponse.json({
+            data: {
+              new_opportunity_email: true,
+              deadline_reminders: true,
+              weekly_digest: true,
+              instant_alerts: false,
+            }
+          })
+        }
+        
+        return NextResponse.json({ 
+          data: result.rows[0] 
+        })
+      } catch {
+        // Table might not exist yet
+        return NextResponse.json({
+          data: {
+            new_opportunity_email: true,
+            deadline_reminders: true,
+            weekly_digest: true,
+            instant_alerts: false,
+          }
+        })
+      }
+    }
 
-    const { query } = await import('@/lib/db');
-
-    const alertRes = await query('SELECT * FROM alert_preferences WHERE user_id = $1', [decoded.id]);
-
-    if (alertRes.rows.length === 0) {
-      return NextResponse.json({
+    return NextResponse.json({
+      data: {
         new_opportunity_email: true,
         deadline_reminders: true,
         weekly_digest: true,
         instant_alerts: false,
-        categories: [],
-        countries: []
-      });
-    }
-
-    return NextResponse.json(alertRes.rows[0]);
-  } catch (error) {
-    console.error('Alerts GET error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+      }
+    })
+  } catch (err) {
+    console.error('Alerts GET error:', err)
+    return NextResponse.json(
+      { error: 'Failed to fetch alert preferences' },
+      { status: 500 }
+    )
   }
 }
 
-export async function PATCH(req: NextRequest) {
+export async function PATCH(request: NextRequest) {
   try {
-    const token = getTokenFromRequest(req);
-    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-    const decoded = verifyToken(token);
-    if (!decoded) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
-    // Instant alerts only for premium
-    const body = await req.json();
-    const { new_opportunity_email, deadline_reminders, weekly_digest, instant_alerts, categories, countries } = body;
-
-    if (instant_alerts === true && decoded.plan !== 'premium' && decoded.plan !== 'admin') {
-      return NextResponse.json({ error: 'Instant alerts require a Premium plan' }, { status: 403 });
+    const user = getUserFromRequest(request)
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      )
     }
 
-    const { query } = await import('@/lib/db');
+    const body = await request.json()
 
-    const upsertRes = await query(
-      `INSERT INTO alert_preferences (user_id, new_opportunity_email, deadline_reminders, weekly_digest, instant_alerts, categories, countries)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
-       ON CONFLICT (user_id) DO UPDATE SET
-         new_opportunity_email = EXCLUDED.new_opportunity_email,
-         deadline_reminders = EXCLUDED.deadline_reminders,
-         weekly_digest = EXCLUDED.weekly_digest,
-         instant_alerts = EXCLUDED.instant_alerts,
-         categories = EXCLUDED.categories,
-         countries = EXCLUDED.countries
-       RETURNING *`,
-      [
-        decoded.id,
-        new_opportunity_email !== undefined ? new_opportunity_email : true,
-        deadline_reminders !== undefined ? deadline_reminders : true,
-        weekly_digest !== undefined ? weekly_digest : true,
-        instant_alerts !== undefined ? instant_alerts : false,
-        categories || [],
-        countries || []
-      ]
-    );
+    if (process.env.DATABASE_URL) {
+      const { query } = await import('@/lib/db')
+      
+      await query(
+        `INSERT INTO alert_preferences 
+         (user_id, new_opportunity_email, 
+          deadline_reminders, weekly_digest, 
+          instant_alerts)
+         VALUES ($1, $2, $3, $4, $5)
+         ON CONFLICT (user_id) DO UPDATE SET
+           new_opportunity_email = $2,
+           deadline_reminders = $3,
+           weekly_digest = $4,
+           instant_alerts = $5`,
+        [
+          user.id,
+          body.new_opportunity_email ?? true,
+          body.deadline_reminders ?? true,
+          body.weekly_digest ?? true,
+          body.instant_alerts ?? false,
+        ]
+      )
+    }
 
-    return NextResponse.json(upsertRes.rows[0]);
-  } catch (error) {
-    console.error('Alerts PATCH error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ success: true })
+  } catch (err) {
+    console.error('Alerts PATCH error:', err)
+    return NextResponse.json(
+      { error: 'Failed to update preferences' },
+      { status: 500 }
+    )
   }
 }

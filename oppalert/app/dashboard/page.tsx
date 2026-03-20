@@ -193,9 +193,12 @@ export default function DashboardPage() {
 
         if (res.ok) {
           const data = await res.json()
-          const opps = data.data || []
-          setSavedOpps(opps)
-          setSavedCount(opps.length)
+            // Handle both array response and object response
+            const opps = Array.isArray(data) 
+              ? data 
+              : (data.data || [])
+            setSavedOpps(opps)
+            setSavedCount(opps.length)
         }
       } catch (err) {
         console.error("fetchSaved error:", err)
