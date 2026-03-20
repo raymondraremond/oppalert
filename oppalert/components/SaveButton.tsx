@@ -94,9 +94,14 @@ export default function SaveButton({ oppId, oppTitle }: Props) {
         })
         
         if (res.status === 403) {
-          // Free user hit save limit
-          router.push('/pricing?reason=save-limit')
-          return
+          const data = await res.json()
+          if (data.upgrade) {
+            alert(
+              "You have reached the 5 save limit on the free plan.\n\nUpgrade to Premium for unlimited saves."
+            )
+            router.push('/pricing?reason=save-limit')
+            return
+          }
         }
         
         if (res.ok) setSaved(true)

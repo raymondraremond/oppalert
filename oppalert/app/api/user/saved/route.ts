@@ -44,7 +44,10 @@ export async function POST(req: NextRequest) {
       const countRes = await query('SELECT COUNT(*) FROM saved_opportunities WHERE user_id = $1', [decoded.id]);
       if (parseInt(countRes.rows[0].count) >= 5) {
         return NextResponse.json(
-          { error: 'Free tier limit reached (5 saved). Upgrade to Premium for unlimited saves.' },
+          { 
+            error: 'Free tier limit reached (5 saved). Upgrade to Premium for unlimited saves.',
+            upgrade: true
+          },
           { status: 403 }
         );
       }
