@@ -50,12 +50,17 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    await query(
-      'INSERT INTO saved_opportunities (user_id, opportunity_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',
-      [decoded.id, oppId]
-    );
+    // Only save to DB if it's a valid UUID, otherwise it's a mock item
+    const isMock = !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(oppId);
+    
+    if (!isMock) {
+      await query(
+        'INSERT INTO saved_opportunities (user_id, opportunity_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',
+        [decoded.id, oppId]
+      );
+    }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, isMock });
   } catch (error) {
     console.error('Save opportunity error:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

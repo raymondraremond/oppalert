@@ -33,9 +33,9 @@ export default function OpportunityDetailPage({ params }: Props) {
     // Try DB in background
     fetch('/api/opportunities/' + params.id)
       .then(r => r.json())
-      .then(data => {
-        if (data && data.id) {
-          setOpp(data)
+      .then(res => {
+        if (res?.data?.id) {
+          setOpp(res.data)
         }
       })
       .catch(() => {})

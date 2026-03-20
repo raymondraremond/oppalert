@@ -95,9 +95,23 @@ export default function OpportunitiesPage() {
     const cat = activeCat !== 'all' ? '?cat=' + activeCat : ''
     fetch('/api/opportunities' + cat)
       .then(r => r.json())
-      .then(data => {
-        if (data?.data?.length > 0) {
-          setOpps(data.data)
+      .then(res => {
+        if (res?.data?.length > 0) {
+          const dbOpps = res.data;
+          // Keep seed bootcamps/events so they always appear even if DB lacks them
+          const seedOppsToKeep = getFiltered().filter(s => 
+            ['bootcamp', 'event'].includes(s.cat) && 
+            !dbOpps.some((dbItem: any) => dbItem.title === s.title)
+          );
+          
+          let merged = [...dbOpps, ...seedOppsToKeep];
+          
+          if (sortBy === 'deadline') {
+            merged.sort((a, b) => (a.days || 30) - (b.days || 30));
+          } else if (sortBy === 'popular') {
+            merged.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+          }
+          setOpps(merged);
         }
       })
       .catch(() => {})

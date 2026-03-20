@@ -89,9 +89,18 @@ export default function HomePage() {
     // Try DB in background silently
     fetch('/api/opportunities?limit=15')
       .then(res => res.json())
-      .then(data => {
-        if (data?.data?.length > 0) {
-          const openOpps = data.data.filter((opp: any) => calculateDaysRemaining(opp.deadline) > 0)
+      .then(resData => {
+        if (resData?.data?.length > 0) {
+          const dbOpps = resData.data;
+          // Keep seed bootcamps/events that aren't in DB
+          const seedOppsToKeep = getFeatured(10).filter(s => 
+            ['bootcamp', 'event'].includes(s.cat) && 
+            !dbOpps.some((dbItem: any) => dbItem.title === s.title)
+          );
+          
+          let merged = [...dbOpps, ...seedOppsToKeep];
+          
+          const openOpps = merged.filter((opp: any) => calculateDaysRemaining(opp.deadline) > 0)
           if (openOpps.length > 0) {
             setFeatured(openOpps.slice(0, 6))
           }
