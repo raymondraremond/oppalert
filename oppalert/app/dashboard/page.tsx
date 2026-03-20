@@ -128,7 +128,23 @@ export default function DashboardPage() {
     // Fetch saved opportunities
     fetch('/api/user/saved', { headers: getAuthHeaders() as any })
       .then(r => r.json())
-      .then(data => { if (Array.isArray(data)) setSavedOpps(data) })
+      .then(async data => { 
+        let dbSaved = []
+        if (Array.isArray(data)) dbSaved = data;
+        
+        // Also get mock items from localStorage
+        const localIds = JSON.parse(localStorage.getItem('savedOpps') || '[]')
+        
+        if (localIds.length > 0) {
+           const { opportunities } = await import('@/lib/data')
+           const localOpps = opportunities.filter((o: any) => 
+               localIds.includes(o.id) && !dbSaved.some((d: any) => d.id === o.id)
+           )
+           setSavedOpps([...dbSaved, ...localOpps])
+        } else {
+           setSavedOpps(dbSaved)
+        }
+      })
       .catch(console.error)
 
     // Fetch recommended opportunities

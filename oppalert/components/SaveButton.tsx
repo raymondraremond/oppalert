@@ -22,6 +22,17 @@ export default function SaveButton({ oppId }: { oppId: string }) {
     const token = localStorage.getItem('oppalert_token') || ''
 
     setLoading(true)
+    const savedIds = JSON.parse(localStorage.getItem('savedOpps') || '[]')
+    
+    // Optimistic Update
+    if (saved) {
+      setSaved(false)
+      localStorage.setItem('savedOpps', JSON.stringify(savedIds.filter((id: string) => id !== oppId)))
+    } else {
+      setSaved(true)
+      localStorage.setItem('savedOpps', JSON.stringify([...savedIds, oppId]))
+    }
+
     try {
       if (saved) {
         await fetch('/api/user/saved', {
@@ -32,9 +43,6 @@ export default function SaveButton({ oppId }: { oppId: string }) {
           },
           body: JSON.stringify({ oppId })
         })
-        const savedIds = JSON.parse(localStorage.getItem('savedOpps') || '[]')
-        localStorage.setItem('savedOpps', JSON.stringify(savedIds.filter((id: string) => id !== oppId)))
-        setSaved(false)
       } else {
         const res = await fetch('/api/user/saved', {
           method: 'POST',
@@ -45,16 +53,18 @@ export default function SaveButton({ oppId }: { oppId: string }) {
           body: JSON.stringify({ oppId })
         })
         const data = await res.json()
+        // Rollback and redirect if free limit hit
         if (data.error && res.status === 403) {
+          setSaved(false)
+          localStorage.setItem('savedOpps', JSON.stringify(savedIds.filter((id: string) => id !== oppId)))
           router.push('/pricing')
           return
         }
-        const savedIds = JSON.parse(localStorage.getItem('savedOpps') || '[]')
-        localStorage.setItem('savedOpps', JSON.stringify([...savedIds, oppId]))
-        setSaved(true)
       }
     } catch (err) {
       console.error('Save error:', err)
+      // On network failure, optionally rollback here 
+      // but keeping it saved locally for mock UX is fine
     } finally {
       setLoading(false)
     }
