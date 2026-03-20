@@ -1,96 +1,127 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { getTokenFromRequest, verifyToken } from '@/lib/auth';
+import { NextRequest, NextResponse } from 'next/server'
+import { getUserFromRequest } from '@/lib/auth'
 
-export async function GET(req: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
-    const token = getTokenFromRequest(req);
-    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const user = getUserFromRequest(request)
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
 
-    const decoded = verifyToken(token);
-    if (!decoded) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (process.env.DATABASE_URL) {
+      const { query } = await import('@/lib/db')
 
-    const { query } = await import('@/lib/db');
+      const result = await query(
+        `SELECT 
+          o.id,
+          o.icon,
+          o.title,
+          o.organization,
+          o.category,
+          o.location,
+          o.funding_type,
+          o.description,
+          o.application_url,
+          o.deadline,
+          o.days_remaining,
+          o.is_featured,
+          s.saved_at,
+          s.opportunity_id
+         FROM opportunities o
+         JOIN saved_opportunities s ON o.id = s.opportunity_id
+         WHERE s.user_id = $1
+         ORDER BY s.saved_at DESC`,
+        [user.id]
+      )
 
-    const savedRes = await query(
-      `SELECT opp.* FROM opportunities opp
-       JOIN saved_opportunities s ON opp.id = s.opportunity_id
-       WHERE s.user_id = $1
-       ORDER BY s.saved_at DESC`,
-      [decoded.id]
-    );
+      // Return as plain array so frontend can handle both formats
+      return NextResponse.json({
+        data: result.rows,
+        total: result.rows.length,
+      })
+    }
 
-    return NextResponse.json(savedRes.rows);
-  } catch (error) {
-    console.error('Fetch saved error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ data: [], total: 0 })
+  } catch (err) {
+    console.error('GET saved error:', err)
+    return NextResponse.json({ error: 'Failed to fetch saved opportunities' }, { status: 500 })
   }
 }
 
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const token = getTokenFromRequest(req);
-    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const user = getUserFromRequest(request)
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
 
-    const decoded = verifyToken(token);
-    if (!decoded) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const body = await request.json()
+    const { oppId } = body
 
-    const { oppId } = await req.json();
-    if (!oppId) return NextResponse.json({ error: 'Opportunity ID is required' }, { status: 400 });
+    if (!oppId) {
+      return NextResponse.json({ error: 'oppId is required' }, { status: 400 })
+    }
 
-    const { query } = await import('@/lib/db');
+    if (process.env.DATABASE_URL) {
+      const { query } = await import('@/lib/db')
 
-    // Free plan limit: 5 saved opportunities
-    if (decoded.plan === 'free') {
-      const countRes = await query('SELECT COUNT(*) FROM saved_opportunities WHERE user_id = $1', [decoded.id]);
-      if (parseInt(countRes.rows[0].count) >= 5) {
-        return NextResponse.json(
-          { 
-            error: 'Free tier limit reached (5 saved). Upgrade to Premium for unlimited saves.',
-            upgrade: true
-          },
-          { status: 403 }
-        );
+      // Only apply save limit to free users — admin and premium have unlimited saves
+      if (user.plan === 'free') {
+        const countResult = await query(
+          'SELECT COUNT(*) as count FROM saved_opportunities WHERE user_id = $1',
+          [user.id]
+        )
+        const count = parseInt(countResult.rows[0].count)
+        if (count >= 5) {
+          return NextResponse.json(
+            { error: 'Free plan limited to 5 saves. Upgrade to Premium.', upgrade: true },
+            { status: 403 }
+          )
+        }
       }
-    }
 
-    // Only save to DB if it's a valid UUID, otherwise it's a mock item
-    const isMock = !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(oppId);
-    
-    if (!isMock) {
       await query(
-        'INSERT INTO saved_opportunities (user_id, opportunity_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',
-        [decoded.id, oppId]
-      );
+        `INSERT INTO saved_opportunities (user_id, opportunity_id)
+         VALUES ($1, $2)
+         ON CONFLICT DO NOTHING`,
+        [user.id, oppId]
+      )
+
+      return NextResponse.json({ success: true, message: 'Opportunity saved' }, { status: 201 })
     }
 
-    return NextResponse.json({ success: true, isMock });
-  } catch (error) {
-    console.error('Save opportunity error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ success: true }, { status: 201 })
+  } catch (err) {
+    console.error('POST saved error:', err)
+    return NextResponse.json({ error: 'Failed to save opportunity' }, { status: 500 })
   }
 }
 
-export async function DELETE(req: NextRequest) {
+export async function DELETE(request: NextRequest) {
   try {
-    const token = getTokenFromRequest(req);
-    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const user = getUserFromRequest(request)
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
 
-    const decoded = verifyToken(token);
-    if (!decoded) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const body = await request.json()
+    const { oppId } = body
 
-    const { oppId } = await req.json();
-    if (!oppId) return NextResponse.json({ error: 'Opportunity ID is required' }, { status: 400 });
+    if (!oppId) {
+      return NextResponse.json({ error: 'oppId is required' }, { status: 400 })
+    }
 
-    const { query } = await import('@/lib/db');
+    if (process.env.DATABASE_URL) {
+      const { query } = await import('@/lib/db')
+      await query(
+        'DELETE FROM saved_opportunities WHERE user_id = $1 AND opportunity_id = $2',
+        [user.id, oppId]
+      )
+    }
 
-    await query(
-      'DELETE FROM saved_opportunities WHERE user_id = $1 AND opportunity_id = $2',
-      [decoded.id, oppId]
-    );
-
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Delete saved error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ success: true })
+  } catch (err) {
+    console.error('DELETE saved error:', err)
+    return NextResponse.json({ error: 'Failed to remove saved opportunity' }, { status: 500 })
   }
 }
