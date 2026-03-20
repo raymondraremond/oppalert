@@ -18,19 +18,6 @@ const navItems = [
   { id: 'profile', label: 'My Profile', icon: User },
 ]
 
-function getAuthHeaders() {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('oppalert_token') : null
-  return token ? { Authorization: `Bearer ${token}` } : {}
-}
-
-function getStoredUser() {
-  if (typeof window === 'undefined') return null
-  try {
-    const raw = localStorage.getItem('oppalert_user')
-    return raw ? JSON.parse(raw) : null
-  } catch { return null }
-}
-
 function ReferralCard({ userId }: { userId: string }) {
   const referralLink = `https://oppalert.vercel.app/register?ref=${userId}`
   const [copied, setCopied] = useState(false)
@@ -49,7 +36,7 @@ function ReferralCard({ userId }: { userId: string }) {
       marginTop: 16,
     }}>
       <div style={{
-        fontFamily: 'var(--font-syne), sans-serif',
+        fontFamily: "var(--font-syne), sans-serif",
         fontSize: 14, fontWeight: 700, marginBottom: 6,
       }}>
         🎁 Invite Friends, Earn Rewards
@@ -117,16 +104,36 @@ export default function DashboardPage() {
   const [country, setCountry] = useState('Nigeria')
   const [isLoading, setIsLoading] = useState(true)
 
+  // Auth helper
+  const getAuthHeaders = () => {
+    const token = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('token='))
+      ?.split('=')[1]
+    return token ? { Authorization: `Bearer ${token}` } : {}
+  }
+
   // Load user and data
   useEffect(() => {
-    const stored = getStoredUser()
-    if (!stored) { router.push('/login'); return }
-    setUser(stored)
-
-    const fullName: string = stored.fullName || stored.name || ''
-    const parts = fullName.split(' ')
-    setFirstName(parts[0] || '')
-    setLastName(parts.slice(1).join(' ') || '')
+    // Get user from localStorage
+    try {
+      const stored = localStorage.getItem('user') || localStorage.getItem('oppalert_user')
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        setUser(parsed)
+        const fullName = parsed.fullName || parsed.name || ""
+        const parts = fullName.split(' ')
+        setFirstName(parts[0] || "")
+        setLastName(parts.slice(1).join(' ') || "")
+      } else {
+        router.push('/login')
+        return
+      }
+    } catch (err) {
+      console.error("User parsing error:", err)
+      router.push('/login')
+      return
+    }
 
     // Fetch recommended opportunities
     fetch('/api/opportunities?limit=15')
@@ -140,7 +147,9 @@ export default function DashboardPage() {
       .catch(console.error)
 
     // Fetch alert preferences
-    fetch('/api/user/alerts', { headers: getAuthHeaders() as any })
+    fetch('/api/user/alerts', { 
+      headers: { ...getAuthHeaders() as any, 'Content-Type': 'application/json' }
+    })
       .then(r => r.json())
       .then(data => {
         if (data && !data.error) {
@@ -158,41 +167,38 @@ export default function DashboardPage() {
     setIsLoading(false)
   }, [router])
 
+  // Fetch saved opportunities on mount
   useEffect(() => {
     const fetchSaved = async () => {
       try {
         setSavedLoading(true)
-        
-        // Get token from cookie
         const token = document.cookie
           .split('; ')
           .find(row => row.startsWith('token='))
           ?.split('=')[1]
-
+        
         if (!token) {
           setSavedLoading(false)
           return
         }
 
         const res = await fetch('/api/user/saved', {
+          method: 'GET',
           headers: {
-            Authorization: `Bearer ${token}`,
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
           cache: 'no-store',
         })
 
-        if (!res.ok) {
-          setSavedLoading(false)
-          return
+        if (res.ok) {
+          const data = await res.json()
+          const opps = data.data || []
+          setSavedOpps(opps)
+          setSavedCount(opps.length)
         }
-
-        const data = await res.json()
-        const opps = data.data || []
-        setSavedOpps(opps)
-        setSavedCount(opps.length)
       } catch (err) {
-        console.error('Failed to fetch saved:', err)
+        console.error("fetchSaved error:", err)
       } finally {
         setSavedLoading(false)
       }
@@ -202,6 +208,7 @@ export default function DashboardPage() {
   }, [])
 
   const handleLogout = async () => {
+    localStorage.removeItem('user')
     localStorage.removeItem('oppalert_user')
     localStorage.removeItem('oppalert_token')
     await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {})
@@ -241,6 +248,7 @@ export default function DashboardPage() {
       const updated = await res.json()
       const newUser = { ...user, fullName: updated.fullName }
       localStorage.setItem('oppalert_user', JSON.stringify(newUser))
+      localStorage.setItem('user', JSON.stringify(newUser))
       setUser(newUser)
       window.dispatchEvent(new Event('oppalert_auth'))
     }
@@ -275,10 +283,10 @@ export default function DashboardPage() {
     if (data.url) window.location.href = data.url
   }
 
-  const initials = `${firstName[0] || ''}${lastName[0] || ''}`.toUpperCase() || 'U'
-  const displayName = `${firstName} ${lastName}`.trim() || user?.email || 'User'
+  const initials = `${firstName[0] || ""}${lastName[0] || ""}`.toUpperCase() || "U"
+  const displayName = `${firstName} ${lastName}`.trim() || user?.email || "User"
   const isPremium = user?.plan === 'premium' || user?.plan === 'admin'
-  const planName = user?.plan === 'admin' ? 'FOUNDER' : user?.plan === 'premium' ? 'PREMIUM MEMBER' : 'FREE MEMBER'
+  const planName = user?.plan === 'admin' ? "FOUNDER" : user?.plan === 'premium' ? "PREMIUM MEMBER" : "FREE MEMBER"
 
   if (isLoading) {
     return (
@@ -307,34 +315,34 @@ export default function DashboardPage() {
               <h3 className="font-syne text-lg font-black text-primary mb-1">{displayName}</h3>
               <div className="mb-6">
                 <span 
-                  className={user?.plan === 'admin' || user?.plan === 'premium' ? 'badge-shimmer' : ''}
+                  className={user?.plan === 'admin' || user?.plan === 'premium' ? 'badge-shimmer' : ""}
                   style={
                   user?.plan === 'admin' ? {
-                    background: 'linear-gradient(135deg, #E8A020 0%, #FFDF90 50%, #E8A020 100%)',
-                    backgroundSize: '200% auto',
+                    background: "linear-gradient(135deg, #E8A020 0%, #FFDF90 50%, #E8A020 100%)",
+                    backgroundSize: "200% auto",
                     color: '#0D0F0B',
                     fontWeight: 800,
-                    letterSpacing: '1px',
+                    letterSpacing: "1px",
                     borderRadius: 100,
-                    padding: '3px 14px',
+                    padding: "3px 14px",
                     fontSize: 11
                   } : user?.plan === 'premium' ? {
-                    background: 'linear-gradient(135deg, #2A1E06 0%, #4A350A 50%, #2A1E06 100%)',
-                    backgroundSize: '200% auto',
+                    background: "linear-gradient(135deg, #2A1E06 0%, #4A350A 50%, #2A1E06 100%)",
+                    backgroundSize: "200% auto",
                     color: '#E8A020',
-                    border: '1px solid rgba(232,160,32,0.3)',
+                    border: "1px solid rgba(232,160,32,0.3)",
                     fontWeight: 800,
-                    letterSpacing: '1px',
+                    letterSpacing: "1px",
                     borderRadius: 100,
-                    padding: '3px 14px',
+                    padding: "3px 14px",
                     fontSize: 11
                   } : {
                     background: '#1C2119',
                     color: '#9A9C8E',
                     fontWeight: 800,
-                    letterSpacing: '1px',
+                    letterSpacing: "1px",
                     borderRadius: 100,
-                    padding: '3px 14px',
+                    padding: "3px 14px",
                     fontSize: 11
                   }
                 }>
@@ -365,7 +373,7 @@ export default function DashboardPage() {
                         : 'text-muted hover:text-primary hover:bg-[var(--icon-bg)]'
                     }`}
                   >
-                    <div className={isActive ? 'text-amber' : ''}><Icon size={18} /></div>
+                    <div className={isActive ? 'text-amber' : ""}><Icon size={18} /></div>
                     {item.label}
                     {isActive && <div className="ml-auto w-1 h-1 rounded-full bg-amber shadow-glow-amber" />}
                   </button>
@@ -396,10 +404,10 @@ export default function DashboardPage() {
             <div className="animate-fade-up space-y-10">
               <div>
                 <h1 className="font-syne text-4xl md:text-5xl font-black text-primary tracking-tighter mb-2">
-                  Welcome, <span className="text-amber-gradient drop-shadow-glow-amber">{firstName || 'back'}</span>
+                  Welcome, <span className="text-amber-gradient drop-shadow-glow-amber">{firstName || "back"}</span>
                 </h1>
                 <p className="text-subtle font-medium">
-                  {savedOpps.length > 0 ? `You have ${savedOpps.length} saved opportunities.` : 'Discover opportunities and start saving them.'}
+                  {savedOpps.length > 0 ? `You have ${savedOpps.length} saved opportunities.` : "Discover opportunities and start saving them."}
                 </p>
               </div>
 
@@ -408,7 +416,7 @@ export default function DashboardPage() {
                 {[
                   { num: String(savedCount), label: 'Saved Items', icon: <Heart size={20} /> },
                   { num: String(deadlines.length), label: 'Urgent Deadlines', icon: <Clock size={20} />, alert: deadlines.length > 0 },
-                  { num: isPremium ? 'Unlimited' : '5 max', label: 'Save Limit', icon: <Bell size={20} /> },
+                  { num: isPremium ? 'Unlimited' : `${savedCount} / 5`, label: 'Save Limit', icon: <Bell size={20} /> },
                 ].map((s, idx) => (
                   <div key={idx} className="glass-gradient border border-[var(--border)] rounded-3xl p-6 relative group overflow-hidden">
                     <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-6 shadow-inner ${s.alert ? 'bg-danger/10 text-danger' : 'bg-[var(--icon-bg)] text-subtle'}`}>
@@ -445,7 +453,7 @@ export default function DashboardPage() {
           {activeTab === 'saved' && (
             <div>
               <h2 style={{
-                fontFamily: 'var(--font-syne), sans-serif',
+                fontFamily: "var(--font-syne), sans-serif",
                 fontSize: 24,
                 fontWeight: 800,
                 marginBottom: 4,
@@ -458,7 +466,7 @@ export default function DashboardPage() {
                 marginBottom: 24,
               }}>
                 {savedCount} saved {savedCount === 1 
-                  ? 'opportunity' : 'opportunities'}
+                  ? "opportunity" : "opportunities"}
               </p>
 
               {savedLoading ? (
@@ -466,7 +474,7 @@ export default function DashboardPage() {
                 <div style={{
                   display: 'grid',
                   gridTemplateColumns: 
-                    'repeat(auto-fill, minmax(280px, 1fr))',
+                    "repeat(auto-fill, minmax(280px, 1fr))",
                   gap: 16,
                 }}>
                   {[1,2,3].map(i => (
@@ -477,7 +485,7 @@ export default function DashboardPage() {
                       padding: '1.25rem',
                       height: 180,
                       animation: 
-                        'skeleton-pulse 1.5s ease infinite',
+                        "skeleton-pulse 1.5s ease infinite",
                     }} />
                   ))}
                 </div>
@@ -494,7 +502,7 @@ export default function DashboardPage() {
                     🤍
                   </div>
                   <h3 style={{
-                    fontFamily: 'var(--font-syne), sans-serif',
+                    fontFamily: "var(--font-syne), sans-serif",
                     fontSize: 18,
                     fontWeight: 700,
                     marginBottom: 8,
@@ -509,7 +517,7 @@ export default function DashboardPage() {
                     Browse opportunities and save the ones 
                     you want to apply to.
                   </p>
-                  <a href="/opportunities">
+                  <Link href="/opportunities">
                     <button style={{
                       background: '#E8A020',
                       border: 'none',
@@ -519,18 +527,18 @@ export default function DashboardPage() {
                       fontWeight: 700,
                       color: '#090A07',
                       cursor: 'pointer',
-                      fontFamily: 'inherit',
+                      fontFamily: "inherit",
                     }}>
                       Browse Opportunities
                     </button>
-                  </a>
+                  </Link>
                 </div>
               ) : (
                 // Show saved opportunity cards
                 <div style={{
                   display: 'grid',
                   gridTemplateColumns: 
-                    'repeat(auto-fill, minmax(280px, 1fr))',
+                    "repeat(auto-fill, minmax(280px, 1fr))",
                   gap: 16,
                 }}>
                   {savedOpps.map((opp: any) => (
@@ -548,13 +556,13 @@ export default function DashboardPage() {
                         fontSize: 28,
                         marginBottom: 10,
                       }}>
-                        {opp.icon || '🌍'}
+                        {opp.icon || "🌍"}
                       </div>
 
                       {/* Title */}
                       <div style={{
                         fontFamily: 
-                          'var(--font-syne), sans-serif',
+                          "var(--font-syne), sans-serif",
                         fontSize: 14,
                         fontWeight: 700,
                         marginBottom: 4,
@@ -607,15 +615,15 @@ export default function DashboardPage() {
                         color: '#555C50',
                         marginBottom: 14,
                       }}>
-                        ⏰ {opp.days_remaining || 30} days left
+                        ⏰ {opp.days_remaining || calculateDaysRemaining(opp.deadline) || 0} days left
                       </div>
 
                       {/* Buttons */}
                       <div style={{ display: 'flex', gap: 8 }}>
                         
-                        <a
+                        <Link
                           href={
-                            `/opportunities/${opp.id || opp.opportunity_id}`
+                             `/opportunities/${opp.id || opp.opportunity_id}`
                           }
                           style={{
                             flex: 1,
@@ -632,11 +640,11 @@ export default function DashboardPage() {
                             fontWeight: 700,
                             color: '#090A07',
                             cursor: 'pointer',
-                            fontFamily: 'inherit',
+                            fontFamily: "inherit",
                           }}>
                             View →
                           </button>
-                        </a>
+                        </Link>
                         <button
                           onClick={async () => {
                             const token = document.cookie
@@ -644,25 +652,28 @@ export default function DashboardPage() {
                               .find(r => r.startsWith('token='))
                               ?.split('=')[1]
                             if (!token) return
-                            await fetch('/api/user/saved', {
-                              method: 'DELETE',
-                              headers: {
-                                Authorization: `Bearer ${token}`,
-                                'Content-Type': 'application/json',
-                              },
-                              body: JSON.stringify({ 
-                                oppId: opp.id || 
-                                       opp.opportunity_id 
-                              }),
-                            })
-                            setSavedOpps(prev => 
-                              prev.filter((o: any) => 
-                                o.id !== opp.id && 
-                                o.opportunity_id !== 
-                                  opp.opportunity_id
-                              )
-                            )
-                            setSavedCount(prev => prev - 1)
+                            try {
+                              const res = await fetch('/api/user/saved', {
+                                method: 'DELETE',
+                                headers: {
+                                  'Authorization': `Bearer ${token}`,
+                                  'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ 
+                                  oppId: opp.id || opp.opportunity_id 
+                                }),
+                              })
+                              if (res.ok) {
+                                setSavedOpps(prev => 
+                                  prev.filter((o: any) => 
+                                    (o.id || o.opportunity_id) !== (opp.id || opp.opportunity_id)
+                                  )
+                                )
+                                setSavedCount(prev => Math.max(0, prev - 1))
+                              }
+                            } catch (err) {
+                              console.error("Remove failed:", err)
+                            }
                           }}
                           style={{
                             padding: '8px 12px',
@@ -672,7 +683,7 @@ export default function DashboardPage() {
                             fontSize: 12,
                             color: '#F05050',
                             cursor: 'pointer',
-                            fontFamily: 'inherit',
+                            fontFamily: "inherit",
                           }}
                         >
                           Remove
@@ -698,7 +709,7 @@ export default function DashboardPage() {
                   { key: 'newOpps' as const, icon: Mail, label: 'Opportunity Blast', sub: 'Instant email for matches in your niches', premium: false },
                   { key: 'deadlines' as const, icon: Clock, label: 'Final Call Reminders', sub: 'Reminders 48h before closing dates', premium: false },
                   { key: 'digest' as const, icon: BarChart3, label: 'Weekly Performance', sub: 'Summary of all matches and market trends', premium: false },
-                  { key: 'instant' as const, icon: Zap, label: 'Instant Telegram Pushes', sub: 'Real-time verified listing notifications', premium: true },
+                  { key: 'instant' as const, icon: Zap, label: 'Instant Telegram Pushes', sub: 'Instant verified listing notifications', premium: true },
                 ].map((a) => (
                   <div key={a.key} className="glass-gradient border border-[var(--border)] p-6 rounded-[2rem] flex items-center gap-6 group hover:border-[var(--glass-border)] transition-all">
                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-inner ${a.premium ? 'bg-amber/10 border-amber/20 text-amber' : 'bg-[var(--icon-bg)] border-[var(--border)] text-subtle'}`}>
@@ -751,7 +762,7 @@ export default function DashboardPage() {
 
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-muted ml-1">Email</label>
-                    <input className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary/50 focus:outline-none transition-all cursor-not-allowed" value={user?.email || ''} readOnly />
+                    <input className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary/50 focus:outline-none transition-all cursor-not-allowed" value={user?.email || ""} readOnly />
                   </div>
 
                   <div className="space-y-2">
@@ -792,7 +803,7 @@ export default function DashboardPage() {
 
                   <div className="bg-[var(--icon-bg)] border border-[var(--border)] rounded-[2rem] p-6 text-center space-y-4">
                     <ShieldCheck size={32} className="mx-auto text-muted" />
-                    <h4 className="font-bold text-sm text-primary">Trust &amp; Security</h4>
+                    <h4 className="font-bold text-sm text-primary">Trust & Security</h4>
                     <p className="text-[10px] text-muted font-medium leading-relaxed">Your data is encrypted. We never sell your personal metrics.</p>
                   </div>
 
