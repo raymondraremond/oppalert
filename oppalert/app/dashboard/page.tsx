@@ -129,23 +129,35 @@ export default function DashboardPage() {
     // Fetch saved opportunities
     fetch('/api/user/saved', { headers: getAuthHeaders() as any })
       .then(r => r.json())
-      .then(async data => { 
-        let dbSaved = []
+      .then(data => {
+        let dbSaved: any[] = []
         if (Array.isArray(data)) dbSaved = data;
         
         // Also get mock items from localStorage
-        const localIds = JSON.parse(localStorage.getItem('savedOpps') || '[]')
+        const rawLocal = localStorage.getItem('savedOpps')
+        let localIds: string[] = []
+        try { if (rawLocal) localIds = JSON.parse(rawLocal) } catch(e) {}
         
-        if (localIds.length > 0) {
-           const localOpps = seedData.filter((o: any) => 
-               localIds.includes(o.id) && !dbSaved.some((d: any) => d.id === o.id)
+        let localOpps: any[] = []
+        if (localIds && localIds.length > 0) {
+           localOpps = seedData.filter(o => 
+               localIds.includes(String(o.id)) && !dbSaved.some(d => String(d.id) === String(o.id))
            )
-           setSavedOpps([...dbSaved, ...localOpps])
-        } else {
-           setSavedOpps(dbSaved)
+        }
+        
+        setSavedOpps([...dbSaved, ...localOpps])
+      })
+      .catch(err => {
+        console.error('Fetch saved error:', err)
+        // Fallback to local storage purely on network failure
+        const rawLocal = localStorage.getItem('savedOpps')
+        let localIds: string[] = []
+        try { if (rawLocal) localIds = JSON.parse(rawLocal) } catch(e) {}
+        if (localIds && localIds.length > 0) {
+           const localOpps = seedData.filter(o => localIds.includes(String(o.id)))
+           setSavedOpps(localOpps)
         }
       })
-      .catch(console.error)
 
     // Fetch recommended opportunities
     fetch('/api/opportunities?limit=15')
