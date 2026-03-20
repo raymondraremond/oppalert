@@ -105,6 +105,8 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState('overview')
   const [user, setUser] = useState<any>(null)
   const [savedOpps, setSavedOpps] = useState<any[]>([])
+  const [savedCount, setSavedCount] = useState(0)
+  const [savedLoading, setSavedLoading] = useState(true)
   const [recommendations, setRecommendations] = useState<any[]>([])
   const [alerts, setAlerts] = useState({ newOpps: true, deadlines: true, digest: true, instant: false })
   const [profileSaved, setProfileSaved] = useState(false)
@@ -125,39 +127,6 @@ export default function DashboardPage() {
     const parts = fullName.split(' ')
     setFirstName(parts[0] || '')
     setLastName(parts.slice(1).join(' ') || '')
-
-    // Fetch saved opportunities
-    fetch('/api/user/saved', { headers: getAuthHeaders() as any })
-      .then(r => r.json())
-      .then(data => {
-        let dbSaved: any[] = []
-        if (Array.isArray(data)) dbSaved = data;
-        
-        // Also get mock items from localStorage
-        const rawLocal = localStorage.getItem('savedOpps')
-        let localIds: string[] = []
-        try { if (rawLocal) localIds = JSON.parse(rawLocal) } catch(e) {}
-        
-        let localOpps: any[] = []
-        if (localIds && localIds.length > 0) {
-           localOpps = seedData.filter(o => 
-               localIds.includes(String(o.id)) && !dbSaved.some(d => String(d.id) === String(o.id))
-           )
-        }
-        
-        setSavedOpps([...dbSaved, ...localOpps])
-      })
-      .catch(err => {
-        console.error('Fetch saved error:', err)
-        // Fallback to local storage purely on network failure
-        const rawLocal = localStorage.getItem('savedOpps')
-        let localIds: string[] = []
-        try { if (rawLocal) localIds = JSON.parse(rawLocal) } catch(e) {}
-        if (localIds && localIds.length > 0) {
-           const localOpps = seedData.filter(o => localIds.includes(String(o.id)))
-           setSavedOpps(localOpps)
-        }
-      })
 
     // Fetch recommended opportunities
     fetch('/api/opportunities?limit=15')
@@ -188,6 +157,49 @@ export default function DashboardPage() {
 
     setIsLoading(false)
   }, [router])
+
+  useEffect(() => {
+    const fetchSaved = async () => {
+      try {
+        setSavedLoading(true)
+        
+        // Get token from cookie
+        const token = document.cookie
+          .split('; ')
+          .find(row => row.startsWith('token='))
+          ?.split('=')[1]
+
+        if (!token) {
+          setSavedLoading(false)
+          return
+        }
+
+        const res = await fetch('/api/user/saved', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          cache: 'no-store',
+        })
+
+        if (!res.ok) {
+          setSavedLoading(false)
+          return
+        }
+
+        const data = await res.json()
+        const opps = data.data || []
+        setSavedOpps(opps)
+        setSavedCount(opps.length)
+      } catch (err) {
+        console.error('Failed to fetch saved:', err)
+      } finally {
+        setSavedLoading(false)
+      }
+    }
+
+    fetchSaved()
+  }, [])
 
   const handleLogout = async () => {
     localStorage.removeItem('oppalert_user')
@@ -394,7 +406,7 @@ export default function DashboardPage() {
               {/* Quick Stats */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 {[
-                  { num: String(savedOpps.length), label: 'Saved Items', icon: <Heart size={20} /> },
+                  { num: String(savedCount), label: 'Saved Items', icon: <Heart size={20} /> },
                   { num: String(deadlines.length), label: 'Urgent Deadlines', icon: <Clock size={20} />, alert: deadlines.length > 0 },
                   { num: isPremium ? 'Unlimited' : '5 max', label: 'Save Limit', icon: <Bell size={20} /> },
                 ].map((s, idx) => (
@@ -431,21 +443,243 @@ export default function DashboardPage() {
 
           {/* SAVED ITEMS TAB */}
           {activeTab === 'saved' && (
-            <div className="animate-fade-up space-y-8">
-              <div>
-                <h1 className="font-syne text-4xl font-black text-primary tracking-tighter mb-2">Saved <span className="text-amber">Items</span></h1>
-                <p className="text-subtle font-medium">{savedOpps.length} saved {savedOpps.length === 1 ? 'opportunity' : 'opportunities'}</p>
-              </div>
-              {savedOpps.length === 0 ? (
-                <div className="glass-gradient border border-[var(--border)] rounded-[3rem] p-16 text-center">
-                  <Heart size={48} className="mx-auto text-muted mb-6 opacity-30" />
-                  <h3 className="font-syne text-xl font-black text-primary mb-3">No saved items yet</h3>
-                  <p className="text-subtle mb-8">Browse opportunities and save the ones you want to apply to.</p>
-                  <Link href="/opportunities" className="btn-primary px-8 py-3 rounded-2xl font-black uppercase tracking-widest text-xs inline-block">Browse Opportunities</Link>
+            <div>
+              <h2 style={{
+                fontFamily: 'var(--font-syne), sans-serif',
+                fontSize: 24,
+                fontWeight: 800,
+                marginBottom: 4,
+              }}>
+                Saved <span style={{ color: '#E8A020' }}>Items</span>
+              </h2>
+              <p style={{
+                fontSize: 13,
+                color: '#555C50',
+                marginBottom: 24,
+              }}>
+                {savedCount} saved {savedCount === 1 
+                  ? 'opportunity' : 'opportunities'}
+              </p>
+
+              {savedLoading ? (
+                // Show skeleton cards while loading
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 
+                    'repeat(auto-fill, minmax(280px, 1fr))',
+                  gap: 16,
+                }}>
+                  {[1,2,3].map(i => (
+                    <div key={i} style={{
+                      background: '#141710',
+                      border: '1px solid #252D22',
+                      borderRadius: 16,
+                      padding: '1.25rem',
+                      height: 180,
+                      animation: 
+                        'skeleton-pulse 1.5s ease infinite',
+                    }} />
+                  ))}
+                </div>
+              ) : savedOpps.length === 0 ? (
+                // Empty state
+                <div style={{
+                  background: '#0F1210',
+                  border: '1px solid #252D22',
+                  borderRadius: 16,
+                  padding: '3rem 2rem',
+                  textAlign: 'center',
+                }}>
+                  <div style={{ fontSize: 40, marginBottom: 16 }}>
+                    🤍
+                  </div>
+                  <h3 style={{
+                    fontFamily: 'var(--font-syne), sans-serif',
+                    fontSize: 18,
+                    fontWeight: 700,
+                    marginBottom: 8,
+                  }}>
+                    No saved items yet
+                  </h3>
+                  <p style={{
+                    fontSize: 13,
+                    color: '#555C50',
+                    marginBottom: 20,
+                  }}>
+                    Browse opportunities and save the ones 
+                    you want to apply to.
+                  </p>
+                  <a href="/opportunities">
+                    <button style={{
+                      background: '#E8A020',
+                      border: 'none',
+                      borderRadius: 10,
+                      padding: '10px 24px',
+                      fontSize: 13,
+                      fontWeight: 700,
+                      color: '#090A07',
+                      cursor: 'pointer',
+                      fontFamily: 'inherit',
+                    }}>
+                      Browse Opportunities
+                    </button>
+                  </a>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {savedOpps.map((opp: any) => <OpportunityCard key={opp.id} opp={opp} />)}
+                // Show saved opportunity cards
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 
+                    'repeat(auto-fill, minmax(280px, 1fr))',
+                  gap: 16,
+                }}>
+                  {savedOpps.map((opp: any) => (
+                    <div key={opp.id || opp.opportunity_id}
+                      style={{
+                        background: '#141710',
+                        border: '1px solid #252D22',
+                        borderRadius: 16,
+                        padding: '1.25rem',
+                        position: 'relative',
+                      }}
+                    >
+                      {/* Icon */}
+                      <div style={{
+                        fontSize: 28,
+                        marginBottom: 10,
+                      }}>
+                        {opp.icon || '🌍'}
+                      </div>
+
+                      {/* Title */}
+                      <div style={{
+                        fontFamily: 
+                          'var(--font-syne), sans-serif',
+                        fontSize: 14,
+                        fontWeight: 700,
+                        marginBottom: 4,
+                        color: '#EDE8DF',
+                        lineHeight: 1.3,
+                      }}>
+                        {opp.title}
+                      </div>
+
+                      {/* Org */}
+                      <div style={{
+                        fontSize: 12,
+                        color: '#555C50',
+                        marginBottom: 12,
+                      }}>
+                        {opp.organization}
+                      </div>
+
+                      {/* Badges */}
+                      <div style={{
+                        display: 'flex',
+                        gap: 6,
+                        flexWrap: 'wrap',
+                        marginBottom: 14,
+                      }}>
+                        <span style={{
+                          background: '#2A1E06',
+                          color: '#E8A020',
+                          padding: '2px 9px',
+                          borderRadius: 100,
+                          fontSize: 11,
+                          fontWeight: 600,
+                        }}>
+                          {opp.category}
+                        </span>
+                        <span style={{
+                          background: '#1C2119',
+                          color: '#9A9C8E',
+                          padding: '2px 9px',
+                          borderRadius: 100,
+                          fontSize: 11,
+                        }}>
+                          {opp.funding_type}
+                        </span>
+                      </div>
+
+                      {/* Deadline */}
+                      <div style={{
+                        fontSize: 11,
+                        color: '#555C50',
+                        marginBottom: 14,
+                      }}>
+                        ⏰ {opp.days_remaining || 30} days left
+                      </div>
+
+                      {/* Buttons */}
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        
+                        <a
+                          href={
+                            `/opportunities/${opp.id || opp.opportunity_id}`
+                          }
+                          style={{
+                            flex: 1,
+                            textDecoration: 'none',
+                          }}
+                        >
+                          <button style={{
+                            width: '100%',
+                            padding: '8px',
+                            background: '#E8A020',
+                            border: 'none',
+                            borderRadius: 8,
+                            fontSize: 12,
+                            fontWeight: 700,
+                            color: '#090A07',
+                            cursor: 'pointer',
+                            fontFamily: 'inherit',
+                          }}>
+                            View →
+                          </button>
+                        </a>
+                        <button
+                          onClick={async () => {
+                            const token = document.cookie
+                              .split('; ')
+                              .find(r => r.startsWith('token='))
+                              ?.split('=')[1]
+                            if (!token) return
+                            await fetch('/api/user/saved', {
+                              method: 'DELETE',
+                              headers: {
+                                Authorization: `Bearer ${token}`,
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({ 
+                                oppId: opp.id || 
+                                       opp.opportunity_id 
+                              }),
+                            })
+                            setSavedOpps(prev => 
+                              prev.filter((o: any) => 
+                                o.id !== opp.id && 
+                                o.opportunity_id !== 
+                                  opp.opportunity_id
+                              )
+                            )
+                            setSavedCount(prev => prev - 1)
+                          }}
+                          style={{
+                            padding: '8px 12px',
+                            background: 'transparent',
+                            border: '1px solid #252D22',
+                            borderRadius: 8,
+                            fontSize: 12,
+                            color: '#F05050',
+                            cursor: 'pointer',
+                            fontFamily: 'inherit',
+                          }}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
