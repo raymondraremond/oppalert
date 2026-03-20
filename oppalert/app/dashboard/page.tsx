@@ -226,10 +226,10 @@ export default function DashboardPage() {
 
   const handleUpgrade = async () => {
     if (!user) return
-    const res = await fetch('/api/stripe/checkout', {
+    const res = await fetch('/api/paystack/initialize', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: user.id, email: user.email }),
+      body: JSON.stringify({ userId: user.id, email: user.email, fullName: user.fullName || user.name }),
     })
     const data = await res.json()
     if (data.url) window.location.href = data.url

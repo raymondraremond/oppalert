@@ -1,13 +1,10 @@
 'use client'
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import OpportunityCard from '@/components/OpportunityCard'
-import OpportunityCardSkeleton from '@/components/OpportunityCardSkeleton'
 import PremiumBanner from '@/components/PremiumBanner'
-import { opportunityService } from '@/lib/services/opportunity-service'
-import { Opportunity } from '@/lib/types'
-import { calculateDaysRemaining } from '@/lib/utils'
-import { Search, SlidersHorizontal, X, Loader2, ChevronDown } from 'lucide-react'
+import { opportunities as seedData } from '@/lib/data'
+import { Search, SlidersHorizontal, X, ChevronDown } from 'lucide-react'
 
 const categories = [
   { slug: 'all', label: 'All Opportunities', count: '2.4k+' },
@@ -17,95 +14,107 @@ const categories = [
   { slug: 'grant', label: 'Grants', count: '240' },
   { slug: 'internship', label: 'Internships', count: '310' },
   { slug: 'startup', label: 'Startup & VC', count: '92' },
+  { slug: 'bootcamp', label: '💻 Bootcamps', count: '45' },
+  { slug: 'event', label: '🎪 Events', count: '38' },
 ]
 
-const locations = ['Any Location', 'Remote', 'Africa (Across)', 'Nigeria', 'Ghana', 'Kenya', 'South Africa', 'International']
-const deadlines = ['Any Deadline', 'Closing Soon (< 7d)', 'This Month', 'Next 3 Months']
-const fundingTypes = ['Any Funding', 'Fully Funded', 'Partial Funding', 'Paid Position', 'Financial Grant']
+const locations = ['All', 'Remote', 'Nigeria', 'Ghana', 'Kenya', 'International']
+const deadlines = ['Any', '7 days', '30 days', '90 days']
+const fundingTypes = ['All', 'Fully Funded', 'Partial', 'Paid', 'Equity']
 
 export default function OpportunitiesPage() {
   const [activeCat, setActiveCat] = useState('all')
-  const [activeLoc, setActiveLoc] = useState(0)
-  const [activeDeadline, setActiveDeadline] = useState(0)
-  const [activeFunding, setActiveFunding] = useState(0)
   const [searchQuery, setSearchQuery] = useState('')
+  const [locationFilter, setLocationFilter] = useState('all')
+  const [fundingFilter, setFundingFilter] = useState('all')
+  const [deadlineFilter, setDeadlineFilter] = useState('all')
   const [sortBy, setSortBy] = useState('latest')
   const [showMobileFilters, setShowMobileFilters] = useState(false)
-  const [allOpportunities, setAllOpportunities] = useState<Opportunity[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [displayCount, setDisplayCount] = useState(12)
 
-  useEffect(() => {
-    const fetchOpps = async () => {
-      setIsLoading(true)
-      try {
-        const results = await opportunityService.searchAll({
-          category: activeCat === 'all' ? undefined : activeCat as any,
-          keyword: searchQuery,
-          location: activeLoc > 0 ? locations[activeLoc] : undefined,
-          fundingType: activeFunding > 0 ? fundingTypes[activeFunding] : undefined
-        })
-        setAllOpportunities(results)
-      } catch (err) {
-        console.error('Failed to fetch opportunities:', err)
-      } finally {
-        setIsLoading(false)
-      }
+  // CRITICAL: Filter seed data synchronously — never empty, never loading
+  const getFiltered = () => {
+    let filtered = [...seedData]
+
+    // Category filter
+    if (activeCat !== 'all') {
+      filtered = filtered.filter(o => o.cat === activeCat)
     }
-    
-    // Debounce search
-    const timer = setTimeout(fetchOpps, 500)
-    return () => clearTimeout(timer)
-  }, [activeCat, searchQuery, activeLoc, activeFunding])
 
-  const filtered = useMemo(() => {
-    let result = [...allOpportunities]
+    // Search filter
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase()
+      filtered = filtered.filter(o =>
+        o.title.toLowerCase().includes(q) ||
+        (o.org || '').toLowerCase().includes(q) ||
+        (o.desc || '').toLowerCase().includes(q)
+      )
+    }
 
-    // Deadline filter
-    if (activeDeadline > 0) {
-      result = result.filter((o) => {
-        const d = o.days ?? calculateDaysRemaining(o.deadline)
-        if (activeDeadline === 1) return d <= 7
-        if (activeDeadline === 2) return d <= 30
-        if (activeDeadline === 3) return d <= 90
-        return true
-      })
+    // Location filter
+    if (locationFilter !== 'all') {
+      filtered = filtered.filter(o =>
+        (o.loc || '').toLowerCase().includes(locationFilter.toLowerCase())
+      )
     }
 
     // Funding filter
-    if (activeFunding > 0) {
-      const fundName = fundingTypes[activeFunding]
-      // Support both seed schema (fund) and DB schema (funding_type)
-      result = result.filter((o) => o.fund === fundName || o.funding_type === fundName) 
+    if (fundingFilter !== 'all') {
+      filtered = filtered.filter(o =>
+        (o.fund || '').toLowerCase().includes(fundingFilter.toLowerCase())
+      )
     }
 
-    // Always push closed (days=0) to the bottom
-    result.sort((a, b) => {
-      const aDays = a.days ?? calculateDaysRemaining(a.deadline)
-      const bDays = b.days ?? calculateDaysRemaining(b.deadline)
-      
-      const aClosed = aDays === 0 ? 1 : 0
-      const bClosed = bDays === 0 ? 1 : 0
-      if (aClosed !== bClosed) return aClosed - bClosed
+    // Deadline filter
+    if (deadlineFilter === '7') {
+      filtered = filtered.filter(o => (o.days || 30) <= 7)
+    } else if (deadlineFilter === '30') {
+      filtered = filtered.filter(o => (o.days || 30) <= 30)
+    } else if (deadlineFilter === '90') {
+      filtered = filtered.filter(o => (o.days || 30) <= 90)
+    }
 
-      // Then apply user sorting
-      if (sortBy === 'deadline') return aDays - bDays
-      if (sortBy === 'popular') return (b.featured || b.is_featured ? 1 : 0) - (a.featured || a.is_featured ? 1 : 0)
-      return 0
-    })
+    // Sort
+    if (sortBy === 'deadline') {
+      filtered.sort((a, b) => (a.days || 30) - (b.days || 30))
+    } else if (sortBy === 'popular') {
+      filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0))
+    }
 
-    return result
-  }, [allOpportunities, activeDeadline, activeFunding, sortBy])
+    return filtered
+  }
+
+  const [opps, setOpps] = useState(getFiltered())
+
+  // Update when filters change + try DB in background
+  useEffect(() => {
+    setOpps(getFiltered())
+    setDisplayCount(12)
+
+    // Try DB in background silently
+    const cat = activeCat !== 'all' ? '?cat=' + activeCat : ''
+    fetch('/api/opportunities' + cat)
+      .then(r => r.json())
+      .then(data => {
+        if (data?.data?.length > 0) {
+          setOpps(data.data)
+        }
+      })
+      .catch(() => {})
+  }, [activeCat, searchQuery, locationFilter, fundingFilter, deadlineFilter, sortBy])
 
   const clearFilters = () => {
     setActiveCat('all')
-    setActiveLoc(0)
-    setActiveDeadline(0)
-    setActiveFunding(0)
     setSearchQuery('')
+    setLocationFilter('all')
+    setFundingFilter('all')
+    setDeadlineFilter('all')
     setSortBy('latest')
   }
 
-  const hasFilters = activeCat !== 'all' || activeLoc > 0 || activeDeadline > 0 || activeFunding > 0 || searchQuery.trim()
+  const hasFilters = activeCat !== 'all' || locationFilter !== 'all' || fundingFilter !== 'all' || deadlineFilter !== 'all' || searchQuery.trim()
+
+  const displayedOpps = opps.slice(0, displayCount)
 
   const filterSidebar = (
     <div className="space-y-8 animate-fade-up">
@@ -138,8 +147,8 @@ export default function OpportunitiesPage() {
               key={c.slug}
               onClick={() => setActiveCat(c.slug)}
               className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl transition-all group ${
-                activeCat === c.slug 
-                  ? 'bg-amber/10 text-amber font-bold border border-amber/20' 
+                activeCat === c.slug
+                  ? 'bg-amber/10 text-amber font-bold border border-amber/20'
                   : 'text-subtle hover:bg-[var(--input-bg)] hover:text-primary'
               }`}
             >
@@ -154,36 +163,69 @@ export default function OpportunitiesPage() {
         </div>
       </div>
 
-      {/* Filter Selects */}
-      <div className="space-y-4">
-        {[
-          { label: 'Location', options: locations, state: activeLoc, setter: setActiveLoc },
-          { label: 'Deadline', options: deadlines, state: activeDeadline, setter: setActiveDeadline },
-          { label: 'Funding', options: fundingTypes, state: activeFunding, setter: setActiveFunding },
-        ].map((filter) => (
-          <div key={filter.label}>
-            <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted block mb-3">
-              {filter.label}
-            </label>
-            <div className="relative">
-              <select
-                value={filter.state}
-                onChange={(e) => filter.setter(parseInt(e.target.value))}
-                className="w-full appearance-none border rounded-xl py-3 px-4 text-primary text-sm focus:outline-none transition-all font-medium cursor-pointer"
-                style={{backgroundColor: 'var(--input-bg)', borderColor: 'var(--glass-border)'}}
-              >
-                {filter.options.map((opt, idx) => (
-                  <option key={opt} value={idx} className="bg-bg text-primary">{opt}</option>
-                ))}
-              </select>
-              <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-subtle pointer-events-none" />
-            </div>
-          </div>
-        ))}
+      {/* Location Filter */}
+      <div>
+        <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted block mb-3">
+          Location
+        </label>
+        <div className="relative">
+          <select
+            value={locationFilter}
+            onChange={(e) => setLocationFilter(e.target.value)}
+            className="w-full appearance-none border rounded-xl py-3 px-4 text-primary text-sm focus:outline-none transition-all font-medium cursor-pointer"
+            style={{backgroundColor: 'var(--input-bg)', borderColor: 'var(--glass-border)'}}
+          >
+            {locations.map((loc) => (
+              <option key={loc} value={loc === 'All' ? 'all' : loc} className="bg-bg text-primary">{loc}</option>
+            ))}
+          </select>
+          <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-subtle pointer-events-none" />
+        </div>
+      </div>
+
+      {/* Deadline Filter */}
+      <div>
+        <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted block mb-3">
+          Deadline
+        </label>
+        <div className="relative">
+          <select
+            value={deadlineFilter}
+            onChange={(e) => setDeadlineFilter(e.target.value)}
+            className="w-full appearance-none border rounded-xl py-3 px-4 text-primary text-sm focus:outline-none transition-all font-medium cursor-pointer"
+            style={{backgroundColor: 'var(--input-bg)', borderColor: 'var(--glass-border)'}}
+          >
+            <option value="all" className="bg-bg text-primary">Any Deadline</option>
+            <option value="7" className="bg-bg text-primary">Within 7 days</option>
+            <option value="30" className="bg-bg text-primary">Within 30 days</option>
+            <option value="90" className="bg-bg text-primary">Within 90 days</option>
+          </select>
+          <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-subtle pointer-events-none" />
+        </div>
+      </div>
+
+      {/* Funding Filter */}
+      <div>
+        <label className="text-[10px] uppercase font-black tracking-[0.2em] text-muted block mb-3">
+          Funding
+        </label>
+        <div className="relative">
+          <select
+            value={fundingFilter}
+            onChange={(e) => setFundingFilter(e.target.value)}
+            className="w-full appearance-none border rounded-xl py-3 px-4 text-primary text-sm focus:outline-none transition-all font-medium cursor-pointer"
+            style={{backgroundColor: 'var(--input-bg)', borderColor: 'var(--glass-border)'}}
+          >
+            {fundingTypes.map((ft) => (
+              <option key={ft} value={ft === 'All' ? 'all' : ft.toLowerCase()} className="bg-bg text-primary">{ft}</option>
+            ))}
+          </select>
+          <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-subtle pointer-events-none" />
+        </div>
       </div>
 
       {hasFilters && (
-        <button 
+        <button
           className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl border hover:text-danger text-muted text-xs font-bold uppercase tracking-widest transition-all"
           style={{borderColor: 'var(--glass-border)'}}
           onClick={clearFilters}
@@ -211,7 +253,7 @@ export default function OpportunitiesPage() {
                 Browse <span className="text-amber">Opportunities</span>
               </h1>
               <p className="text-sm text-subtle font-medium">
-                {isLoading ? 'Searching...' : `Found ${filtered.length} verified listings`}
+                {opps.length} results found
               </p>
             </div>
 
@@ -259,15 +301,9 @@ export default function OpportunitiesPage() {
 
           {/* Opportunities Grid */}
           <div className="relative min-h-[400px]">
-            {isLoading ? (
+            {displayedOpps.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <OpportunityCardSkeleton key={i} />
-                ))}
-              </div>
-            ) : filtered.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filtered.map((opp) => (
+                {displayedOpps.map((opp: any) => (
                   <OpportunityCard key={opp.id} opp={opp} />
                 ))}
               </div>
@@ -278,9 +314,9 @@ export default function OpportunitiesPage() {
                 </div>
                 <h3 className="font-syne text-2xl font-black text-primary mb-4">No Matches Found</h3>
                 <p className="text-subtle max-w-sm mb-10 font-medium">
-                  We couldn&apos;t find any opportunities matching your current filters. Try broadening your search.
+                  We could not find any opportunities matching your current filters. Try broadening your search.
                 </p>
-                <button 
+                <button
                   onClick={clearFilters}
                   className="btn-primary px-10 py-4 rounded-2xl shadow-glow-amber font-black uppercase tracking-widest text-xs"
                 >
@@ -290,9 +326,21 @@ export default function OpportunitiesPage() {
             )}
           </div>
 
-          {filtered.length > 0 && (
-            <div className="pt-12 text-center">
-              <button 
+          {/* Load More */}
+          {displayCount < opps.length && (
+            <div className="pt-8 text-center">
+              <button
+                onClick={() => setDisplayCount(prev => prev + 12)}
+                className="btn-ghost px-10 py-4 rounded-2xl font-black uppercase tracking-widest text-xs"
+              >
+                Load More ({opps.length - displayCount} remaining)
+              </button>
+            </div>
+          )}
+
+          {displayedOpps.length > 0 && (
+            <div className="pt-4 text-center">
+              <button
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 className="inline-flex items-center gap-2 text-muted hover:text-amber font-bold text-xs uppercase tracking-[0.2em] transition-all group"
               >

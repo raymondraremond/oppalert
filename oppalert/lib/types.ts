@@ -1,4 +1,4 @@
-export type Category = 'scholarship' | 'job' | 'fellowship' | 'grant' | 'internship' | 'startup'
+export type Category = 'scholarship' | 'job' | 'fellowship' | 'grant' | 'internship' | 'startup' | 'bootcamp' | 'event'
 export type FundingType = 'Fully Funded' | 'Partial Funding' | 'Paid Position' | 'Equity / Funding'
 
 export interface Opportunity {

@@ -24,7 +24,81 @@ import {
   ArrowUpRight,
   Globe,
   Zap,
+  Inbox,
 } from 'lucide-react'
+
+function SubmissionsTab() {
+  const [submissions, setSubmissions] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch('/api/admin/submissions')
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data)) setSubmissions(data)
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
+
+  const handleAction = async (id: string, action: 'approve' | 'reject') => {
+    try {
+      await fetch('/api/admin/submissions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, action }),
+      })
+      setSubmissions(prev => prev.filter(s => s.id !== id))
+    } catch (err) {
+      console.error('Action error:', err)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-10 text-center">
+        <Loader2 size={32} className="mx-auto text-amber animate-spin mb-4" />
+        <p className="text-muted font-bold text-sm">Loading submissions...</p>
+      </div>
+    )
+  }
+
+  if (submissions.length === 0) {
+    return (
+      <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-10 text-center space-y-4">
+        <Inbox size={48} className="mx-auto text-muted opacity-40" />
+        <h3 className="font-syne text-xl font-black text-primary">No Pending Submissions</h3>
+        <p className="text-subtle font-medium max-w-sm mx-auto">When organizations submit listings via the Post a Listing form, they will appear here for review.</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-4">
+      {submissions.map((sub: any) => (
+        <div key={sub.id} className="glass-gradient border border-[var(--border)] rounded-[2rem] p-6 md:p-8">
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
+            <div>
+              <h3 className="font-syne text-lg font-black text-primary mb-1">{sub.title}</h3>
+              <p className="text-xs text-muted font-bold uppercase tracking-widest">{sub.org_name} · {sub.listing_type}</p>
+            </div>
+            <div className="flex gap-3">
+              <button onClick={() => handleAction(sub.id, 'approve')} className="px-6 py-2.5 rounded-xl bg-success/10 text-success text-xs font-black uppercase tracking-widest hover:bg-success/20 transition-all">Approve</button>
+              <button onClick={() => handleAction(sub.id, 'reject')} className="px-6 py-2.5 rounded-xl bg-danger/10 text-danger text-xs font-black uppercase tracking-widest hover:bg-danger/20 transition-all">Reject</button>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs mb-3">
+            <div><span className="text-muted">Location:</span> <span className="text-primary font-bold">{sub.location}</span></div>
+            <div><span className="text-muted">Cost:</span> <span className="text-primary font-bold">{sub.cost}</span></div>
+            <div><span className="text-muted">Deadline:</span> <span className="text-primary font-bold">{sub.deadline ? new Date(sub.deadline).toLocaleDateString() : 'Rolling'}</span></div>
+            <div><span className="text-muted">Contact:</span> <span className="text-primary font-bold">{sub.contact_email}</span></div>
+          </div>
+          <p className="text-sm text-subtle font-medium line-clamp-2">{sub.description}</p>
+        </div>
+      ))}
+    </div>
+  )
+}
 
 const barData = [40, 55, 48, 72, 88, 108]
 const barMonths = ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan']
@@ -69,6 +143,7 @@ export default function AdminPage() {
 
   const tabs = [
     { id: 'opps', label: 'Core Opportunities' },
+    { id: 'submissions', label: 'Submissions' },
     { id: 'users', label: 'User Directory' },
     { id: 'featured', label: 'Promotion Slots' },
     { id: 'analytics', label: 'System Analytics' },
@@ -217,6 +292,11 @@ export default function AdminPage() {
             </div>
           )}
 
+          {/* SUBMISSIONS TAB */}
+          {activeTab === 'submissions' && (
+            <SubmissionsTab />
+          )}
+
           {/* USERS TAB */}
           {activeTab === 'users' && (
             <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] overflow-hidden">
@@ -324,6 +404,10 @@ export default function AdminPage() {
                       <option>Fellowship</option>
                       <option>Grant</option>
                       <option>Remote Job</option>
+                      <option>Internship</option>
+                      <option>Startup Funding</option>
+                      <option>Bootcamp</option>
+                      <option>Event</option>
                     </select>
                   </div>
                   <div className="space-y-2">

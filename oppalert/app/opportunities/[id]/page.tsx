@@ -2,12 +2,14 @@
 import { useState, useEffect } from 'react'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { opportunityService } from '@/lib/services/opportunity-service'
+import { opportunities as seedData, getOpportunity, getRelated } from '@/lib/data'
 import { Opportunity } from '@/lib/types'
 import OpportunityCard from '@/components/OpportunityCard'
 import AffiliateCard from '@/components/AffiliateCard'
+import SaveButton from '@/components/SaveButton'
+import ApplyButton from '@/components/ApplyButton'
 import { getCategoryLabel, calculateDaysRemaining } from '@/lib/utils'
-import { CategoryIcon, Globe, Coins, MapPin, Calendar, Share2, Heart, Zap, ArrowRight, Check, Copy, ExternalLink, Loader2, ChevronLeft } from '@/lib/icons'
+import { CategoryIcon, Globe, Coins, MapPin, Calendar, Share2, Zap, Check, ExternalLink, ChevronLeft } from '@/lib/icons'
 
 interface Props {
   params: { id: string }
@@ -17,72 +19,34 @@ export default function OpportunityDetailPage({ params }: Props) {
   const [opp, setOpp] = useState<Opportunity | null>(null)
   const [related, setRelated] = useState<Opportunity[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [saved, setSaved] = useState(false)
   const [shared, setShared] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && localStorage.getItem('oppalert_user')) {
-      setIsLoggedIn(true)
+    // Start with seed data immediately
+    const seedOpp = getOpportunity(params.id)
+    if (seedOpp) {
+      setOpp(seedOpp)
+      setRelated(getRelated(params.id, seedOpp.cat || 'scholarship', 3))
+      setIsLoading(false)
     }
 
-    const views = parseInt(localStorage.getItem('oppViews') || '0')
-    localStorage.setItem('oppViews', (views + 1).toString())
-
-    const fetchData = async () => {
-      setIsLoading(true)
-      try {
-        const data = await opportunityService.getOne(params.id)
-        if (data) {
+    // Try DB in background
+    fetch('/api/opportunities/' + params.id)
+      .then(r => r.json())
+      .then(data => {
+        if (data && data.id) {
           setOpp(data)
-          const results = await opportunityService.searchAll({ category: data.cat })
-          setRelated(results.filter(r => r.id !== data.id).slice(0, 3))
-
-          // Check if saved
-          if (localStorage.getItem('oppalert_token')) {
-            const savedRes = await fetch('/api/user/saved')
-            if (savedRes.ok) {
-              const savedData = await savedRes.json()
-              setSaved(savedData.some((s: any) => s.id === params.id))
-            }
-          }
-        } else {
-          setOpp(null)
         }
-      } catch (err) {
-        console.error('Error fetching opportunity:', err)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    fetchData()
-  }, [params.id])
-
-  const handleToggleSave = async () => {
-    if (!isLoggedIn) {
-      window.location.href = '/login'
-      return
-    }
-
-    try {
-      const method = saved ? 'DELETE' : 'POST'
-      const res = await fetch('/api/user/saved', {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ oppId: params.id })
       })
+      .catch(() => {})
+      .finally(() => setIsLoading(false))
 
-      if (res.ok) {
-        setSaved(!saved)
-      } else {
-        const errorData = await res.json()
-        alert(errorData.error || 'Failed to update saved status')
-      }
-    } catch (err) {
-      console.error('Error toggling save:', err)
-      alert('Network error. Please try again.')
+    // Track views
+    if (typeof window !== 'undefined') {
+      const views = parseInt(localStorage.getItem('oppViews') || '0')
+      localStorage.setItem('oppViews', (views + 1).toString())
     }
-  }
+  }, [params.id])
 
   if (isLoading) {
     return (
@@ -106,10 +70,10 @@ export default function OpportunityDetailPage({ params }: Props) {
   const elig = opp.elig || ['Open to all applicants who meet the basic requirements.']
   const benefits = opp.benefits || [fund]
   const applyUrl = opp.application_url || opp.applyUrl || '#'
-  
+
   let deadlineStr = 'Rolling'
   if (opp.deadline) deadlineStr = new Date(opp.deadline).toLocaleDateString()
-  
+
   const quickinfo = opp.quickinfo || {
     'Deadline': deadlineStr,
     'Location': loc,
@@ -154,7 +118,7 @@ export default function OpportunityDetailPage({ params }: Props) {
           {/* Main Hero Header */}
           <div className="glass-gradient border rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden group" style={{borderColor: 'var(--border)'}}>
             <div className="absolute top-0 right-0 w-64 h-64 blur-[80px] -z-10 group-hover:scale-150 transition-transform duration-1000" style={{backgroundColor: 'rgba(232, 160, 32, 0.05)'}} />
-            
+
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
               <div className="flex items-center gap-5">
                 <div className="w-16 h-16 rounded-2xl icon-box flex items-center justify-center shadow-inner group-hover:rotate-3 transition-transform">
@@ -212,7 +176,7 @@ export default function OpportunityDetailPage({ params }: Props) {
                   </div>
                   <h2 className="font-syne text-xl font-black text-primary">{section.title}</h2>
                 </div>
-                
+
                 {section.type === 'text' ? (
                   <p className="text-subtle text-base leading-relaxed font-medium whitespace-pre-line">
                     {section.content as string}
@@ -248,11 +212,11 @@ export default function OpportunityDetailPage({ params }: Props) {
             <p className="text-sm font-black uppercase tracking-widest mb-8">
               {days === 0 ? 'Closed' : 'Days Remaining'}
             </p>
-            
+
             <div className="space-y-3">
               <div className="h-2 bg-bg/20 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-bg shadow-glow-amber" 
+                <div
+                  className="h-full bg-bg shadow-glow-amber"
                   style={{ width: `${progressPct}%` }}
                 />
               </div>
@@ -262,41 +226,8 @@ export default function OpportunityDetailPage({ params }: Props) {
 
           {/* Action Card */}
           <div className="glass-gradient border rounded-[2.5rem] p-8 space-y-4" style={{borderColor: 'var(--border)'}}>
-            {isLoggedIn ? (
-              <a 
-                href={days === 0 ? '#' : applyUrl} 
-                target={days === 0 ? '_self' : '_blank'} 
-                rel="noopener noreferrer"
-                className={`btn-primary w-full py-5 px-8 text-sm font-black uppercase tracking-[0.2em] rounded-2xl shadow-glow-amber hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 ${
-                  days === 0 ? 'opacity-50 pointer-events-none grayscale' : ''
-                }`}
-              >
-                {days === 0 ? 'Application Closed' : 'Apply Official'}
-                {days > 0 && <ExternalLink size={18} className="stroke-[2.5]" />}
-              </a>
-            ) : (
-              <Link
-                href="/login"
-                className={`btn-primary w-full py-5 px-8 text-sm font-black uppercase tracking-[0.2em] rounded-2xl shadow-glow-amber hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 ${
-                  days === 0 ? 'opacity-50 pointer-events-none grayscale' : ''
-                }`}
-              >
-                {days === 0 ? 'Application Closed' : 'Login to Apply'}
-                {days > 0 && <ExternalLink size={18} className="stroke-[2.5]" />}
-              </Link>
-            )}
-            <button
-              onClick={handleToggleSave}
-              className={`w-full py-4 px-8 text-xs font-black uppercase tracking-widest rounded-2xl border transition-all flex items-center justify-center gap-3 ${
-                saved 
-                  ? 'bg-danger/10 border-danger/30 text-danger shadow-inner' 
-                  : 'text-muted hover:text-primary'
-              }`}
-              style={!saved ? {backgroundColor: 'var(--icon-bg)', borderColor: 'var(--glass-border)'} : undefined}
-            >
-              <Heart size={18} className={saved ? 'fill-current' : ''} />
-              {saved ? 'Bookmarked' : 'Save for Later'}
-            </button>
+            <ApplyButton applyUrl={applyUrl} oppId={params.id} disabled={days === 0} />
+            <SaveButton oppId={params.id} />
           </div>
 
           {/* Quick Stats Sidebar */}

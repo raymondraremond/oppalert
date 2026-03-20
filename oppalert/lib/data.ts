@@ -297,6 +297,154 @@ export const opportunities: Opportunity[] = [
       Funding: 'Fully Funded',
     },
   },
+  {
+    id: 'b1',
+    icon: '💻',
+    title: 'ALX Africa Software Engineering Program',
+    org: 'ALX Africa',
+    cat: 'bootcamp',
+    loc: 'Remote (Africa)',
+    fund: 'Partial Funding',
+    deadline: 'Rolling admissions',
+    days: 30,
+    featured: true,
+    desc: 'Intensive 12-month software engineering program for African talent. Partnered with Apple, Google and top global companies.',
+    about: 'ALX Africa is a tech training program that produces world-class software engineers from Africa. The program is project-based and highly intensive.',
+    elig: [
+      'Ages 18-30',
+      'African nationality or resident',
+      'Basic computer literacy',
+      'Commitment to full-time study',
+      'Passion for technology'
+    ],
+    benefits: [
+      'World-class software engineering curriculum',
+      'Career placement support',
+      'Global alumni network',
+      'Subsidised fees available',
+      'Certificate recognised globally'
+    ],
+    applyUrl: 'https://www.alxafrica.com',
+    quickinfo: {
+      Type: 'Bootcamp',
+      Duration: '12 months',
+      Location: 'Remote (Africa)',
+      Level: 'Beginner to Advanced',
+      Deadline: 'Rolling admissions',
+      Fee: 'Subsidised'
+    }
+  },
+  {
+    id: 'b2',
+    icon: '💻',
+    title: 'Andela Technical Leadership Program',
+    org: 'Andela',
+    cat: 'bootcamp',
+    loc: 'Remote (Africa)',
+    fund: 'Paid Position',
+    deadline: 'Rolling admissions',
+    days: 45,
+    featured: false,
+    desc: 'Paid training program that turns talented Africans into world-class software engineers working with global companies.',
+    about: 'Andela selects brilliant people and trains them to become senior software engineers. Fellows get paid while learning and working.',
+    elig: [
+      'Strong problem-solving skills',
+      'Basic programming knowledge',
+      'African nationality',
+      'Ages 18 and above',
+      'Full-time availability'
+    ],
+    benefits: [
+      'Paid while you learn',
+      'Work with global tech companies',
+      'Senior engineer mentorship',
+      'Remote work flexibility',
+      'Career advancement opportunities'
+    ],
+    applyUrl: 'https://andela.com',
+    quickinfo: {
+      Type: 'Bootcamp',
+      Duration: 'Ongoing',
+      Location: 'Remote (Africa)',
+      Level: 'Intermediate',
+      Deadline: 'Rolling',
+      Pay: 'Competitive salary'
+    }
+  },
+  {
+    id: 'e1',
+    icon: '🎪',
+    title: 'Google I/O Extended Lagos 2025',
+    org: 'Google Developer Groups Lagos',
+    cat: 'event',
+    loc: 'Lagos, Nigeria',
+    fund: 'Fully Funded',
+    deadline: 'Jun 15, 2025',
+    days: 87,
+    featured: false,
+    desc: 'Annual Google I/O Extended event in Lagos. Talks on AI, Android, Web, Cloud and Firebase. Free to attend.',
+    about: 'Google I/O Extended is a community-organized event that brings the Google I/O experience to developers who could not attend in person.',
+    elig: [
+      'Open to all developers',
+      'Students and professionals welcome',
+      'No experience required',
+      'Must register in advance',
+      'Lagos based or able to travel'
+    ],
+    benefits: [
+      'Free entry',
+      'Google tech talks and demos',
+      'Networking with Lagos tech community',
+      'Swag and goodies',
+      'Certificate of attendance'
+    ],
+    applyUrl: 'https://gdg.community.dev',
+    quickinfo: {
+      Type: 'Tech Event',
+      Duration: '1 day',
+      Location: 'Lagos, Nigeria',
+      Level: 'All levels',
+      Deadline: 'Jun 15, 2025',
+      Cost: 'Free'
+    }
+  },
+  {
+    id: 'e2',
+    icon: '🎪',
+    title: 'Africa Tech Summit Nairobi 2025',
+    org: 'Africa Tech Summit',
+    cat: 'event',
+    loc: 'Nairobi, Kenya',
+    fund: 'Paid Position',
+    deadline: 'Feb 20, 2025',
+    days: 14,
+    featured: true,
+    desc: "Africa's leading technology and investment summit connecting African and global tech leaders, investors, and innovators.",
+    about: 'The Africa Tech Summit brings together the most influential tech leaders, startups, and investors from across Africa and the world.',
+    elig: [
+      'Open to tech professionals',
+      'Startup founders welcome',
+      'Investors and VCs',
+      'Government and policy makers',
+      'Students with valid ID get discount'
+    ],
+    benefits: [
+      'Network with top African tech leaders',
+      'Startup pitching opportunities',
+      'Investor meetings',
+      'Panel discussions and keynotes',
+      'Exhibition and demo space'
+    ],
+    applyUrl: 'https://www.africatechsummit.com',
+    quickinfo: {
+      Type: 'Summit/Conference',
+      Duration: '2 days',
+      Location: 'Nairobi, Kenya',
+      Level: 'Professional',
+      Deadline: 'Feb 20, 2025',
+      Cost: 'Paid (student discount available)'
+    }
+  },
 ]
 
 export function getOpportunity(id: string): Opportunity | undefined {

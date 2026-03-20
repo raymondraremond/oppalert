@@ -8,7 +8,7 @@ export class MockAdapter implements OpportunityAdapter {
   async search(query: OpportunityQuery): Promise<Opportunity[]> {
     let filtered = [...opportunities];
 
-    if (query.category && query.category !== 'all') {
+    if (query.category && (query.category as string) !== 'all') {
       filtered = filtered.filter(o => (o.cat || o.category) === query.category);
     }
 

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { calculateDaysRemaining } from '@/lib/utils'
+import { getFeatured } from '@/lib/data'
 import OpportunityCard from '@/components/OpportunityCard'
 import Footer from '@/components/Footer'
 import ScrollReveal from '@/components/ScrollReveal'
@@ -49,6 +50,8 @@ const cats = [
   { icon: Coins, label: 'Grants', count: '240 open', slug: 'grant' },
   { icon: FlaskConical, label: 'Internships', count: '310 open', slug: 'internship' },
   { icon: Rocket, label: 'Startup Funding', count: '92 open', slug: 'startup' },
+  { icon: Briefcase, label: 'Bootcamps', count: '45 open', slug: 'bootcamp' },
+  { icon: Globe, label: 'Events', count: '38 open', slug: 'event' },
 ]
 
 const howItWorks = [
@@ -79,20 +82,22 @@ const howItWorks = [
 ]
 
 export default function HomePage() {
-  const [featured, setFeatured] = useState<any[]>([])
+  // CRITICAL: Start with seed data so cards show instantly — never empty
+  const [featured, setFeatured] = useState<any[]>(getFeatured(6))
 
   useEffect(() => {
+    // Try DB in background silently
     fetch('/api/opportunities?limit=15')
       .then(res => res.json())
       .then(data => {
-        if (data?.data) {
+        if (data?.data?.length > 0) {
           const openOpps = data.data.filter((opp: any) => calculateDaysRemaining(opp.deadline) > 0)
-          setFeatured(openOpps.slice(0, 6))
-        } else {
-          setFeatured([])
+          if (openOpps.length > 0) {
+            setFeatured(openOpps.slice(0, 6))
+          }
         }
       })
-      .catch(console.error)
+      .catch(() => {})
   }, [])
 
   return (

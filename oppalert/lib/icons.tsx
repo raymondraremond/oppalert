@@ -39,6 +39,8 @@ const catIconMap: Record<Category, React.FC<LucideProps>> = {
   grant: Coins,
   internship: FlaskConical,
   startup: Rocket,
+  bootcamp: Briefcase,
+  event: Globe,
 }
 
 export function CategoryIcon({
