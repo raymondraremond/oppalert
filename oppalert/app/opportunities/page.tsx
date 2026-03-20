@@ -41,7 +41,8 @@ export default function OpportunitiesPage() {
         const results = await opportunityService.searchAll({
           category: activeCat === 'all' ? undefined : activeCat as any,
           keyword: searchQuery,
-          location: activeLoc > 0 ? locations[activeLoc] : undefined
+          location: activeLoc > 0 ? locations[activeLoc] : undefined,
+          fundingType: activeFunding > 0 ? fundingTypes[activeFunding] : undefined
         })
         setAllOpportunities(results)
       } catch (err) {
@@ -54,7 +55,7 @@ export default function OpportunitiesPage() {
     // Debounce search
     const timer = setTimeout(fetchOpps, 500)
     return () => clearTimeout(timer)
-  }, [activeCat, searchQuery, activeLoc])
+  }, [activeCat, searchQuery, activeLoc, activeFunding])
 
   const filtered = useMemo(() => {
     let result = [...allOpportunities]

@@ -58,9 +58,30 @@ export async function GET(req: NextRequest) {
       // Always fall back to seed data
       const { opportunities } = await import('@/lib/data');
       let filtered = [...opportunities];
+      
       if (category && category !== 'all') {
-        filtered = filtered.filter((o: any) => o.cat === category);
+        filtered = filtered.filter((o: any) => (o.cat || o.category) === category);
       }
+      
+      if (fundingType && fundingType !== 'Any Funding') {
+        filtered = filtered.filter((o: any) => (o.fund || o.funding_type) === fundingType);
+      }
+      
+      if (location && location !== 'Any Location') {
+        filtered = filtered.filter((o: any) => 
+          (o.loc || o.location || '').toLowerCase().includes(location.toLowerCase())
+        );
+      }
+      
+      if (search) {
+        const s = search.toLowerCase();
+        filtered = filtered.filter((o: any) => 
+          (o.title || '').toLowerCase().includes(s) || 
+          (o.org || o.organization || '').toLowerCase().includes(s) || 
+          (o.desc || o.description || '').toLowerCase().includes(s)
+        );
+      }
+
       return NextResponse.json({
         data: filtered.slice(offset, offset + limit),
         total: filtered.length,

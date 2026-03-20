@@ -37,6 +37,15 @@ export default function OpportunityDetailPage({ params }: Props) {
           setOpp(data)
           const results = await opportunityService.searchAll({ category: data.cat })
           setRelated(results.filter(r => r.id !== data.id).slice(0, 3))
+
+          // Check if saved
+          if (localStorage.getItem('oppalert_token')) {
+            const savedRes = await fetch('/api/user/saved')
+            if (savedRes.ok) {
+              const savedData = await savedRes.json()
+              setSaved(savedData.some((s: any) => s.id === params.id))
+            }
+          }
         } else {
           setOpp(null)
         }
@@ -48,6 +57,32 @@ export default function OpportunityDetailPage({ params }: Props) {
     }
     fetchData()
   }, [params.id])
+
+  const handleToggleSave = async () => {
+    if (!isLoggedIn) {
+      window.location.href = '/login'
+      return
+    }
+
+    try {
+      const method = saved ? 'DELETE' : 'POST'
+      const res = await fetch('/api/user/saved', {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ oppId: params.id })
+      })
+
+      if (res.ok) {
+        setSaved(!saved)
+      } else {
+        const errorData = await res.json()
+        alert(errorData.error || 'Failed to update saved status')
+      }
+    } catch (err) {
+      console.error('Error toggling save:', err)
+      alert('Network error. Please try again.')
+    }
+  }
 
   if (isLoading) {
     return (
@@ -251,7 +286,7 @@ export default function OpportunityDetailPage({ params }: Props) {
               </Link>
             )}
             <button
-              onClick={() => setSaved(!saved)}
+              onClick={handleToggleSave}
               className={`w-full py-4 px-8 text-xs font-black uppercase tracking-widest rounded-2xl border transition-all flex items-center justify-center gap-3 ${
                 saved 
                   ? 'bg-danger/10 border-danger/30 text-danger shadow-inner' 

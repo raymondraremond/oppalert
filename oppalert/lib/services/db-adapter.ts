@@ -10,6 +10,7 @@ export class DbAdapter implements OpportunityAdapter {
       if (query.category) params.append('cat', query.category);
       if (query.keyword) params.append('q', query.keyword);
       if (query.location && query.location !== 'Any Location') params.append('loc', query.location);
+      if (query.fundingType && query.fundingType !== 'Any Funding') params.append('fund', query.fundingType);
       params.append('limit', '50');
 
       const res = await fetch(`/api/opportunities?${params.toString()}`);

@@ -5,6 +5,7 @@ export interface OpportunityQuery {
   keyword?: string;
   location?: string;
   category?: Category;
+  fundingType?: string;
 }
 
 export interface OpportunityAdapter {

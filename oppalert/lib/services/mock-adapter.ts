@@ -8,22 +8,26 @@ export class MockAdapter implements OpportunityAdapter {
   async search(query: OpportunityQuery): Promise<Opportunity[]> {
     let filtered = [...opportunities];
 
-    if (query.category) {
-      filtered = filtered.filter(o => o.cat === query.category);
+    if (query.category && query.category !== 'all') {
+      filtered = filtered.filter(o => (o.cat || o.category) === query.category);
+    }
+
+    if (query.fundingType && query.fundingType !== 'Any Funding') {
+      filtered = filtered.filter(o => (o.fund || o.funding_type) === query.fundingType);
     }
 
     if (query.keyword) {
       const kw = query.keyword.toLowerCase();
       filtered = filtered.filter(o => 
-        o.title.toLowerCase().includes(kw) || 
-        o.desc.toLowerCase().includes(kw) ||
-        o.org.toLowerCase().includes(kw)
+        (o.title || '').toLowerCase().includes(kw) || 
+        (o.desc || o.description || '').toLowerCase().includes(kw) ||
+        (o.org || o.organization || '').toLowerCase().includes(kw)
       );
     }
 
-    if (query.location) {
+    if (query.location && query.location !== 'Any Location') {
       const loc = query.location.toLowerCase();
-      filtered = filtered.filter(o => o.loc.toLowerCase().includes(loc));
+      filtered = filtered.filter(o => (o.loc || o.location || '').toLowerCase().includes(loc));
     }
 
     return filtered;
