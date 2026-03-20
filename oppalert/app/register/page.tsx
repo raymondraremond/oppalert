@@ -34,17 +34,32 @@ export default function RegisterPage() {
       const data = await res.json()
 
       if (!res.ok) {
-        throw new Error(data.error || 'Something went wrong')
+        throw new Error(data.error || "Something went wrong")
       }
 
-      // Store token and user in localStorage for Navbar
-      localStorage.setItem('oppalert_token', data.token)
-      localStorage.setItem('oppalert_user', JSON.stringify(data.user))
+      const userToStore = {
+        id: data.user?.id || data.id || "",
+        email: data.user?.email || data.email || "",
+        fullName: data.user?.fullName ||
+                  data.user?.full_name ||
+                  data.user?.name ||
+                  data.fullName ||
+                  data.full_name || "",
+        plan: data.user?.plan ||
+              data.user?.status ||
+              data.plan ||
+              data.status || "free",
+        token: data.token || data.user?.token || "",
+      }
+
+      localStorage.setItem("user", JSON.stringify(userToStore))
+
+      document.cookie = `token=${userToStore.token}; path=/; max-age=2592000; SameSite=Lax`
 
       // Notify Navbar
-      window.dispatchEvent(new Event('oppalert_auth'))
+      window.dispatchEvent(new Event("oppalert_auth"))
 
-      router.push('/dashboard')
+      router.push("/dashboard")
     } catch (err: any) {
       setError(err.message)
     } finally {
