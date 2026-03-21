@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { opportunities } from '@/lib/data'
 import { getCategoryLabel } from '@/lib/utils'
 import {
@@ -26,6 +27,132 @@ import {
   Zap,
   Inbox,
 } from 'lucide-react'
+
+function EventsTab() {
+  const [events, setEvents] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  const fetchEvents = () => {
+    setLoading(true)
+    fetch("/api/admin/events")
+      .then(r => r.json())
+      .then(data => {
+        if (data.data) setEvents(data.data)
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    fetchEvents()
+  }, [])
+
+  const toggleFeatured = async (id: string, current: boolean) => {
+    try {
+      await fetch("/api/admin/events", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, is_featured: !current }),
+      })
+      setEvents(prev => prev.map(e => e.id === id ? { ...e, is_featured: !current } : e))
+    } catch (err) {
+      console.error("Toggle featured error:", err)
+    }
+  }
+
+  const deactivateEvent = async (id: string) => {
+    if (!confirm("Are you sure you want to deactivate this event?")) return
+    try {
+      await fetch("/api/admin/events", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      })
+      setEvents(prev => prev.filter(e => e.id !== id))
+    } catch (err) {
+      console.error("Deactivate error:", err)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-10 text-center">
+        <Loader2 size={32} className="mx-auto text-amber animate-spin mb-4" />
+        <p className="text-muted font-bold text-sm">Loading events...</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h3 className="text-[#EDE8DF] font-bold">{events.length} Active Events</h3>
+        <Link href="/organizer/create" className="px-5 py-2 bg-[#E8A020] text-[#080A07] font-bold rounded-xl text-xs uppercase tracking-widest">
+          Create Event
+        </Link>
+      </div>
+
+      <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse min-w-[1000px]">
+            <thead>
+              <tr className="border-b border-[var(--border)] bg-[var(--icon-bg)]">
+                {["Event", "Organizer", "Type", "Date", "Regs", "Featured", "Control"].map((h) => (
+                  <th key={h} className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-muted">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5">
+              {events.map((event) => (
+                <tr key={event.id} className="hover:bg-[var(--icon-bg)] transition-colors group">
+                  <td className="px-8 py-6">
+                    <div className="font-bold text-primary">{event.title}</div>
+                    <div className="text-[10px] font-bold text-muted uppercase tracking-widest mt-1">/{event.slug}</div>
+                  </td>
+                  <td className="px-8 py-6">
+                    <div className="text-xs text-primary font-bold">{event.organization_name || event.organizer_name}</div>
+                  </td>
+                  <td className="px-8 py-6">
+                    <span className="badge badge-blue">{event.event_type}</span>
+                  </td>
+                  <td className="px-8 py-6 text-xs text-subtle font-medium">
+                    {new Date(event.start_date).toLocaleDateString()}
+                  </td>
+                  <td className="px-8 py-6">
+                    <div className="text-xs font-bold text-primary">{event.current_registrations || 0}</div>
+                  </td>
+                  <td className="px-8 py-6">
+                    <button 
+                      onClick={() => toggleFeatured(event.id, event.is_featured)}
+                      className={`p-2 rounded-xl border transition-all ${
+                        event.is_featured ? "bg-amber/10 border-amber/30 text-amber" : "bg-[var(--icon-bg)] border-[var(--border)] text-muted"
+                      }`}
+                    >
+                      <Star size={16} fill={event.is_featured ? "currentColor" : "none"} />
+                    </button>
+                  </td>
+                  <td className="px-8 py-6">
+                    <div className="flex items-center gap-3">
+                       <Link href={`/events/${event.slug}`} target="_blank" className="p-2.5 rounded-xl bg-[var(--icon-bg)] border border-[var(--border)] text-muted hover:text-amber transition-all">
+                         <Eye size={16} />
+                       </Link>
+                       <button 
+                        onClick={() => deactivateEvent(event.id)}
+                        className="p-2.5 rounded-xl bg-[var(--icon-bg)] border border-[var(--border)] text-muted hover:text-danger hover:border-danger/20 transition-all"
+                       >
+                         <Trash2 size={16} />
+                       </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 function SubmissionsTab() {
   const [submissions, setSubmissions] = useState<any[]>([])

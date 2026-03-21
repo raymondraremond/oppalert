@@ -349,3 +349,98 @@ img {
     background-position: 200% center;
   }
 }
+
+/* EVENT CARDS */
+.event-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg, 16px);
+  overflow: hidden;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+}
+.event-card:hover {
+  border-color: #313D2C;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+/* EVENT TYPE BADGES */
+.event-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+.event-badge-bootcamp   { background: rgba(232,160,32,0.15); color: #E8A020; }
+.event-badge-workshop   { background: rgba(74,158,232,0.15); color: #4A9EE8; }
+.event-badge-webinar    { background: rgba(52,194,122,0.15); color: #34C27A; }
+.event-badge-meetup     { background: rgba(139,92,246,0.15); color: #8B5CF6; }
+.event-badge-conference { background: rgba(249,115,22,0.15); color: #F97316; }
+.event-badge-hackathon  { background: rgba(240,80,80,0.15);  color: #F05050; }
+
+/* REGISTRATION PROGRESS BAR */
+.reg-progress {
+  height: 4px;
+  background: var(--surface);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+.reg-progress-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+.reg-fill-low    { background: #34C27A; }
+.reg-fill-medium { background: #E8A020; }
+.reg-fill-high   { background: #F05050; }
+
+/* VERIFIED BADGE */
+.verified-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: #E8A020;
+  border-radius: 50%;
+  font-size: 9px;
+  color: #090A07;
+  font-weight: 800;
+  margin-left: 4px;
+  flex-shrink: 0;
+}
+
+/* ORGANIZER DASHBOARD TABLE */
+.events-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.events-table th {
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text3);
+  border-bottom: 1px solid var(--border);
+}
+.events-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+  vertical-align: middle;
+}
+.events-table tbody tr:hover td {
+  background: var(--surface);
+  color: var(--text);
+}

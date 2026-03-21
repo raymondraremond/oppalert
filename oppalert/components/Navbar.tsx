@@ -71,6 +71,7 @@ export default function Navbar() {
   // Build nav links — only show Admin to admin users
   const navLinks = [
     { label: 'Opportunities', href: '/opportunities' },
+    { label: 'Events', href: '/events' },
     { label: 'Pricing', href: '/pricing' },
     ...(isAdmin ? [{ label: 'Admin', href: '/admin' }] : []),
   ]
@@ -106,17 +107,22 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center backdrop-blur-xl px-2 py-1.5 rounded-2xl" style={{backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.05)'}}>
-            {navLinks.map((link) => (
-              <Link key={link.href} href={link.href}>
-                <div className={`nav-link text-[13px] font-bold px-6 py-2.5 rounded-xl transition-all duration-300 ${
-                  path === link.href ? 'active bg-amber shadow-glow-amber' : ''
-                }`} style={{
-                  color: path === link.href ? '#0D0F0B' : '#9A9C8E',
-                }}>
-                  {link.label}
-                </div>
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = path === link.href || 
+                              (link.href === "/events" && (path.startsWith("/events") || path.startsWith("/organizer"))) ||
+                              (link.href === "/opportunities" && path.startsWith("/opportunities"));
+              return (
+                <Link key={link.href} href={link.href}>
+                  <div className={`nav-link text-[13px] font-bold px-6 py-2.5 rounded-xl transition-all duration-300 ${
+                    isActive ? "active bg-amber shadow-glow-amber" : ""
+                  }`} style={{
+                    color: isActive ? "#0D0F0B" : "#9A9C8E",
+                  }}>
+                    {link.label}
+                  </div>
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Desktop Auth */}
