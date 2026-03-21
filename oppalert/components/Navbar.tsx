@@ -1,244 +1,670 @@
 'use client'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useState, useEffect, useRef } from 'react'
-import { Menu, X, ArrowRight, User as UserIcon, LogOut, LayoutDashboard, Shield } from 'lucide-react'
-import { ThemeToggle } from './theme-toggle'
-
-function getStoredUser() {
-  if (typeof window === 'undefined') return null;
-  try {
-    const raw = localStorage.getItem('oppalert_user');
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
-}
 
 export default function Navbar() {
+  const [user, setUser] = useState<any>(null)
+  const [scrolled, setScrolled] = useState(false)
+  const [showDropdown, setShowDropdown] = useState(false)
+  const [showMobile, setShowMobile] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
   const path = usePathname()
   const router = useRouter()
-  const [isOpen, setIsOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const [user, setUser] = useState<any>(null)
-  const [showUserMenu, setShowUserMenu] = useState(false)
-  const userMenuRef = useRef<HTMLDivElement>(null)
+
+  // Read user from localStorage
+  const loadUser = () => {
+    try {
+      const stored = localStorage.getItem('user')
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        if (parsed && parsed.email) {
+          setUser(parsed)
+        } else {
+          setUser(null)
+        }
+      } else {
+        setUser(null)
+      }
+    } catch {
+      setUser(null)
+    }
+  }
 
   useEffect(() => {
-    setUser(getStoredUser())
-    const handler = () => setUser(getStoredUser())
-    window.addEventListener('oppalert_auth', handler)
-    return () => window.removeEventListener('oppalert_auth', handler)
-  }, [])
+    // Load user immediately
+    loadUser()
 
-  useEffect(() => {
+    // Listen for storage changes (login/logout in other tabs)
+    const handleStorage = () => loadUser()
+    window.addEventListener('storage', handleStorage)
+
+    // Scroll detection
     const handleScroll = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    window.addEventListener('scroll', handleScroll, { passive: true })
 
-  useEffect(() => setIsOpen(false), [path])
-
-  // Close user menu when clicking outside
-  useEffect(() => {
+    // Close dropdown when clicking outside
     const handleClickOutside = (e: MouseEvent) => {
-      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
-        setShowUserMenu(false)
+      if (dropdownRef.current && 
+          !dropdownRef.current.contains(e.target as Node)) {
+        setShowDropdown(false)
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
+
+    return () => {
+      window.removeEventListener('storage', handleStorage)
+      window.removeEventListener('scroll', handleScroll)
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
   }, [])
 
-  const handleLogout = async () => {
-    localStorage.removeItem('oppalert_user')
-    localStorage.removeItem('oppalert_token')
-    await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {})
-    window.dispatchEvent(new Event('oppalert_auth'))
-    setShowUserMenu(false)
+  // Reload user when path changes (page navigation)
+  useEffect(() => {
+    loadUser()
+    setShowMobile(false)
+    setShowDropdown(false)
+  }, [path])
+
+  const handleLogout = () => {
+    localStorage.removeItem('user')
+    document.cookie = 
+      "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
+    setUser(null)
+    setShowDropdown(false)
+    setShowMobile(false)
     router.push('/')
   }
 
-  const initials = (() => {
-    if (!user) return ''
-    const name = user.fullName || user.name || user.email || ''
-    const parts = name.split(' ')
-    return `${parts[0]?.[0] || ''}${parts[1]?.[0] || ''}`.toUpperCase() || 'U'
-  })()
-
   const isAdmin = user?.plan === 'admin'
+  const isLoggedIn = !!user
 
-  // Build nav links — only show Admin to admin users
+  // Get user initials for avatar
+  const getInitials = () => {
+    if (!user?.fullName) return "U"
+    return user.fullName
+      .split(" ")
+      .map((n: string) => n[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase()
+  }
+
   const navLinks = [
-    { label: 'Opportunities', href: '/opportunities' },
-    { label: 'Events', href: '/events' },
-    { label: 'Pricing', href: '/pricing' },
-    ...(isAdmin ? [{ label: 'Admin', href: '/admin' }] : []),
+    { href: '/opportunities', label: 'Opportunities' },
+    { href: '/events', label: 'Events' },
+    { href: '/pricing', label: 'Pricing' },
   ]
 
   return (
     <>
-      <header data-navbar style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 100,
-        colorScheme: 'dark' as any,
-        background: scrolled
-          ? 'rgba(8,10,7,0.97)'
-          : 'rgba(8,10,7,0.85)',
-        backdropFilter: 'blur(20px)',
-        borderBottom: scrolled
-          ? '1px solid #2E3530'
-          : '1px solid transparent',
-        height: 80,
-        transition: 'all 0.3s ease',
-        color: '#EDE8DF',
-      }}>
-        <div className="max-w-7xl mx-auto px-6 w-full h-full flex items-center justify-between">
+      <header
+        data-navbar
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 100,
+          background: scrolled
+            ? 'rgba(8,10,7,0.98)'
+            : 'rgba(8,10,7,0.92)',
+          backdropFilter: 'blur(20px)',
+          borderBottom: '1px solid #252D22',
+          height: 60,
+          transition: 'all 0.3s ease',
+          colorScheme: 'dark',
+        }}
+      >
+        <div style={{
+          maxWidth: 1100,
+          margin: '0 auto',
+          padding: '0 1.5rem',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-amber-gradient flex items-center justify-center shadow-glow-amber group-hover:scale-110 transition-transform duration-500">
-               <span className="w-2 h-2 rounded-full bg-bg shadow-inner animate-pulse" />
-            </div>
-            <div className="font-syne text-2xl font-extrabold tracking-tight" style={{color: '#EDE8DF'}}>
-              Opp<span className="text-amber drop-shadow-glow-amber">Alert</span>
+          <Link href="/" style={{ textDecoration: 'none' }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+            }}>
+              <div style={{
+                width: 30,
+                height: 30,
+                borderRadius: 8,
+                background: 
+                  'linear-gradient(135deg, #E8A020, #C87020)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 800,
+                fontSize: 14,
+                color: '#090A07',
+                fontFamily: 'Syne, sans-serif',
+              }}>
+                O
+              </div>
+              <span style={{
+                fontFamily: 'Syne, sans-serif',
+                fontSize: 18,
+                fontWeight: 800,
+                color: '#EDE8DF',
+              }}>
+                Opp<span style={{ color: '#E8A020' }}>Alert</span>
+              </span>
             </div>
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center backdrop-blur-xl px-2 py-1.5 rounded-2xl" style={{backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.05)'}}>
-            {navLinks.map((link) => {
-              const isActive = path === link.href || 
-                              (link.href === "/events" && (path.startsWith("/events") || path.startsWith("/organizer"))) ||
-                              (link.href === "/opportunities" && path.startsWith("/opportunities"));
-              return (
-                <Link key={link.href} href={link.href}>
-                  <div className={`nav-link text-[13px] font-bold px-6 py-2.5 rounded-xl transition-all duration-300 ${
-                    isActive ? "active bg-amber shadow-glow-amber" : ""
-                  }`} style={{
-                    color: isActive ? "#0D0F0B" : "#9A9C8E",
-                  }}>
-                    {link.label}
-                  </div>
-                </Link>
-              );
-            })}
+          {/* Desktop Navigation */}
+          <nav style={{
+            display: 'flex',
+            gap: 4,
+            alignItems: 'center',
+          }}
+            className="hide-mobile"
+          >
+            {navLinks.map(link => (
+              <Link
+                key={link.href}
+                href={link.href}
+                style={{ textDecoration: 'none' }}
+              >
+                <div style={{
+                  padding: '6px 12px',
+                  borderRadius: 8,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: path.startsWith(link.href)
+                    ? '#EDE8DF'
+                    : '#9A9C8E',
+                  background: path.startsWith(link.href)
+                    ? '#1C2119'
+                    : 'transparent',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s',
+                }}>
+                  {link.label}
+                </div>
+              </Link>
+            ))}
+
+            {/* Show Organizer link when logged in */}
+            {isLoggedIn && (
+              <Link href="/organizer" style={{ textDecoration: 'none' }}>
+                <div style={{
+                  padding: '6px 12px',
+                  borderRadius: 8,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: path.startsWith('/organizer')
+                    ? '#E8A020'
+                    : '#9A9C8E',
+                  background: path.startsWith('/organizer')
+                    ? '#2A1E06'
+                    : 'transparent',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s',
+                }}>
+                  Organizer
+                </div>
+              </Link>
+            )}
           </nav>
 
-          {/* Desktop Auth */}
-          <div className="hidden md:flex gap-4 items-center">
-            {user ? (
-              <div className="flex gap-3 items-center">
-                {/* User Avatar with Dropdown — this is the ONLY place logout lives */}
-                <div className="relative" ref={userMenuRef} data-dropdown>
-                  <button
-                    onClick={() => setShowUserMenu(!showUserMenu)}
-                    className="w-10 h-10 rounded-full bg-amber-gradient flex items-center justify-center font-syne text-xs font-black hover:scale-110 transition-transform cursor-pointer"
-                    style={{color: '#0D0F0B'}}
-                  >
-                    {initials}
-                  </button>
-                  {showUserMenu && (
-                    <div className="absolute right-0 top-14 w-56 rounded-2xl border shadow-2xl overflow-hidden z-50 animate-fade-up" style={{background: '#141710', borderColor: '#252D22'}}>
-                      {/* User email - not clickable */}
-                      <div className="px-5 py-4 border-b" style={{borderColor: '#252D22'}}>
-                        <p className="text-sm font-bold truncate" style={{color: '#EDE8DF'}}>{user.fullName || user.name || 'User'}</p>
-                        <p className="text-[11px] truncate" style={{color: '#9A9C8E'}}>{user.email}</p>
+          {/* Desktop Right Side */}
+          <div style={{
+            display: 'flex',
+            gap: 8,
+            alignItems: 'center',
+          }}
+            className="hide-mobile"
+          >
+            {isLoggedIn ? (
+              // Logged in — show avatar with dropdown
+              <div
+                ref={dropdownRef}
+                style={{ position: 'relative' }}
+              >
+                <div
+                  onClick={() => setShowDropdown(!showDropdown)}
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '50%',
+                    background: '#2A1E06',
+                    border: '2px solid #E8A020',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 12,
+                    fontWeight: 800,
+                    color: '#E8A020',
+                    cursor: 'pointer',
+                    fontFamily: 'Syne, sans-serif',
+                    userSelect: 'none',
+                  }}
+                >
+                  {getInitials()}
+                </div>
+
+                {showDropdown && (
+                  <div style={{
+                    position: 'absolute',
+                    right: 0,
+                    top: 44,
+                    background: '#141710',
+                    border: '1px solid #252D22',
+                    borderRadius: 12,
+                    padding: 8,
+                    minWidth: 200,
+                    zIndex: 200,
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                  }}>
+                    {/* User info */}
+                    <div style={{
+                      padding: '8px 12px 10px',
+                      borderBottom: '1px solid #252D22',
+                      marginBottom: 4,
+                    }}>
+                      <div style={{
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: '#EDE8DF',
+                        marginBottom: 2,
+                      }}>
+                        {user?.fullName || 'User'}
                       </div>
-                      <div className="py-2">
-                        {/* Dashboard link */}
-                        <Link href="/dashboard" onClick={() => setShowUserMenu(false)} className="flex items-center gap-3 px-5 py-3 text-sm transition-colors" style={{color: '#9A9C8E'}}>
-                          <LayoutDashboard size={16} />
-                          Dashboard
-                        </Link>
-                        {/* Admin Panel - only for admin */}
-                        {isAdmin && (
-                          <Link href="/admin" onClick={() => setShowUserMenu(false)} className="flex items-center gap-3 px-5 py-3 text-sm transition-colors" style={{color: '#9A9C8E'}}>
-                            <Shield size={16} />
-                            Admin Panel
-                          </Link>
-                        )}
-                        {/* Post a Listing — visible to all */}
-                        <Link href="/post-listing" onClick={() => setShowUserMenu(false)} className="flex items-center gap-3 px-5 py-3 text-sm transition-colors" style={{color: '#9A9C8E'}}>
-                          <ArrowRight size={16} />
-                          Post a Listing
-                        </Link>
-                        {/* Divider */}
-                        <div className="my-1 mx-4" style={{borderTop: '1px solid #252D22'}} />
-                        {/* Sign Out */}
-                        <button
-                          onClick={handleLogout}
-                          className="w-full flex items-center gap-3 px-5 py-3 text-sm transition-colors"
-                          style={{color: '#EF4444'}}
-                        >
-                          <LogOut size={16} />
-                          Sign Out
-                        </button>
+                      <div style={{
+                        fontSize: 11,
+                        color: '#555C50',
+                      }}>
+                        {user?.email}
+                      </div>
+                      <div style={{
+                        marginTop: 6,
+                        display: 'inline-block',
+                        background: user?.plan === 'admin'
+                          ? 'linear-gradient(135deg, #E8A020, #C87020)'
+                          : user?.plan === 'premium'
+                            ? '#2A1E06'
+                            : '#1C2119',
+                        color: user?.plan === 'admin'
+                          ? '#090A07'
+                          : user?.plan === 'premium'
+                            ? '#E8A020'
+                            : '#9A9C8E',
+                        padding: '2px 10px',
+                        borderRadius: 100,
+                        fontSize: 10,
+                        fontWeight: 700,
+                        letterSpacing: '0.5px',
+                      }}>
+                        {user?.plan === 'admin'
+                          ? 'FOUNDER'
+                          : user?.plan === 'premium'
+                            ? 'PREMIUM'
+                            : 'FREE'}
                       </div>
                     </div>
-                  )}
-                </div>
+
+                    {/* Dropdown links */}
+                    {[
+                      { href: '/dashboard', label: '📊 Dashboard' },
+                      { href: '/organizer', label: '🎪 Organizer' },
+                    ].map(item => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        style={{ textDecoration: 'none' }}
+                        onClick={() => setShowDropdown(false)}
+                      >
+                        <div style={{
+                          padding: '8px 12px',
+                          fontSize: 13,
+                          color: '#EDE8DF',
+                          borderRadius: 8,
+                          cursor: 'pointer',
+                          transition: 'background 0.1s',
+                        }}
+                          onMouseEnter={e =>
+                            (e.currentTarget.style.background = '#1C2119')
+                          }
+                          onMouseLeave={e =>
+                            (e.currentTarget.style.background = 'transparent')
+                          }
+                        >
+                          {item.label}
+                        </div>
+                      </Link>
+                    ))}
+
+                    {/* Admin link only for admins */}
+                    {isAdmin && (
+                      <Link
+                        href="/admin"
+                        style={{ textDecoration: 'none' }}
+                        onClick={() => setShowDropdown(false)}
+                      >
+                        <div style={{
+                          padding: '8px 12px',
+                          fontSize: 13,
+                          color: '#E8A020',
+                          borderRadius: 8,
+                          cursor: 'pointer',
+                        }}
+                          onMouseEnter={e =>
+                            (e.currentTarget.style.background = '#2A1E06')
+                          }
+                          onMouseLeave={e =>
+                            (e.currentTarget.style.background = 'transparent')
+                          }
+                        >
+                          ⚙️ Admin Panel
+                        </div>
+                      </Link>
+                    )}
+
+                    {/* Upgrade for free users */}
+                    {user?.plan === 'free' && (
+                      <Link
+                        href="/pricing"
+                        style={{ textDecoration: 'none' }}
+                        onClick={() => setShowDropdown(false)}
+                      >
+                        <div style={{
+                          margin: '4px 8px',
+                          padding: '8px 12px',
+                          fontSize: 12,
+                          fontWeight: 700,
+                          color: '#090A07',
+                          background: '#E8A020',
+                          borderRadius: 8,
+                          cursor: 'pointer',
+                          textAlign: 'center',
+                        }}>
+                          ⚡ Upgrade to Premium
+                        </div>
+                      </Link>
+                    )}
+
+                    {/* Logout */}
+                    <div
+                      onClick={handleLogout}
+                      style={{
+                        padding: '8px 12px',
+                        fontSize: 13,
+                        color: '#F05050',
+                        borderRadius: 8,
+                        cursor: 'pointer',
+                        marginTop: 4,
+                        borderTop: '1px solid #252D22',
+                      }}
+                      onMouseEnter={e =>
+                        (e.currentTarget.style.background = '#280C0C')
+                      }
+                      onMouseLeave={e =>
+                        (e.currentTarget.style.background = 'transparent')
+                      }
+                    >
+                      → Sign Out
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
+              // Logged out — show login and register
               <>
                 <Link href="/login">
-                  <button className="text-[13px] font-bold transition-colors px-4 py-2" style={{color: '#9A9C8E'}}>
-                    Log in
+                  <button style={{
+                    padding: '7px 16px',
+                    borderRadius: 8,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    background: 'transparent',
+                    border: '1px solid #313D2C',
+                    color: '#9A9C8E',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    transition: 'all 0.15s',
+                  }}>
+                    Log In
                   </button>
                 </Link>
                 <Link href="/register">
-                  <button className="btn-primary px-7 py-3 text-[13px] font-extrabold uppercase tracking-widest flex items-center gap-2">
-                    Join Free
-                    <ArrowRight size={14} />
+                  <button style={{
+                    padding: '7px 16px',
+                    borderRadius: 8,
+                    fontSize: 13,
+                    fontWeight: 700,
+                    background: '#E8A020',
+                    border: 'none',
+                    color: '#090A07',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    transition: 'all 0.15s',
+                  }}>
+                    Join Free →
                   </button>
                 </Link>
               </>
             )}
-            <ThemeToggle />
           </div>
 
-          {/* Mobile Toggle Container */}
-          <div className="flex md:hidden items-center gap-3">
-            <ThemeToggle />
-            <button className="p-2 hover:text-amber" style={{color: '#9A9C8E'}} onClick={() => setIsOpen(!isOpen)}>
-              {isOpen ? <X size={28} /> : <Menu size={28} />}
-            </button>
-          </div>
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setShowMobile(!showMobile)}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 8,
+              color: '#EDE8DF',
+              fontSize: 20,
+              display: 'none',
+            }}
+            className="show-mobile"
+            aria-label="Toggle menu"
+          >
+            {showMobile ? '✕' : '☰'}
+          </button>
         </div>
+
+        {/* Mobile Menu */}
+        {showMobile && (
+          <div style={{
+            background: '#0F1210',
+            borderTop: '1px solid #252D22',
+            padding: '16px 1.5rem',
+          }}>
+            {/* Mobile nav links */}
+            {navLinks.map(link => (
+              <Link
+                key={link.href}
+                href={link.href}
+                style={{ textDecoration: 'none' }}
+                onClick={() => setShowMobile(false)}
+              >
+                <div style={{
+                  padding: '12px 0',
+                  fontSize: 15,
+                  fontWeight: 500,
+                  color: path.startsWith(link.href)
+                    ? '#E8A020'
+                    : '#9A9C8E',
+                  borderBottom: '1px solid #1C2119',
+                }}>
+                  {link.label}
+                </div>
+              </Link>
+            ))}
+
+            {isLoggedIn ? (
+              // Mobile logged in state
+              <>
+                <Link
+                  href="/dashboard"
+                  style={{ textDecoration: 'none' }}
+                  onClick={() => setShowMobile(false)}
+                >
+                  <div style={{
+                    padding: '12px 0',
+                    fontSize: 15,
+                    fontWeight: 500,
+                    color: '#9A9C8E',
+                    borderBottom: '1px solid #1C2119',
+                  }}>
+                    📊 Dashboard
+                  </div>
+                </Link>
+                <Link
+                  href="/organizer"
+                  style={{ textDecoration: 'none' }}
+                  onClick={() => setShowMobile(false)}
+                >
+                  <div style={{
+                    padding: '12px 0',
+                    fontSize: 15,
+                    fontWeight: 500,
+                    color: '#9A9C8E',
+                    borderBottom: '1px solid #1C2119',
+                  }}>
+                    🎪 Organizer
+                  </div>
+                </Link>
+                {isAdmin && (
+                  <Link
+                    href="/admin"
+                    style={{ textDecoration: 'none' }}
+                    onClick={() => setShowMobile(false)}
+                  >
+                    <div style={{
+                      padding: '12px 0',
+                      fontSize: 15,
+                      fontWeight: 500,
+                      color: '#E8A020',
+                      borderBottom: '1px solid #1C2119',
+                    }}>
+                      ⚙️ Admin Panel
+                    </div>
+                  </Link>
+                )}
+                <div style={{
+                  padding: '12px 0',
+                  marginTop: 8,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 12,
+                }}>
+                  <div style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: '50%',
+                    background: '#2A1E06',
+                    border: '2px solid #E8A020',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 12,
+                    fontWeight: 800,
+                    color: '#E8A020',
+                    flexShrink: 0,
+                  }}>
+                    {getInitials()}
+                  </div>
+                  <div>
+                    <div style={{
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: '#EDE8DF',
+                    }}>
+                      {user?.fullName}
+                    </div>
+                    <div style={{
+                      fontSize: 11,
+                      color: '#555C50',
+                    }}>
+                      {user?.plan === 'admin'
+                        ? 'Founder'
+                        : user?.plan === 'premium'
+                          ? 'Premium Member'
+                          : 'Free Member'}
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    width: '100%',
+                    padding: '10px',
+                    background: 'transparent',
+                    border: '1px solid #3A1010',
+                    borderRadius: 8,
+                    fontSize: 13,
+                    color: '#F05050',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    marginTop: 8,
+                  }}
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              // Mobile logged out state
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 10,
+                marginTop: 16,
+              }}>
+                <Link
+                  href="/login"
+                  style={{ textDecoration: 'none' }}
+                  onClick={() => setShowMobile(false)}
+                >
+                  <button style={{
+                    width: '100%',
+                    padding: '12px',
+                    background: 'transparent',
+                    border: '1px solid #313D2C',
+                    borderRadius: 8,
+                    fontSize: 14,
+                    fontWeight: 600,
+                    color: '#9A9C8E',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                  }}>
+                    Log In
+                  </button>
+                </Link>
+                <Link
+                  href="/register"
+                  style={{ textDecoration: 'none' }}
+                  onClick={() => setShowMobile(false)}
+                >
+                  <button style={{
+                    width: '100%',
+                    padding: '12px',
+                    background: '#E8A020',
+                    border: 'none',
+                    borderRadius: 8,
+                    fontSize: 14,
+                    fontWeight: 700,
+                    color: '#090A07',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                  }}>
+                    Join Free →
+                  </button>
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
       </header>
-
-      {/* Mobile Menu */}
-      <div className={`fixed inset-0 z-50 transition-all duration-500 flex flex-col md:hidden ${
-        isOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
-      }`} style={{background: 'rgba(13,15,11,0.97)', backdropFilter: 'blur(20px)', color: '#EDE8DF'}}>
-        <div className="p-6 flex justify-between items-center h-[80px]">
-          <div className="font-syne text-xl font-extrabold">Opp<span className="text-amber">Alert</span></div>
-          <button onClick={() => setIsOpen(false)}><X size={28} /></button>
-        </div>
-        <div className="flex-1 flex flex-col p-8 gap-4 overflow-y-auto">
-          {navLinks.map((l) => (
-            <Link key={l.href} href={l.href} className="text-3xl font-syne font-extrabold hover:text-amber transition-colors">
-              {l.label}
-            </Link>
-          ))}
-          <Link href="/post-listing" className="text-3xl font-syne font-extrabold hover:text-amber transition-colors">
-            Post Listing
-          </Link>
-          <div className="mt-auto flex flex-col gap-4">
-             {user ? (
-               <>
-                 <Link href="/dashboard" className="btn-primary py-4 text-base uppercase tracking-widest text-center">Dashboard</Link>
-                 <button onClick={handleLogout} className="btn-ghost py-4 text-base font-bold border-danger/20" style={{color: '#EF4444'}}>Sign Out</button>
-               </>
-             ) : (
-               <>
-                 <Link href="/login" className="btn-ghost py-4 text-base font-bold text-center">Log in</Link>
-                 <Link href="/register" className="btn-primary py-4 text-base font-extrabold uppercase tracking-widest text-center">Join Free</Link>
-               </>
-             )}
-          </div>
-        </div>
-      </div>
     </>
   )
 }
