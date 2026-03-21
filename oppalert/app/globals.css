@@ -445,6 +445,30 @@ img {
   color: var(--text);
 }
 
+/* Responsive navbar helpers */
+@media (max-width: 768px) {
+  .hide-mobile { display: none !important; }
+  .show-mobile { display: flex !important; }
+}
+@media (min-width: 769px) {
+  .show-mobile { display: none !important; }
+  .hide-mobile { display: flex !important; }
+}
+
+/* Event card enhancements */
+.event-type-bootcamp { border-left: 3px solid #E8A020; }
+.event-type-workshop { border-left: 3px solid #4A9EE8; }
+.event-type-webinar  { border-left: 3px solid #34C27A; }
+.event-type-meetup   { border-left: 3px solid #8B5CF6; }
+.event-type-conference { border-left: 3px solid #F97316; }
+.event-type-hackathon  { border-left: 3px solid #F05050; }
+
+/* Skeleton loading pulse */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.7; }
+}
+
 @media (max-width: 768px) {
   .hide-mobile { display: none !important; }
   .show-mobile { display: flex !important; }

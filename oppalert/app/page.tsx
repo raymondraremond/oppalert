@@ -1,304 +1,182 @@
-'use client'
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import dynamic from 'next/dynamic'
-import { calculateDaysRemaining } from '@/lib/utils'
-import { getFeatured } from '@/lib/data'
-import OpportunityCard from '@/components/OpportunityCard'
-import Footer from '@/components/Footer'
-import ScrollReveal from '@/components/ScrollReveal'
-import {
-  GraduationCap,
-  Briefcase,
-  Globe,
-  Coins,
-  FlaskConical,
-  Rocket,
-  UserPlus,
-  Search,
-  Bookmark,
-  Bell,
-  ArrowRight,
-} from 'lucide-react'
+"use client"
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import { opportunities as seedData } from "@/lib/data"
+import OpportunityCard from "@/components/OpportunityCard"
 
-// Lazy load below-the-fold sections
-const TestimonialsSection = dynamic(
-  () => import('@/components/TestimonialsSection'),
-  { 
-    loading: () => (
-      <div style={{ height: 400, background: 'var(--icon-bg)', borderRadius: 24, margin: '64px auto', maxWidth: '80rem' }} />
-    )
+const sampleEvents = [
+  {
+    id: "s1",
+    title: "Data Science Bootcamp Lagos 2025",
+    organizer: "TechAfrica Hub",
+    type: "bootcamp",
+    date: "April 15, 2025",
+    location: "Lagos, Nigeria",
+    isOnline: false,
+    spots: 45,
+    maxSpots: 100,
+    price: 0,
+    tags: ["Python", "Machine Learning", "Data"],
+    color: "#E8A020",
+  },
+  {
+    id: "s2",
+    title: "Remote Work Masterclass",
+    organizer: "AfriWork Community",
+    type: "workshop",
+    date: "April 20, 2025",
+    location: "Online",
+    isOnline: true,
+    spots: 234,
+    maxSpots: 500,
+    price: 0,
+    tags: ["Remote Work", "Productivity", "Career"],
+    color: "#4A9EE8",
+  },
+  {
+    id: "s3",
+    title: "Startup Pitch Night Nairobi",
+    organizer: "Nairobi Tech Week",
+    type: "meetup",
+    date: "May 2, 2025",
+    location: "Nairobi, Kenya",
+    isOnline: false,
+    spots: 89,
+    maxSpots: 150,
+    price: 2000,
+    tags: ["Startups", "Pitching", "Networking"],
+    color: "#8B5CF6",
   }
-)
-
-const NewsletterSection = dynamic(
-  () => import('@/components/NewsletterSection'),
-  { loading: () => null }
-)
-
-const stats = [
-  { num: '2,400+', label: 'Opportunities' },
-  { num: '48K+', label: 'Active Users' },
-  { num: '54', label: 'Countries Covered' },
-  { num: '98%', label: 'Verified Listings' },
-]
-
-const cats = [
-  { icon: GraduationCap, label: 'Scholarships', count: '420 open', slug: 'scholarship' },
-  { icon: Briefcase, label: 'Remote Jobs', count: '830 open', slug: 'job' },
-  { icon: Globe, label: 'Fellowships', count: '185 open', slug: 'fellowship' },
-  { icon: Coins, label: 'Grants', count: '240 open', slug: 'grant' },
-  { icon: FlaskConical, label: 'Internships', count: '310 open', slug: 'internship' },
-  { icon: Rocket, label: 'Startup Funding', count: '92 open', slug: 'startup' },
-  { icon: Briefcase, label: 'Bootcamps', count: '45 open', slug: 'bootcamp' },
-  { icon: Globe, label: 'Events', count: '38 open', slug: 'event' },
-]
-
-const howItWorks = [
-  {
-    step: '01',
-    title: 'Create Account',
-    desc: 'Sign up free and set your preferences — category, country, and funding type.',
-    icon: UserPlus,
-  },
-  {
-    step: '02',
-    title: 'Discover',
-    desc: 'Browse verified listings or let smart filters surface the most relevant opportunities.',
-    icon: Search,
-  },
-  {
-    step: '03',
-    title: 'Save & Apply',
-    desc: 'Bookmark opportunities and get deadline reminders before they close.',
-    icon: Bookmark,
-  },
-  {
-    step: '04',
-    title: 'Get Alerts',
-    desc: 'Premium users get instant alerts for new listings — before the crowd sees them.',
-    icon: Bell,
-  },
 ]
 
 export default function HomePage() {
-  // CRITICAL: Start with seed data so cards show instantly — never empty
-  const [featured, setFeatured] = useState<any[]>(getFeatured(6))
+  const [featured, setFeatured] = useState(seedData.slice(0, 6))
 
   useEffect(() => {
-    // Try DB in background silently
-    fetch('/api/opportunities?limit=15')
-      .then(res => res.json())
-      .then(resData => {
-        if (resData?.data?.length > 0) {
-          const dbOpps = resData.data;
-          // Keep seed bootcamps/events that aren't in DB
-          const seedOppsToKeep = getFeatured(10).filter(s => 
-            ['bootcamp', 'event'].includes(s.cat) && 
-            !dbOpps.some((dbItem: any) => dbItem.title === s.title)
-          );
-          
-          let merged = [...dbOpps, ...seedOppsToKeep];
-          
-          const openOpps = merged.filter((opp: any) => calculateDaysRemaining(opp.deadline) > 0)
-          if (openOpps.length > 0) {
-            setFeatured(openOpps.slice(0, 6))
-          }
+    const fetchFeatured = async () => {
+      try {
+        const res = await fetch("/api/opportunities?limit=6")
+        if (res.ok) {
+          const data = await res.json()
+          if (data.length > 0) setFeatured(data)
         }
-      })
-      .catch(() => {})
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    fetchFeatured()
   }, [])
 
+  const categories = [
+    { name: "Scholarships", icon: "🎓", slug: "scholarship" },
+    { name: "Remote Jobs", icon: "💼", slug: "job" },
+    { name: "Fellowships", icon: "🤝", slug: "fellowship" },
+    { name: "Grants", icon: "💰", slug: "grant" },
+    { name: "Internships", icon: "🌱", slug: "internship" },
+    { name: "Startup Funding", icon: "🚀", slug: "startup" }
+  ]
+
   return (
-    <main className="min-h-screen bg-bg overflow-x-hidden">
-      {/* ── HERO SECTION ── */}
-      <section className="relative pt-32 pb-20 px-6 max-w-screen-xl mx-auto overflow-hidden">
-        {/* Background glow effects */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-[600px] blur-[120px] rounded-full pointer-events-none -z-10" style={{backgroundColor: 'rgba(232, 160, 32, 0.08)'}} />
-        <div className="absolute -top-24 -left-24 w-96 h-96 blur-[100px] rounded-full pointer-events-none -z-10" style={{backgroundColor: 'var(--icon-bg)'}} />
-
-        <div className="text-center max-w-4xl mx-auto">
-          {/* Announcement pill */}
-          <ScrollReveal direction="none">
-            <div className="inline-flex items-center gap-2.5 rounded-full px-5 py-2 mb-10 group cursor-default" style={{backgroundColor: 'var(--amber-dim)', border: '1px solid rgba(232, 160, 32, 0.2)'}}>
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber"></span>
-              </span>
-              <span className="text-amber font-bold text-xs uppercase tracking-widest font-syne group-hover:text-amber-light transition-colors">
-                Now live — 2,400+ verified African opportunities
-              </span>
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal delay={100}>
-            <h1 className="font-syne text-[clamp(40px,7vw,88px)] font-black leading-[0.95] tracking-tighter mb-8 text-primary">
-              Never miss an<br />
-              <span className="text-amber-gradient drop-shadow-glow-amber">opportunity</span> again
-            </h1>
-          </ScrollReveal>
-
-          <ScrollReveal delay={200}>
-            <p className="text-subtle text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed font-medium">
-              The #1 platform for African students and graduates to discover verified 
-              scholarships, jobs, and funding. Join the elite who stay ahead.
-            </p>
-          </ScrollReveal>
-
-          <ScrollReveal delay={300}>
-            <div className="flex flex-col sm:flex-row gap-5 justify-center mb-20">
-              <Link href="/opportunities" className="btn-primary px-10 py-5 text-base rounded-2xl shadow-glow-amber">
-                Explore Opportunities
-                <ArrowRight size={20} className="stroke-[2.5]" />
-              </Link>
-              <Link href="/pricing" className="btn-ghost px-10 py-5 text-base rounded-2xl">
-                <Bell size={20} className="mr-2" />
-                Get Alerted Free
-              </Link>
-            </div>
-          </ScrollReveal>
-
-          {/* Quick Stats Grid */}
-          <ScrollReveal delay={0}>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 max-w-5xl mx-auto py-12 border-y backdrop-blur-sm rounded-3xl md:rounded-full" style={{borderColor: 'var(--border)', backgroundColor: 'var(--icon-bg)'}}>
-              {stats.map((s) => (
-                <div key={s.label} className="text-center px-4 group">
-                  <div className="font-syne text-3xl md:text-4xl font-black text-amber mb-1 group-hover:scale-110 transition-transform duration-500 drop-shadow-glow-amber/50">
-                    {s.num}
-                  </div>
-                  <div className="text-[10px] uppercase font-black tracking-[0.2em] text-muted transition-colors">
-                    {s.label}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* ── BROWSE BY CATEGORY ── */}
-      <section className="py-24 px-6 max-w-7xl mx-auto">
-        <ScrollReveal>
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 space-y-4">
-            <div className="max-w-xl">
-              <h2 className="section-title text-left mb-4">
-                Browse by <span>Category</span>
-              </h2>
-              <p className="text-subtle font-medium">
-                Filter through curated categories tailored specifically for the African career landscape.
-              </p>
-            </div>
+    <main className="min-h-screen bg-[#080A07]">
+      {/* HERO */}
+      <section className="pt-20 pb-24 px-6 text-center border-b border-[#252D22]">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="font-syne text-5xl md:text-7xl font-black text-[#EDE8DF] mb-6 tracking-tighter leading-tight">
+            The Hub for African <span className="text-[#E8A020]">Excellence.</span>
+          </h1>
+          <p className="text-lg md:text-xl text-[#9A9C8E] mb-10 max-w-2xl mx-auto leading-relaxed">
+            Discover verified scholarships, remote jobs, fellowships, and grants curated specifically for the next generation of African leaders.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/opportunities" className="px-10 py-4 bg-[#E8A020] text-[#080A07] font-black rounded-2xl hover:scale-105 transition-all">
+              Browse Opportunities
+            </Link>
+            <Link href="/register" className="px-10 py-4 bg-[#141710] text-[#EDE8DF] border border-[#252D22] font-black rounded-2xl hover:bg-[#222820] transition-all">
+              Join Free Community
+            </Link>
           </div>
-        </ScrollReveal>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
-          {cats.map((c, i) => {
-            const Icon = c.icon
-            return (
-              <ScrollReveal key={c.slug} delay={i * 60}>
-                <Link href={`/opportunities?cat=${c.slug}`} className="group h-full block">
-                  <div className="cat-card h-full">
-                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500 shadow-inner" style={{backgroundColor: 'var(--amber-dim)'}}>
-                      <Icon size={28} className="text-amber drop-shadow-glow-amber" />
-                    </div>
-                    <h3 className="font-syne text-lg font-extrabold text-primary mb-2 group-hover:text-amber transition-colors">
-                      {c.label}
-                    </h3>
-                    <p className="text-xs font-bold text-muted uppercase tracking-widest">
-                      {c.count}
-                    </p>
-                  </div>
-                </Link>
-              </ScrollReveal>
-            )
-          })}
         </div>
       </section>
 
-      {/* ── FEATURED SECTION ── */}
-      <section className="py-24 px-6 border-y" style={{borderColor: 'var(--border)', backgroundColor: 'var(--icon-bg)'}}>
-        <div className="max-w-7xl mx-auto">
-          <ScrollReveal>
-            <div className="flex justify-between items-end mb-16">
-              <div>
-                <h2 className="section-title text-left mb-4">
-                  Latest <span>Opportunities</span>
-                </h2>
-                <p className="text-subtle font-medium">Hand-picked, verified, and updated daily.</p>
-              </div>
-              <Link href="/opportunities" className="hidden md:flex items-center gap-2 group text-amber font-bold text-sm uppercase tracking-wider">
-                Explore All <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-          </ScrollReveal>
+      {/* CATEGORIES */}
+      <section className="py-20 px-6 container mx-auto">
+        <h2 className="font-syne text-3xl font-black text-[#EDE8DF] mb-12 text-center">Browse by Category</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          {categories.map((cat) => (
+            <Link key={cat.slug} href={`/opportunities?cat=${cat.slug}`} className="p-6 bg-[#141710] border border-[#252D22] rounded-3xl hover:border-[#E8A020] transition-all text-center">
+              <div className="text-3xl mb-3">{cat.icon}</div>
+              <div className="font-bold text-[#EDE8DF] text-sm">{cat.name}</div>
+            </Link>
+          ))}
+        </div>
+      </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {featured.map((opp, i) => (
-              <ScrollReveal key={opp.id} delay={i * 80}>
-                <OpportunityCard opp={opp} />
-              </ScrollReveal>
+      {/* FEATURED */}
+      <section className="py-20 px-6 bg-[#0D0F0B]">
+        <div className="container mx-auto">
+          <div className="flex justify-between items-end mb-12">
+            <div>
+              <h2 className="font-syne text-3xl font-black text-[#EDE8DF] mb-2">Featured Opportunities</h2>
+              <p className="text-[#9A9C8E]">Handpicked high-impact opportunities closing soon.</p>
+            </div>
+            <Link href="/opportunities" className="text-[#E8A020] font-bold hover:underline">View All →</Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {featured.map((opp) => (
+              <OpportunityCard key={opp.id} opportunity={opp} />
             ))}
           </div>
-
-          <div className="mt-16 text-center md:hidden">
-            <ScrollReveal delay={200}>
-              <Link href="/opportunities" className="btn-ghost inline-flex px-8 py-4 w-full">
-                View All Opportunities <ArrowRight size={18} className="ml-2" />
-              </Link>
-            </ScrollReveal>
-          </div>
         </div>
       </section>
 
-      {/* ── HOW IT WORKS ── */}
-      <section className="py-32 px-6 max-w-7xl mx-auto">
-        <ScrollReveal>
-          <div className="text-center max-w-2xl mx-auto mb-20">
-            <h2 className="section-title mb-6">
-              Your journey to <span>success</span>
-            </h2>
-            <p className="text-subtle text-lg font-medium leading-relaxed">
-              We&apos;ve streamlined discovery into four simple steps so you can focus on what matters: your application.
-            </p>
+      {/* EVENTS SECTION */}
+      <section className="py-24 px-6 border-t border-[#252D22]">
+        <div className="container mx-auto">
+          <div className="flex justify-between items-end mb-12">
+            <div>
+              <h2 className="font-syne text-3xl font-black text-[#EDE8DF] mb-2">Upcoming Events & Bootcamps</h2>
+              <p className="text-[#9A9C8E]">Level up with community-led workshops and meetups.</p>
+            </div>
+            <Link href="/events" className="text-[#E8A020] font-bold hover:underline">View All Events →</Link>
           </div>
-        </ScrollReveal>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {howItWorks.map((s, i) => {
-            const StepIcon = s.icon
-            return (
-              <ScrollReveal key={s.step} delay={i * 100} direction="up" className="h-full">
-                <div className="step-card group h-full">
-                  <div className="w-16 h-16 rounded-2xl bg-amber-gradient text-bg flex items-center justify-center mb-8 shadow-glow-amber group-hover:scale-110 transition-all duration-500">
-                    <StepIcon size={28} className="stroke-[2.5]" />
-                  </div>
-                  <div className="font-syne text-[10px] font-black text-amber uppercase tracking-[0.3em] mb-4 opacity-70">
-                    Phase {s.step}
-                  </div>
-                  <h3 className="text-xl font-extrabold text-primary mb-4 group-hover:text-amber transition-colors">
-                    {s.title}
-                  </h3>
-                  <p className="text-subtle text-sm leading-relaxed font-medium">
-                    {s.desc}
-                  </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {sampleEvents.map((event) => (
+              <div key={event.id} className="bg-[#141710] border border-[#252D22] rounded-[2rem] p-8 hover:border-[#E8A020]/50 transition-all group" style={{ borderLeft: `4px solid ${event.color}` }}>
+                <div className="flex justify-between items-start mb-6">
+                  <span className="px-3 py-1 bg-[#080A07] rounded-full text-[10px] font-black uppercase text-[#9A9C8E] border border-[#252D22]">
+                    {event.type}
+                  </span>
+                  <span className="text-[#E8A020] text-xs font-bold">{event.price === 0 ? "FREE" : `₦${event.price.toLocaleString()}`}</span>
                 </div>
-              </ScrollReveal>
-            )
-          })}
+                <h3 className="text-xl font-bold text-[#EDE8DF] mb-4 group-hover:text-[#E8A020] transition-colors">{event.title}</h3>
+                <div className="space-y-2 mb-8">
+                  <div className="text-sm text-[#9A9C8E] flex items-center gap-2">📅 {event.date}</div>
+                  <div className="text-sm text-[#9A9C8E] flex items-center gap-2">{event.isOnline ? "🌐 Online" : `📍 ${event.location}`}</div>
+                </div>
+                <div className="w-full bg-[#080A07] rounded-full h-1.5 mb-4 overflow-hidden">
+                  <div className="bg-[#E8A020] h-full" style={{ width: `${(event.spots / event.maxSpots) * 100}%` }}></div>
+                </div>
+                <div className="flex justify-between text-[10px] font-bold text-[#555C50] uppercase mb-6">
+                  <span>Registration</span>
+                  <span>{event.spots}/{event.maxSpots} Booked</span>
+                </div>
+                <Link href="/events" className="block w-full py-3 bg-[#222820] text-[#EDE8DF] text-center font-bold rounded-xl group-hover:bg-[#E8A020] group-hover:text-[#080A07] transition-all">
+                  Register Now
+                </Link>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ── TESTIMONIALS ── */}
-      <ScrollReveal delay={100}>
-        <TestimonialsSection />
-      </ScrollReveal>
-
-      {/* ── FINAL CTA ── */}
-      <ScrollReveal delay={100}>
-        <NewsletterSection />
-      </ScrollReveal>
-
-      <Footer />
+      {/* FINAL CTA */}
+      <section className="py-24 px-6 text-center bg-[#E8A020]">
+        <h2 className="font-syne text-4xl font-black text-[#080A07] mb-6">Ready to find your next opportunity?</h2>
+        <p className="text-[#080A07] opacity-80 mb-10 text-lg max-w-xl mx-auto font-medium">Join thousands of students and professionals receiving weekly alerts.</p>
+        <Link href="/register" className="px-12 py-5 bg-[#080A07] text-[#EDE8DF] font-black rounded-2xl hover:scale-105 transition-all inline-block">
+          Create Free Account →
+        </Link>
+      </section>
     </main>
   )
 }

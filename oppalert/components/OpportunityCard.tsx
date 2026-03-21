@@ -1,104 +1,64 @@
-'use client'
-import Link from 'next/link'
-import type { Opportunity } from '@/lib/types'
-import { getCategoryLabel, getCategoryBadge, calculateDaysRemaining } from '@/lib/utils'
-import { CategoryIcon, Clock, AlertCircle, ArrowUpRight } from '@/lib/icons'
+"use client"
+import Link from "next/link"
+import { getCategoryLabel } from "@/lib/utils"
 
-interface Props {
-  opp: Opportunity
-}
+export default function OpportunityCard({ opportunity }: { opportunity: any }) {
+  const getDeadlineDisplay = (deadline: string | null, days: number | null): string => {
+    // Use days_remaining from DB if available
+    if (days !== null && days !== undefined) {
+      if (days <= 0) return "Closed"
+      if (days === 1) return "1 day left"
+      return days + " days left"
+    }
+    // Fallback to calculating from deadline date
+    if (!deadline) return "Open"
+    const deadlineDate = new Date(deadline)
+    if (isNaN(deadlineDate.getTime())) return "Open"
+    const now = new Date()
+    const diff = Math.floor(
+      (deadlineDate.getTime() - now.getTime()) / 86400000
+    )
+    if (diff <= 0) return "Deadline passed"
+    if (diff === 1) return "1 day left"
+    return diff + " days left"
+  }
 
-export default function OpportunityCard({ opp }: Props) {
-  // Handle dual schema (DB vs mock data)
-  const days = calculateDaysRemaining(opp.deadline)
-  const org = opp.organization || opp.org || 'Unknown Organization'
-  const cat = opp.category || opp.cat || 'scholarship'
-  const desc = opp.description || opp.desc || ''
-  const fund = opp.funding_type || opp.fund || 'Various Funding'
-  const isFeatured = opp.is_featured || opp.featured || false
-  const isSponsored = opp.sponsored || false
-  const sponsoredBy = opp.sponsoredBy || 'Partner'
-
-  const isUrgent = days <= 7
-  const isSoon = days > 7 && days <= 14
+  const deadlineText = getDeadlineDisplay(opportunity.deadline, opportunity.days_remaining)
 
   return (
-    <Link href={`/opportunities/${opp.id}`} className="group block h-full animate-fade-up">
-      <div className={`card-opp h-full flex flex-col relative`} style={isFeatured ? {borderColor: 'rgba(232, 160, 32, 0.2)', boxShadow: '0 0 20px rgba(232, 160, 32, 0.05)'} : undefined}>
-        {isFeatured && (
-          <>
-            {/* Gold left accent */}
-            <div style={{
-              position: 'absolute', left: 0, top: 0,
-              bottom: 0, width: 3,
-              background: 'linear-gradient(180deg, #E8A020, #C87020)',
-              borderRadius: '16px 0 0 16px',
-            }} />
-            
-            {/* Featured badge */}
-            <div style={{
-              position: 'absolute', top: 12, right: 12,
-              background: 'linear-gradient(135deg, #E8A020, #C87020)',
-              color: '#090A07', padding: '2px 9px',
-              borderRadius: 100, fontSize: 9,
-              fontWeight: 800, letterSpacing: '0.8px',
-              fontFamily: 'var(--font-syne), sans-serif',
-              zIndex: 10,
-            }}>
-              FEATURED
-            </div>
-          </>
-        )}
-
-        {/* Header Icon */}
-        <div className="flex justify-between items-start mb-6">
-          <div className="w-12 h-12 rounded-xl icon-box flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform duration-500">
-            <CategoryIcon cat={cat} size={22} className="text-amber drop-shadow-glow-amber" />
-          </div>
-          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-amber">
-            <ArrowUpRight size={20} />
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="flex-1">
-          <h3 className="font-syne text-lg font-extrabold text-primary leading-snug mb-2 group-hover:text-amber transition-colors line-clamp-2">
-            {opp.title}
-          </h3>
-          <p className="text-[13px] text-muted font-medium mb-1">{org}</p>
-          {isSponsored && (
-            <div style={{
-              fontSize: 9, color: '#555C50',
-              marginTop: 2, marginBottom: 8, letterSpacing: '0.3px',
-            }}>
-              Promoted by {sponsoredBy}
-            </div>
-          )}
-          <p className="text-[13px] text-subtle leading-relaxed line-clamp-2 mb-6 mt-3">
-            {desc}
-          </p>
-        </div>
-
-        {/* Footer */}
-        <div className="mt-auto pt-6 border-t flex justify-between items-center gap-4" style={{borderColor: 'var(--glass-border)'}}>
-          <div className="flex gap-2 flex-wrap">
-            <span className={`badge ${getCategoryBadge(cat)}`}>
-              {getCategoryLabel(cat).split(' ').slice(1).join(' ') || cat}
-            </span>
-            <span className="badge badge-gray truncate max-w-[120px]" title={fund}>{fund}</span>
-          </div>
-          
-          <div className={`flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider shrink-0 ${
-            isUrgent ? 'text-danger' : isSoon ? 'text-amber' : 'text-subtle'
-          }`}>
-            {days === 0 ? <AlertCircle size={14} /> : isUrgent ? <AlertCircle size={14} /> : <Clock size={14} />}
-            {days === 0 ? 'Closed' : `${days}d Left`}
-          </div>
-        </div>
-        
-        {/* Hover Glow Effect */}
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style={{backgroundColor: 'rgba(232, 160, 32, 0.03)'}} />
+    <div className="bg-[#141710] border border-[#252D22] rounded-[2rem] p-8 hover:border-[#E8A020]/50 transition-all group flex flex-col h-full">
+      <div className="flex justify-between items-start mb-6">
+        <span className="px-3 py-1 bg-[#080A07] rounded-full text-[10px] font-black uppercase text-[#9A9C8E] border border-[#252D22]">
+          {getCategoryLabel(opportunity.cat)}
+        </span>
+        <span className={`text-[10px] font-black uppercase tracking-widest ${deadlineText.includes("left") ? "text-[#E8A020]" : "text-[#555C50]"}`}>
+          {deadlineText}
+        </span>
       </div>
-    </Link>
+
+      <h3 className="text-xl font-bold text-[#EDE8DF] mb-4 group-hover:text-[#E8A020] transition-colors line-clamp-2">
+        {opportunity.title}
+      </h3>
+
+      <div className="flex items-center gap-2 mb-8">
+        <div className="w-6 h-6 rounded-full bg-[#222820] flex items-center justify-center text-[10px] font-bold text-[#9A9C8E] border border-[#252D22]">
+          {opportunity.org?.[0] || "O"}
+        </div>
+        <span className="text-xs font-medium text-[#555C50] truncate">{opportunity.org}</span>
+      </div>
+
+      <div className="mt-auto flex flex-col gap-4">
+        <div className="flex justify-between items-center text-xs">
+          <span className="text-[#555C50]">📍 {opportunity.loc}</span>
+          <span className="text-[#34C27A] font-bold">{opportunity.cost === "Free" || opportunity.cost === "0" ? "FREE" : opportunity.cost}</span>
+        </div>
+        <Link 
+          href={`/opportunities/${opportunity.id}`}
+          className="block w-full py-3 bg-[#222820] text-[#EDE8DF] text-center font-bold rounded-xl group-hover:bg-[#E8A020] group-hover:text-[#080A07] transition-all"
+        >
+          View Details
+        </Link>
+      </div>
+    </div>
   )
 }

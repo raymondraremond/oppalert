@@ -276,7 +276,7 @@ export default function OpportunityDetailPage({ params }: Props) {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {related.map((r) => (
-              <OpportunityCard key={r.id} opp={r} />
+              <OpportunityCard key={r.id} opportunity={r} />
             ))}
           </div>
         </section>
