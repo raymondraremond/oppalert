@@ -11,12 +11,12 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
+    setLoading(true)
     setError('')
 
     try {
@@ -34,36 +34,45 @@ export default function LoginPage() {
       const data = await res.json()
 
       if (!res.ok) {
-        throw new Error(data.error || "Something went wrong")
+        setError(data.error || "Invalid email or password")
+        setLoading(false)
+        return
       }
 
+      if (!data.token) {
+        setError("Login failed. Please try again.")
+        setLoading(false)
+        return
+      }
+
+      // STEP 1 - Set cookie first (middleware reads this)
+      document.cookie = `token=${data.token}; path=/; max-age=2592000; SameSite=Lax`
+
+      // STEP 2 - Set localStorage with complete user object
       const userToStore = {
-        id: data.user?.id || data.id || "",
-        email: data.user?.email || data.email || "",
-        fullName: data.user?.fullName ||
+        id: data.user?.id || data.id || '',
+        email: data.user?.email || data.email || '',
+        fullName: data.user?.fullName || 
                   data.user?.full_name ||
-                  data.user?.name ||
-                  data.fullName ||
-                  data.full_name || "",
-        plan: data.user?.plan ||
-              data.user?.status ||
+                  data.user?.name || 
+                  data.fullName || '',
+        plan: data.user?.plan || 
+              data.user?.status || 
               data.plan ||
-              data.status || "free",
-        token: data.token || data.user?.token || "",
+              data.status || 'free',
+        token: data.token,
       }
 
-      localStorage.setItem("user", JSON.stringify(userToStore))
-
-      document.cookie = `token=${userToStore.token}; path=/; max-age=2592000; SameSite=Lax`
+      localStorage.setItem('user', JSON.stringify(userToStore))
 
       // Notify Navbar
       window.dispatchEvent(new Event("oppalert_auth"))
 
-      router.push("/dashboard")
+      // STEP 3 - Redirect to dashboard
+      router.push('/dashboard')
     } catch (err: any) {
       setError(err.message)
-    } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
   }
 
@@ -93,8 +102,8 @@ export default function LoginPage() {
             </h1>
             <p className="text-sm text-subtle font-medium">
               {mode === 'login'
-                ? 'Join 48,000+ others chasing excellence.'
-                : 'Your journey to a global career starts here.'}
+                ? "Join 48,000+ others chasing excellence."
+                : "Your journey to a global career starts here."}
             </p>
           </div>
 
@@ -180,14 +189,14 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={loading}
               className="w-full btn-primary py-5 rounded-2xl shadow-glow-amber text-bg font-black uppercase tracking-[0.2em] text-xs hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
             >
-              {isLoading ? (
+              {loading ? (
                 <div className="w-5 h-5 border-2 border-bg/30 border-t-bg rounded-full animate-spin" />
               ) : (
                 <>
-                  {mode === 'login' ? 'Proceed to Dashboard' : 'Create My Account'}
+                  {mode === 'login' ? "Proceed to Dashboard" : "Create My Account"}
                   <ArrowRight size={18} className="stroke-[2.5]" />
                 </>
               )}
