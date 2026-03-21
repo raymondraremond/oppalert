@@ -2,8 +2,15 @@
 import Link from "next/link"
 import { getCategoryLabel } from "@/lib/utils"
 
-export default function OpportunityCard({ opportunity }: { opportunity: any }) {
+interface OpportunityCardProps {
+  opportunity: any
+  deadlineOverride?: string
+}
+
+export default function OpportunityCard({ opportunity, deadlineOverride }: OpportunityCardProps) {
   const getDeadlineDisplay = (deadline: string | null, days: number | null): string => {
+    if (deadlineOverride) return deadlineOverride
+    
     // Use days_remaining from DB if available
     if (days !== null && days !== undefined) {
       if (days <= 0) return "Closed"

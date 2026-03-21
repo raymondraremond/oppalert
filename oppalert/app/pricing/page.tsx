@@ -1,12 +1,12 @@
-"use client"
-import { useState, useEffect } from "react"
-import Link from "next/link"
+'use client'
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
 
 export default function PricingPage() {
   const [user, setUser] = useState<any>(null)
 
   useEffect(() => {
-    const stored = localStorage.getItem("user")
+    const stored = localStorage.getItem('user')
     if (stored) setUser(JSON.parse(stored))
   }, [])
 
@@ -20,7 +20,7 @@ export default function PricingPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
           {/* FREE */}
           <div className="p-10 bg-[#141710] border border-[#252D22] rounded-[3rem] flex flex-col">
             <div className="mb-10">
@@ -60,7 +60,7 @@ export default function PricingPage() {
           {/* ORGANIZER */}
           <div className="p-10 bg-[#141710] border border-[#252D22] rounded-[3rem] flex flex-col">
             <div className="mb-10">
-              <h3 className="text-sm font-black text-[#555C50] uppercase tracking-widest mb-2">Organizer</h3>
+              <h3 className="text-sm font-black text-[#555C50] uppercase tracking-widest mb-2">Organizer Premium</h3>
               <div className="text-5xl font-black text-[#EDE8DF] mb-4">5,000 <span className="text-lg font-bold text-[#555C50]">NGN/month</span></div>
               <p className="text-sm text-[#9A9C8E]">Professional tools for educators and communities.</p>
             </div>
@@ -69,19 +69,36 @@ export default function PricingPage() {
               <li className="text-sm text-[#EDE8DF] flex items-center gap-3">🎪 CSV Attendee export</li>
               <li className="text-sm text-[#EDE8DF] flex items-center gap-3">🎪 Real-time registration analytics</li>
               <li className="text-sm text-[#EDE8DF] flex items-center gap-3">🎪 Gold Verified Badge on listings</li>
+              <li className="text-sm text-[#EDE8DF] flex items-center gap-3">🎪 Priority event listing</li>
             </ul>
-            <Link href="/organizer" className="w-full py-4 bg-[#222820] text-[#EDE8DF] font-black rounded-2xl text-center hover:bg-[#E8A020] hover:text-[#080A07] transition-all">
-              Become an Organizer
+            <Link href="/events/create" className="w-full py-4 bg-[#222820] text-[#EDE8DF] font-black rounded-2xl text-center hover:bg-[#E8A020] hover:text-[#080A07] transition-all">
+              Get Organizer Plan →
             </Link>
           </div>
         </div>
 
-        <div className="mt-20 text-center">
-          <div className="flex flex-wrap justify-center items-center gap-8 opacity-50 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-500">
-            <div className="text-[#EDE8DF] font-black italic text-xl">Secured by Paystack</div>
-            <div className="text-[#EDE8DF] font-black italic text-xl">Flutterwave</div>
+        <div className="text-center mb-20">
+          <div className="inline-block px-6 py-2 bg-[#141710] border border-[#252D22] rounded-full text-[10px] font-black text-[#555C50] uppercase tracking-[0.3em] mb-8">SECURED BY PAYSTACK</div>
+          <div className="flex flex-wrap justify-center gap-12 opacity-40 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-500">
+            <span className="text-2xl font-black italic text-[#EDE8DF]">Paystack</span>
+            <span className="text-2xl font-black italic text-[#EDE8DF]">Flutterwave</span>
           </div>
-          <p className="text-[10px] text-[#555C50] font-bold uppercase tracking-[0.3em] mt-8">Secure localized payments for all African regions</p>
+        </div>
+
+        <div className="max-w-3xl mx-auto space-y-6">
+          <h2 className="text-3xl font-black text-[#EDE8DF] mb-10 text-center tracking-tight">Frequently Asked Questions</h2>
+          <div className="p-8 bg-[#141710] border border-[#252D22] rounded-[2rem]">
+            <h4 className="font-bold text-[#EDE8DF] mb-2">How do I pay for premium?</h4>
+            <p className="text-[#9A9C8E] text-sm leading-relaxed">
+              We process payments through Paystack for Nigerian users (Naira) and Flutterwave for other African currencies. You can pay using your debit card, USSD, or bank transfer.
+            </p>
+          </div>
+          <div className="p-8 bg-[#141710] border border-[#252D22] rounded-[2rem]">
+            <h4 className="font-bold text-[#EDE8DF] mb-2">Can I cancel anytime?</h4>
+            <p className="text-[#9A9C8E] text-sm leading-relaxed">
+              Yes, you can cancel your subscription at any time from your billing dashboard. You will continue to have access until the end of your billing cycle.
+            </p>
+          </div>
         </div>
       </div>
     </main>

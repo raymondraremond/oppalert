@@ -390,8 +390,8 @@ export default function AdminPage() {
                           </td>
                           <td className="px-8 py-6 text-xs text-subtle font-medium">{opp.loc}</td>
                           <td className="px-8 py-6">
-                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${opp.days > 0 ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}>
-                              {opp.days > 0 ? 'Active' : 'Expired'}
+                            <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${opp.days_remaining > 0 ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger'}`}>
+                              {opp.days_remaining > 0 ? 'Active' : 'Expired'}
                             </span>
                           </td>
                           <td className="px-8 py-6">

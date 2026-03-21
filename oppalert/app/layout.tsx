@@ -47,8 +47,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${syne.variable} ${inter.variable}`}>
-      <body>
+    <html lang="en" className={`${syne.variable} ${inter.variable}`} suppressHydrationWarning>
+      <body className="bg-[#080A07] text-[#EDE8DF]">
         <ThemeProvider
           attribute="data-theme"
           defaultTheme="dark"
@@ -57,7 +57,7 @@ export default function RootLayout({
         >
           <NextAuthProvider>
             <Navbar />
-            <main style={{ paddingTop: 70 }}>{children}</main>
+            <main>{children}</main>
           </NextAuthProvider>
         </ThemeProvider>
       </body>
