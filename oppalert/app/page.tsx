@@ -55,24 +55,39 @@ const sampleEvents = [
 export default function HomePage() {
   const [featured, setFeatured] = useState(seedData.filter(o => o.is_featured))
 
-  const getDeadlineText = (daysRemaining: any, deadline: any): string => {
-    const days = parseInt(daysRemaining)
-    if (!isNaN(days)) {
-      if (days <= 0) return "Applications closed"
-      if (days === 1) return "1 day left"
-      if (days < 7) return days + " days left"
-      if (days < 30) return Math.ceil(days/7) + " weeks left"
-      return Math.ceil(days/30) + " months left"
-    }
-    if (deadline) {
-      const d = new Date(deadline)
-      if (!isNaN(d.getTime())) {
-        const diff = Math.floor((d.getTime() - Date.now()) / 86400000)
-        if (diff <= 0) return "Applications closed"
-        return diff + " days left"
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      try {
+        const res = await fetch('/api/opportunities?limit=6')
+        if (res.ok) {
+          const data = await res.json()
+          if (data.length > 0) setFeatured(data)
+        }
+      } catch (err) {
+        console.error(err)
       }
     }
-    return "Open now"
+    fetchFeatured()
+  }, [])
+
+  const getDeadlineText = (opp: any): string => {
+    const days = parseInt(opp.days_remaining)
+    if (!isNaN(days) && days > 0) {
+      if (days === 1) return "1 day left"
+      if (days < 30) return days + " days left"
+      if (days < 365) return Math.ceil(days / 30) + " months left"
+      return "Open"
+    }
+    if (opp.deadline) {
+      const d = new Date(opp.deadline)
+      if (!isNaN(d.getTime())) {
+        const diff = Math.floor(
+          (d.getTime() - Date.now()) / 86400000
+        )
+        if (diff > 0) return diff + " days left"
+      }
+    }
+    return "Apply now"
   }
 
   const categories = [
@@ -87,20 +102,22 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-[#080A07]">
       {/* Hero */}
-      <section className="pt-24 pb-32 px-6 text-center">
-        <h1 className="font-syne text-5xl md:text-7xl font-black text-[#EDE8DF] mb-6 tracking-tighter">
-          The Hub for African <span className="text-[#E8A020]">Excellence.</span>
-        </h1>
-        <p className="text-lg md:text-xl text-[#9A9C8E] mb-10 max-w-2xl mx-auto">
-          Discover verified scholarships, remote jobs, fellowships, and grants curated for the next generation of African leaders.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/opportunities" className="px-10 py-4 bg-[#E8A020] text-[#080A07] font-black rounded-2xl hover:scale-105 transition-all">
-            Browse Opportunities
-          </Link>
-          <Link href="/register" className="px-10 py-4 bg-[#141710] text-[#EDE8DF] border border-[#252D22] font-black rounded-2xl hover:bg-[#222820] transition-all">
-            Join Free Community
-          </Link>
+      <section className="pt-24 pb-32 px-6 text-center border-b border-[#252D22]">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="font-syne text-5xl md:text-7xl font-black text-[#EDE8DF] mb-6 tracking-tighter leading-tight">
+            The Hub for African <span className="text-[#E8A020]">Excellence.</span>
+          </h1>
+          <p className="text-lg md:text-xl text-[#9A9C8E] mb-10 max-w-2xl mx-auto leading-relaxed">
+            Discover verified scholarships, remote jobs, fellowships, and grants curated specifically for the next generation of African leaders.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/opportunities" className="px-10 py-4 bg-[#E8A020] text-[#080A07] font-black rounded-2xl hover:scale-105 transition-all">
+              Browse Opportunities
+            </Link>
+            <Link href="/register" className="px-10 py-4 bg-[#141710] text-[#EDE8DF] border border-[#252D22] font-black rounded-2xl hover:bg-[#222820] transition-all">
+              Join Free Community
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -118,30 +135,40 @@ export default function HomePage() {
       </section>
 
       {/* Featured */}
-      <section className="py-20 px-6 container mx-auto">
-        <div className="flex justify-between items-end mb-12">
-          <h2 className="font-syne text-3xl font-black text-[#EDE8DF]">Featured Opportunities</h2>
-          <Link href="/opportunities" className="text-[#E8A020] font-bold hover:underline">View All →</Link>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featured.map((opp) => (
-            <OpportunityCard key={opp.id} opportunity={opp} deadlineOverride={getDeadlineText(opp.days_remaining, opp.deadline)} />
-          ))}
+      <section className="py-20 px-6 bg-[#0D0F0B]">
+        <div className="container mx-auto">
+          <div className="flex justify-between items-end mb-12">
+            <div>
+              <h2 className="font-syne text-3xl font-black text-[#EDE8DF] mb-2">Featured Opportunities</h2>
+              <p className="text-[#9A9C8E]">Handpicked high-impact opportunities closing soon.</p>
+            </div>
+            <Link href="/opportunities" className="text-[#E8A020] font-bold hover:underline">View All →</Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {featured.map((opp) => (
+              <OpportunityCard key={opp.id} opportunity={opp} deadlineOverride={getDeadlineText(opp)} />
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Events */}
-      <section className="py-24 px-6 bg-[#0D0F0B] border-y border-[#252D22]">
+      <section className="py-24 px-6 border-t border-[#252D22]">
         <div className="container mx-auto">
           <div className="flex justify-between items-end mb-12">
-            <h2 className="font-syne text-3xl font-black text-[#EDE8DF]">Upcoming Events & Bootcamps</h2>
+            <div>
+              <h2 className="font-syne text-3xl font-black text-[#EDE8DF] mb-2">Upcoming Events & Bootcamps</h2>
+              <p className="text-[#9A9C8E]">Level up with community-led workshops and meetups.</p>
+            </div>
             <Link href="/events" className="text-[#E8A020] font-bold hover:underline">View All Events →</Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {sampleEvents.map((event) => (
               <div key={event.id} className="bg-[#141710] border border-[#252D22] rounded-[2rem] p-8 hover:border-[#E8A020]/50 transition-all group" style={{ borderLeft: `4px solid ${event.color}` }}>
                 <div className="flex justify-between items-start mb-6">
-                  <span className="px-3 py-1 bg-[#080A07] rounded-full text-[10px] font-black uppercase text-[#9A9C8E] border border-[#252D22]">{event.event_type}</span>
+                  <span className="px-3 py-1 bg-[#080A07] rounded-full text-[10px] font-black uppercase text-[#9A9C8E] border border-[#252D22]">
+                    {event.event_type}
+                  </span>
                   <span className="text-[#E8A020] text-xs font-bold">{event.is_paid ? `NGN ${event.ticket_price.toLocaleString()}` : 'FREE'}</span>
                 </div>
                 <h3 className="text-xl font-bold text-[#EDE8DF] mb-4 group-hover:text-[#E8A020] transition-colors line-clamp-2">{event.title}</h3>
@@ -166,14 +193,12 @@ export default function HomePage() {
       </section>
 
       {/* Organizer Banner */}
-      <section className="py-24 px-6 text-center">
-        <div className="max-w-4xl mx-auto p-12 bg-[#141710] border border-[#E8A020]/20 rounded-[3rem]">
-          <h2 className="text-3xl font-black text-[#EDE8DF] mb-6">Are you an organizer?</h2>
-          <p className="text-[#9A9C8E] text-lg mb-10">Host your workshop, bootcamp, or conference on OppAlert and reach thousands of African professionals.</p>
-          <Link href="/organizer" className="px-12 py-4 bg-[#E8A020] text-[#080A07] font-black rounded-2xl hover:scale-105 transition-all inline-block shadow-glow-amber">
-            Host an Event →
-          </Link>
-        </div>
+      <section className="py-24 px-6 text-center bg-[#E8A020]">
+        <h2 className="font-syne text-4xl font-black text-[#080A07] mb-6">Ready to find your next opportunity?</h2>
+        <p className="text-[#080A07] opacity-80 mb-10 text-lg max-w-xl mx-auto font-medium">Join thousands of students and professionals receiving weekly alerts.</p>
+        <Link href="/register" className="px-12 py-5 bg-[#080A07] text-[#EDE8DF] font-black rounded-2xl hover:scale-105 transition-all inline-block shadow-2xl">
+          Create Free Account →
+        </Link>
       </section>
     </main>
   )

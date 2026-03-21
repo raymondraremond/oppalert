@@ -80,7 +80,7 @@ export const opportunities: Opportunity[] = [
     cat: 'startup',
     loc: 'San Francisco (Remote)',
     deadline: '2025-07-30',
-    days_remaining: 120,
+    days_remaining: 200,
     cost: 'Free',
     tags: ['Funding', 'Startup', 'Global'],
     is_featured: false,

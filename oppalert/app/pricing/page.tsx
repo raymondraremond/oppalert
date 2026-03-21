@@ -60,19 +60,20 @@ export default function PricingPage() {
           {/* ORGANIZER */}
           <div className="p-10 bg-[#141710] border border-[#252D22] rounded-[3rem] flex flex-col">
             <div className="mb-10">
-              <h3 className="text-sm font-black text-[#555C50] uppercase tracking-widest mb-2">Organizer Premium</h3>
+              <h3 className="text-sm font-black text-[#555C50] uppercase tracking-widest mb-2">Organizer</h3>
               <div className="text-5xl font-black text-[#EDE8DF] mb-4">5,000 <span className="text-lg font-bold text-[#555C50]">NGN/month</span></div>
-              <p className="text-sm text-[#9A9C8E]">Professional tools for educators and communities.</p>
+              <p className="text-sm text-[#9A9C8E]">For event organizers and community leaders.</p>
             </div>
             <ul className="space-y-5 mb-12 flex-1">
-              <li className="text-sm text-[#EDE8DF] flex items-center gap-3">🎪 Unlimited events & bootcamps</li>
-              <li className="text-sm text-[#EDE8DF] flex items-center gap-3">🎪 CSV Attendee export</li>
-              <li className="text-sm text-[#EDE8DF] flex items-center gap-3">🎪 Real-time registration analytics</li>
-              <li className="text-sm text-[#EDE8DF] flex items-center gap-3">🎪 Gold Verified Badge on listings</li>
-              <li className="text-sm text-[#EDE8DF] flex items-center gap-3">🎪 Priority event listing</li>
+              <li className="text-sm text-[#EDE8DF] flex items-center gap-3">✓ Create unlimited events</li>
+              <li className="text-sm text-[#EDE8DF] flex items-center gap-3">✓ Unique registration links</li>
+              <li className="text-sm text-[#EDE8DF] flex items-center gap-3">✓ Real-time analytics dashboard</li>
+              <li className="text-sm text-[#EDE8DF] flex items-center gap-3">✓ Export attendees as CSV</li>
+              <li className="text-sm text-[#EDE8DF] flex items-center gap-3">✓ Verified organizer badge</li>
+              <li className="text-sm text-[#EDE8DF] flex items-center gap-3">✓ Priority event listing</li>
             </ul>
             <Link href="/events/create" className="w-full py-4 bg-[#222820] text-[#EDE8DF] font-black rounded-2xl text-center hover:bg-[#E8A020] hover:text-[#080A07] transition-all">
-              Get Organizer Plan →
+              Become an Organizer →
             </Link>
           </div>
         </div>
@@ -90,7 +91,7 @@ export default function PricingPage() {
           <div className="p-8 bg-[#141710] border border-[#252D22] rounded-[2rem]">
             <h4 className="font-bold text-[#EDE8DF] mb-2">How do I pay for premium?</h4>
             <p className="text-[#9A9C8E] text-sm leading-relaxed">
-              We process payments through Paystack for Nigerian users (Naira) and Flutterwave for other African currencies. You can pay using your debit card, USSD, or bank transfer.
+              We process all payments securely through Paystack for Nigerian users paying in Naira and Flutterwave for other African currencies. All transactions are encrypted and secure.
             </p>
           </div>
           <div className="p-8 bg-[#141710] border border-[#252D22] rounded-[2rem]">
