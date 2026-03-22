@@ -133,7 +133,18 @@ export default function OrganizerDashboard() {
                         </span>
                       </td>
                       <td className="px-8 py-6">
-                        <button className="text-[#E8A020] text-xs font-black uppercase tracking-widest hover:underline">Manage</button>
+                        <Link href={`/organizer/events/${event.id}`} style={{ textDecoration: 'none' }}>
+                          <button style={{
+                            padding: '6px 14px',
+                            background: '#2A1E06',
+                            border: '1px solid rgba(232,160,32,0.3)',
+                            borderRadius: 6, fontSize: 12,
+                            fontWeight: 700, color: '#E8A020',
+                            cursor: 'pointer', fontFamily: 'inherit',
+                          }}>
+                            Manage →
+                          </button>
+                        </Link>
                       </td>
                     </tr>
                   ))}

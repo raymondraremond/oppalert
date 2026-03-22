@@ -2,13 +2,14 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
-const SAMPLE_EVENTS = [
+const sampleEvents = [
   {
     id: 'sample-1',
     title: 'Data Science Bootcamp Lagos 2025',
+    description: 'Master data science in 12 weeks with industry experts.',
     organizer_name: 'TechAfrica Hub',
     event_type: 'bootcamp',
-    start_date: '2025-06-15T09:00:00Z',
+    start_date: '2025-04-15T09:00:00Z',
     location: 'Lagos, Nigeria',
     is_online: false,
     max_capacity: 100,
@@ -16,14 +17,15 @@ const SAMPLE_EVENTS = [
     is_paid: false,
     ticket_price: 0,
     slug: 'sample-data-science-bootcamp',
-    description: 'Intensive 3-day bootcamp covering Python, Machine Learning, and Data Analysis.',
+    color: '#E8A020',
   },
   {
     id: 'sample-2',
     title: 'Remote Work Masterclass for Africans',
+    description: 'Learn how to land high-paying remote roles internationally.',
     organizer_name: 'AfriWork Community',
     event_type: 'workshop',
-    start_date: '2025-06-20T14:00:00Z',
+    start_date: '2025-04-20T14:00:00Z',
     location: 'Online',
     is_online: true,
     max_capacity: 500,
@@ -31,14 +33,15 @@ const SAMPLE_EVENTS = [
     is_paid: false,
     ticket_price: 0,
     slug: 'sample-remote-work-masterclass',
-    description: 'Learn how to land remote jobs paying in USD as an African professional.',
+    color: '#4A9EE8',
   },
   {
     id: 'sample-3',
     title: 'Startup Pitch Night Nairobi',
+    description: 'Network with VCs and founders in the heart of Kenya.',
     organizer_name: 'Nairobi Tech Week',
     event_type: 'meetup',
-    start_date: '2025-07-02T18:00:00Z',
+    start_date: '2025-05-02T18:00:00Z',
     location: 'Nairobi, Kenya',
     is_online: false,
     max_capacity: 150,
@@ -46,178 +49,174 @@ const SAMPLE_EVENTS = [
     is_paid: true,
     ticket_price: 2000,
     slug: 'sample-startup-pitch-night',
-    description: 'Monthly pitch night where African startups present to investors and the community.',
+    color: '#8B5CF6',
   },
   {
     id: 'sample-4',
-    title: 'AWS Cloud Computing Workshop',
-    organizer_name: 'DevCommunity Africa',
+    title: 'Full Stack Web Dev Workshop',
+    description: 'Build and deploy a full-featured app using Next.js.',
+    organizer_name: 'DevFlow Africa',
     event_type: 'workshop',
-    start_date: '2025-07-10T10:00:00Z',
-    location: 'Online',
-    is_online: true,
-    max_capacity: 200,
-    current_registrations: 67,
+    start_date: '2025-05-10T10:00:00Z',
+    location: 'Accra, Ghana',
+    is_online: false,
+    max_capacity: 80,
+    current_registrations: 42,
     is_paid: false,
     ticket_price: 0,
-    slug: 'sample-aws-workshop',
-    description: 'Hands-on AWS fundamentals for African developers getting cloud certified.',
+    slug: 'sample-web-dev-workshop',
+    color: '#E8A020',
   },
   {
     id: 'sample-5',
-    title: 'Africa Tech Conference 2025',
-    organizer_name: 'AfricaTech Foundation',
-    event_type: 'conference',
-    start_date: '2025-08-01T08:00:00Z',
-    location: 'Accra, Ghana',
-    is_online: false,
-    max_capacity: 2000,
-    current_registrations: 1200,
-    is_paid: true,
-    ticket_price: 15000,
-    slug: 'sample-africa-tech-conference',
-    description: 'The largest tech and innovation conference connecting African leaders globally.',
+    title: 'Fintech Careers Webinar',
+    description: 'Discover the future of finance and how to break in.',
+    organizer_name: 'MoneyNext Africa',
+    event_type: 'webinar',
+    start_date: '2025-05-15T16:00:00Z',
+    location: 'Online',
+    is_online: true,
+    max_capacity: 1000,
+    current_registrations: 567,
+    is_paid: false,
+    ticket_price: 0,
+    slug: 'sample-fintech-webinar',
+    color: '#4A9EE8',
   },
   {
     id: 'sample-6',
-    title: 'Mobile App Development Bootcamp',
-    organizer_name: 'CodeCamp Nigeria',
-    event_type: 'bootcamp',
-    start_date: '2025-07-25T09:00:00Z',
-    location: 'Abuja, Nigeria',
+    title: 'AI and Robotics Hackathon',
+    description: '48 hours of building the future of African automation.',
+    organizer_name: 'RoboQuest Africa',
+    event_type: 'hackathon',
+    start_date: '2025-06-05T08:00:00Z',
+    location: 'Kigali, Rwanda',
     is_online: false,
-    max_capacity: 30,
-    current_registrations: 23,
+    max_capacity: 120,
+    current_registrations: 66,
     is_paid: true,
-    ticket_price: 25000,
-    slug: 'sample-mobile-bootcamp',
-    description: 'Learn React Native and Flutter. Build and deploy your first mobile app.',
+    ticket_price: 5000,
+    slug: 'sample-ai-hackathon',
+    color: '#8B5CF6',
   },
 ]
 
 export default function EventsPage() {
-  const [events, setEvents] = useState(SAMPLE_EVENTS)
-  const [filtered, setFiltered] = useState(SAMPLE_EVENTS)
-  const [activeType, setActiveType] = useState('all')
+  const [events, setEvents] = useState(sampleEvents)
+  const [typeFilter, setTypeFilter] = useState('all')
 
   useEffect(() => {
-    fetch('/api/events')
-      .then(r => r.json())
-      .then(data => {
-        const items = Array.isArray(data)
-          ? data
-          : (data.data || [])
-        if (items.length > 0) {
-          setEvents(items)
-          setFiltered(items)
+    const fetchEvents = async () => {
+      try {
+        const res = await fetch('/api/events')
+        if (res.ok) {
+          const data = await res.json()
+          if (data.data && data.data.length > 0) {
+            setEvents([...data.data, ...sampleEvents])
+          }
         }
-      })
-      .catch(() => {})
+      } catch (err) {
+        console.error('Fetch error:', err)
+      }
+    }
+    fetchEvents()
   }, [])
 
-  const handleFilter = (type: string) => {
-    setActiveType(type)
-    if (type === 'all') {
-      setFiltered(events)
-    } else {
-      setFiltered(events.filter(e => e.event_type === type))
-    }
-  }
-
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case 'bootcamp': return '#E8A020'
-      case 'workshop': return '#4A9EE8'
-      case 'webinar': return '#34C27A'
-      case 'meetup': return '#8B5CF6'
-      case 'conference': return '#F97316'
-      case 'hackathon': return '#F05050'
-      default: return '#9A9C8E'
-    }
-  }
+  const filteredEvents = typeFilter === 'all' 
+    ? events 
+    : events.filter(e => e.event_type === typeFilter)
 
   return (
-    <main className="min-h-screen bg-[#080A07] pt-10 pb-20 px-6">
-      <div className="container mx-auto">
-        <div className="text-center mb-16">
-          <h1 className="font-syne text-4xl md:text-6xl font-black text-[#EDE8DF] mb-4">Events & Bootcamps</h1>
-          <p className="text-[#9A9C8E] max-w-xl mx-auto text-lg">Level up your career with community-led learning and networking.</p>
+    <div className="min-h-screen bg-[#080A07] pt-28 pb-32">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="mb-16">
+          <h1 className="font-syne text-4xl md:text-6xl font-black text-[#EDE8DF] mb-6">
+            Next-Gen <span className="text-[#E8A020]">Events.</span>
+          </h1>
+          <p className="text-[#9A9C8E] text-lg max-w-2xl leading-relaxed">
+            Discover workshops, webinars, and meetups designed to accelerate 
+            your professional growth in Africa.
+          </p>
         </div>
 
-        {/* Filter Bar */}
-        <div className="flex gap-2 overflow-x-auto pb-6 no-scrollbar mb-12 border-b border-[#252D22]">
-          {['all', 'bootcamp', 'workshop', 'webinar', 'meetup', 'conference', 'hackathon'].map(type => (
+        {/* Filters */}
+        <div className="flex gap-3 mb-12 overflow-x-auto pb-4 no-scrollbar">
+          {['all', 'bootcamp', 'workshop', 'webinar', 'meetup', 'hackathon'].map(type => (
             <button
               key={type}
-              onClick={() => handleFilter(type)}
-              className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest whitespace-nowrap transition-all ${
-                activeType === type 
-                  ? 'bg-[#E8A020] text-[#080A07]' 
-                  : 'bg-[#141710] text-[#9A9C8E] border border-[#252D22] hover:bg-[#222820]'
+              onClick={() => setTypeFilter(type)}
+              className={`px-6 py-2 rounded-full text-sm font-bold border transition-all whitespace-nowrap ${
+                typeFilter === type
+                  ? 'bg-[#E8A020] border-[#E8A020] text-[#080A07]'
+                  : 'bg-[#141710] border-[#252D22] text-[#9A9C8E] hover:border-[#E8A020]'
               }`}
             >
-              {type}
+              {type.charAt(0).toUpperCase() + type.slice(1)}
             </button>
           ))}
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
-          {filtered.map(event => {
-            const color = getTypeColor(event.event_type)
-            const progress = (event.current_registrations / event.max_capacity) * 100
-            return (
-              <div key={event.id} className="bg-[#141710] border border-[#252D22] rounded-2xl p-5 flex flex-col gap-3 transition-all hover:translate-y-[-4px]" style={{ borderLeft: `4px solid ${color}` }}>
-                <div className="flex justify-between items-start">
-                  <div className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest" style={{ background: `${color}20`, color: color }}>
-                    {event.event_type}
-                  </div>
-                  <div className={`text-xs font-bold ${event.is_paid ? 'text-[#E8A020]' : 'text-[#34C27A]'}`}>
-                    {event.is_paid ? `NGN ${event.ticket_price.toLocaleString()}` : 'Free'}
-                  </div>
-                </div>
-                
-                <h3 className="text-[15px] font-bold text-white line-clamp-2">{event.title}</h3>
-                <div className="text-[12px] text-[#9A9C8E]">by {event.organizer_name}</div>
-                
-                <div className="mt-auto pt-3 space-y-2">
-                  <div className="text-[13px] text-[#EDE8DF] flex items-center gap-2">
-                    <span className="opacity-60">📅</span> {new Date(event.start_date).toLocaleDateString('en-NG', { year:'numeric', month:'long', day:'numeric' })}
-                  </div>
-                  <div className="text-[13px] text-[#EDE8DF] flex items-center gap-2">
-                    <span className="opacity-60">{event.is_online ? '🌐' : '📍'}</span> {event.is_online ? 'Online' : event.location}
-                  </div>
-                  
-                  <div className="pt-2">
-                    <div className="flex justify-between text-[11px] font-bold text-[#555C50] mb-1 uppercase">
-                      <span>Registration</span>
-                      <span>{event.current_registrations}/{event.max_capacity}</span>
-                    </div>
-                    <div className="h-1 bg-[#080A07] rounded-full overflow-hidden">
-                      <div className="h-full transition-all duration-500" style={{ width: `${progress}%`, background: color }} />
-                    </div>
-                  </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredEvents.map((event) => (
+            <div 
+              key={event.id} 
+              className="bg-[#141710] border border-[#252D22] rounded-[2rem] p-8 hover:border-[#E8A020]/50 transition-all group flex flex-col"
+              style={{ borderLeft: `5px solid ${event.color || '#E8A020'}` }}
+            >
+              <div className="flex justify-between items-start mb-6">
+                <span className="px-3 py-1 bg-[#080A07] rounded-full text-[10px] font-black uppercase text-[#9A9C8E] border border-[#252D22]">
+                  {event.event_type}
+                </span>
+                <span className="text-[#E8A020] text-xs font-bold">
+                  {event.is_paid ? `NGN ${Number(event.ticket_price).toLocaleString()}` : 'FREE'}
+                </span>
+              </div>
+              
+              <h3 className="text-xl font-bold text-[#EDE8DF] mb-3 group-hover:text-[#E8A020] transition-colors line-clamp-2">
+                {event.title}
+              </h3>
+              
+              <p className="text-[#555C50] text-sm mb-6 line-clamp-2 leading-relaxed">
+                {event.description}
+              </p>
 
-                  <Link href={`/events/${event.slug}`} className="block w-full py-3 bg-[#222820] text-[#EDE8DF] text-center text-xs font-black rounded-xl border border-[#252D22] hover:bg-[#E8A020] hover:text-[#080A07] transition-all mt-2">
-                    View Event →
-                  </Link>
+              <div className="space-y-3 mb-8 flex-grow">
+                <div className="text-sm text-[#9A9C8E] flex items-center gap-2">
+                  📅 {new Date(event.start_date).toLocaleDateString('en-US', { 
+                    month: 'long', 
+                    day: 'numeric', 
+                    year: 'numeric' 
+                  })}
+                </div>
+                <div className="text-sm text-[#9A9C8E] flex items-center gap-2">
+                  {event.is_online ? '🌐 Online' : `📍 ${event.location}`}
                 </div>
               </div>
-            )
-          })}
-        </div>
 
-        {/* CTA Banner */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6 p-8 rounded-2xl border border-[rgba(232,160,32,0.3)] bg-gradient-to-br from-[#2A1E06] to-[#1A1208]">
-          <div className="text-center md:text-left">
-            <h2 className="text-2xl font-black text-[#EDE8DF] mb-2">Are you an organizer?</h2>
-            <p className="text-sm text-[#9A9C8E]">Create your event and reach thousands of African students and professionals</p>
-          </div>
-          <Link href="/organizer" className="px-8 py-4 bg-[#E8A020] text-[#090A07] rounded-xl font-bold transition-all hover:scale-105 whitespace-nowrap">
-            Host an Event →
-          </Link>
+              <div className="mt-auto pt-6 border-t border-[#252D22]/50">
+                <div className="w-full bg-[#080A07] rounded-full h-1.5 mb-4 overflow-hidden">
+                  <div 
+                    className="h-full bg-[#E8A020]" 
+                    style={{ width: `${Math.min((event.current_registrations / (event.max_capacity || 100)) * 100, 100)}%` }}
+                  ></div>
+                </div>
+                <div className="flex justify-between text-[10px] font-black text-[#555C50] uppercase mb-8">
+                  <span>Capacity</span>
+                  <span>{event.current_registrations}/{event.max_capacity || '∞'} Booked</span>
+                </div>
+                
+                <Link 
+                  href={`/events/${event.slug}`}
+                  className="block w-full py-4 bg-[#222820] text-[#EDE8DF] text-center font-black rounded-xl hover:bg-[#E8A020] hover:text-[#080A07] transition-all"
+                >
+                  View Details & Register
+                </Link>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-    </main>
+    </div>
   )
 }

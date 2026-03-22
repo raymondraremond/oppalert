@@ -22,6 +22,7 @@ export const metadata: Metadata = {
     description: 'Verified scholarships, jobs, fellowships, grants for Africa.',
     siteName: 'OppAlert',
     type: 'website',
+    url: 'https://oppalert.vercel.app',
   },
 }
 

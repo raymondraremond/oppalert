@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getUserFromRequest } from '@/lib/auth'
+import { sendOrganizerEventCreatedEmail } from '@/lib/mail'
 
 function generateSlug(title: string): string {
   const base = title
@@ -136,6 +137,11 @@ export async function POST(request: NextRequest) {
     )
 
     const event = result.rows[0]
+
+    // --- NEW: Send async confirmation email to the Organizer ---
+    if (user.email) {
+      await sendOrganizerEventCreatedEmail(user.email, event.title, event.slug);
+    }
 
     return NextResponse.json({
       success: true,

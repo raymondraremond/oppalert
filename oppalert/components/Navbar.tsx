@@ -64,12 +64,13 @@ export default function Navbar() {
     router.push('/')
   }
 
-  const isAdmin = user?.plan === 'admin'
+  const isAdmin = user !== null && user.plan === 'admin'
   const isLoggedIn = !!user
 
   const getInitials = () => {
-    if (!user?.fullName) return 'U'
-    return user.fullName.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
+    if (!user?.fullName && !user?.full_name) return 'U'
+    const name = user.fullName || user.full_name
+    return name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
   }
 
   const navLinks = [
@@ -89,6 +90,9 @@ export default function Navbar() {
     transition: 'all 0.15s',
     textDecoration: 'none',
   })
+
+  // Do not show navbar on login/register pages
+  if (path === '/login' || path === '/register') return null
 
   return (
     <header style={{
@@ -118,6 +122,7 @@ export default function Navbar() {
           </div>
         </Link>
 
+        {/* Desktop Nav */}
         <nav className="hide-mobile" style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
           {navLinks.map(link => (
             <Link key={link.href} href={link.href} style={navLinkStyle(link.href)}>
@@ -136,6 +141,7 @@ export default function Navbar() {
           )}
         </nav>
 
+        {/* Desktop Auth/User */}
         <div className="hide-mobile" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           {isLoggedIn ? (
             <div ref={dropdownRef} style={{ position: 'relative' }}>
@@ -152,7 +158,7 @@ export default function Navbar() {
                   zIndex: 200, boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
                 }}>
                   <div style={{ padding: '8px 12px 10px', borderBottom: '1px solid #252D22', marginBottom: 4 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#EDE8DF', marginBottom: 2 }}>{user?.fullName || 'User'}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#EDE8DF', marginBottom: 2 }}>{user?.fullName || user?.full_name || 'User'}</div>
                     <div style={{ fontSize: 11, color: '#555C50' }}>{user?.email}</div>
                   </div>
                   {[
@@ -180,11 +186,13 @@ export default function Navbar() {
           )}
         </div>
 
+        {/* Mobile Toggle */}
         <button onClick={() => setShowMobile(!showMobile)} className="show-mobile" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 8, color: '#EDE8DF', fontSize: 20 }}>
           {showMobile ? '✕' : '☰'}
         </button>
       </div>
 
+      {/* Mobile Menu */}
       {showMobile && (
         <div style={{ background: '#0F1210', borderTop: '1px solid #252D22', padding: '16px 1.5rem' }}>
           {navLinks.map(link => (
@@ -196,6 +204,9 @@ export default function Navbar() {
             <>
               <Link href="/dashboard" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}>
                 <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: '#9A9C8E', borderBottom: '1px solid #1C2119' }}>📊 Dashboard</div>
+              </Link>
+              <Link href="/organizer" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}>
+                <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: '#9A9C8E', borderBottom: '1px solid #1C2119' }}>🎪 Organizer</div>
               </Link>
               {isAdmin && (
                 <Link href="/admin" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}>

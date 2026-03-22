@@ -9,6 +9,7 @@ export default function CreateEventPage() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState<any>(null)
+  const [copied, setCopied] = useState(false)
   const router = useRouter()
 
   const [form, setForm] = useState({
@@ -187,20 +188,35 @@ export default function CreateEventPage() {
                 oppalert.vercel.app/events/{success.slug}
               </div>
               <button
-                onClick={() => {
-                  navigator.clipboard.writeText(
-                    `https://oppalert.vercel.app/events/${success.slug}`
-                  )
+                onClick={async () => {
+                  const url = `https://oppalert.vercel.app/events/${success.slug}`
+                  try {
+                    await navigator.clipboard.writeText(url)
+                    setCopied(true)
+                    setTimeout(() => setCopied(false), 2000)
+                  } catch {
+                    // Fallback for browsers that block clipboard
+                    const el = document.createElement('textarea')
+                    el.value = url
+                    document.body.appendChild(el)
+                    el.select()
+                    document.execCommand('copy')
+                    document.body.removeChild(el)
+                    setCopied(true)
+                    setTimeout(() => setCopied(false), 2000)
+                  }
                 }}
                 style={{
                   marginTop: 10, padding: '6px 16px',
-                  background: '#E8A020', border: 'none',
-                  borderRadius: 6, fontSize: 12,
-                  fontWeight: 700, color: '#090A07',
+                  background: copied ? '#0F2E1C' : '#E8A020',
+                  border: 'none', borderRadius: 6,
+                  fontSize: 12, fontWeight: 700,
+                  color: copied ? '#34C27A' : '#090A07',
                   cursor: 'pointer', fontFamily: 'inherit',
+                  transition: 'all 0.2s',
                 }}
               >
-                Copy Link
+                {copied ? '✓ Copied!' : 'Copy Link'}
               </button>
             </div>
           )}
@@ -401,7 +417,7 @@ export default function CreateEventPage() {
               style={{ width: 16, height: 16 }}
             />
             <span style={{ fontWeight: 600 }}>
-              This is an online event
+              {"This is an online event"}
             </span>
           </label>
 
@@ -457,7 +473,7 @@ export default function CreateEventPage() {
               style={{ width: 16, height: 16 }}
             />
             <span style={{ fontWeight: 600 }}>
-              This is a paid event
+              {"This is a paid event"}
             </span>
           </label>
 

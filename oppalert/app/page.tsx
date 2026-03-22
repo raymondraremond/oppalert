@@ -75,19 +75,9 @@ export default function HomePage() {
     if (!isNaN(days) && days > 0) {
       if (days === 1) return "1 day left"
       if (days < 30) return days + " days left"
-      if (days < 365) return Math.ceil(days / 30) + " months left"
-      return "Open"
+      return Math.ceil(days / 30) + " months left"
     }
-    if (opp.deadline) {
-      const d = new Date(opp.deadline)
-      if (!isNaN(d.getTime())) {
-        const diff = Math.floor(
-          (d.getTime() - Date.now()) / 86400000
-        )
-        if (diff > 0) return diff + " days left"
-      }
-    }
-    return "Apply now"
+    return "Open"
   }
 
   const categories = [
@@ -183,7 +173,7 @@ export default function HomePage() {
                   <span>Registration</span>
                   <span>{event.current_registrations}/{event.max_capacity} Booked</span>
                 </div>
-                <Link href="/events" className="block w-full py-3 bg-[#222820] text-[#EDE8DF] text-center font-black rounded-xl group-hover:bg-[#E8A020] group-hover:text-[#080A07] transition-all">
+                <Link href={`/events/${event.slug}`} className="block w-full py-3 bg-[#222820] text-[#EDE8DF] text-center font-black rounded-xl group-hover:bg-[#E8A020] group-hover:text-[#080A07] transition-all">
                   Register Now
                 </Link>
               </div>

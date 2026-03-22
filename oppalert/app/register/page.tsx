@@ -1,137 +1,262 @@
-"use client"
-import { useState } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { Mail, Lock, User, ArrowRight, Eye, EyeOff } from "lucide-react"
+'use client'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function RegisterPage() {
-  const router = useRouter()
-  const [showPassword, setShowPassword] = useState(false)
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [fullName, setFullName] = useState("")
+  const [tab, setTab] = useState<'login' | 'register'>('register')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [fullName, setFullName] = useState('')
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
+  const [error, setError] = useState('')
+  const router = useRouter()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError('')
     setLoading(true)
-    setError("")
-
     try {
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, fullName }),
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
       })
-
       const data = await res.json()
-
       if (!res.ok) {
-        setError(data.error || "Registration failed")
-        setLoading(false)
+        setError(data.error || 'Invalid email or password')
         return
       }
-
-      // Set cookie FIRST - middleware reads this
       document.cookie = `token=${data.token}; path=/; max-age=2592000; SameSite=Lax`
-
-      // Set localStorage with complete user object
-      localStorage.setItem("user", JSON.stringify({
-        id: data.user?.id || "",
-        email: data.user?.email || "",
-        fullName: data.user?.fullName || data.user?.full_name || "",
-        plan: data.user?.plan || data.user?.status || "free",
+      localStorage.setItem('user', JSON.stringify({
+        id: data.user?.id || '',
+        email: data.user?.email || email,
+        fullName: data.user?.fullName || 
+                  data.user?.full_name || '',
+        plan: data.user?.plan || 
+              data.user?.status || 'free',
         token: data.token,
       }))
+      router.push('/dashboard')
+    } catch {
+      setError('Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
-      // Notify Navbar
-      window.dispatchEvent(new Event("storage"))
-
-      router.push("/dashboard")
-    } catch (err: any) {
-      setError(err.message)
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, fullName }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'Registration failed')
+        return
+      }
+      document.cookie = `token=${data.token}; path=/; max-age=2592000; SameSite=Lax`
+      localStorage.setItem('user', JSON.stringify({
+        id: data.user?.id || '',
+        email: data.user?.email || email,
+        fullName: data.user?.fullName || 
+                  data.user?.full_name || fullName,
+        plan: data.user?.plan || 
+              data.user?.status || 'free',
+        token: data.token,
+      }))
+      router.push('/dashboard')
+    } catch {
+      setError('Something went wrong. Please try again.')
+    } finally {
       setLoading(false)
     }
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-6 bg-[#080A07]">
-      <div className="w-full max-w-[440px]">
-        <div className="text-center mb-10">
-          <Link href="/" className="inline-block">
-            <h2 className="font-syne text-3xl font-black text-[#EDE8DF] tracking-tighter">Opp<span className="text-[#E8A020]">Alert</span></h2>
-          </Link>
+    <div style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '2rem 1.5rem',
+      background: '#080A07',
+    }}>
+      <div style={{
+        width: '100%',
+        maxWidth: 420,
+        background: '#141710',
+        border: '1px solid #252D22',
+        borderRadius: 20,
+        padding: '2.5rem 2rem',
+      }}>
+        <Link href="/" style={{ textDecoration: 'none' }}>
+          <div style={{
+            textAlign: 'center',
+            fontFamily: 'Syne, sans-serif',
+            fontSize: 20, fontWeight: 800,
+            marginBottom: 8,
+          }}>
+            Opp<span style={{ color: '#E8A020' }}>Alert</span>
+          </div>
+        </Link>
+
+        <h1 style={{
+          fontFamily: 'Syne, sans-serif',
+          fontSize: 22, fontWeight: 800,
+          textAlign: 'center', marginBottom: 6,
+        }}>
+          {tab === 'login' ? 'Welcome back' : 'Create Account'}
+        </h1>
+        <p style={{
+          textAlign: 'center', fontSize: 13,
+          color: '#555C50', marginBottom: 24,
+        }}>
+          {tab === 'login'
+            ? 'Join 48,000+ others chasing excellence.'
+            : 'Your journey to a global career starts here.'}
+        </p>
+
+        {/* Tabs */}
+        <div style={{
+          display: 'flex', background: '#1C2119',
+          borderRadius: 10, padding: 4, marginBottom: 24,
+        }}>
+          {(['login', 'register'] as const).map(t => (
+            <button
+              key={t}
+              onClick={() => { setTab(t); setError('') }}
+              style={{
+                flex: 1, padding: '8px',
+                background: tab === t ? '#2A1E06' : 'transparent',
+                border: tab === t
+                  ? '1px solid rgba(232,160,32,0.3)'
+                  : '1px solid transparent',
+                borderRadius: 8,
+                fontSize: 13, fontWeight: 600,
+                color: tab === t ? '#E8A020' : '#555C50',
+                cursor: 'pointer', fontFamily: 'inherit',
+                transition: 'all 0.15s',
+                textTransform: 'capitalize',
+              }}
+            >
+              {t === 'login' ? 'Log In' : 'Sign Up'}
+            </button>
+          ))}
         </div>
 
-        <div className="bg-[#141710] border border-[#252D22] rounded-[2.5rem] p-10 md:p-12 shadow-premium">
-          <h1 className="font-syne text-2xl font-black text-[#EDE8DF] mb-2 text-center">Create Account</h1>
-          <p className="text-sm text-[#9A9C8E] mb-10 text-center">Join thousands of African professionals winning daily.</p>
+        {error && (
+          <div style={{
+            background: '#1A0808',
+            border: '1px solid rgba(240,80,80,0.3)',
+            borderRadius: 8, padding: '10px 14px',
+            color: '#F05050', fontSize: 13, marginBottom: 16,
+          }}>
+            {error}
+          </div>
+        )}
 
-          {error && (
-            <div className="mb-6 p-4 bg-danger/10 border border-danger/20 text-danger text-xs font-bold rounded-xl text-center">
-              {error}
+        <form onSubmit={tab === 'login' 
+          ? handleLogin : handleRegister}>
+          {tab === 'register' && (
+            <div style={{ marginBottom: 14 }}>
+              <input
+                type="text"
+                placeholder="Full Name"
+                value={fullName}
+                onChange={e => setFullName(e.target.value)}
+                required
+                style={{
+                  width: '100%', padding: '12px 14px',
+                  background: '#1C2119',
+                  border: '1px solid #252D22',
+                  borderRadius: 8, color: '#EDE8DF',
+                  fontSize: 14, outline: 'none',
+                  fontFamily: 'inherit',
+                  boxSizing: 'border-box',
+                }}
+              />
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-[#555C50] uppercase tracking-widest ml-1">Full Name</label>
-              <div className="relative">
-                <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#555C50]" />
-                <input 
-                  type="text" required
-                  className="w-full bg-[#080A07] border border-[#252D22] rounded-xl py-4 pl-12 pr-4 text-[#EDE8DF] focus:border-[#E8A020] outline-none transition-all"
-                  placeholder="e.g. Chinelo Obi"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-[#555C50] uppercase tracking-widest ml-1">Email Address</label>
-              <div className="relative">
-                <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#555C50]" />
-                <input 
-                  type="email" required
-                  className="w-full bg-[#080A07] border border-[#252D22] rounded-xl py-4 pl-12 pr-4 text-[#EDE8DF] focus:border-[#E8A020] outline-none transition-all"
-                  placeholder="name@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-[10px] font-black text-[#555C50] uppercase tracking-widest ml-1">Password</label>
-              <div className="relative">
-                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#555C50]" />
-                <input 
-                  type={showPassword ? "text" : "password"} required
-                  className="w-full bg-[#080A07] border border-[#252D22] rounded-xl py-4 pl-12 pr-12 text-[#EDE8DF] focus:border-[#E8A020] outline-none transition-all"
-                  placeholder="Min 8 characters"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#555C50] hover:text-[#EDE8DF]">
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-            </div>
-
-            <button type="submit" disabled={loading} className="w-full py-5 bg-[#E8A020] text-[#080A07] font-black rounded-2xl hover:scale-[1.02] transition-all flex items-center justify-center gap-3 disabled:opacity-50">
-              {loading ? "Creating Account..." : "Join OppAlert Community"}
-              <ArrowRight size={18} />
-            </button>
-          </form>
-
-          <div className="mt-10 text-center">
-            <p className="text-xs text-[#555C50]">Already have an account?</p>
-            <Link href="/login" className="text-[#E8A020] font-black text-sm hover:underline mt-1 inline-block">Sign in to your account →</Link>
+          <div style={{ marginBottom: 14 }}>
+            <input
+              type="email"
+              placeholder="Email Address"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+              style={{
+                width: '100%', padding: '12px 14px',
+                background: '#1C2119',
+                border: '1px solid #252D22',
+                borderRadius: 8, color: '#EDE8DF',
+                fontSize: 14, outline: 'none',
+                fontFamily: 'inherit',
+                boxSizing: 'border-box',
+              }}
+            />
           </div>
-        </div>
+
+          <div style={{ marginBottom: 20 }}>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+              style={{
+                width: '100%', padding: '12px 14px',
+                background: '#1C2119',
+                border: '1px solid #252D22',
+                borderRadius: 8, color: '#EDE8DF',
+                fontSize: 14, outline: 'none',
+                fontFamily: 'inherit',
+                boxSizing: 'border-box',
+              }}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              width: '100%', padding: '13px',
+              background: loading ? '#9A7010' : '#E8A020',
+              border: 'none', borderRadius: 10,
+              fontSize: 14, fontWeight: 700,
+              color: '#090A07',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              fontFamily: 'inherit',
+            }}
+          >
+            {loading
+              ? 'Please wait...'
+              : tab === 'login'
+                ? 'Proceed to Dashboard'
+                : 'Create My Account'}
+          </button>
+        </form>
+
+        <p style={{
+          textAlign: 'center', fontSize: 12,
+          color: '#3A4238', marginTop: 16,
+        }}>
+          By continuing, you agree to our{' '}
+          <Link href="/terms" style={{ color: '#555C50' }}>
+            Terms
+          </Link>{' '}
+          &{' '}
+          <Link href="/privacy" style={{ color: '#555C50' }}>
+            Privacy
+          </Link>
+        </p>
       </div>
-    </main>
+    </div>
   )
 }

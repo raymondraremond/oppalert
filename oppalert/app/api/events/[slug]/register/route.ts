@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { sendRegistrationEmail } from '@/lib/mail'
 
 export async function POST(
   request: NextRequest,
@@ -18,7 +19,7 @@ export async function POST(
     if (!process.env.DATABASE_URL) {
       return NextResponse.json({
         success: true,
-        message: 'Registration confirmed',
+        message: 'Registration confirmed (Mock)',
       })
     }
 
@@ -100,6 +101,12 @@ export async function POST(
        WHERE id = $1`,
       [event.id]
     )
+
+    // --- NEW: Send async confirmation email ---
+    // We do not await this heavily so it doesn't block the response as heavily, 
+    // or we can await it if we want to ensure it finishes before response. 
+    // Awaiting is safer for serverless environments.
+    await sendRegistrationEmail(email.toLowerCase(), fullName, event.title, params.slug);
 
     return NextResponse.json({
       success: true,
