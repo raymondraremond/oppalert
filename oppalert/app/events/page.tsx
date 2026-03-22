@@ -132,7 +132,7 @@ export default function EventsPage() {
       case 'meetup': return '#8B5CF6'
       case 'conference': return '#F97316'
       case 'hackathon': return '#F05050'
-      default: return '#EDE8DF'
+      default: return '#9A9C8E'
     }
   }
 
@@ -141,7 +141,7 @@ export default function EventsPage() {
       <div className="container mx-auto">
         <div className="text-center mb-16">
           <h1 className="font-syne text-4xl md:text-6xl font-black text-[#EDE8DF] mb-4">Events & Bootcamps</h1>
-          <p className="text-[#9A9C8E] max-w-xl mx-auto">Level up your career with community-led learning and networking.</p>
+          <p className="text-[#9A9C8E] max-w-xl mx-auto text-lg">Level up your career with community-led learning and networking.</p>
         </div>
 
         {/* Filter Bar */}
@@ -162,80 +162,45 @@ export default function EventsPage() {
         </div>
 
         {/* Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-          gap: '16px',
-          marginBottom: '40px'
-        }}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
           {filtered.map(event => {
             const color = getTypeColor(event.event_type)
             const progress = (event.current_registrations / event.max_capacity) * 100
             return (
-              <div key={event.id} style={{
-                background: '#141710',
-                border: '1px solid #252D22',
-                borderLeft: `4px solid ${color}`,
-                borderRadius: '16px',
-                padding: '1.25rem',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '12px'
-              }}>
-                <div style={{
-                  background: `${color}20`,
-                  color: color,
-                  padding: '4px 10px',
-                  borderRadius: '100px',
-                  fontSize: '10px',
-                  fontWeight: '800',
-                  textTransform: 'uppercase',
-                  width: 'fit-content'
-                }}>
-                  {event.event_type}
-                </div>
-                <h3 style={{ fontSize: '15px', fontWeight: 'bold', color: 'white', margin: 0 }}>{event.title}</h3>
-                <div style={{ fontSize: '12px', color: '#9A9C8E' }}>by {event.organizer_name}</div>
-                
-                <div style={{ marginTop: 'auto', paddingTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <div style={{ fontSize: '13px', color: '#EDE8DF', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span>📅</span> {new Date(event.start_date).toLocaleDateString('en-NG', { year:'numeric', month:'long', day:'numeric' })}
+              <div key={event.id} className="bg-[#141710] border border-[#252D22] rounded-2xl p-5 flex flex-col gap-3 transition-all hover:translate-y-[-4px]" style={{ borderLeft: `4px solid ${color}` }}>
+                <div className="flex justify-between items-start">
+                  <div className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest" style={{ background: `${color}20`, color: color }}>
+                    {event.event_type}
                   </div>
-                  <div style={{ fontSize: '13px', color: '#EDE8DF', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span>{event.is_online ? '🌐' : '📍'}</span> {event.is_online ? 'Online' : event.location}
+                  <div className={`text-xs font-bold ${event.is_paid ? 'text-[#E8A020]' : 'text-[#34C27A]'}`}>
+                    {event.is_paid ? `NGN ${event.ticket_price.toLocaleString()}` : 'Free'}
+                  </div>
+                </div>
+                
+                <h3 className="text-[15px] font-bold text-white line-clamp-2">{event.title}</h3>
+                <div className="text-[12px] text-[#9A9C8E]">by {event.organizer_name}</div>
+                
+                <div className="mt-auto pt-3 space-y-2">
+                  <div className="text-[13px] text-[#EDE8DF] flex items-center gap-2">
+                    <span className="opacity-60">📅</span> {new Date(event.start_date).toLocaleDateString('en-NG', { year:'numeric', month:'long', day:'numeric' })}
+                  </div>
+                  <div className="text-[13px] text-[#EDE8DF] flex items-center gap-2">
+                    <span className="opacity-60">{event.is_online ? '🌐' : '📍'}</span> {event.is_online ? 'Online' : event.location}
                   </div>
                   
-                  <div style={{ marginTop: '8px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontWeight: 'bold', color: '#555C50', marginBottom: '4px' }}>
-                      <span>REGISTRATION</span>
+                  <div className="pt-2">
+                    <div className="flex justify-between text-[11px] font-bold text-[#555C50] mb-1 uppercase">
+                      <span>Registration</span>
                       <span>{event.current_registrations}/{event.max_capacity}</span>
                     </div>
-                    <div style={{ height: '4px', background: '#080A07', borderRadius: '2px', overflow: 'hidden' }}>
-                      <div style={{ width: `${progress}%`, height: '100%', background: color }} />
+                    <div className="h-1 bg-[#080A07] rounded-full overflow-hidden">
+                      <div className="h-full transition-all duration-500" style={{ width: `${progress}%`, background: color }} />
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}>
-                    <div style={{ 
-                      fontSize: '13px', 
-                      fontWeight: 'bold', 
-                      color: event.is_paid ? '#E8A020' : '#34C27A' 
-                    }}>
-                      {event.is_paid ? `NGN ${event.ticket_price.toLocaleString()}` : 'Free'}
-                    </div>
-                    <Link href={`/events/${event.slug}`} style={{
-                      padding: '8px 16px',
-                      background: '#222820',
-                      border: '1px solid #252D22',
-                      borderRadius: '8px',
-                      fontSize: '12px',
-                      fontWeight: 'bold',
-                      color: 'white',
-                      textDecoration: 'none'
-                    }}>
-                      View Event →
-                    </Link>
-                  </div>
+                  <Link href={`/events/${event.slug}`} className="block w-full py-3 bg-[#222820] text-[#EDE8DF] text-center text-xs font-black rounded-xl border border-[#252D22] hover:bg-[#E8A020] hover:text-[#080A07] transition-all mt-2">
+                    View Event →
+                  </Link>
                 </div>
               </div>
             )
@@ -243,30 +208,12 @@ export default function EventsPage() {
         </div>
 
         {/* CTA Banner */}
-        <div style={{
-          background: 'linear-gradient(135deg, #2A1E06, #1A1208)',
-          border: '1px solid rgba(232,160,32,0.3)',
-          borderRadius: '16px',
-          padding: '2rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '24px'
-        }}>
-          <div>
-            <h2 style={{ fontSize: '24px', fontWeight: 'black', color: '#EDE8DF', margin: '0 0 8px 0' }}>Are you an organizer?</h2>
-            <p style={{ fontSize: '14px', color: '#9A9C8E', margin: 0 }}>Create your event and reach thousands of African students and professionals</p>
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 p-8 rounded-2xl border border-[rgba(232,160,32,0.3)] bg-gradient-to-br from-[#2A1E06] to-[#1A1208]">
+          <div className="text-center md:text-left">
+            <h2 className="text-2xl font-black text-[#EDE8DF] mb-2">Are you an organizer?</h2>
+            <p className="text-sm text-[#9A9C8E]">Create your event and reach thousands of African students and professionals</p>
           </div>
-          <Link href="/organizer" style={{
-            padding: '12px 24px',
-            background: '#E8A020',
-            color: '#090A07',
-            borderRadius: '12px',
-            fontWeight: 'bold',
-            textDecoration: 'none',
-            fontSize: '14px'
-          }}>
+          <Link href="/organizer" className="px-8 py-4 bg-[#E8A020] text-[#090A07] rounded-xl font-bold transition-all hover:scale-105 whitespace-nowrap">
             Host an Event →
           </Link>
         </div>

@@ -183,7 +183,7 @@ export default function HomePage() {
                   <span>Registration</span>
                   <span>{event.current_registrations}/{event.max_capacity} Booked</span>
                 </div>
-                <Link href="/events" className="block w-full py-3 bg-[#222820] text-[#EDE8DF] text-center font-black rounded-xl hover:bg-[#E8A020] hover:text-[#080A07] transition-all">
+                <Link href="/events" className="block w-full py-3 bg-[#222820] text-[#EDE8DF] text-center font-black rounded-xl group-hover:bg-[#E8A020] group-hover:text-[#080A07] transition-all">
                   Register Now
                 </Link>
               </div>
@@ -192,7 +192,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Organizer Banner */}
+      {/* Final CTA */}
       <section className="py-24 px-6 text-center bg-[#E8A020]">
         <h2 className="font-syne text-4xl font-black text-[#080A07] mb-6">Ready to find your next opportunity?</h2>
         <p className="text-[#080A07] opacity-80 mb-10 text-lg max-w-xl mx-auto font-medium">Join thousands of students and professionals receiving weekly alerts.</p>

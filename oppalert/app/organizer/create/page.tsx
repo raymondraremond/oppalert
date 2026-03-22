@@ -1,297 +1,527 @@
-"use client"
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
+'use client'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function CreateEventPage() {
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
   const [user, setUser] = useState<any>(null)
-  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState<any>(null)
+  const router = useRouter()
 
-  const [formData, setFormData] = useState({
-    title: "",
-    eventType: "workshop",
-    description: "",
-    isOnline: true,
-    location: "",
-    onlineLink: "",
-    startDate: "",
-    endDate: "",
-    registrationDeadline: "",
-    maxCapacity: "",
+  const [form, setForm] = useState({
+    title: '',
+    description: '',
+    eventType: 'bootcamp',
+    location: '',
+    isOnline: false,
+    onlineLink: '',
+    startDate: '',
+    endDate: '',
+    registrationDeadline: '',
+    maxCapacity: '',
     isPaid: false,
-    ticketPrice: "0",
-    tags: "",
-    isPublished: true
+    ticketPrice: '',
+    tags: '',
+    isPublished: false,
   })
 
   useEffect(() => {
-    const stored = localStorage.getItem("user")
-    if (!stored) {
-      router.push("/login?next=/organizer/create")
-      return
-    }
-    const parsed = JSON.parse(stored)
-    if (!parsed?.token) {
-      router.push("/login?next=/organizer/create")
-      return
-    }
-    setUser(parsed)
-  }, [router])
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
-
     try {
-      const payload = {
-        ...formData,
-        maxCapacity: formData.maxCapacity ? parseInt(formData.maxCapacity) : null,
-        ticketPrice: parseFloat(formData.ticketPrice),
-        tags: formData.tags.split(",").map(t => t.trim()).filter(t => t !== "")
+      const stored = localStorage.getItem('user')
+      if (!stored) {
+        router.push('/login?next=/organizer/create')
+        return
       }
-
-      const res = await fetch("/api/organizer/events", {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${user.token}`
-        },
-        body: JSON.stringify(payload)
-      })
-
-      if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data.error || "Failed to create event")
+      const parsed = JSON.parse(stored)
+      if (!parsed?.token) {
+        router.push('/login?next=/organizer/create')
+        return
       }
-
-      router.push("/organizer")
-    } catch (err: any) {
-      setError(err.message)
+      setUser(parsed)
+    } catch {
+      router.push('/login?next=/organizer/create')
     } finally {
       setLoading(false)
     }
+  }, [])
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const target = e.target as HTMLInputElement
+    const value = target.type === 'checkbox' 
+      ? target.checked 
+      : target.value
+    setForm(prev => ({ ...prev, [target.name]: value }))
+  }
+
+  const handleSubmit = async (isPublished: boolean) => {
+    setError('')
+    setSubmitting(true)
+
+    try {
+      if (!form.title.trim()) {
+        setError('Event title is required')
+        setSubmitting(false)
+        return
+      }
+      if (!form.startDate) {
+        setError('Start date is required')
+        setSubmitting(false)
+        return
+      }
+
+      const token = user?.token
+      if (!token) {
+        setError('You must be logged in to create an event')
+        setSubmitting(false)
+        return
+      }
+
+      const res = await fetch('/api/organizer/events', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          ...form,
+          isPublished,
+          tags: form.tags
+            .split(',')
+            .map((t: string) => t.trim())
+            .filter(Boolean),
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.error || 'Failed to create event. Please try again.')
+        return
+      }
+
+      setSuccess({
+        slug: data.slug,
+        title: data.title,
+        published: isPublished,
+      })
+    } catch (err) {
+      setError('Something went wrong. Please try again.')
+      console.error('Create event error:', err)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div style={{
+        minHeight: '100vh', display: 'flex',
+        alignItems: 'center', justifyContent: 'center',
+        color: '#555C50', fontSize: 14,
+      }}>
+        Loading...
+      </div>
+    )
+  }
+
+  if (!user) return null
+
+  if (success) {
+    return (
+      <div style={{
+        minHeight: '100vh', display: 'flex',
+        alignItems: 'center', justifyContent: 'center',
+        padding: '2rem',
+      }}>
+        <div style={{
+          background: '#141710',
+          border: '1px solid #252D22',
+          borderRadius: 16, padding: '2.5rem',
+          maxWidth: 500, width: '100%',
+          textAlign: 'center',
+        }}>
+          <div style={{ fontSize: 56, marginBottom: 16 }}>🎉</div>
+          <h2 style={{
+            fontFamily: 'Syne, sans-serif',
+            fontSize: 22, fontWeight: 800,
+            marginBottom: 8,
+          }}>
+            {success.published 
+              ? 'Event Published!' 
+              : 'Event Saved as Draft!'}
+          </h2>
+          <p style={{
+            fontSize: 14, color: '#9A9C8E',
+            marginBottom: 24, lineHeight: 1.7,
+          }}>
+            {success.published
+              ? 'Your event is now live and accepting registrations.'
+              : 'Your event has been saved. Publish it when ready.'}
+          </p>
+
+          {success.published && (
+            <div style={{
+              background: '#0F1210',
+              border: '1px solid #252D22',
+              borderRadius: 10, padding: '12px',
+              marginBottom: 20,
+            }}>
+              <div style={{
+                fontSize: 11, color: '#555C50',
+                marginBottom: 6, fontWeight: 700,
+                letterSpacing: '0.5px',
+              }}>
+                YOUR EVENT LINK
+              </div>
+              <div style={{
+                fontSize: 13, color: '#E8A020',
+                wordBreak: 'break-all',
+              }}>
+                oppalert.vercel.app/events/{success.slug}
+              </div>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    `https://oppalert.vercel.app/events/${success.slug}`
+                  )
+                }}
+                style={{
+                  marginTop: 10, padding: '6px 16px',
+                  background: '#E8A020', border: 'none',
+                  borderRadius: 6, fontSize: 12,
+                  fontWeight: 700, color: '#090A07',
+                  cursor: 'pointer', fontFamily: 'inherit',
+                }}
+              >
+                Copy Link
+              </button>
+            </div>
+          )}
+
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+            <Link href="/organizer" style={{ textDecoration: 'none' }}>
+              <button style={{
+                padding: '10px 20px', background: '#E8A020',
+                border: 'none', borderRadius: 8,
+                fontSize: 13, fontWeight: 700,
+                color: '#090A07', cursor: 'pointer',
+                fontFamily: 'inherit',
+              }}>
+                View Dashboard
+              </button>
+            </Link>
+            <button
+              onClick={() => {
+                setSuccess(null)
+                setForm({
+                  title: '',
+                  description: '',
+                  eventType: 'bootcamp',
+                  location: '',
+                  isOnline: false,
+                  onlineLink: '',
+                  startDate: '',
+                  endDate: '',
+                  registrationDeadline: '',
+                  maxCapacity: '',
+                  isPaid: false,
+                  ticketPrice: '',
+                  tags: '',
+                  isPublished: false,
+                })
+              }}
+              style={{
+                padding: '10px 20px', background: 'transparent',
+                border: '1px solid #313D2C', borderRadius: 8,
+                fontSize: 13, color: '#9A9C8E',
+                cursor: 'pointer', fontFamily: 'inherit',
+              }}
+            >
+              Create Another
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const inputStyle = {
+    width: '100%', padding: '11px 14px',
+    background: '#1C2119',
+    border: '1px solid #252D22',
+    borderRadius: 8, color: '#EDE8DF',
+    fontSize: 14, outline: 'none',
+    fontFamily: 'inherit',
+    boxSizing: 'border-box' as const,
+  }
+
+  const labelStyle = {
+    display: 'block', fontSize: 12,
+    fontWeight: 700, color: '#9A9C8E',
+    marginBottom: 6, letterSpacing: '0.3px',
   }
 
   return (
-    <main className="min-h-screen bg-[#080A07] pt-10 pb-20 px-6">
-      <div className="max-w-4xl mx-auto">
-        <Link href="/organizer" className="text-[#555C50] hover:text-[#EDE8DF] text-xs font-black uppercase tracking-widest mb-8 inline-block transition-colors">
-          ← Back to Dashboard
-        </Link>
+    <div style={{
+      maxWidth: 700, margin: '0 auto',
+      padding: '40px 1.5rem 80px',
+    }}>
+      <Link href="/organizer" style={{
+        textDecoration: 'none', color: '#555C50',
+        fontSize: 13, display: 'inline-flex',
+        alignItems: 'center', gap: 4, marginBottom: 24,
+      }}>
+        ← Back to Dashboard
+      </Link>
 
-        <div className="mb-12">
-          <h1 className="font-syne text-4xl font-black text-[#EDE8DF] mb-2">Create New Event</h1>
-          <p className="text-[#9A9C8E]">Fill in the details below to publish your event to the OppAlert community.</p>
+      <h1 style={{
+        fontFamily: 'Syne, sans-serif',
+        fontSize: 26, fontWeight: 800, marginBottom: 6,
+      }}>
+        Create New <span style={{ color: '#E8A020' }}>Event</span>
+      </h1>
+      <p style={{ fontSize: 14, color: '#555C50', marginBottom: 32 }}>
+        Fill in the details below to create your event.
+      </p>
+
+      {error && (
+        <div style={{
+          background: '#1A0808',
+          border: '1px solid rgba(240,80,80,0.3)',
+          borderRadius: 10, padding: '12px 16px',
+          color: '#F05050', fontSize: 14, marginBottom: 20,
+        }}>
+          {error}
+        </div>
+      )}
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+        {/* Title */}
+        <div>
+          <label style={labelStyle}>Event Title *</label>
+          <input
+            name="title"
+            value={form.title}
+            onChange={handleChange}
+            placeholder="e.g. Data Science Bootcamp Lagos 2025"
+            style={inputStyle}
+          />
         </div>
 
-        {error && (
-          <div className="mb-8 p-4 bg-danger/10 border border-danger/20 text-danger rounded-xl text-sm font-bold">
-            ⚠️ {error}
-          </div>
-        )}
+        {/* Type */}
+        <div>
+          <label style={labelStyle}>Event Type *</label>
+          <select
+            name="eventType"
+            value={form.eventType}
+            onChange={handleChange}
+            style={inputStyle}
+          >
+            <option value="bootcamp">Bootcamp</option>
+            <option value="workshop">Workshop</option>
+            <option value="webinar">Webinar</option>
+            <option value="meetup">Meetup</option>
+            <option value="conference">Conference</option>
+            <option value="hackathon">Hackathon</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-10">
-          {/* Section 1: Basics */}
-          <div className="bg-[#141710] border border-[#252D22] p-8 md:p-12 rounded-[2.5rem]">
-            <h3 className="text-xl font-bold text-[#EDE8DF] mb-8 flex items-center gap-3">
-              <span className="w-8 h-8 bg-[#E8A020] text-[#080A07] rounded-full flex items-center justify-center text-sm font-black">1</span>
-              Basic Information
-            </h3>
-            <div className="space-y-6">
-              <div>
-                <label className="block text-[10px] font-black text-[#555C50] uppercase tracking-widest mb-3">Event Title *</label>
-                <input 
-                  type="text" required
-                  className="w-full bg-[#080A07] border border-[#252D22] rounded-xl px-6 py-4 text-[#EDE8DF] focus:border-[#E8A020] outline-none transition-all"
-                  placeholder="e.g. Advanced React Architecture Workshop"
-                  value={formData.title}
-                  onChange={(e) => setFormData({...formData, title: e.target.value})}
-                />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-[10px] font-black text-[#555C50] uppercase tracking-widest mb-3">Event Type</label>
-                  <select 
-                    className="w-full bg-[#080A07] border border-[#252D22] rounded-xl px-6 py-4 text-[#EDE8DF] focus:border-[#E8A020] outline-none transition-all appearance-none"
-                    value={formData.eventType}
-                    onChange={(e) => setFormData({...formData, eventType: e.target.value})}
-                  >
-                    <option value="bootcamp">Bootcamp</option>
-                    <option value="workshop">Workshop</option>
-                    <option value="webinar">Webinar</option>
-                    <option value="meetup">Meetup</option>
-                    <option value="conference">Conference</option>
-                    <option value="hackathon">Hackathon</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-[10px] font-black text-[#555C50] uppercase tracking-widest mb-3">Tags (comma separated)</label>
-                  <input 
-                    type="text"
-                    className="w-full bg-[#080A07] border border-[#252D22] rounded-xl px-6 py-4 text-[#EDE8DF] focus:border-[#E8A020] outline-none transition-all"
-                    placeholder="react, web3, scaling"
-                    value={formData.tags}
-                    onChange={(e) => setFormData({...formData, tags: e.target.value})}
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-[10px] font-black text-[#555C50] uppercase tracking-widest mb-3">Full Description *</label>
-                <textarea 
-                  required
-                  className="w-full bg-[#080A07] border border-[#252D22] rounded-xl px-6 py-4 text-[#EDE8DF] focus:border-[#E8A020] outline-none transition-all h-40 resize-none"
-                  placeholder="Tell your audience what they will learn..."
-                  value={formData.description}
-                  onChange={(e) => setFormData({...formData, description: e.target.value})}
-                />
-              </div>
-            </div>
-          </div>
+        {/* Description */}
+        <div>
+          <label style={labelStyle}>Description *</label>
+          <textarea
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+            placeholder="Describe your event..."
+            rows={4}
+            style={{ ...inputStyle, resize: 'vertical' }}
+          />
+        </div>
 
-          {/* Section 2: Date & Location */}
-          <div className="bg-[#141710] border border-[#252D22] p-8 md:p-12 rounded-[2.5rem]">
-            <h3 className="text-xl font-bold text-[#EDE8DF] mb-8 flex items-center gap-3">
-              <span className="w-8 h-8 bg-[#E8A020] text-[#080A07] rounded-full flex items-center justify-center text-sm font-black">2</span>
-              Time and Place
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <div>
-                <label className="block text-[10px] font-black text-[#555C50] uppercase tracking-widest mb-3">Start Date & Time *</label>
-                <input 
-                  type="datetime-local" required
-                  className="w-full bg-[#080A07] border border-[#252D22] rounded-xl px-6 py-4 text-[#EDE8DF] focus:border-[#E8A020] outline-none transition-all"
-                  value={formData.startDate}
-                  onChange={(e) => setFormData({...formData, startDate: e.target.value})}
-                />
-              </div>
-              <div>
-                <label className="block text-[10px] font-black text-[#555C50] uppercase tracking-widest mb-3">Registration Deadline</label>
-                <input 
-                  type="date"
-                  className="w-full bg-[#080A07] border border-[#252D22] rounded-xl px-6 py-4 text-[#EDE8DF] focus:border-[#E8A020] outline-none transition-all"
-                  value={formData.registrationDeadline}
-                  onChange={(e) => setFormData({...formData, registrationDeadline: e.target.value})}
-                />
-              </div>
-            </div>
-            <div className="flex gap-4 p-1 bg-[#080A07] border border-[#252D22] rounded-2xl mb-8">
-              <button 
-                type="button"
-                onClick={() => setFormData({...formData, isOnline: true})}
-                className={`flex-1 py-3 rounded-xl font-bold transition-all ${formData.isOnline ? "bg-[#E8A020] text-[#080A07]" : "text-[#555C50] hover:text-[#EDE8DF]"}`}
-              >
-                🌐 Online Event
-              </button>
-              <button 
-                type="button"
-                onClick={() => setFormData({...formData, isOnline: false})}
-                className={`flex-1 py-3 rounded-xl font-bold transition-all ${!formData.isOnline ? "bg-[#E8A020] text-[#080A07]" : "text-[#555C50] hover:text-[#EDE8DF]"}`}
-              >
-                📍 In-Person
-              </button>
-            </div>
-            {formData.isOnline ? (
-              <div>
-                <label className="block text-[10px] font-black text-[#555C50] uppercase tracking-widest mb-3">Online Meeting Link</label>
-                <input 
-                  type="url"
-                  className="w-full bg-[#080A07] border border-[#252D22] rounded-xl px-6 py-4 text-[#EDE8DF] focus:border-[#E8A020] outline-none transition-all"
-                  placeholder="Zoom, Google Meet, or YouTube URL"
-                  value={formData.onlineLink}
-                  onChange={(e) => setFormData({...formData, onlineLink: e.target.value})}
-                />
-              </div>
-            ) : (
-              <div>
-                <label className="block text-[10px] font-black text-[#555C50] uppercase tracking-widest mb-3">Venue Address</label>
-                <input 
-                  type="text"
-                  className="w-full bg-[#080A07] border border-[#252D22] rounded-xl px-6 py-4 text-[#EDE8DF] focus:border-[#E8A020] outline-none transition-all"
-                  placeholder="Full street address, city, state"
-                  value={formData.location}
-                  onChange={(e) => setFormData({...formData, location: e.target.value})}
-                />
-              </div>
-            )}
+        {/* Dates */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr', gap: 16,
+        }}>
+          <div>
+            <label style={labelStyle}>Start Date & Time *</label>
+            <input
+              type="datetime-local"
+              name="startDate"
+              value={form.startDate}
+              onChange={handleChange}
+              style={inputStyle}
+            />
           </div>
+          <div>
+            <label style={labelStyle}>End Date & Time</label>
+            <input
+              type="datetime-local"
+              name="endDate"
+              value={form.endDate}
+              onChange={handleChange}
+              style={inputStyle}
+            />
+          </div>
+        </div>
 
-          {/* Section 3: Tickets */}
-          <div className="bg-[#141710] border border-[#252D22] p-8 md:p-12 rounded-[2.5rem]">
-            <h3 className="text-xl font-bold text-[#EDE8DF] mb-8 flex items-center gap-3">
-              <span className="w-8 h-8 bg-[#E8A020] text-[#080A07] rounded-full flex items-center justify-center text-sm font-black">3</span>
-              Capacity & Pricing
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <label className="block text-[10px] font-black text-[#555C50] uppercase tracking-widest mb-3">Max Capacity (optional)</label>
-                <input 
-                  type="number"
-                  className="w-full bg-[#080A07] border border-[#252D22] rounded-xl px-6 py-4 text-[#EDE8DF] focus:border-[#E8A020] outline-none transition-all"
-                  placeholder="e.g. 100"
-                  value={formData.maxCapacity}
-                  onChange={(e) => setFormData({...formData, maxCapacity: e.target.value})}
-                />
-              </div>
-              <div>
-                <label className="block text-[10px] font-black text-[#555C50] uppercase tracking-widest mb-3">Ticket Type</label>
-                <div className="flex gap-4 p-1 bg-[#080A07] border border-[#252D22] rounded-xl">
-                  <button 
-                    type="button"
-                    onClick={() => setFormData({...formData, isPaid: false})}
-                    className={`flex-1 py-3 rounded-lg font-bold transition-all ${!formData.isPaid ? "bg-[#34C27A] text-[#080A07]" : "text-[#555C50]"}`}
-                  >
-                    Free
-                  </button>
-                  <button 
-                    type="button"
-                    onClick={() => setFormData({...formData, isPaid: true})}
-                    className={`flex-1 py-3 rounded-lg font-bold transition-all ${formData.isPaid ? "bg-[#E8A020] text-[#080A07]" : "text-[#555C50]"}`}
-                  >
-                    Paid
-                  </button>
-                </div>
-              </div>
-            </div>
-            {formData.isPaid && (
-              <div className="mt-8">
-                <label className="block text-[10px] font-black text-[#555C50] uppercase tracking-widest mb-3">Ticket Price (NGN)</label>
-                <div className="relative">
-                  <span className="absolute left-6 top-1/2 -translate-y-1/2 text-[#EDE8DF] font-bold">₦</span>
-                  <input 
-                    type="number" required
-                    className="w-full bg-[#080A07] border border-[#252D22] rounded-xl pl-12 pr-6 py-4 text-[#EDE8DF] focus:border-[#E8A020] outline-none transition-all"
-                    placeholder="5,000"
-                    value={formData.ticketPrice}
-                    onChange={(e) => setFormData({...formData, ticketPrice: e.target.value})}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
+        {/* Registration Deadline */}
+        <div>
+          <label style={labelStyle}>Registration Deadline</label>
+          <input
+            type="datetime-local"
+            name="registrationDeadline"
+            value={form.registrationDeadline}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+        </div>
 
-          <div className="flex flex-col md:flex-row gap-4 pt-4">
-            <button 
-              type="submit" 
-              disabled={loading}
-              onClick={() => setFormData({...formData, isPublished: true})}
-              className="flex-[2] py-5 bg-[#E8A020] text-[#080A07] font-black rounded-[2rem] text-lg hover:scale-[1.02] transition-all shadow-glow-amber disabled:opacity-50"
-            >
-              {loading ? "Publishing..." : "Publish Event Now →"}
-            </button>
-            <button 
-              type="submit"
-              disabled={loading}
-              onClick={() => setFormData({...formData, isPublished: false})}
-              className="flex-1 py-5 bg-[#141710] border border-[#252D22] text-[#EDE8DF] font-black rounded-[2rem] hover:bg-[#222820] transition-all"
-            >
-              Save as Draft
-            </button>
-          </div>
-        </form>
+        {/* Location */}
+        <div>
+          <label style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            fontSize: 14, cursor: 'pointer', marginBottom: 12,
+          }}>
+            <input
+              type="checkbox"
+              name="isOnline"
+              checked={form.isOnline}
+              onChange={handleChange}
+              style={{ width: 16, height: 16 }}
+            />
+            <span style={{ fontWeight: 600 }}>
+              This is an online event
+            </span>
+          </label>
+
+          {form.isOnline ? (
+            <div>
+              <label style={labelStyle}>Online Link</label>
+              <input
+                name="onlineLink"
+                value={form.onlineLink}
+                onChange={handleChange}
+                placeholder="https://zoom.us/j/..."
+                style={inputStyle}
+              />
+            </div>
+          ) : (
+            <div>
+              <label style={labelStyle}>Location / Venue</label>
+              <input
+                name="location"
+                value={form.location}
+                onChange={handleChange}
+                placeholder="e.g. Lagos Business School, Victoria Island"
+                style={inputStyle}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Capacity */}
+        <div>
+          <label style={labelStyle}>Max Capacity</label>
+          <input
+            type="number"
+            name="maxCapacity"
+            value={form.maxCapacity}
+            onChange={handleChange}
+            placeholder="Leave empty for unlimited"
+            style={inputStyle}
+          />
+        </div>
+
+        {/* Pricing */}
+        <div>
+          <label style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            fontSize: 14, cursor: 'pointer', marginBottom: 12,
+          }}>
+            <input
+              type="checkbox"
+              name="isPaid"
+              checked={form.isPaid}
+              onChange={handleChange}
+              style={{ width: 16, height: 16 }}
+            />
+            <span style={{ fontWeight: 600 }}>
+              This is a paid event
+            </span>
+          </label>
+
+          {form.isPaid && (
+            <div>
+              <label style={labelStyle}>Ticket Price (NGN)</label>
+              <input
+                type="number"
+                name="ticketPrice"
+                value={form.ticketPrice}
+                onChange={handleChange}
+                placeholder="e.g. 5000"
+                style={inputStyle}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Tags */}
+        <div>
+          <label style={labelStyle}>Tags</label>
+          <input
+            name="tags"
+            value={form.tags}
+            onChange={handleChange}
+            placeholder="Python, Machine Learning, Data (comma-separated)"
+            style={inputStyle}
+          />
+        </div>
+
+        {/* Action buttons */}
+        <div style={{ display: 'flex', gap: 12, paddingTop: 8 }}>
+          <button
+            onClick={() => handleSubmit(false)}
+            disabled={submitting}
+            style={{
+              flex: 1, padding: '13px',
+              background: 'transparent',
+              border: '1px solid #313D2C',
+              borderRadius: 10, fontSize: 14,
+              fontWeight: 600, color: '#9A9C8E',
+              cursor: submitting ? 'not-allowed' : 'pointer',
+              fontFamily: 'inherit', opacity: submitting ? 0.6 : 1,
+            }}
+          >
+            {submitting ? 'Saving...' : 'Save as Draft'}
+          </button>
+          <button
+            onClick={() => handleSubmit(true)}
+            disabled={submitting}
+            style={{
+              flex: 1, padding: '13px',
+              background: submitting ? '#9A7010' : '#E8A020',
+              border: 'none', borderRadius: 10,
+              fontSize: 14, fontWeight: 700,
+              color: '#090A07',
+              cursor: submitting ? 'not-allowed' : 'pointer',
+              fontFamily: 'inherit',
+            }}
+          >
+            {submitting ? 'Publishing...' : 'Publish Now →'}
+          </button>
+        </div>
       </div>
-    </main>
+    </div>
   )
 }

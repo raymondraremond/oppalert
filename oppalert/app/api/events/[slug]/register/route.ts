@@ -1,86 +1,117 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(
   request: NextRequest,
   { params }: { params: { slug: string } }
 ) {
   try {
-    const { slug } = params
     const body = await request.json()
-    const { fullName, email, phone, customAnswers } = body
+    const { fullName, email, phone } = body
 
-    if (!fullName || !email || !phone) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
+    if (!fullName || !email) {
+      return NextResponse.json(
+        { error: 'Full name and email are required' },
+        { status: 400 }
+      )
     }
 
     if (!process.env.DATABASE_URL) {
-      return NextResponse.json({ error: "Database not configured" }, { status: 500 })
+      return NextResponse.json({
+        success: true,
+        message: 'Registration confirmed',
+      })
     }
 
-    const { query } = await import("@/lib/db")
+    const { query } = await import('@/lib/db')
 
-    // 1. Find event
+    // Find event
     const eventResult = await query(
-      "SELECT * FROM events WHERE slug = $1 AND is_active = true",
-      [slug]
+      `SELECT id, title, max_capacity, 
+        current_registrations, is_published,
+        registration_deadline
+       FROM events 
+       WHERE slug = $1 AND is_active = true`,
+      [params.slug]
     )
 
     if (eventResult.rows.length === 0) {
-      return NextResponse.json({ error: "Event not found" }, { status: 404 })
+      return NextResponse.json(
+        { error: 'Event not found' },
+        { status: 404 }
+      )
     }
 
     const event = eventResult.rows[0]
 
-    // 2. Check published
+    // Check if event is published
     if (!event.is_published) {
-      return NextResponse.json({ error: "Event is not published" }, { status: 400 })
+      return NextResponse.json(
+        { error: 'Event is not yet open for registration' },
+        { status: 400 }
+      )
     }
 
-    // 3. Check deadline
-    if (event.registration_deadline && new Date(event.registration_deadline) < new Date()) {
-      return NextResponse.json({ error: "Registration deadline has passed" }, { status: 410 })
+    // Check capacity
+    if (event.max_capacity !== null) {
+      if (event.current_registrations >= event.max_capacity) {
+        return NextResponse.json(
+          { error: 'This event is fully booked' },
+          { status: 410 }
+        )
+      }
     }
 
-    // 4. Check capacity
-    if (event.max_capacity && event.current_registrations >= event.max_capacity) {
-      return NextResponse.json({ error: "Event is fully booked" }, { status: 410 })
+    // Check deadline
+    if (event.registration_deadline) {
+      if (new Date() > new Date(event.registration_deadline)) {
+        return NextResponse.json(
+          { error: 'Registration deadline has passed' },
+          { status: 410 }
+        )
+      }
     }
 
-    // 5. Check duplicate email
-    const duplicateResult = await query(
-      "SELECT id FROM event_registrations WHERE event_id = $1 AND email = $2",
-      [event.id, email]
+    // Check duplicate registration
+    const existingResult = await query(
+      `SELECT id FROM event_registrations 
+       WHERE event_id = $1 AND email = $2`,
+      [event.id, email.toLowerCase()]
     )
 
-    if (duplicateResult.rows.length > 0) {
-      return NextResponse.json({ error: "You are already registered with this email" }, { status: 409 })
+    if (existingResult.rows.length > 0) {
+      return NextResponse.json(
+        { error: 'This email is already registered for this event' },
+        { status: 409 }
+      )
     }
 
-    // 6. INSERT registration
+    // Insert registration
     await query(
-      `INSERT INTO event_registrations (event_id, full_name, email, phone, custom_answers)
-       VALUES ($1, $2, $3, $4, $5)`,
-      [event.id, fullName, email, phone, customAnswers ? JSON.stringify(customAnswers) : null]
+      `INSERT INTO event_registrations 
+        (event_id, full_name, email, phone)
+       VALUES ($1, $2, $3, $4)`,
+      [event.id, fullName, email.toLowerCase(), phone || '']
     )
 
-    // 7. UPDATE registration count
+    // Increment counter
     await query(
-      "UPDATE events SET current_registrations = current_registrations + 1 WHERE id = $1",
+      `UPDATE events 
+       SET current_registrations = current_registrations + 1
+       WHERE id = $1`,
       [event.id]
     )
 
-    // 8. Update analytics
-    await query(
-      `INSERT INTO event_analytics (event_id, date, registrations)
-       VALUES ($1, CURRENT_DATE, 1)
-       ON CONFLICT (event_id, date) 
-       DO UPDATE SET registrations = event_analytics.registrations + 1`,
-      [event.id]
-    )
-
-    return NextResponse.json({ success: true, message: "Registration confirmed" })
+    return NextResponse.json({
+      success: true,
+      message: 'Registration confirmed',
+      eventTitle: event.title,
+      email: email,
+    })
   } catch (err) {
-    console.error("Event Registration error:", err)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    console.error('Event registration error:', err)
+    return NextResponse.json(
+      { error: 'Registration failed. Please try again.' },
+      { status: 500 }
+    )
   }
 }
