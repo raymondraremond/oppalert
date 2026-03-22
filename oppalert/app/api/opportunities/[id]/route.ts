@@ -38,7 +38,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     const { id } = params;
     const token = getTokenFromRequest(req);
     const decoded = token ? verifyToken(token) : null;
-    if (!decoded || decoded.plan !== 'admin') {
+    if (!decoded || !['admin', 'founder'].includes(decoded.plan)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
@@ -75,7 +75,7 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     const { id } = params;
     const token = getTokenFromRequest(req);
     const decoded = token ? verifyToken(token) : null;
-    if (!decoded || decoded.plan !== 'admin') {
+    if (!decoded || !['admin', 'founder'].includes(decoded.plan)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

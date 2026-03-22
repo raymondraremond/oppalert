@@ -102,8 +102,8 @@ export async function POST(req: NextRequest) {
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const decoded = verifyToken(token);
-    if (!decoded || decoded.plan !== 'admin') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    if (!decoded || !['admin', 'founder'].includes(decoded.plan)) {
+      return NextResponse.json({ error: 'Forbidden. Role must be founder or admin.' }, { status: 403 });
     }
 
     const { query } = await import('@/lib/db');

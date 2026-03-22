@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const decoded = verifyToken(token);
-    if (!decoded || decoded.plan !== 'admin') {
+    if (!decoded || !['admin', 'founder'].includes(decoded.plan)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

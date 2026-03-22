@@ -310,10 +310,16 @@ export default function AdminPage() {
           setPublishSuccess(false)
         }, 1500)
       } else {
-        alert('Failed to create opportunity')
+        let errMsg = res.statusText
+        try {
+          const errData = await res.json()
+          if (errData && errData.error) errMsg = errData.error
+        } catch(e) {}
+        alert(`Failed to create opportunity: ${errMsg} (Status ${res.status})`)
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err)
+      alert(`Network error: ${err.message}`)
     } finally {
       setIsPublishing(false)
     }
