@@ -115,7 +115,21 @@ export async function POST(req: NextRequest) {
     const insertRes = await query(
       `INSERT INTO opportunities (icon, title, organization, category, location, funding_type, description, about, eligibility, benefits, application_url, deadline, is_featured)
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING *`,
-      [icon || '🌍', title, organization, category, location, funding_type, description, about, eligibility || [], benefits || [], application_url, deadline, is_featured || false]
+      [
+        icon || '🌍', 
+        title, 
+        organization || null, 
+        category || null, 
+        location || null, 
+        funding_type || null, 
+        description || null, 
+        about || null, 
+        eligibility || [], 
+        benefits || [], 
+        application_url || null, 
+        deadline || null, 
+        is_featured || false
+      ]
     );
 
     return NextResponse.json(insertRes.rows[0], { status: 201 });
