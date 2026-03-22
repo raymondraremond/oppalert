@@ -20,14 +20,14 @@ export function getCategoryBadge(cat: string): string {
 
 export function getCategoryLabel(cat: string): string {
   const map: Record<string, string> = {
-    scholarship: '🎓 Scholarship',
-    job: '💼 Remote Job',
-    fellowship: '🌍 Fellowship',
-    grant: '💰 Grant',
-    internship: '🔬 Internship',
-    startup: '🚀 Startup Funding',
-    bootcamp: '💻 Bootcamp',
-    event: '🎪 Events & Meetups',
+    scholarship: 'Scholarship',
+    job: 'Remote Job',
+    fellowship: 'Fellowship',
+    grant: 'Grant',
+    internship: 'Internship',
+    startup: 'Startup Funding',
+    bootcamp: 'Bootcamp',
+    event: 'Events & Meetups',
   }
   return map[cat] || cat
 }

@@ -1,8 +1,8 @@
 "use client"
 import Link from "next/link"
 import { getCategoryLabel } from "@/lib/utils"
-
 import { MapPin } from "lucide-react"
+import { CategoryIcon } from "@/lib/icons"
 
 interface OpportunityCardProps {
   opportunity: any
@@ -46,7 +46,8 @@ export default function OpportunityCard({ opportunity, deadlineOverride }: Oppor
     >
       <div className="bg-bg2 border border-border rounded-[2rem] p-8 hover:border-[#E8A020]/50 hover:bg-surface transition-all flex flex-col h-full shadow-lg hover:shadow-[#E8A020]/5">
         <div className="flex justify-between items-start mb-6">
-          <span className="px-3 py-1 bg-bg rounded-full text-[10px] font-black uppercase text-muted border border-border">
+          <span className="px-3 py-1 bg-bg rounded-full text-[10px] font-black uppercase text-muted border border-border flex flex-shrink-0 items-center gap-1.5">
+            <CategoryIcon cat={cat} size={12} />
             {getCategoryLabel(cat)}
           </span>
           <span className={`text-[10px] font-black uppercase tracking-widest ${deadlineText.includes("left") ? "text-[#E8A020]" : "text-subtle"}`}>

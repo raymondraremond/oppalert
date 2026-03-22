@@ -113,7 +113,10 @@ export default function OpportunityDetailPage({ params }: Props) {
                 <div>
                   <p className="text-sm font-bold text-[#E8A020] uppercase tracking-widest mb-1">{org}</p>
                   <div className="flex gap-2">
-                    <span className="px-3 py-1 bg-icon-bg rounded-full text-[10px] font-bold text-muted">{getCategoryLabel(cat)}</span>
+                    <span className="px-3 py-1 bg-icon-bg rounded-full text-[10px] font-bold text-muted flex flex-shrink-0 items-center gap-1.5">
+                      <CategoryIcon cat={cat} size={12} />
+                      {getCategoryLabel(cat)}
+                    </span>
                   </div>
                 </div>
               </div>

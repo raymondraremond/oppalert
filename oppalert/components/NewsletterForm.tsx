@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { Check, Send, PartyPopper } from 'lucide-react'
+import { CategoryIcon } from '@/lib/icons'
 
 export default function NewsletterForm() {
   const [step, setStep] = useState<'email' | 'prefs' | 'done'>('email')
@@ -107,12 +108,13 @@ export default function NewsletterForm() {
               key={cat.id}
               type="button"
               onClick={() => handleTogglePref(cat.id)}
-              className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
+              className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
                 prefs.includes(cat.id) 
                   ? 'bg-amber text-bg shadow-glow-amber' 
                   : 'bg-[var(--icon-bg)] text-muted border border-[var(--glass-border)]'
               }`}
             >
+              <CategoryIcon cat={cat.id as any} size={14} />
               {cat.label}
             </button>
           ))}
