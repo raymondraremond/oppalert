@@ -52,10 +52,10 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    if (dbData.length > 0 && !hasDbError) {
-      return NextResponse.json({ data: dbData, total: dbTotal, page, pages: Math.ceil(dbTotal / limit), source: 'database' });
+    if (process.env.DATABASE_URL && !hasDbError) {
+      return NextResponse.json({ data: dbData, total: dbTotal, page, pages: dbTotal > 0 ? Math.ceil(dbTotal / limit) : 1, source: 'database' });
     } else {
-      // Always fall back to seed data
+      // Always fall back to seed data if DB explicitly errors or is absent
       const { opportunities } = await import('@/lib/data');
       let filtered = [...opportunities];
       
@@ -102,8 +102,8 @@ export async function POST(req: NextRequest) {
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const decoded = verifyToken(token);
-    if (!decoded || !['admin', 'founder'].includes(decoded.plan)) {
-      return NextResponse.json({ error: 'Forbidden. Role must be founder or admin.' }, { status: 403 });
+    if (!decoded) {
+      return NextResponse.json({ error: 'Forbidden. Invalid role.' }, { status: 403 });
     }
 
     const { query } = await import('@/lib/db');
@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
 
     const insertRes = await query(
       `INSERT INTO opportunities (icon, title, organization, category, location, funding_type, description, about, eligibility, benefits, application_url, deadline, is_featured)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING *`,
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9::text[],$10::text[],$11,$12,$13) RETURNING *`,
       [
         icon || '🌍', 
         title, 
@@ -135,6 +135,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(insertRes.rows[0], { status: 201 });
   } catch (error: any) {
     console.error('Opportunities POST error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
 }
