@@ -38,6 +38,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       totalUsers: parseInt(usersCountRes.rows[0].count),
       premiumUsers: parseInt(premiumCountRes.rows[0].count),
+      estimatedRevenue: parseInt(premiumCountRes.rows[0].count) * 24900, // Dynamic proxy for #847K
       totalOpps: parseInt(oppsCountRes.rows[0].count),
       activeOpps: parseInt(activeOppsRes.rows[0].count),
       recentUsers: recentUsersRes.rows.map((u: any) => ({
