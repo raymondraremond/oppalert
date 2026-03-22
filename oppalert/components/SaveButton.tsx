@@ -123,7 +123,7 @@ export default function SaveButton({ oppId, oppTitle }: Props) {
         borderRadius: 10,
         border: saved ? '2px solid #E8A020' : '1px solid #252D22',
         background: saved ? 'rgba(232,160,32,0.1)' : 'transparent',
-        color: saved ? '#E8A020' : '#9A9C8E',
+        color: saved ? '#E8A020' : 'var(--muted)',
         fontSize: 13,
         fontWeight: 700,
         cursor: loading ? 'not-allowed' : 'pointer',

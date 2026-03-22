@@ -49,7 +49,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${syne.variable} ${inter.variable}`} suppressHydrationWarning>
-      <body className="bg-[#080A07] text-[#EDE8DF]">
+      <body className="bg-bg text-primary">
         <ThemeProvider
           attribute="data-theme"
           defaultTheme="dark"

@@ -99,26 +99,26 @@ export default function EventRegisterPage({
     document.body.removeChild(link)
   }
 
-  if (loading) return <div className="min-h-screen pt-40 text-center text-[#9A9C8E]">Loading registration form...</div>
-  if (!event && !loading) return <div className="min-h-screen pt-40 text-center text-[#9A9C8E]">{error || "Event not found"}</div>
+  if (loading) return <div className="min-h-screen pt-40 text-center text-muted">Loading registration form...</div>
+  if (!event && !loading) return <div className="min-h-screen pt-40 text-center text-muted">{error || "Event not found"}</div>
 
   if (success) {
     return (
-      <div className="min-h-screen bg-[#080A07] pt-32 pb-20 flex items-center justify-center px-6">
-        <div className="max-w-md w-full bg-[#141710] border border-[#252D22] p-10 rounded-3xl text-center shadow-2xl">
+      <div className="min-h-screen bg-bg pt-32 pb-20 flex items-center justify-center px-6">
+        <div className="max-w-md w-full bg-bg2 border border-border p-10 rounded-3xl text-center shadow-2xl">
           <div className="w-20 h-20 bg-[#34C27A]/10 text-[#34C27A] rounded-full flex items-center justify-center text-4xl mx-auto mb-6">
             ✓
           </div>
-          <h2 className="text-3xl font-black text-[#EDE8DF] mb-2">Registration Confirmed!</h2>
-          <p className="text-[#9A9C8E] mb-8">
-            You are successfully registered for <span className="text-[#EDE8DF] font-bold">{event.title}</span>. 
-            A confirmation has been sent to <span className="text-[#EDE8DF] font-bold">{formData.email}</span>.
+          <h2 className="text-3xl font-black text-primary mb-2">Registration Confirmed!</h2>
+          <p className="text-muted mb-8">
+            You are successfully registered for <span className="text-primary font-bold">{event.title}</span>. 
+            A confirmation has been sent to <span className="text-primary font-bold">{formData.email}</span>.
           </p>
           
           <div className="space-y-3">
             <button 
               onClick={generateIcs}
-              className="w-full py-3 bg-[#222820] border border-[#252D22] text-[#EDE8DF] font-bold rounded-xl hover:bg-[#313D2C] transition-colors"
+              className="w-full py-3 bg-surface border border-border text-primary font-bold rounded-xl hover:bg-[#313D2C] transition-colors"
             >
               Add to Calendar
             </button>
@@ -130,8 +130,8 @@ export default function EventRegisterPage({
             </Link>
           </div>
           
-          <div className="mt-10 pt-8 border-t border-[#252D22]">
-            <p className="text-[10px] font-bold text-[#555C50] uppercase tracking-widest mb-4">Invite your friends</p>
+          <div className="mt-10 pt-8 border-t border-border">
+            <p className="text-[10px] font-bold text-subtle uppercase tracking-widest mb-4">Invite your friends</p>
             <div className="flex justify-center gap-4">
                <a href={`https://twitter.com/intent/tweet?text=I just registered for ${event.title} on OppAlert! Join me:&url=${window.location.origin}/events/${event.slug}`} target="_blank" className="text-[#1DA1F2] font-bold text-sm">Twitter</a>
                <a href={`https://wa.me/?text=I just registered for ${event.title} on OppAlert! Join me: ${window.location.origin}/events/${event.slug}`} target="_blank" className="text-[#25D366] font-bold text-sm">WhatsApp</a>
@@ -143,15 +143,15 @@ export default function EventRegisterPage({
   }
 
   return (
-    <div className="min-h-screen bg-[#080A07] pt-24 pb-20 px-6">
+    <div className="min-h-screen bg-bg pt-24 pb-20 px-6">
       <div className="max-w-2xl mx-auto">
-        <Link href={`/events/${params.slug}`} className="text-[#9A9C8E] hover:text-[#EDE8DF] transition-colors mb-8 inline-block">
+        <Link href={`/events/${params.slug}`} className="text-muted hover:text-primary transition-colors mb-8 inline-block">
           ← Back to event
         </Link>
 
         <div className="mb-10">
-          <h1 className="text-3xl font-black text-[#EDE8DF] mb-2">Register for Event</h1>
-          <p className="text-[#9A9C8E] font-medium">{event.title}</p>
+          <h1 className="text-3xl font-black text-primary mb-2">Register for Event</h1>
+          <p className="text-muted font-medium">{event.title}</p>
         </div>
 
         {error && (
@@ -160,39 +160,39 @@ export default function EventRegisterPage({
           </div>
         )}
 
-        <div className="bg-[#141710] border border-[#252D22] p-8 md:p-10 rounded-3xl shadow-xl">
+        <div className="bg-bg2 border border-border p-8 md:p-10 rounded-3xl shadow-xl">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-xs font-bold text-[#555C50] uppercase tracking-widest mb-2">Full Name</label>
+              <label className="block text-xs font-bold text-subtle uppercase tracking-widest mb-2">Full Name</label>
               <input 
                 type="text" 
                 required
                 placeholder="Enter your full name"
-                className="w-full bg-[#080A07] border border-[#252D22] rounded-xl px-5 py-3 text-[#EDE8DF] focus:border-[#E8A020] outline-none transition-colors"
+                className="w-full bg-bg border border-border rounded-xl px-5 py-3 text-primary focus:border-[#E8A020] outline-none transition-colors"
                 value={formData.fullName}
                 onChange={(e) => setFormData({...formData, fullName: e.target.value})}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#555C50] uppercase tracking-widest mb-2">Email Address</label>
+              <label className="block text-xs font-bold text-subtle uppercase tracking-widest mb-2">Email Address</label>
               <input 
                 type="email" 
                 required
                 placeholder="you@example.com"
-                className="w-full bg-[#080A07] border border-[#252D22] rounded-xl px-5 py-3 text-[#EDE8DF] focus:border-[#E8A020] outline-none transition-colors"
+                className="w-full bg-bg border border-border rounded-xl px-5 py-3 text-primary focus:border-[#E8A020] outline-none transition-colors"
                 value={formData.email}
                 onChange={(e) => setFormData({...formData, email: e.target.value})}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#555C50] uppercase tracking-widest mb-2">Phone Number</label>
+              <label className="block text-xs font-bold text-subtle uppercase tracking-widest mb-2">Phone Number</label>
               <input 
                 type="tel" 
                 required
                 placeholder="+234 ..."
-                className="w-full bg-[#080A07] border border-[#252D22] rounded-xl px-5 py-3 text-[#EDE8DF] focus:border-[#E8A020] outline-none transition-colors"
+                className="w-full bg-bg border border-border rounded-xl px-5 py-3 text-primary focus:border-[#E8A020] outline-none transition-colors"
                 value={formData.phone}
                 onChange={(e) => setFormData({...formData, phone: e.target.value})}
               />
@@ -207,7 +207,7 @@ export default function EventRegisterPage({
                   checked={formData.agreed}
                   onChange={(e) => setFormData({...formData, agreed: e.target.checked})}
                 />
-                <span className="text-sm text-[#9A9C8E] group-hover:text-[#EDE8DF] transition-colors">
+                <span className="text-sm text-muted group-hover:text-primary transition-colors">
                   I agree to receive event updates via email and consent to the event&apos;s terms of service.
                 </span>
               </label>

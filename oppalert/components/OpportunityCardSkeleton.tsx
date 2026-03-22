@@ -1,7 +1,7 @@
 export default function OpportunityCardSkeleton() {
   return (
     <div style={{
-      background: '#141710',
+      background: 'var(--bg2)',
       border: '1px solid #252D22',
       borderRadius: 16, padding: '1.25rem',
     }}>

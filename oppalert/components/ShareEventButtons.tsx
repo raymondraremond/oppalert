@@ -27,7 +27,7 @@ export default function ShareEventButtons({
     <div className="flex flex-wrap gap-2">
       <button
         onClick={handleCopy}
-        className="flex-1 min-w-[120px] py-2 px-3 rounded-lg bg-[#222820] border border-[#252D22] text-[#EDE8DF] text-[13px] font-bold hover:bg-[#313D2C] transition-colors flex items-center justify-center gap-2"
+        className="flex-1 min-w-[120px] py-2 px-3 rounded-lg bg-surface border border-border text-primary text-[13px] font-bold hover:bg-[#313D2C] transition-colors flex items-center justify-center gap-2"
       >
         <span>{copied ? "✓ Copied!" : "🔗 Copy Link"}</span>
       </button>

@@ -8,7 +8,7 @@ export default function EventRegistrationCount({
   if (max === null || max === 0) {
     return (
       <div className="flex flex-col gap-1">
-        <span className="text-xs font-bold text-[#EDE8DF]">
+        <span className="text-xs font-bold text-primary">
           {current} registered
         </span>
       </div>
@@ -23,7 +23,7 @@ export default function EventRegistrationCount({
 
   return (
     <div className="flex flex-col gap-1">
-      <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider text-[#9A9C8E]">
+      <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider text-muted">
         <span>Registration</span>
         <span>{current} / {max}</span>
       </div>

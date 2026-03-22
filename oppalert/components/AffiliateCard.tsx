@@ -69,7 +69,7 @@ export default function AffiliateCard() {
   
   return (
     <div style={{
-      background: '#141710',
+      background: 'var(--bg2)',
       border: `1px solid ${aff.highlight}30`,
       borderRadius: 12,
       padding: '1.25rem',
@@ -100,14 +100,14 @@ export default function AffiliateCard() {
       <div style={{
         fontFamily: 'var(--font-syne), sans-serif',
         fontSize: 14, fontWeight: 700,
-        marginBottom: 6, color: '#EDE8DF',
+        marginBottom: 6, color: 'var(--primary)',
       }}>
         {aff.title}
       </div>
       
       {/* Description */}
       <p style={{
-        fontSize: 12, color: '#9A9C8E',
+        fontSize: 12, color: 'var(--muted)',
         lineHeight: 1.6, marginBottom: 14,
       }}>
         {aff.description}

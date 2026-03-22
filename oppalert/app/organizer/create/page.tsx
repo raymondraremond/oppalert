@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { PartyPopper, Check } from 'lucide-react'
 
 export default function CreateEventPage() {
   const [user, setUser] = useState<any>(null)
@@ -142,13 +143,13 @@ export default function CreateEventPage() {
         padding: '2rem',
       }}>
         <div style={{
-          background: '#141710',
+          background: 'var(--bg2)',
           border: '1px solid #252D22',
           borderRadius: 16, padding: '2.5rem',
           maxWidth: 500, width: '100%',
           textAlign: 'center',
         }}>
-          <div style={{ fontSize: 56, marginBottom: 16 }}>🎉</div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16, color: '#E8A020' }}><PartyPopper size={56} /></div>
           <h2 style={{
             fontFamily: 'Syne, sans-serif',
             fontSize: 22, fontWeight: 800,
@@ -159,7 +160,7 @@ export default function CreateEventPage() {
               : 'Event Saved as Draft!'}
           </h2>
           <p style={{
-            fontSize: 14, color: '#9A9C8E',
+            fontSize: 14, color: 'var(--muted)',
             marginBottom: 24, lineHeight: 1.7,
           }}>
             {success.published
@@ -216,7 +217,7 @@ export default function CreateEventPage() {
                   transition: 'all 0.2s',
                 }}
               >
-                {copied ? '✓ Copied!' : 'Copy Link'}
+                {copied ? <span style={{ display: 'flex', alignItems: 'center', gap: 6, justifyItems: 'center', WebkitJustifyContent: 'center', justifyContent: 'center' }}><Check size={16}/> Copied!</span> : 'Copy Link'}
               </button>
             </div>
           )}
@@ -256,7 +257,7 @@ export default function CreateEventPage() {
               style={{
                 padding: '10px 20px', background: 'transparent',
                 border: '1px solid #313D2C', borderRadius: 8,
-                fontSize: 13, color: '#9A9C8E',
+                fontSize: 13, color: 'var(--muted)',
                 cursor: 'pointer', fontFamily: 'inherit',
               }}
             >
@@ -272,7 +273,7 @@ export default function CreateEventPage() {
     width: '100%', padding: '11px 14px',
     background: '#1C2119',
     border: '1px solid #252D22',
-    borderRadius: 8, color: '#EDE8DF',
+    borderRadius: 8, color: 'var(--primary)',
     fontSize: 14, outline: 'none',
     fontFamily: 'inherit',
     boxSizing: 'border-box' as const,
@@ -280,7 +281,7 @@ export default function CreateEventPage() {
 
   const labelStyle = {
     display: 'block', fontSize: 12,
-    fontWeight: 700, color: '#9A9C8E',
+    fontWeight: 700, color: 'var(--muted)',
     marginBottom: 6, letterSpacing: '0.3px',
   }
 
@@ -514,7 +515,7 @@ export default function CreateEventPage() {
               background: 'transparent',
               border: '1px solid #313D2C',
               borderRadius: 10, fontSize: 14,
-              fontWeight: 600, color: '#9A9C8E',
+              fontWeight: 600, color: 'var(--muted)',
               cursor: submitting ? 'not-allowed' : 'pointer',
               fontFamily: 'inherit', opacity: submitting ? 0.6 : 1,
             }}

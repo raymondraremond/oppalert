@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { opportunities as seedData } from '@/lib/data'
 import OpportunityCard from '@/components/OpportunityCard'
+import { GraduationCap, Briefcase, Users, Coins, Leaf, Rocket, Calendar, Globe, MapPin } from 'lucide-react'
 
 const sampleEvents = [
   {
@@ -81,30 +82,30 @@ export default function HomePage() {
   }
 
   const categories = [
-    { name: 'Scholarships', icon: '🎓', slug: 'scholarship' },
-    { name: 'Remote Jobs', icon: '💼', slug: 'job' },
-    { name: 'Fellowships', icon: '🤝', slug: 'fellowship' },
-    { name: 'Grants', icon: '💰', slug: 'grant' },
-    { name: 'Internships', icon: '🌱', slug: 'internship' },
-    { name: 'Startup Funding', icon: '🚀', slug: 'startup' },
+    { name: 'Scholarships', icon: <GraduationCap size={32} className="mx-auto" />, slug: 'scholarship' },
+    { name: 'Remote Jobs', icon: <Briefcase size={32} className="mx-auto" />, slug: 'job' },
+    { name: 'Fellowships', icon: <Users size={32} className="mx-auto" />, slug: 'fellowship' },
+    { name: 'Grants', icon: <Coins size={32} className="mx-auto" />, slug: 'grant' },
+    { name: 'Internships', icon: <Leaf size={32} className="mx-auto" />, slug: 'internship' },
+    { name: 'Startup Funding', icon: <Rocket size={32} className="mx-auto" />, slug: 'startup' },
   ]
 
   return (
-    <main className="min-h-screen bg-[#080A07]">
+    <main className="min-h-screen bg-bg">
       {/* Hero */}
-      <section className="pt-24 pb-32 px-6 text-center border-b border-[#252D22]">
+      <section className="pt-24 pb-32 px-6 text-center border-b border-border">
         <div className="max-w-4xl mx-auto">
-          <h1 className="font-syne text-5xl md:text-7xl font-black text-[#EDE8DF] mb-6 tracking-tighter leading-tight">
+          <h1 className="font-syne text-5xl md:text-7xl font-black text-primary mb-6 tracking-tighter leading-tight">
             The Hub for African <span className="text-[#E8A020]">Excellence.</span>
           </h1>
-          <p className="text-lg md:text-xl text-[#9A9C8E] mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-muted mb-10 max-w-2xl mx-auto leading-relaxed">
             Discover verified scholarships, remote jobs, fellowships, and grants curated specifically for the next generation of African leaders.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/opportunities" className="px-10 py-4 bg-[#E8A020] text-[#080A07] font-black rounded-2xl hover:scale-105 transition-all">
               Browse Opportunities
             </Link>
-            <Link href="/register" className="px-10 py-4 bg-[#141710] text-[#EDE8DF] border border-[#252D22] font-black rounded-2xl hover:bg-[#222820] transition-all">
+            <Link href="/register" className="px-10 py-4 bg-bg2 text-primary border border-border font-black rounded-2xl hover:bg-surface transition-all">
               Join Free Community
             </Link>
           </div>
@@ -113,12 +114,12 @@ export default function HomePage() {
 
       {/* Categories */}
       <section className="py-20 px-6 container mx-auto">
-        <h2 className="font-syne text-3xl font-black text-[#EDE8DF] mb-12 text-center">Browse by Category</h2>
+        <h2 className="font-syne text-3xl font-black text-primary mb-12 text-center">Browse by Category</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {categories.map((cat) => (
-            <Link key={cat.slug} href={`/opportunities?cat=${cat.slug}`} className="p-6 bg-[#141710] border border-[#252D22] rounded-3xl hover:border-[#E8A020] transition-all text-center group">
+            <Link key={cat.slug} href={`/opportunities?cat=${cat.slug}`} className="p-6 bg-bg2 border border-border rounded-3xl hover:border-[#E8A020] transition-all text-center group">
               <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">{cat.icon}</div>
-              <div className="font-bold text-[#EDE8DF] text-sm">{cat.name}</div>
+              <div className="font-bold text-primary text-sm">{cat.name}</div>
             </Link>
           ))}
         </div>
@@ -129,8 +130,8 @@ export default function HomePage() {
         <div className="container mx-auto">
           <div className="flex justify-between items-end mb-12">
             <div>
-              <h2 className="font-syne text-3xl font-black text-[#EDE8DF] mb-2">Featured Opportunities</h2>
-              <p className="text-[#9A9C8E]">Handpicked high-impact opportunities closing soon.</p>
+              <h2 className="font-syne text-3xl font-black text-primary mb-2">Featured Opportunities</h2>
+              <p className="text-muted">Handpicked high-impact opportunities closing soon.</p>
             </div>
             <Link href="/opportunities" className="text-[#E8A020] font-bold hover:underline">View All →</Link>
           </div>
@@ -143,37 +144,37 @@ export default function HomePage() {
       </section>
 
       {/* Events */}
-      <section className="py-24 px-6 border-t border-[#252D22]">
+      <section className="py-24 px-6 border-t border-border">
         <div className="container mx-auto">
           <div className="flex justify-between items-end mb-12">
             <div>
-              <h2 className="font-syne text-3xl font-black text-[#EDE8DF] mb-2">Upcoming Events & Bootcamps</h2>
-              <p className="text-[#9A9C8E]">Level up with community-led workshops and meetups.</p>
+              <h2 className="font-syne text-3xl font-black text-primary mb-2">Upcoming Events & Bootcamps</h2>
+              <p className="text-muted">Level up with community-led workshops and meetups.</p>
             </div>
             <Link href="/events" className="text-[#E8A020] font-bold hover:underline">View All Events →</Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {sampleEvents.map((event) => (
-              <div key={event.id} className="bg-[#141710] border border-[#252D22] rounded-[2rem] p-8 hover:border-[#E8A020]/50 transition-all group" style={{ borderLeft: `4px solid ${event.color}` }}>
+              <div key={event.id} className="bg-bg2 border border-border rounded-[2rem] p-8 hover:border-[#E8A020]/50 transition-all group" style={{ borderLeft: `4px solid ${event.color}` }}>
                 <div className="flex justify-between items-start mb-6">
-                  <span className="px-3 py-1 bg-[#080A07] rounded-full text-[10px] font-black uppercase text-[#9A9C8E] border border-[#252D22]">
+                  <span className="px-3 py-1 bg-bg rounded-full text-[10px] font-black uppercase text-muted border border-border">
                     {event.event_type}
                   </span>
                   <span className="text-[#E8A020] text-xs font-bold">{event.is_paid ? `NGN ${event.ticket_price.toLocaleString()}` : 'FREE'}</span>
                 </div>
-                <h3 className="text-xl font-bold text-[#EDE8DF] mb-4 group-hover:text-[#E8A020] transition-colors line-clamp-2">{event.title}</h3>
+                <h3 className="text-xl font-bold text-primary mb-4 group-hover:text-[#E8A020] transition-colors line-clamp-2">{event.title}</h3>
                 <div className="space-y-3 mb-8">
-                  <div className="text-sm text-[#9A9C8E] flex items-center gap-2">📅 {new Date(event.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
-                  <div className="text-sm text-[#9A9C8E] flex items-center gap-2">{event.is_online ? '🌐 Online' : `📍 ${event.location}`}</div>
+                  <div className="text-sm text-muted flex items-center gap-2"><Calendar size={16} /> {new Date(event.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+                  <div className="text-sm text-muted flex items-center gap-2">{event.is_online ? <><Globe size={16} /> Online</> : <><MapPin size={16} /> {event.location}</>}</div>
                 </div>
-                <div className="w-full bg-[#080A07] rounded-full h-1.5 mb-4 overflow-hidden">
+                <div className="w-full bg-bg rounded-full h-1.5 mb-4 overflow-hidden">
                   <div className="h-full" style={{ width: `${(event.current_registrations / event.max_capacity) * 100}%`, backgroundColor: event.color }}></div>
                 </div>
-                <div className="flex justify-between text-[10px] font-black text-[#555C50] uppercase mb-8">
+                <div className="flex justify-between text-[10px] font-black text-subtle uppercase mb-8">
                   <span>Registration</span>
                   <span>{event.current_registrations}/{event.max_capacity} Booked</span>
                 </div>
-                <Link href={`/events/${event.slug}`} className="block w-full py-3 bg-[#222820] text-[#EDE8DF] text-center font-black rounded-xl group-hover:bg-[#E8A020] group-hover:text-[#080A07] transition-all">
+                <Link href={`/events/${event.slug}`} className="block w-full py-3 bg-surface text-primary text-center font-black rounded-xl group-hover:bg-[#E8A020] group-hover:text-[#080A07] transition-all">
                   Register Now
                 </Link>
               </div>
@@ -186,7 +187,7 @@ export default function HomePage() {
       <section className="py-24 px-6 text-center bg-[#E8A020]">
         <h2 className="font-syne text-4xl font-black text-[#080A07] mb-6">Ready to find your next opportunity?</h2>
         <p className="text-[#080A07] opacity-80 mb-10 text-lg max-w-xl mx-auto font-medium">Join thousands of students and professionals receiving weekly alerts.</p>
-        <Link href="/register" className="px-12 py-5 bg-[#080A07] text-[#EDE8DF] font-black rounded-2xl hover:scale-105 transition-all inline-block shadow-2xl">
+        <Link href="/register" className="px-12 py-5 bg-bg text-primary font-black rounded-2xl hover:scale-105 transition-all inline-block shadow-2xl">
           Create Free Account →
         </Link>
       </section>

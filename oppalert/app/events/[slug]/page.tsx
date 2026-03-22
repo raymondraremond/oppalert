@@ -190,10 +190,10 @@ export default function EventDetailPage() {
               { icon: '💰', text: event.is_paid ? 'NGN ' + Number(event.ticket_price).toLocaleString() : 'Free' },
             ].map(chip => (
               <div key={chip.text} style={{
-                background: '#141710',
+                background: 'var(--bg2)',
                 border: '1px solid #252D22',
                 borderRadius: 8, padding: '6px 14px',
-                fontSize: 13, color: '#9A9C8E',
+                fontSize: 13, color: 'var(--muted)',
                 display: 'flex', alignItems: 'center', gap: 6,
               }}>
                 {chip.icon} {chip.text}
@@ -208,7 +208,7 @@ export default function EventDetailPage() {
             About this event
           </div>
           <p style={{
-            fontSize: 14, color: '#9A9C8E',
+            fontSize: 14, color: 'var(--muted)',
             lineHeight: 1.8,
           }}>
             {event.description}
@@ -217,7 +217,7 @@ export default function EventDetailPage() {
 
         {/* Right — Registration card */}
         <div style={{
-          background: '#141710',
+          background: 'var(--bg2)',
           border: '1px solid #252D22',
           borderRadius: 16, padding: '1.5rem',
           position: 'sticky', top: 80,
@@ -241,7 +241,7 @@ export default function EventDetailPage() {
               }}>
                 Registration Confirmed!
               </div>
-              <p style={{ fontSize: 13, color: '#9A9C8E' }}>
+              <p style={{ fontSize: 13, color: 'var(--muted)' }}>
                 Check your email for confirmation details.
               </p>
             </div>
@@ -277,7 +277,7 @@ export default function EventDetailPage() {
                     width: '100%', padding: '10px 14px',
                     background: '#1C2119',
                     border: '1px solid #252D22',
-                    borderRadius: 8, color: '#EDE8DF',
+                    borderRadius: 8, color: 'var(--primary)',
                     fontSize: 14, outline: 'none',
                     fontFamily: 'inherit', marginBottom: 10,
                     boxSizing: 'border-box',

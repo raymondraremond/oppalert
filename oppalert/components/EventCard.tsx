@@ -26,7 +26,7 @@ export default function EventCard({ event }: { event: any }) {
           </span>
         </div>
 
-        <h3 className="text-lg font-bold text-[#EDE8DF] mb-2 line-clamp-2 min-h-[3.5rem]">
+        <h3 className="text-lg font-bold text-primary mb-2 line-clamp-2 min-h-[3.5rem]">
           {event.title}
         </h3>
 
@@ -38,7 +38,7 @@ export default function EventCard({ event }: { event: any }) {
           />
         </div>
 
-        <div className="space-y-2 text-[13px] text-[#9A9C8E]">
+        <div className="space-y-2 text-[13px] text-muted">
           <div className="flex items-center gap-2">
             <span>📅</span>
             <span>{formatEventDate(event.start_date)}</span>
@@ -58,7 +58,7 @@ export default function EventCard({ event }: { event: any }) {
         </div>
 
         <div className="mt-5">
-          <div className="w-full py-2.5 rounded-lg bg-[#222820] border border-[#252D22] text-[#EDE8DF] text-center text-sm font-bold group-hover:bg-[#E8A020] group-hover:text-[#080A07] transition-colors">
+          <div className="w-full py-2.5 rounded-lg bg-surface border border-border text-primary text-center text-sm font-bold group-hover:bg-[#E8A020] group-hover:text-[#080A07] transition-colors">
             View Event
           </div>
         </div>

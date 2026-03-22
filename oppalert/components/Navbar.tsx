@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import ThemeToggle from './ThemeToggle'
 
 export default function Navbar() {
   const [user, setUser] = useState<any>(null)
@@ -84,7 +85,7 @@ export default function Navbar() {
     borderRadius: 8,
     fontSize: 13,
     fontWeight: 500,
-    color: path.startsWith(href) ? '#EDE8DF' : '#9A9C8E',
+    color: path.startsWith(href) ? 'var(--primary)' : 'var(--muted)',
     background: path.startsWith(href) ? '#1C2119' : 'transparent',
     cursor: 'pointer',
     transition: 'all 0.15s',
@@ -116,7 +117,7 @@ export default function Navbar() {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontWeight: 800, fontSize: 14, color: '#090A07', fontFamily: 'Syne, sans-serif',
             }}>O</div>
-            <span style={{ fontFamily: 'Syne, sans-serif', fontSize: 18, fontWeight: 800, color: '#EDE8DF' }}>
+            <span style={{ fontFamily: 'Syne, sans-serif', fontSize: 18, fontWeight: 800, color: 'var(--primary)' }}>
               Opp<span style={{ color: '#E8A020' }}>Alert</span>
             </span>
           </div>
@@ -132,7 +133,7 @@ export default function Navbar() {
           {isLoggedIn && (
             <Link href="/organizer" style={{
               ...navLinkStyle('/organizer'),
-              color: path.startsWith('/organizer') ? '#E8A020' : '#9A9C8E',
+              color: path.startsWith('/organizer') ? '#E8A020' : 'var(--muted)',
               background: path.startsWith('/organizer') ? '#2A1E06' : 'transparent',
             }}>Organizer</Link>
           )}
@@ -142,7 +143,8 @@ export default function Navbar() {
         </nav>
 
         {/* Desktop Auth/User */}
-        <div className="hide-mobile" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        <div className="hide-mobile" style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+          <ThemeToggle />
           {isLoggedIn ? (
             <div ref={dropdownRef} style={{ position: 'relative' }}>
               <div onClick={() => setShowDropdown(!showDropdown)} style={{
@@ -153,12 +155,12 @@ export default function Navbar() {
               }}>{getInitials()}</div>
               {showDropdown && (
                 <div style={{
-                  position: 'absolute', right: 0, top: 44, background: '#141710',
+                  position: 'absolute', right: 0, top: 44, background: 'var(--bg2)',
                   border: '1px solid #252D22', borderRadius: 12, padding: 8, minWidth: 200,
                   zIndex: 200, boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
                 }}>
                   <div style={{ padding: '8px 12px 10px', borderBottom: '1px solid #252D22', marginBottom: 4 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#EDE8DF', marginBottom: 2 }}>{user?.fullName || user?.full_name || 'User'}</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--primary)', marginBottom: 2 }}>{user?.fullName || user?.full_name || 'User'}</div>
                     <div style={{ fontSize: 11, color: '#555C50' }}>{user?.email}</div>
                   </div>
                   {[
@@ -166,7 +168,7 @@ export default function Navbar() {
                     { href: '/organizer', label: '🎪 Organizer' },
                   ].map(item => (
                     <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }} onClick={() => setShowDropdown(false)}>
-                      <div style={{ padding: '8px 12px', fontSize: 13, color: '#EDE8DF', borderRadius: 8, cursor: 'pointer' }}>{item.label}</div>
+                      <div style={{ padding: '8px 12px', fontSize: 13, color: 'var(--primary)', borderRadius: 8, cursor: 'pointer' }}>{item.label}</div>
                     </Link>
                   ))}
                   {isAdmin && (
@@ -180,16 +182,19 @@ export default function Navbar() {
             </div>
           ) : (
             <>
-              <Link href="/login"><button style={{ padding: '7px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600, background: 'transparent', border: '1px solid #313D2C', color: '#9A9C8E', cursor: 'pointer', fontFamily: 'inherit' }}>Log In</button></Link>
+              <Link href="/login"><button style={{ padding: '7px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600, background: 'transparent', border: '1px solid #313D2C', color: 'var(--muted)', cursor: 'pointer', fontFamily: 'inherit' }}>Log In</button></Link>
               <Link href="/register"><button style={{ padding: '7px 16px', borderRadius: 8, fontSize: 13, fontWeight: 700, background: '#E8A020', border: 'none', color: '#090A07', cursor: 'pointer', fontFamily: 'inherit' }}>Join Free →</button></Link>
             </>
           )}
         </div>
 
         {/* Mobile Toggle */}
-        <button onClick={() => setShowMobile(!showMobile)} className="show-mobile" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 8, color: '#EDE8DF', fontSize: 20 }}>
-          {showMobile ? '✕' : '☰'}
-        </button>
+        <div className="show-mobile" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <ThemeToggle />
+          <button onClick={() => setShowMobile(!showMobile)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 8, color: 'var(--primary)', fontSize: 20 }}>
+            {showMobile ? '✕' : '☰'}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -197,16 +202,16 @@ export default function Navbar() {
         <div style={{ background: '#0F1210', borderTop: '1px solid #252D22', padding: '16px 1.5rem' }}>
           {navLinks.map(link => (
             <Link key={link.href} href={link.href} style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}>
-              <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: path.startsWith(link.href) ? '#E8A020' : '#9A9C8E', borderBottom: '1px solid #1C2119' }}>{link.label}</div>
+              <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: path.startsWith(link.href) ? '#E8A020' : 'var(--muted)', borderBottom: '1px solid #1C2119' }}>{link.label}</div>
             </Link>
           ))}
           {isLoggedIn ? (
             <>
               <Link href="/dashboard" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}>
-                <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: '#9A9C8E', borderBottom: '1px solid #1C2119' }}>📊 Dashboard</div>
+                <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: 'var(--muted)', borderBottom: '1px solid #1C2119' }}>📊 Dashboard</div>
               </Link>
               <Link href="/organizer" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}>
-                <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: '#9A9C8E', borderBottom: '1px solid #1C2119' }}>🎪 Organizer</div>
+                <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: 'var(--muted)', borderBottom: '1px solid #1C2119' }}>🎪 Organizer</div>
               </Link>
               {isAdmin && (
                 <Link href="/admin" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}>
@@ -217,7 +222,7 @@ export default function Navbar() {
             </>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
-              <Link href="/login" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}><button style={{ width: '100%', padding: '12px', background: 'transparent', border: '1px solid #313D2C', borderRadius: 8, fontSize: 14, fontWeight: 600, color: '#9A9C8E', cursor: 'pointer', fontFamily: 'inherit' }}>Log In</button></Link>
+              <Link href="/login" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}><button style={{ width: '100%', padding: '12px', background: 'transparent', border: '1px solid #313D2C', borderRadius: 8, fontSize: 14, fontWeight: 600, color: 'var(--muted)', cursor: 'pointer', fontFamily: 'inherit' }}>Log In</button></Link>
               <Link href="/register" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}><button style={{ width: '100%', padding: '12px', background: '#E8A020', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 700, color: '#090A07', cursor: 'pointer', fontFamily: 'inherit' }}>Join Free →</button></Link>
             </div>
           )}

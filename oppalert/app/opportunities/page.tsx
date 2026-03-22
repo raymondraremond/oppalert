@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { opportunities as seedData } from '@/lib/data'
 import OpportunityCard from '@/components/OpportunityCard'
+import { Search } from 'lucide-react'
 
 export default function OpportunitiesPage() {
   const [activeCat, setActiveCat] = useState('all')
@@ -45,14 +46,14 @@ export default function OpportunitiesPage() {
   ]
 
   return (
-    <main className="min-h-screen bg-[#080A07] pt-10 pb-20">
+    <main className="min-h-screen bg-bg pt-10 pb-20">
       <div className="container mx-auto px-6">
         <div className="mb-12 text-center animate-fade-in">
-          <h1 className="font-syne text-4xl md:text-6xl font-black text-[#EDE8DF] mb-4 tracking-tight">Explore Opportunities</h1>
-          <p className="text-[#9A9C8E] max-w-xl mx-auto italic font-medium">Discover handpicked opportunities curated specifically for the next generation of African leaders.</p>
+          <h1 className="font-syne text-4xl md:text-6xl font-black text-primary mb-4 tracking-tight">Explore Opportunities</h1>
+          <p className="text-muted max-w-xl mx-auto italic font-medium">Discover handpicked opportunities curated specifically for the next generation of African leaders.</p>
         </div>
 
-        <div className="flex gap-2 overflow-x-auto pb-6 no-scrollbar mb-10 border-b border-[#252D22]">
+        <div className="flex gap-2 overflow-x-auto pb-6 no-scrollbar mb-10 border-b border-border">
           {categories.map((cat) => (
             <button
               key={cat.id}
@@ -60,7 +61,7 @@ export default function OpportunitiesPage() {
               className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest whitespace-nowrap transition-all duration-300 ${
                 activeCat === cat.id 
                   ? 'bg-[#E8A020] text-[#080A07] shadow-glow-amber scale-105' 
-                  : 'bg-[#141710] text-[#9A9C8E] border border-[#252D22] hover:bg-[#222820] hover:border-[#555C50]'
+                  : 'bg-bg2 text-muted border border-border hover:bg-surface hover:border-[#555C50]'
               }`}
             >
               {cat.label}
@@ -71,7 +72,7 @@ export default function OpportunitiesPage() {
         {loading && opps.length === 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
             {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} className="bg-[#141710] border border-[#252D22] rounded-[2rem] h-[400px]" />
+              <div key={i} className="bg-bg2 border border-border rounded-[2rem] h-[400px]" />
             ))}
           </div>
         ) : (
@@ -84,8 +85,8 @@ export default function OpportunitiesPage() {
         
         {!loading && opps.length === 0 && (
           <div className="text-center py-20">
-            <div className="text-4xl mb-4">🔍</div>
-            <p className="text-[#555C50] font-bold italic tracking-widest uppercase text-xs">No opportunities found in this category.</p>
+            <div className="flex justify-center mb-4 text-[#E8A020]"><Search size={40} /></div>
+            <p className="text-subtle font-bold italic tracking-widest uppercase text-xs">No opportunities found in this category.</p>
           </div>
         )}
       </div>

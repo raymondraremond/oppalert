@@ -54,11 +54,11 @@ export default function OpportunityDetailPage({ params }: Props) {
     return (
       <main className="min-h-screen pt-24 px-6 max-w-7xl mx-auto pb-20">
         <div className="animate-pulse space-y-8">
-          <div className="h-4 w-32 bg-[#1C2119] rounded-full" />
-          <div className="h-64 bg-[#141710] border border-[#252D22] rounded-[2.5rem]" />
+          <div className="h-4 w-32 bg-icon-bg rounded-full" />
+          <div className="h-64 bg-bg2 border border-border rounded-[2.5rem]" />
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-12">
-            <div className="h-96 bg-[#141710] border border-[#252D22] rounded-[2rem]" />
-            <div className="h-96 bg-[#141710] border border-[#252D22] rounded-[2rem]" />
+            <div className="h-96 bg-bg2 border border-border rounded-[2rem]" />
+            <div className="h-96 bg-bg2 border border-border rounded-[2rem]" />
           </div>
         </div>
       </main>
@@ -94,7 +94,7 @@ export default function OpportunityDetailPage({ params }: Props) {
   return (
     <main className="min-h-screen pt-24 px-6 max-w-7xl mx-auto pb-20">
       <div className="mb-8 animate-fade-up">
-        <Link href="/opportunities" className="inline-flex items-center gap-2 text-[#555C50] hover:text-[#E8A020] font-bold text-xs uppercase tracking-[0.2em] transition-all group">
+        <Link href="/opportunities" className="inline-flex items-center gap-2 text-subtle hover:text-[#E8A020] font-bold text-xs uppercase tracking-[0.2em] transition-all group">
           <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
           Back to Listings
         </Link>
@@ -102,18 +102,18 @@ export default function OpportunityDetailPage({ params }: Props) {
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-12">
         <div className="space-y-8 animate-fade-up">
-          <div className="glass-gradient border border-[#252D22] rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden group">
+          <div className="glass-gradient border border-border rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-64 h-64 bg-[#E8A020]/5 blur-[80px] -z-10" />
 
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
               <div className="flex items-center gap-5">
-                <div className="w-16 h-16 rounded-2xl bg-[#1C2119] flex items-center justify-center border border-[#252D22] group-hover:rotate-3 transition-transform">
+                <div className="w-16 h-16 rounded-2xl bg-icon-bg flex items-center justify-center border border-border group-hover:rotate-3 transition-transform">
                   <CategoryIcon cat={cat} size={32} className="text-[#E8A020]" />
                 </div>
                 <div>
                   <p className="text-sm font-bold text-[#E8A020] uppercase tracking-widest mb-1">{org}</p>
                   <div className="flex gap-2">
-                    <span className="px-3 py-1 bg-[#1C2119] rounded-full text-[10px] font-bold text-[#9A9C8E]">{getCategoryLabel(cat)}</span>
+                    <span className="px-3 py-1 bg-icon-bg rounded-full text-[10px] font-bold text-muted">{getCategoryLabel(cat)}</span>
                   </div>
                 </div>
               </div>
@@ -123,13 +123,13 @@ export default function OpportunityDetailPage({ params }: Props) {
                   setShared(true)
                   setTimeout(() => setShared(false), 2000)
                 }}
-                className="px-6 py-3 bg-[#1C2119] border border-[#252D22] text-[#9A9C8E] text-xs font-black uppercase tracking-widest rounded-xl hover:bg-[#222820] transition-all flex items-center gap-2"
+                className="px-6 py-3 bg-icon-bg border border-border text-muted text-xs font-black uppercase tracking-widest rounded-xl hover:bg-surface transition-all flex items-center gap-2"
               >
                 {shared ? '✓ Copied' : <><Share2 size={16} /> Share</>}
               </button>
             </div>
 
-            <h1 className="font-syne text-3xl md:text-5xl font-black text-[#EDE8DF] leading-tight mb-8">
+            <h1 className="font-syne text-3xl md:text-5xl font-black text-primary leading-tight mb-8">
               {title}
             </h1>
 
@@ -139,33 +139,33 @@ export default function OpportunityDetailPage({ params }: Props) {
                 { label: 'Closing Date', value: deadlineStr, icon: <Calendar size={16} /> },
                 { label: 'Funding', value: fund, icon: <Zap size={16} /> },
               ].map((item) => (
-                <div key={item.label} className="bg-[#1C2119]/50 border border-[#252D22] rounded-2xl p-4">
-                  <div className="flex items-center gap-2 text-[#555C50] mb-2 text-[10px] uppercase font-black tracking-widest">
+                <div key={item.label} className="bg-icon-bg/50 border border-border rounded-2xl p-4">
+                  <div className="flex items-center gap-2 text-subtle mb-2 text-[10px] uppercase font-black tracking-widest">
                     {item.icon} {item.label}
                   </div>
-                  <p className="text-sm font-bold text-[#EDE8DF]">{item.value}</p>
+                  <p className="text-sm font-bold text-primary">{item.value}</p>
                 </div>
               ))}
             </div>
           </div>
 
           <div className="space-y-6">
-            <div className="bg-[#141710] border border-[#252D22] rounded-[2rem] p-8 md:p-10">
+            <div className="bg-bg2 border border-border rounded-[2rem] p-8 md:p-10">
               <div className="flex items-center gap-4 mb-6">
                  <div className="w-10 h-10 rounded-xl bg-[#E8A020]/10 flex items-center justify-center text-[#E8A020]"><Globe size={20} /></div>
-                 <h2 className="font-syne text-xl font-black text-[#EDE8DF]">About</h2>
+                 <h2 className="font-syne text-xl font-black text-primary">About</h2>
               </div>
-              <p className="text-[#9A9C8E] text-base leading-relaxed whitespace-pre-line">{about}</p>
+              <p className="text-muted text-base leading-relaxed whitespace-pre-line">{about}</p>
             </div>
 
-            <div className="bg-[#141710] border border-[#252D22] rounded-[2rem] p-8 md:p-10">
+            <div className="bg-bg2 border border-border rounded-[2rem] p-8 md:p-10">
               <div className="flex items-center gap-4 mb-6">
                  <div className="w-10 h-10 rounded-xl bg-[#E8A020]/10 flex items-center justify-center text-[#E8A020]"><Check size={20} /></div>
-                 <h2 className="font-syne text-xl font-black text-[#EDE8DF]">Eligibility</h2>
+                 <h2 className="font-syne text-xl font-black text-primary">Eligibility</h2>
               </div>
               <ul className="space-y-4">
                 {elig.map((item, i) => (
-                  <li key={i} className="flex gap-4 text-[#9A9C8E] text-sm font-medium">
+                  <li key={i} className="flex gap-4 text-muted text-sm font-medium">
                     <span className="text-[#E8A020] text-lg leading-none">✓</span> {item}
                   </li>
                 ))}
@@ -181,12 +181,12 @@ export default function OpportunityDetailPage({ params }: Props) {
             </p>
             <div className="font-syne text-7xl font-black tracking-tighter mb-2">{days <= 0 ? 0 : days}</div>
             <p className="text-sm font-black uppercase tracking-widest mb-8">Days Left</p>
-            <div className="w-full bg-[#080A07]/10 h-2 rounded-full overflow-hidden mb-4">
-              <div className="h-full bg-[#080A07]" style={{ width: `${progressPct}%` }} />
+            <div className="w-full bg-bg/10 h-2 rounded-full overflow-hidden mb-4">
+              <div className="h-full bg-bg" style={{ width: `${progressPct}%` }} />
             </div>
           </div>
 
-          <div className="bg-[#141710] border border-[#252D22] rounded-[2.5rem] p-8 space-y-4">
+          <div className="bg-bg2 border border-border rounded-[2.5rem] p-8 space-y-4">
             <ApplyButton applyUrl={applyUrl} oppId={params.id} disabled={days <= 0} />
             <SaveButton oppId={params.id} />
           </div>
@@ -196,8 +196,8 @@ export default function OpportunityDetailPage({ params }: Props) {
       </div>
 
       {related.length > 0 && (
-        <section className="mt-24 pt-20 border-t border-[#252D22]">
-          <h2 className="font-syne text-3xl font-black text-[#EDE8DF] mb-12">Similar <span className="text-[#E8A020]">Opportunities</span></h2>
+        <section className="mt-24 pt-20 border-t border-border">
+          <h2 className="font-syne text-3xl font-black text-primary mb-12">Similar <span className="text-[#E8A020]">Opportunities</span></h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {related.map((r) => (
               <OpportunityCard key={r.id} opportunity={r} />

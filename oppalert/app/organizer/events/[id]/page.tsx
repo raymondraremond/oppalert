@@ -167,14 +167,14 @@ export default function ManageEventPage() {
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             <span style={{
               background: event.is_published ? '#0F2E1C' : '#1C2119',
-              color: event.is_published ? '#34C27A' : '#9A9C8E',
+              color: event.is_published ? '#34C27A' : 'var(--muted)',
               padding: '3px 12px', borderRadius: 100,
               fontSize: 12, fontWeight: 600,
             }}>
               {event.is_published ? 'Published' : 'Draft'}
             </span>
             <span style={{
-              background: '#1C2119', color: '#9A9C8E',
+              background: '#1C2119', color: 'var(--muted)',
               padding: '3px 12px', borderRadius: 100,
               fontSize: 12, textTransform: 'capitalize',
             }}>
@@ -188,7 +188,7 @@ export default function ManageEventPage() {
             style={{
               padding: '9px 18px', background: 'transparent',
               border: '1px solid #313D2C', borderRadius: 8,
-              fontSize: 13, color: '#9A9C8E',
+              fontSize: 13, color: 'var(--muted)',
               cursor: 'pointer', fontFamily: 'inherit',
             }}
           >
@@ -239,7 +239,7 @@ export default function ManageEventPage() {
           },
         ].map(s => (
           <div key={s.label} style={{
-            background: '#141710',
+            background: 'var(--bg2)',
             border: '1px solid #252D22',
             borderRadius: 12, padding: '1rem',
           }}>
@@ -290,7 +290,7 @@ export default function ManageEventPage() {
       {activeTab === 'overview' && (
         <div>
           <div style={{
-            background: '#141710',
+            background: 'var(--bg2)',
             border: '1px solid #252D22',
             borderRadius: 12, padding: '1.5rem',
           }}>
@@ -318,7 +318,7 @@ export default function ManageEventPage() {
                 <span style={{ fontSize: 13, color: '#555C50', fontWeight: 600 }}>
                   {item.label}
                 </span>
-                <span style={{ fontSize: 13, color: '#EDE8DF' }}>
+                <span style={{ fontSize: 13, color: 'var(--primary)' }}>
                   {item.value || '—'}
                 </span>
               </div>
@@ -335,7 +335,7 @@ export default function ManageEventPage() {
             alignItems: 'center', marginBottom: 16,
             flexWrap: 'wrap', gap: 12,
           }}>
-            <div style={{ fontSize: 14, color: '#9A9C8E' }}>
+            <div style={{ fontSize: 14, color: 'var(--muted)' }}>
               {registrations.length} total registrations
             </div>
             <button
@@ -353,7 +353,7 @@ export default function ManageEventPage() {
 
           {registrations.length === 0 ? (
             <div style={{
-              background: '#141710',
+              background: 'var(--bg2)',
               border: '1px solid #252D22',
               borderRadius: 12, padding: '3rem',
               textAlign: 'center', color: '#555C50',
@@ -368,7 +368,7 @@ export default function ManageEventPage() {
             </div>
           ) : (
             <div style={{
-              background: '#141710',
+              background: 'var(--bg2)',
               border: '1px solid #252D22',
               borderRadius: 12, overflow: 'hidden',
             }}>
@@ -399,21 +399,21 @@ export default function ManageEventPage() {
                       <td style={{
                         padding: '12px 16px',
                         borderBottom: '1px solid #1C2119',
-                        color: '#EDE8DF', fontWeight: 500,
+                        color: 'var(--primary)', fontWeight: 500,
                       }}>
                         {r.full_name}
                       </td>
                       <td style={{
                         padding: '12px 16px',
                         borderBottom: '1px solid #1C2119',
-                        color: '#9A9C8E',
+                        color: 'var(--muted)',
                       }}>
                         {r.email}
                       </td>
                       <td style={{
                         padding: '12px 16px',
                         borderBottom: '1px solid #1C2119',
-                        color: '#9A9C8E',
+                        color: 'var(--muted)',
                       }}>
                         {r.phone || '—'}
                       </td>
@@ -438,7 +438,7 @@ export default function ManageEventPage() {
       {activeTab === 'share' && (
         <div>
           <div style={{
-            background: '#141710',
+            background: 'var(--bg2)',
             border: '1px solid #252D22',
             borderRadius: 12, padding: '1.5rem',
             marginBottom: 20,
@@ -494,7 +494,7 @@ export default function ManageEventPage() {
                 background: '#1a1a2e',
                 border: '1px solid #2E3530',
                 borderRadius: 8, fontSize: 13,
-                color: '#EDE8DF', cursor: 'pointer',
+                color: 'var(--primary)', cursor: 'pointer',
                 fontFamily: 'inherit',
               }}>
                 Share on X/Twitter

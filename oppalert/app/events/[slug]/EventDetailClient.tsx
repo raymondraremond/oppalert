@@ -9,9 +9,9 @@ export default function EventDetailClient({ event }: { event: any }) {
   const eventUrl = typeof window !== "undefined" ? window.location.href : ""
 
   return (
-    <div className="min-h-screen bg-[#080A07] pt-24 pb-20">
+    <div className="min-h-screen bg-bg pt-24 pb-20">
       <div className="container mx-auto px-6">
-        <Link href="/events" className="text-[#9A9C8E] hover:text-[#EDE8DF] transition-colors mb-8 inline-block">
+        <Link href="/events" className="text-muted hover:text-primary transition-colors mb-8 inline-block">
           ← All Events
         </Link>
 
@@ -22,11 +22,11 @@ export default function EventDetailClient({ event }: { event: any }) {
               <span className={`event-badge event-badge-${event.event_type} mb-4`}>
                 {event.event_type}
               </span>
-              <h1 className="text-3xl md:text-5xl font-black text-[#EDE8DF] mb-6 leading-tight">
+              <h1 className="text-3xl md:text-5xl font-black text-primary mb-6 leading-tight">
                 {event.title}
               </h1>
               
-              <div className="p-4 bg-[#141710] border border-[#252D22] rounded-2xl mb-8">
+              <div className="p-4 bg-bg2 border border-border rounded-2xl mb-8">
                 <OrganizerBadge 
                   name={event.organization_name || event.organizer_name} 
                   verified={event.organizer_verified}
@@ -35,21 +35,21 @@ export default function EventDetailClient({ event }: { event: any }) {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-                <div className="p-5 bg-[#141710] border border-[#252D22] rounded-2xl">
-                  <div className="text-[#555C50] text-[10px] font-bold uppercase tracking-widest mb-2">Date & Time</div>
-                  <div className="text-[#EDE8DF] font-bold">{formatEventDate(event.start_date)}</div>
-                  <div className="text-[#9A9C8E] text-sm">{formatEventTime(event.start_date)}</div>
+                <div className="p-5 bg-bg2 border border-border rounded-2xl">
+                  <div className="text-subtle text-[10px] font-bold uppercase tracking-widest mb-2">Date & Time</div>
+                  <div className="text-primary font-bold">{formatEventDate(event.start_date)}</div>
+                  <div className="text-muted text-sm">{formatEventTime(event.start_date)}</div>
                 </div>
-                <div className="p-5 bg-[#141710] border border-[#252D22] rounded-2xl">
-                  <div className="text-[#555C50] text-[10px] font-bold uppercase tracking-widest mb-2">Location</div>
-                  <div className="text-[#EDE8DF] font-bold">{event.is_online ? "🌐 Online" : `📍 ${event.location}`}</div>
-                  <div className="text-[#9A9C8E] text-sm">{event.is_online ? "Join from anywhere" : "In-person event"}</div>
+                <div className="p-5 bg-bg2 border border-border rounded-2xl">
+                  <div className="text-subtle text-[10px] font-bold uppercase tracking-widest mb-2">Location</div>
+                  <div className="text-primary font-bold">{event.is_online ? "🌐 Online" : `📍 ${event.location}`}</div>
+                  <div className="text-muted text-sm">{event.is_online ? "Join from anywhere" : "In-person event"}</div>
                 </div>
               </div>
 
               <div className="prose prose-invert max-w-none">
-                <h3 className="text-xl font-bold text-[#EDE8DF] mb-4">About this event</h3>
-                <div className="text-[#9A9C8E] whitespace-pre-wrap leading-relaxed">
+                <h3 className="text-xl font-bold text-primary mb-4">About this event</h3>
+                <div className="text-muted whitespace-pre-wrap leading-relaxed">
                   {event.description}
                 </div>
               </div>
@@ -57,7 +57,7 @@ export default function EventDetailClient({ event }: { event: any }) {
               {event.tags && event.tags.length > 0 && (
                 <div className="mt-10 flex flex-wrap gap-2">
                   {event.tags.map((tag: string) => (
-                    <span key={tag} className="px-3 py-1 bg-[#222820] text-[#9A9C8E] text-xs rounded-lg border border-[#252D22]">
+                    <span key={tag} className="px-3 py-1 bg-surface text-muted text-xs rounded-lg border border-border">
                       #{tag}
                     </span>
                   ))}
@@ -70,16 +70,16 @@ export default function EventDetailClient({ event }: { event: any }) {
           <div className="w-full lg:w-[380px]">
             <div className="sticky top-24 space-y-6">
               {/* REGISTRATION CARD */}
-              <div className="p-6 bg-[#141710] border border-[#252D22] rounded-3xl shadow-2xl">
+              <div className="p-6 bg-bg2 border border-border rounded-3xl shadow-2xl">
                 <div className="flex justify-between items-center mb-6">
                   <div>
-                    <div className="text-[#555C50] text-[10px] font-bold uppercase tracking-widest mb-1">Price</div>
+                    <div className="text-subtle text-[10px] font-bold uppercase tracking-widest mb-1">Price</div>
                     <div className="text-2xl font-black text-[#E8A020]">
                       {event.is_paid ? `₦${Number(event.ticket_price).toLocaleString()}` : "FREE"}
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-[#555C50] text-[10px] font-bold uppercase tracking-widest mb-1">Status</div>
+                    <div className="text-subtle text-[10px] font-bold uppercase tracking-widest mb-1">Status</div>
                     <div className="text-xs font-bold text-[#34C27A]">Open</div>
                   </div>
                 </div>
@@ -89,7 +89,7 @@ export default function EventDetailClient({ event }: { event: any }) {
                     current={event.current_registrations} 
                     max={event.max_capacity} 
                   />
-                  <div className="mt-2 text-[11px] text-[#555C50] font-medium italic">
+                  <div className="mt-2 text-[11px] text-subtle font-medium italic">
                     {getSpotsRemaining(event.max_capacity, event.current_registrations)}
                   </div>
                 </div>
@@ -109,8 +109,8 @@ export default function EventDetailClient({ event }: { event: any }) {
                   Register Now →
                 </Link>
 
-                <div className="pt-6 border-t border-[#252D22]">
-                  <div className="text-[#555C50] text-[10px] font-bold uppercase tracking-widest mb-4 text-center">Share with friends</div>
+                <div className="pt-6 border-t border-border">
+                  <div className="text-subtle text-[10px] font-bold uppercase tracking-widest mb-4 text-center">Share with friends</div>
                   <ShareEventButtons 
                     eventTitle={event.title} 
                     eventUrl={eventUrl} 
@@ -119,9 +119,9 @@ export default function EventDetailClient({ event }: { event: any }) {
               </div>
 
               {/* ORGANIZER BRIEF */}
-              <div className="p-6 bg-[#141710] border border-[#252D22] rounded-3xl">
-                <h4 className="text-[#EDE8DF] font-bold mb-3">About the Organizer</h4>
-                <p className="text-[#9A9C8E] text-sm mb-4 line-clamp-3">
+              <div className="p-6 bg-bg2 border border-border rounded-3xl">
+                <h4 className="text-primary font-bold mb-3">About the Organizer</h4>
+                <p className="text-muted text-sm mb-4 line-clamp-3">
                   {event.organizer_bio || "Dedicated to creating impactful learning experiences for the African community."}
                 </p>
                 {event.organizer_website && (

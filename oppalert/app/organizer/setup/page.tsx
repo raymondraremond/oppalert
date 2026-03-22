@@ -71,14 +71,14 @@ export default function OrganizerSetupPage() {
     }
   }
 
-  if (loading) return <div className="min-h-screen pt-40 text-center text-[#9A9C8E]">Checking profile...</div>
+  if (loading) return <div className="min-h-screen pt-40 text-center text-muted">Checking profile...</div>
 
   return (
-    <div className="min-h-screen bg-[#080A07] pt-24 pb-20 px-6">
+    <div className="min-h-screen bg-bg pt-24 pb-20 px-6">
       <div className="max-w-2xl mx-auto">
         <div className="mb-10 text-center">
-          <h1 className="text-3xl font-black text-[#EDE8DF] mb-2">Organizer Setup</h1>
-          <p className="text-[#9A9C8E]">Tell us about your organization to start hosting events.</p>
+          <h1 className="text-3xl font-black text-primary mb-2">Organizer Setup</h1>
+          <p className="text-muted">Tell us about your organization to start hosting events.</p>
         </div>
 
         {error && (
@@ -87,14 +87,14 @@ export default function OrganizerSetupPage() {
           </div>
         )}
 
-        <div className="bg-[#141710] border border-[#252D22] p-8 md:p-10 rounded-3xl">
+        <div className="bg-bg2 border border-border p-8 md:p-10 rounded-3xl">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-xs font-bold text-[#555C50] uppercase tracking-widest mb-2">Organization Name *</label>
+              <label className="block text-xs font-bold text-subtle uppercase tracking-widest mb-2">Organization Name *</label>
               <input 
                 type="text" 
                 required
-                className="w-full bg-[#080A07] border border-[#252D22] rounded-xl px-5 py-3 text-[#EDE8DF] focus:border-[#E8A020] outline-none"
+                className="w-full bg-bg border border-border rounded-xl px-5 py-3 text-primary focus:border-[#E8A020] outline-none"
                 placeholder="e.g. Tech Africa Hub"
                 value={formData.organizationName}
                 onChange={(e) => setFormData({...formData, organizationName: e.target.value})}
@@ -102,9 +102,9 @@ export default function OrganizerSetupPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#555C50] uppercase tracking-widest mb-2">Bio / Description</label>
+              <label className="block text-xs font-bold text-subtle uppercase tracking-widest mb-2">Bio / Description</label>
               <textarea 
-                className="w-full bg-[#080A07] border border-[#252D22] rounded-xl px-5 py-3 text-[#EDE8DF] focus:border-[#E8A020] outline-none h-32 resize-none"
+                className="w-full bg-bg border border-border rounded-xl px-5 py-3 text-primary focus:border-[#E8A020] outline-none h-32 resize-none"
                 placeholder="What does your organization do?"
                 value={formData.bio}
                 onChange={(e) => setFormData({...formData, bio: e.target.value})}
@@ -113,20 +113,20 @@ export default function OrganizerSetupPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-bold text-[#555C50] uppercase tracking-widest mb-2">Website URL</label>
+                <label className="block text-xs font-bold text-subtle uppercase tracking-widest mb-2">Website URL</label>
                 <input 
                   type="url" 
-                  className="w-full bg-[#080A07] border border-[#252D22] rounded-xl px-5 py-3 text-[#EDE8DF] focus:border-[#E8A020] outline-none"
+                  className="w-full bg-bg border border-border rounded-xl px-5 py-3 text-primary focus:border-[#E8A020] outline-none"
                   placeholder="https://..."
                   value={formData.website}
                   onChange={(e) => setFormData({...formData, website: e.target.value})}
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-[#555C50] uppercase tracking-widest mb-2">Twitter Handle</label>
+                <label className="block text-xs font-bold text-subtle uppercase tracking-widest mb-2">Twitter Handle</label>
                 <input 
                   type="text" 
-                  className="w-full bg-[#080A07] border border-[#252D22] rounded-xl px-5 py-3 text-[#EDE8DF] focus:border-[#E8A020] outline-none"
+                  className="w-full bg-bg border border-border rounded-xl px-5 py-3 text-primary focus:border-[#E8A020] outline-none"
                   placeholder="@handle"
                   value={formData.twitter}
                   onChange={(e) => setFormData({...formData, twitter: e.target.value})}

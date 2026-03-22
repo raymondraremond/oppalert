@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { Check, Send } from 'lucide-react'
+import { Check, Send, PartyPopper } from 'lucide-react'
 
 export default function NewsletterForm() {
   const [step, setStep] = useState<'email' | 'prefs' | 'done'>('email')
@@ -9,11 +9,11 @@ export default function NewsletterForm() {
   const [isLoading, setIsLoading] = useState(false)
 
   const categories = [
-    { id: 'scholarship', label: '🎓 Scholarships' },
-    { id: 'job', label: '💼 Remote Jobs' },
-    { id: 'fellowship', label: '🌍 Fellowships' },
-    { id: 'grant', label: '💰 Grants' },
-    { id: 'startup', label: '🚀 Startup Funding' },
+    { id: 'scholarship', label: 'Scholarships' },
+    { id: 'job', label: 'Remote Jobs' },
+    { id: 'fellowship', label: 'Fellowships' },
+    { id: 'grant', label: 'Grants' },
+    { id: 'startup', label: 'Startup Funding' },
   ]
 
   const handleSubmitEmail = async (e: React.FormEvent) => {
@@ -53,14 +53,14 @@ export default function NewsletterForm() {
     return (
       <div className="animate-fade-up bg-[var(--glass)] border border-[var(--border)] rounded-2xl p-6 shadow-premium max-w-md mx-auto">
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 32, marginBottom: 8 }}>🎉</div>
+          <div className="flex justify-center mb-2 text-[#E8A020]"><PartyPopper size={32} /></div>
           <div style={{
             fontSize: 14, fontWeight: 700,
             color: '#34C27A', marginBottom: 6,
           }}>
             {"You're in! Check your inbox."}
           </div>
-          <p style={{ fontSize: 12, color: '#9A9C8E' }}>
+          <p style={{ fontSize: 12, color: 'var(--muted)' }}>
             Share with a friend who needs this
           </p>
           <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
@@ -72,7 +72,7 @@ export default function NewsletterForm() {
                 background: '#1a1a2e',
                 border: '1px solid #2E3530',
                 borderRadius: 8, fontSize: 12,
-                color: '#EDE8DF', cursor: 'pointer',
+                color: 'var(--primary)', cursor: 'pointer',
               }}>
                 Share on X/Twitter
               </button>

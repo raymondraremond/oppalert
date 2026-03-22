@@ -86,7 +86,7 @@ function EventsTab() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h3 className="text-[#EDE8DF] font-bold">{events.length} Active Events</h3>
+        <h3 className="text-primary font-bold">{events.length} Active Events</h3>
         <Link href="/organizer/create" className="px-5 py-2 bg-[#E8A020] text-[#080A07] font-bold rounded-xl text-xs uppercase tracking-widest">
           Create Event
         </Link>
@@ -492,7 +492,7 @@ export default function AdminPage() {
       {/* ── CREATE MODAL ── */}
       {showCreateModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-bg/80 backdrop-blur-xl animate-fade-in" onClick={() => setShowCreateModal(false)}>
-          <div className="bg-[#141710] border border-[var(--glass-border)] rounded-[3rem] p-10 md:p-14 w-full max-w-2xl shadow-premium relative overflow-hidden" onClick={e => e.stopPropagation()}>
+          <div className="bg-bg2 border border-[var(--glass-border)] rounded-[3rem] p-10 md:p-14 w-full max-w-2xl shadow-premium relative overflow-hidden" onClick={e => e.stopPropagation()}>
             <div className="absolute top-0 right-0 w-64 h-64 bg-amber/5 blur-[100px] -z-10" />
             
             {publishSuccess ? (

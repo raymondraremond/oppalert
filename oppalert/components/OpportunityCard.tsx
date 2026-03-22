@@ -2,12 +2,19 @@
 import Link from "next/link"
 import { getCategoryLabel } from "@/lib/utils"
 
+import { MapPin } from "lucide-react"
+
 interface OpportunityCardProps {
   opportunity: any
   deadlineOverride?: string
 }
 
 export default function OpportunityCard({ opportunity, deadlineOverride }: OpportunityCardProps) {
+  const cat = opportunity.cat || opportunity.category || 'other'
+  const org = opportunity.org || opportunity.organization || 'Unknown Organization'
+  const loc = opportunity.loc || opportunity.location || 'Remote / Unspecified'
+  const cost = opportunity.cost || opportunity.funding_type || 'Free'
+
   const getDeadlineDisplay = (deadline: string | null, days: number | null): string => {
     if (deadlineOverride) return deadlineOverride
     
@@ -37,35 +44,38 @@ export default function OpportunityCard({ opportunity, deadlineOverride }: Oppor
       href={`/opportunities/${opportunity.id}`}
       className="block group h-full"
     >
-      <div className="bg-[#141710] border border-[#252D22] rounded-[2rem] p-8 hover:border-[#E8A020]/50 hover:bg-[#1A1F16] transition-all flex flex-col h-full shadow-lg hover:shadow-[#E8A020]/5">
+      <div className="bg-bg2 border border-border rounded-[2rem] p-8 hover:border-[#E8A020]/50 hover:bg-surface transition-all flex flex-col h-full shadow-lg hover:shadow-[#E8A020]/5">
         <div className="flex justify-between items-start mb-6">
-          <span className="px-3 py-1 bg-[#080A07] rounded-full text-[10px] font-black uppercase text-[#9A9C8E] border border-[#252D22]">
-            {getCategoryLabel(opportunity.cat)}
+          <span className="px-3 py-1 bg-bg rounded-full text-[10px] font-black uppercase text-muted border border-border">
+            {getCategoryLabel(cat)}
           </span>
-          <span className={`text-[10px] font-black uppercase tracking-widest ${deadlineText.includes("left") ? "text-[#E8A020]" : "text-[#555C50]"}`}>
+          <span className={`text-[10px] font-black uppercase tracking-widest ${deadlineText.includes("left") ? "text-[#E8A020]" : "text-subtle"}`}>
             {deadlineText}
           </span>
         </div>
 
-        <h3 className="text-xl font-bold text-[#EDE8DF] mb-4 group-hover:text-[#E8A020] transition-colors line-clamp-2">
+        <h3 className="text-xl font-bold text-primary mb-4 group-hover:text-[#E8A020] transition-colors line-clamp-2">
           {opportunity.title}
         </h3>
 
         <div className="flex items-center gap-2 mb-8">
-          <div className="w-6 h-6 rounded-full bg-[#222820] flex items-center justify-center text-[10px] font-bold text-[#9A9C8E] border border-[#252D22]">
-            {opportunity.org?.[0] || "O"}
+          <div className="w-6 h-6 rounded-full bg-surface flex items-center justify-center text-[10px] font-bold text-muted border border-border flex-shrink-0">
+            {org[0].toUpperCase()}
           </div>
-          <span className="text-xs font-medium text-[#555C50] truncate">{opportunity.org}</span>
+          <span className="text-xs font-medium text-subtle truncate">{org}</span>
         </div>
 
         <div className="mt-auto flex flex-col gap-4">
           <div className="flex justify-between items-center text-xs">
-            <span className="text-[#555C50]">📍 {opportunity.loc}</span>
-            <span className="text-[#34C27A] font-bold">
-              {opportunity.cost === "Free" || opportunity.cost === "0" ? "FREE" : opportunity.cost}
+            <span className="text-subtle truncate max-w-[60%] flex items-center gap-1.5">
+              <MapPin size={12} className="flex-shrink-0" />
+              {loc}
+            </span>
+            <span className="text-[#34C27A] font-bold flex-shrink-0">
+              {cost === "Free" || cost === "0" ? "FREE" : cost}
             </span>
           </div>
-          <div className="w-full py-3 bg-[#222820] text-[#EDE8DF] text-center font-bold rounded-xl group-hover:bg-[#E8A020] group-hover:text-[#080A07] transition-all">
+          <div className="w-full py-3 bg-surface text-primary text-center font-bold rounded-xl group-hover:bg-[#E8A020] group-hover:text-[#080A07] transition-all">
             View Details
           </div>
         </div>

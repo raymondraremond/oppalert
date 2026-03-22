@@ -127,13 +127,13 @@ export default function EventsPage() {
     : events.filter(e => e.event_type === typeFilter)
 
   return (
-    <div className="min-h-screen bg-[#080A07] pt-28 pb-32">
+    <div className="min-h-screen bg-bg pt-28 pb-32">
       <div className="max-w-7xl mx-auto px-6">
         <div className="mb-16">
-          <h1 className="font-syne text-4xl md:text-6xl font-black text-[#EDE8DF] mb-6">
+          <h1 className="font-syne text-4xl md:text-6xl font-black text-primary mb-6">
             Next-Gen <span className="text-[#E8A020]">Events.</span>
           </h1>
-          <p className="text-[#9A9C8E] text-lg max-w-2xl leading-relaxed">
+          <p className="text-muted text-lg max-w-2xl leading-relaxed">
             Discover workshops, webinars, and meetups designed to accelerate 
             your professional growth in Africa.
           </p>
@@ -148,7 +148,7 @@ export default function EventsPage() {
               className={`px-6 py-2 rounded-full text-sm font-bold border transition-all whitespace-nowrap ${
                 typeFilter === type
                   ? 'bg-[#E8A020] border-[#E8A020] text-[#080A07]'
-                  : 'bg-[#141710] border-[#252D22] text-[#9A9C8E] hover:border-[#E8A020]'
+                  : 'bg-bg2 border-border text-muted hover:border-[#E8A020]'
               }`}
             >
               {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -161,11 +161,11 @@ export default function EventsPage() {
           {filteredEvents.map((event) => (
             <div 
               key={event.id} 
-              className="bg-[#141710] border border-[#252D22] rounded-[2rem] p-8 hover:border-[#E8A020]/50 transition-all group flex flex-col"
+              className="bg-bg2 border border-border rounded-[2rem] p-8 hover:border-[#E8A020]/50 transition-all group flex flex-col"
               style={{ borderLeft: `5px solid ${event.color || '#E8A020'}` }}
             >
               <div className="flex justify-between items-start mb-6">
-                <span className="px-3 py-1 bg-[#080A07] rounded-full text-[10px] font-black uppercase text-[#9A9C8E] border border-[#252D22]">
+                <span className="px-3 py-1 bg-bg rounded-full text-[10px] font-black uppercase text-muted border border-border">
                   {event.event_type}
                 </span>
                 <span className="text-[#E8A020] text-xs font-bold">
@@ -173,42 +173,42 @@ export default function EventsPage() {
                 </span>
               </div>
               
-              <h3 className="text-xl font-bold text-[#EDE8DF] mb-3 group-hover:text-[#E8A020] transition-colors line-clamp-2">
+              <h3 className="text-xl font-bold text-primary mb-3 group-hover:text-[#E8A020] transition-colors line-clamp-2">
                 {event.title}
               </h3>
               
-              <p className="text-[#555C50] text-sm mb-6 line-clamp-2 leading-relaxed">
+              <p className="text-subtle text-sm mb-6 line-clamp-2 leading-relaxed">
                 {event.description}
               </p>
 
               <div className="space-y-3 mb-8 flex-grow">
-                <div className="text-sm text-[#9A9C8E] flex items-center gap-2">
+                <div className="text-sm text-muted flex items-center gap-2">
                   📅 {new Date(event.start_date).toLocaleDateString('en-US', { 
                     month: 'long', 
                     day: 'numeric', 
                     year: 'numeric' 
                   })}
                 </div>
-                <div className="text-sm text-[#9A9C8E] flex items-center gap-2">
+                <div className="text-sm text-muted flex items-center gap-2">
                   {event.is_online ? '🌐 Online' : `📍 ${event.location}`}
                 </div>
               </div>
 
-              <div className="mt-auto pt-6 border-t border-[#252D22]/50">
-                <div className="w-full bg-[#080A07] rounded-full h-1.5 mb-4 overflow-hidden">
+              <div className="mt-auto pt-6 border-t border-border/50">
+                <div className="w-full bg-bg rounded-full h-1.5 mb-4 overflow-hidden">
                   <div 
                     className="h-full bg-[#E8A020]" 
                     style={{ width: `${Math.min((event.current_registrations / (event.max_capacity || 100)) * 100, 100)}%` }}
                   ></div>
                 </div>
-                <div className="flex justify-between text-[10px] font-black text-[#555C50] uppercase mb-8">
+                <div className="flex justify-between text-[10px] font-black text-subtle uppercase mb-8">
                   <span>Capacity</span>
                   <span>{event.current_registrations}/{event.max_capacity || '∞'} Booked</span>
                 </div>
                 
                 <Link 
                   href={`/events/${event.slug}`}
-                  className="block w-full py-4 bg-[#222820] text-[#EDE8DF] text-center font-black rounded-xl hover:bg-[#E8A020] hover:text-[#080A07] transition-all"
+                  className="block w-full py-4 bg-surface text-primary text-center font-black rounded-xl hover:bg-[#E8A020] hover:text-[#080A07] transition-all"
                 >
                   View Details & Register
                 </Link>

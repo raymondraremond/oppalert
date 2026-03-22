@@ -12,10 +12,10 @@ export default function OrganizerBadge({
 
   return (
     <div className="flex items-center gap-2">
-      <div className={`${initialSize} rounded-full bg-[#222820] border border-[#252D22] flex items-center justify-center text-[#EDE8DF] font-bold uppercase`}>
+      <div className={`${initialSize} rounded-full bg-surface border border-border flex items-center justify-center text-primary font-bold uppercase`}>
         {name?.charAt(0) || "?"}
       </div>
-      <div className={`flex items-center ${textClass} text-[#9A9C8E] font-medium`}>
+      <div className={`flex items-center ${textClass} text-muted font-medium`}>
         <span>by {name}</span>
         {verified && (
           <span className="verified-badge" title="Verified Organizer">
