@@ -16,10 +16,11 @@ export default function SaveButton({ oppId, oppTitle }: Props) {
   useEffect(() => {
     const checkSaved = async () => {
       try {
-        const stored = localStorage.getItem('oppalert_user')
+        const stored = localStorage.getItem('user')
         if (!stored) return
         
-        const token = localStorage.getItem('oppalert_token') || document.cookie
+        const userData = JSON.parse(stored)
+        const token = userData.token || document.cookie
           .split('; ')
           .find(row => row.startsWith('token='))
           ?.split('=')[1]
@@ -50,7 +51,7 @@ export default function SaveButton({ oppId, oppTitle }: Props) {
 
   const handleSave = async () => {
     // Check if logged in first
-    const stored = localStorage.getItem('oppalert_user')
+    const stored = localStorage.getItem('user')
     if (!stored) {
       // Redirect to login
       localStorage.setItem('loginRedirect', window.location.pathname)
@@ -58,7 +59,8 @@ export default function SaveButton({ oppId, oppTitle }: Props) {
       return
     }
 
-    const token = localStorage.getItem('oppalert_token') || document.cookie
+    const userData = JSON.parse(stored)
+    const token = userData.token || document.cookie
       .split('; ')
       .find(row => row.startsWith('token='))
       ?.split('=')[1]

@@ -6,7 +6,7 @@ export default function ApplyButton({ applyUrl, oppId, disabled }: { applyUrl: s
   const router = useRouter()
 
   const handleApply = () => {
-    const user = localStorage.getItem('oppalert_user')
+    const user = localStorage.getItem('user')
     if (!user) {
       localStorage.setItem('loginRedirect', '/opportunities/' + oppId)
       router.push('/login?next=' + encodeURIComponent('/opportunities/' + oppId))
