@@ -61,8 +61,11 @@ export default function HomePage() {
       try {
         const res = await fetch('/api/opportunities?limit=6')
         if (res.ok) {
-          const data = await res.json()
-          if (data.length > 0) setFeatured(data)
+          const result = await res.json()
+          if (result && (result.data || Array.isArray(result))) {
+            const data = Array.isArray(result) ? result : result.data
+            if (data && data.length > 0) setFeatured(data)
+          }
         }
       } catch (err) {
         console.error(err)
