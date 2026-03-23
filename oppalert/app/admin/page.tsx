@@ -243,6 +243,7 @@ export default function AdminPage() {
     category: 'scholarship',
     location: 'Remote',
     deadline: '',
+    description: '',
     application_url: ''
   })
 
@@ -305,7 +306,7 @@ export default function AdminPage() {
         setLiveOpps(prev => [newOpp, ...prev])
         setLiveStats((prev: any) => prev ? { ...prev, totalOpps: prev.totalOpps + 1 } : prev)
         setPublishSuccess(true)
-        setFormData({ title: '', organization: '', category: 'scholarship', location: 'Remote', deadline: '', application_url: '' })
+        setFormData({ title: '', organization: '', category: 'scholarship', location: 'Remote', deadline: '', description: '', application_url: '' })
         setTimeout(() => {
           setShowCreateModal(false)
           setPublishSuccess(false)
@@ -604,6 +605,16 @@ export default function AdminPage() {
                     <label className="text-[10px] font-black uppercase tracking-widest text-muted ml-1">Location / Target</label>
                     <input value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-amber/30 transition-all" placeholder="e.g. Remote, Nigeria, Global" />
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-muted ml-1">Opportunity Description</label>
+                  <textarea 
+                    value={formData.description} 
+                    onChange={e => setFormData({...formData, description: e.target.value})} 
+                    className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-medium text-primary focus:outline-none focus:border-amber/30 transition-all min-h-[120px] resize-none" 
+                    placeholder="Provide details about the eligibility, benefits, and how to apply..." 
+                  />
                 </div>
 
                 <div className="space-y-2">
