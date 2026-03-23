@@ -48,7 +48,7 @@ export default function CreateEventPage() {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [router])
 
   const handleChange = (
     e: React.ChangeEvent<

@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 
@@ -17,41 +17,6 @@ export default function ManageEventPage() {
   const [analytics, setAnalytics] = useState<any>(null)
   const [analyticsLoading, setAnalyticsLoading] = useState(false)
 
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem('user')
-      if (!stored) { router.push('/login'); return }
-      const parsed = JSON.parse(stored)
-      if (!parsed?.token) { router.push('/login'); return }
-      setUser(parsed)
-      fetchData(parsed.token)
-    } catch {
-      router.push('/login')
-    }
-  }, [])
-
-  // Auto-refresh registrations every 30 seconds when on that tab
-  useEffect(() => {
-    if (activeTab !== 'registrations') return
-    const interval = setInterval(() => {
-      if (user?.token) fetchData(user.token)
-    }, 30000)
-    return () => clearInterval(interval)
-  }, [activeTab, user])
-
-  // Fetch analytics when switching to analytics tab
-  useEffect(() => {
-    if (activeTab !== 'analytics' || !user?.token || analytics) return
-    setAnalyticsLoading(true)
-    fetch(`/api/organizer/events/${eventId}/analytics`, {
-      headers: { Authorization: `Bearer ${user.token}` },
-    })
-      .then(r => r.json())
-      .then(data => setAnalytics(data))
-      .catch(() => {})
-      .finally(() => setAnalyticsLoading(false))
-  }, [activeTab, user, eventId])
-
   const getEventStatus = (ev: any): { label: string; color: string; bg: string } => {
     const now = new Date()
     const start = new Date(ev.start_date)
@@ -67,7 +32,7 @@ export default function ManageEventPage() {
     return { label: 'Published', color: '#34C27A', bg: '#0F2E1C' }
   }
 
-  const fetchData = async (token: string) => {
+  const fetchData = useCallback(async (token: string) => {
     try {
       // Fetch event details
       const evRes = await fetch(
@@ -97,7 +62,42 @@ export default function ManageEventPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [eventId])
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('user')
+      if (!stored) { router.push('/login'); return }
+      const parsed = JSON.parse(stored)
+      if (!parsed?.token) { router.push('/login'); return }
+      setUser(parsed)
+      fetchData(parsed.token)
+    } catch {
+      router.push('/login')
+    }
+  }, [router, fetchData])
+
+  // Auto-refresh registrations every 30 seconds when on that tab
+  useEffect(() => {
+    if (activeTab !== 'registrations') return
+    const interval = setInterval(() => {
+      if (user?.token) fetchData(user.token)
+    }, 30000)
+    return () => clearInterval(interval)
+  }, [activeTab, user, fetchData])
+
+  // Fetch analytics when switching to analytics tab
+  useEffect(() => {
+    if (activeTab !== 'analytics' || !user?.token || analytics) return
+    setAnalyticsLoading(true)
+    fetch(`/api/organizer/events/${eventId}/analytics`, {
+      headers: { Authorization: `Bearer ${user.token}` },
+    })
+      .then(r => r.json())
+      .then(data => setAnalytics(data))
+      .catch(() => {})
+      .finally(() => setAnalyticsLoading(false))
+  }, [activeTab, user, eventId, analytics])
 
   const handleExport = async () => {
     try {

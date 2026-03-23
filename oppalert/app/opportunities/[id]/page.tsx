@@ -34,12 +34,15 @@ export default function OpportunityDetailPage({ params }: Props) {
     fetch('/api/opportunities/' + params.id)
       .then(r => r.json())
       .then(res => {
-        if (res?.data?.id) {
-          setOpp(res.data)
-          if (!related.length) {
-             setRelated(getRelated(params.id, res.data.cat || 'scholarship', 3))
+          if (res?.data?.id) {
+            setOpp(res.data)
+            setRelated(prev => {
+              if (prev.length === 0) {
+                return getRelated(params.id, res.data.cat || 'scholarship', 3)
+              }
+              return prev
+            })
           }
-        }
       })
       .catch(() => {})
       .finally(() => setIsLoading(false))
