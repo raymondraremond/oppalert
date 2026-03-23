@@ -31,10 +31,7 @@ export async function GET(req: NextRequest) {
         if (search) { sql += ` AND (title ILIKE $${idx++} OR organization ILIKE $${idx++} OR description ILIKE $${idx++})`; params.push(`%${search}%`, `%${search}%`, `%${search}%`); idx += 2; }
 
         sql += ` ORDER BY is_featured DESC, created_at DESC LIMIT $${idx++} OFFSET $${idx++}`;
-        params.push(limit, offset);
-
-        const dataRes = await query(sql, params);
-        dbData = dataRes.rows;
+        const finalParams = [...params, limit, offset];
 
         let countSql = 'SELECT COUNT(*) FROM opportunities WHERE is_active = true';
         const countParams: any[] = [];
@@ -44,10 +41,32 @@ export async function GET(req: NextRequest) {
         if (location) { countSql += ` AND location ILIKE $${countIdx++}`; countParams.push(`%${location}%`); }
         if (search) { countSql += ` AND (title ILIKE $${countIdx++} OR organization ILIKE $${countIdx++} OR description ILIKE $${countIdx++})`; countParams.push(`%${search}%`, `%${search}%`, `%${search}%`); }
 
-        const countRes = await query(countSql, countParams);
-        dbTotal = parseInt(countRes.rows[0].count);
-      } catch (err) {
-        console.error('Database query failed for opportunities:', err);
+        try {
+          const dataRes = await query(sql, finalParams);
+          dbData = dataRes.rows;
+          const countRes = await query(countSql, countParams);
+          dbTotal = parseInt(countRes.rows[0].count);
+        } catch (err: any) {
+          console.error('Database query failed for opportunities:', err);
+          if (err.message && err.message.includes('relation "opportunities" does not exist')) {
+             try {
+               const { SCHEMA_SQL } = await import('@/lib/db');
+               await query(SCHEMA_SQL);
+               console.log('Database schema initialized.');
+               const dataRes = await query(sql, finalParams);
+               dbData = dataRes.rows;
+               const countRes = await query(countSql, countParams);
+               dbTotal = parseInt(countRes.rows[0].count);
+             } catch (initErr) {
+               console.error('Schema initialization failed:', initErr);
+               hasDbError = true;
+             }
+          } else {
+            hasDbError = true;
+          }
+        }
+      } catch (outerErr) {
+        console.error('Outer DB error:', outerErr);
         hasDbError = true;
       }
     }
@@ -55,24 +74,18 @@ export async function GET(req: NextRequest) {
     if (process.env.DATABASE_URL && !hasDbError) {
       return NextResponse.json({ data: dbData, total: dbTotal, page, pages: dbTotal > 0 ? Math.ceil(dbTotal / limit) : 1, source: 'database' });
     } else {
-      // Always fall back to seed data if DB explicitly errors or is absent
       const { opportunities } = await import('@/lib/data');
       let filtered = [...opportunities];
       
       if (category && category !== 'all') {
         filtered = filtered.filter((o: any) => (o.cat || o.category) === category);
       }
-      
       if (fundingType && fundingType !== 'Any Funding') {
         filtered = filtered.filter((o: any) => (o.fund || o.funding_type) === fundingType);
       }
-      
       if (location && location !== 'Any Location') {
-        filtered = filtered.filter((o: any) => 
-          (o.loc || o.location || '').toLowerCase().includes(location.toLowerCase())
-        );
+        filtered = filtered.filter((o: any) => (o.loc || o.location || '').toLowerCase().includes(location.toLowerCase()));
       }
-      
       if (search) {
         const s = search.toLowerCase();
         filtered = filtered.filter((o: any) => 
@@ -92,7 +105,7 @@ export async function GET(req: NextRequest) {
     }
   } catch (error: any) {
     console.error('Opportunities GET error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -112,25 +125,42 @@ export async function POST(req: NextRequest) {
 
     if (!title) return NextResponse.json({ error: 'Title is required' }, { status: 400 });
 
-    const insertRes = await query(
-      `INSERT INTO opportunities (icon, title, organization, category, location, funding_type, description, about, eligibility, benefits, application_url, deadline, is_featured)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9::text[],$10::text[],$11,$12,$13) RETURNING *`,
-      [
-        icon || '🌍', 
-        title, 
-        organization || null, 
-        category || null, 
-        location || null, 
-        funding_type || null, 
-        description || null, 
-        about || null, 
-        eligibility || [], 
-        benefits || [], 
-        application_url || null, 
-        deadline || null, 
-        is_featured || false
-      ]
-    );
+    const values = [
+      icon || '🌍', 
+      title, 
+      organization || null, 
+      category || null, 
+      location || null, 
+      funding_type || null, 
+      description || null, 
+      about || null, 
+      eligibility || [], 
+      benefits || [], 
+      application_url || null, 
+      deadline || null, 
+      is_featured || false
+    ];
+
+    let insertRes;
+    try {
+      insertRes = await query(
+        `INSERT INTO opportunities (icon, title, organization, category, location, funding_type, description, about, eligibility, benefits, application_url, deadline, is_featured)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9::text[],$10::text[],$11,$12,$13) RETURNING *`,
+        values
+      );
+    } catch (err: any) {
+      if (err.message && err.message.includes('relation "opportunities" does not exist')) {
+        const { SCHEMA_SQL } = await import('@/lib/db');
+        await query(SCHEMA_SQL);
+        insertRes = await query(
+          `INSERT INTO opportunities (icon, title, organization, category, location, funding_type, description, about, eligibility, benefits, application_url, deadline, is_featured)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9::text[],$10::text[],$11,$12,$13) RETURNING *`,
+          values
+        );
+      } else {
+        throw err;
+      }
+    }
 
     return NextResponse.json(insertRes.rows[0], { status: 201 });
   } catch (error: any) {

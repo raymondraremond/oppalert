@@ -29,7 +29,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     return NextResponse.json({ data: opportunity, related: relatedRes.rows });
   } catch (error: any) {
     console.error('Get opportunity error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -66,7 +66,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
     return NextResponse.json(updateRes.rows[0]);
   } catch (error: any) {
     console.error('Update opportunity error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -92,6 +92,6 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error('Delete opportunity error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
   }
 }
