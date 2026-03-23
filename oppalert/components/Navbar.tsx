@@ -121,7 +121,6 @@ export default function Navbar() {
             </span>
           </div>
         </Link>
-... (rest handled by specific replacements inside this block)
 
         {/* Desktop Nav */}
         <nav className="hide-mobile" style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
@@ -171,10 +170,10 @@ export default function Navbar() {
                   ))}
                   {isAdmin && (
                     <Link href="/admin" style={{ textDecoration: 'none' }} onClick={() => setShowDropdown(false)}>
-                      <div style={{ padding: '8px 12px', fontSize: 13, color: '#E8A020', borderRadius: 8, cursor: 'pointer' }}>⚙️ Admin Panel</div>
+                      <div style={{ padding: '8px 12px', fontSize: 13, color: 'var(--amber)', borderRadius: 8, cursor: 'pointer' }}>⚙️ Admin Panel</div>
                     </Link>
                   )}
-                  <div onClick={handleLogout} style={{ padding: '8px 12px', fontSize: 13, color: '#F05050', borderRadius: 8, cursor: 'pointer', marginTop: 4, borderTop: '1px solid #252D22' }}>→ Sign Out</div>
+                  <div onClick={handleLogout} style={{ padding: '8px 12px', fontSize: 13, color: 'var(--danger)', borderRadius: 8, cursor: 'pointer', marginTop: 4, borderTop: '1px solid var(--border)' }}>→ Sign Out</div>
                 </div>
               )}
             </div>
@@ -206,22 +205,22 @@ export default function Navbar() {
           {isLoggedIn ? (
             <>
               <Link href="/dashboard" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}>
-                <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: 'var(--muted)', borderBottom: '1px solid #1C2119' }}>📊 Dashboard</div>
+                <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: 'var(--muted)', borderBottom: '1px solid var(--border)' }}>📊 Dashboard</div>
               </Link>
               <Link href="/organizer" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}>
-                <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: 'var(--muted)', borderBottom: '1px solid #1C2119' }}>🎪 Organizer</div>
+                <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: 'var(--muted)', borderBottom: '1px solid var(--border)' }}>🎪 Organizer</div>
               </Link>
               {isAdmin && (
                 <Link href="/admin" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}>
-                  <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: '#E8A020', borderBottom: '1px solid #1C2119' }}>⚙️ Admin Panel</div>
+                  <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: 'var(--amber)', borderBottom: '1px solid var(--border)' }}>⚙️ Admin Panel</div>
                 </Link>
               )}
-              <button onClick={handleLogout} style={{ width: '100%', padding: '10px', background: 'transparent', border: '1px solid #3A1010', borderRadius: 8, fontSize: 13, color: '#F05050', cursor: 'pointer', fontFamily: 'inherit', marginTop: 8 }}>Sign Out</button>
+              <button onClick={handleLogout} style={{ width: '100%', padding: '10px', background: 'transparent', border: '1px solid var(--danger-dim)', borderRadius: 8, fontSize: 13, color: 'var(--danger)', cursor: 'pointer', fontFamily: 'inherit', marginTop: 8 }}>Sign Out</button>
             </>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
-              <Link href="/login" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}><button style={{ width: '100%', padding: '12px', background: 'transparent', border: '1px solid #313D2C', borderRadius: 8, fontSize: 14, fontWeight: 600, color: 'var(--muted)', cursor: 'pointer', fontFamily: 'inherit' }}>Log In</button></Link>
-              <Link href="/register" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}><button style={{ width: '100%', padding: '12px', background: '#E8A020', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 700, color: '#090A07', cursor: 'pointer', fontFamily: 'inherit' }}>Join Free →</button></Link>
+              <Link href="/login" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}><button style={{ width: '100%', padding: '12px', background: 'transparent', border: '1px solid var(--border)', borderRadius: 8, fontSize: 14, fontWeight: 600, color: 'var(--muted)', cursor: 'pointer', fontFamily: 'inherit' }}>Log In</button></Link>
+              <Link href="/register" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}><button style={{ width: '100%', padding: '12px', background: 'var(--amber)', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 700, color: '#090A07', cursor: 'pointer', fontFamily: 'inherit' }}>Join Free →</button></Link>
             </div>
           )}
         </div>
