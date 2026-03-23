@@ -81,14 +81,14 @@ export default function Navbar() {
   ]
 
   const navLinkStyle = (href: string) => ({
-    padding: '6px 12px',
-    borderRadius: 8,
-    fontSize: 13,
+    display: 'inline-flex',
+    alignItems: 'center',
+    padding: '8px 4px',
+    margin: '0 8px',
+    fontSize: 14,
     fontWeight: 500,
-    color: path.startsWith(href) ? 'var(--primary)' : 'var(--muted)',
-    background: path.startsWith(href) ? 'var(--icon-bg)' : 'transparent',
     cursor: 'pointer',
-    transition: 'all 0.15s',
+    transition: 'all 0.3s',
     textDecoration: 'none',
   })
 
@@ -123,19 +123,34 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hide-mobile" style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+        <nav className="hide-mobile" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           {navLinks.map(link => (
-            <Link key={link.href} href={link.href} style={navLinkStyle(link.href)}>
+            <Link 
+              key={link.href} 
+              href={link.href} 
+              style={navLinkStyle(link.href)}
+              className={`nav-link-modern ${path.startsWith(link.href) ? 'active' : ''}`}
+            >
               {link.label}
             </Link>
           ))}
-            <Link href="/organizer" style={{
-              ...navLinkStyle('/organizer'),
-              color: path.startsWith('/organizer') ? 'var(--amber)' : 'var(--muted)',
-              background: path.startsWith('/organizer') ? 'var(--amber-dim)' : 'transparent',
-            }}>Organizer</Link>
+          {isLoggedIn && (
+            <Link 
+              href="/organizer" 
+              style={navLinkStyle('/organizer')}
+              className={`nav-link-modern ${path.startsWith('/organizer') ? 'active' : ''}`}
+            >
+              Organizer
+            </Link>
+          )}
           {isAdmin && (
-            <Link href="/admin" style={{ ...navLinkStyle('/admin'), color: 'var(--amber)' }}>Admin</Link>
+            <Link 
+              href="/admin" 
+              style={navLinkStyle('/admin')}
+              className={`nav-link-modern text-amber font-bold ${path.startsWith('/admin') ? 'active' : ''}`}
+            >
+              Admin
+            </Link>
           )}
         </nav>
 

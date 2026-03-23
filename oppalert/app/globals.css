@@ -143,6 +143,27 @@ body {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
+  /* MODERN NAV LINKS */
+  .nav-link-modern {
+    @apply relative py-2 px-1 transition-all duration-300;
+  }
+  .nav-link-modern::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-[2px] bg-amber transition-all duration-300 origin-left opacity-0;
+  }
+  .nav-link-modern:hover {
+    @apply text-primary;
+  }
+  .nav-link-modern:hover::after {
+    @apply w-full opacity-100;
+  }
+  .nav-link-modern.active {
+    @apply text-amber font-bold;
+  }
+  .nav-link-modern.active::after {
+    @apply w-full opacity-100;
+  }
+
   /* Category Cards */
   .cat-card {
     @apply rounded-2xl border p-6 cursor-pointer relative overflow-hidden;
