@@ -86,7 +86,7 @@ export default function Navbar() {
     fontSize: 13,
     fontWeight: 500,
     color: path.startsWith(href) ? 'var(--primary)' : 'var(--muted)',
-    background: path.startsWith(href) ? '#1C2119' : 'transparent',
+    background: path.startsWith(href) ? 'var(--icon-bg)' : 'transparent',
     cursor: 'pointer',
     transition: 'all 0.15s',
     textDecoration: 'none',
@@ -98,12 +98,11 @@ export default function Navbar() {
   return (
     <header style={{
       position: 'sticky', top: 0, zIndex: 100,
-      background: scrolled ? 'rgba(8,10,7,0.98)' : 'rgba(8,10,7,0.92)',
-      backdropFilter: 'blur(20px)',
-      borderBottom: '1px solid #252D22',
+      background: scrolled ? 'var(--glass)' : 'transparent',
+      backdropFilter: scrolled ? 'blur(20px)' : 'none',
+      borderBottom: scrolled ? '1px solid var(--border)' : '1px solid transparent',
       height: 60,
       transition: 'all 0.3s ease',
-      colorScheme: 'dark',
     }}>
       <div style={{
         maxWidth: 1100, margin: '0 auto', padding: '0 1.5rem',
@@ -113,15 +112,16 @@ export default function Navbar() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <div style={{
               width: 30, height: 30, borderRadius: 8,
-              background: 'linear-gradient(135deg, #E8A020, #C87020)',
+              background: 'linear-gradient(135deg, var(--amber), #C87020)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontWeight: 800, fontSize: 14, color: '#090A07', fontFamily: 'Syne, sans-serif',
             }}>O</div>
             <span style={{ fontFamily: 'Syne, sans-serif', fontSize: 18, fontWeight: 800, color: 'var(--primary)' }}>
-              Opp<span style={{ color: '#E8A020' }}>Alert</span>
+              Opp<span style={{ color: 'var(--amber)' }}>Alert</span>
             </span>
           </div>
         </Link>
+... (rest handled by specific replacements inside this block)
 
         {/* Desktop Nav */}
         <nav className="hide-mobile" style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
@@ -130,15 +130,13 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          {isLoggedIn && (
             <Link href="/organizer" style={{
               ...navLinkStyle('/organizer'),
-              color: path.startsWith('/organizer') ? '#E8A020' : 'var(--muted)',
-              background: path.startsWith('/organizer') ? '#2A1E06' : 'transparent',
+              color: path.startsWith('/organizer') ? 'var(--amber)' : 'var(--muted)',
+              background: path.startsWith('/organizer') ? 'var(--amber-dim)' : 'transparent',
             }}>Organizer</Link>
-          )}
           {isAdmin && (
-            <Link href="/admin" style={{ ...navLinkStyle('/admin'), color: '#E8A020' }}>Admin</Link>
+            <Link href="/admin" style={{ ...navLinkStyle('/admin'), color: 'var(--amber)' }}>Admin</Link>
           )}
         </nav>
 
@@ -148,20 +146,20 @@ export default function Navbar() {
           {isLoggedIn ? (
             <div ref={dropdownRef} style={{ position: 'relative' }}>
               <div onClick={() => setShowDropdown(!showDropdown)} style={{
-                width: 36, height: 36, borderRadius: '50%', background: '#2A1E06',
-                border: '2px solid #E8A020', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 12, fontWeight: 800, color: '#E8A020', cursor: 'pointer',
+                width: 36, height: 36, borderRadius: '50%', background: 'var(--amber-dim)',
+                border: '2px solid var(--amber)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 12, fontWeight: 800, color: 'var(--amber)', cursor: 'pointer',
                 fontFamily: 'Syne, sans-serif', userSelect: 'none',
               }}>{getInitials()}</div>
               {showDropdown && (
                 <div style={{
                   position: 'absolute', right: 0, top: 44, background: 'var(--bg2)',
-                  border: '1px solid #252D22', borderRadius: 12, padding: 8, minWidth: 200,
-                  zIndex: 200, boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+                  border: '1px solid var(--border)', borderRadius: 12, padding: 8, minWidth: 200,
+                  zIndex: 200, boxShadow: 'var(--card-shadow, 0 8px 32px rgba(0,0,0,0.2))',
                 }}>
-                  <div style={{ padding: '8px 12px 10px', borderBottom: '1px solid #252D22', marginBottom: 4 }}>
+                  <div style={{ padding: '8px 12px 10px', borderBottom: '1px solid var(--border)', marginBottom: 4 }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--primary)', marginBottom: 2 }}>{user?.fullName || user?.full_name || 'User'}</div>
-                    <div style={{ fontSize: 11, color: '#555C50' }}>{user?.email}</div>
+                    <div style={{ fontSize: 11, color: 'var(--muted)' }}>{user?.email}</div>
                   </div>
                   {[
                     { href: '/dashboard', label: '📊 Dashboard' },
@@ -182,8 +180,8 @@ export default function Navbar() {
             </div>
           ) : (
             <>
-              <Link href="/login"><button style={{ padding: '7px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600, background: 'transparent', border: '1px solid #313D2C', color: 'var(--muted)', cursor: 'pointer', fontFamily: 'inherit' }}>Log In</button></Link>
-              <Link href="/register"><button style={{ padding: '7px 16px', borderRadius: 8, fontSize: 13, fontWeight: 700, background: '#E8A020', border: 'none', color: '#090A07', cursor: 'pointer', fontFamily: 'inherit' }}>Join Free →</button></Link>
+              <Link href="/login"><button style={{ padding: '7px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600, background: 'transparent', border: '1px solid var(--border)', color: 'var(--muted)', cursor: 'pointer', fontFamily: 'inherit' }}>Log In</button></Link>
+              <Link href="/register"><button style={{ padding: '7px 16px', borderRadius: 8, fontSize: 13, fontWeight: 700, background: 'var(--amber)', border: 'none', color: '#090A07', cursor: 'pointer', fontFamily: 'inherit' }}>Join Free →</button></Link>
             </>
           )}
         </div>
@@ -199,10 +197,10 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {showMobile && (
-        <div style={{ background: '#0F1210', borderTop: '1px solid #252D22', padding: '16px 1.5rem' }}>
+        <div style={{ background: 'var(--bg2)', borderTop: '1px solid var(--border)', padding: '16px 1.5rem' }}>
           {navLinks.map(link => (
             <Link key={link.href} href={link.href} style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}>
-              <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: path.startsWith(link.href) ? '#E8A020' : 'var(--muted)', borderBottom: '1px solid #1C2119' }}>{link.label}</div>
+              <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: path.startsWith(link.href) ? 'var(--amber)' : 'var(--muted)', borderBottom: '1px solid var(--border)' }}>{link.label}</div>
             </Link>
           ))}
           {isLoggedIn ? (

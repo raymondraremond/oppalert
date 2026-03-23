@@ -2,32 +2,8 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-/* Force navbar to always be dark regardless of system color scheme */
-header[data-navbar],
 header, nav {
-  color-scheme: dark !important;
-}
-
-header[data-navbar] {
-  background: rgba(8,10,7,0.97) !important;
-  color: #EDE8DF !important;
-}
-
-header[data-navbar] a,
-header[data-navbar] button,
-header a,
-header button {
-  color: #EDE8DF !important;
-}
-
-header[data-navbar] .nav-link {
-  color: #9A9C8E !important;
-}
-
-header[data-navbar] .nav-link:hover,
-header[data-navbar] .nav-link.active {
-  color: #EDE8DF !important;
-  background: rgba(255,255,255,0.08) !important;
+  transition: all 0.3s ease;
 }
 
 :root {
