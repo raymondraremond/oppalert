@@ -248,6 +248,15 @@ export default function AdminPage() {
   })
 
   useEffect(() => {
+    if (showCreateModal) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => { document.body.style.overflow = 'unset' }
+  }, [showCreateModal])
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const [statsRes, oppsRes] = await Promise.all([
@@ -551,8 +560,8 @@ export default function AdminPage() {
 
       {/* ── CREATE MODAL ── */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-bg/80 backdrop-blur-xl animate-fade-in" onClick={() => setShowCreateModal(false)}>
-          <div className="bg-bg2 border border-[var(--glass-border)] rounded-[3rem] p-10 md:p-14 w-full max-w-2xl shadow-premium relative overflow-hidden" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 bg-bg/80 backdrop-blur-xl animate-fade-in overflow-y-auto" onClick={() => setShowCreateModal(false)}>
+          <div className="bg-bg2 border border-[var(--glass-border)] rounded-[3rem] p-8 md:p-14 w-full max-w-2xl shadow-premium relative my-auto" onClick={e => e.stopPropagation()}>
             <div className="absolute top-0 right-0 w-64 h-64 bg-amber/5 blur-[100px] -z-10" />
             
             {publishSuccess ? (
