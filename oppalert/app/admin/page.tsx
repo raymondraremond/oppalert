@@ -452,7 +452,7 @@ export default function AdminPage() {
   const tabs = [
     { id: 'opps', label: 'Core Opportunities' },
     { id: 'submissions', label: 'Submissions' },
-    ...(currentUser?.plan === 'admin' ? [{ id: 'users', label: 'User Directory' }] : []),
+    { id: 'users', label: 'User Directory' },
     { id: 'featured', label: 'Promotion Slots' },
     { id: 'analytics', label: 'System Analytics' },
   ]
@@ -653,58 +653,73 @@ export default function AdminPage() {
           )}
 
           {/* USERS TAB */}
-          {activeTab === 'users' && currentUser?.plan === 'admin' && (
+          {activeTab === 'users' && (
             <UsersTab />
           )}
 
           {/* ANALYTICS TAB */}
           {activeTab === 'analytics' && (
             <div className="space-y-8">
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-10 space-y-8">
-                     <h3 className="font-syne text-xl font-black text-primary">Revenue Trajectory</h3>
-                     <div className="flex items-baseline gap-4">
-                        <span className="font-syne text-5xl font-black text-amber">$12.4K</span>
-                        <span className="text-success text-sm font-bold tracking-widest uppercase">+24% MoM</span>
-                     </div>
-                     <div className="h-48 flex items-end gap-3 px-4">
-                       {barData.map((h, i) => (
-                         <div key={i} className="flex-1 flex flex-col items-center gap-3 group/bar">
-                           <div 
-                             style={{ height: `${h}px` }}
-                             className={`w-full rounded-t-xl transition-all duration-1000 ${i === barData.length - 1 ? 'bg-amber-gradient shadow-glow-amber' : 'bg-white/10 group-hover/bar:bg-white/20'}`} 
-                           />
-                           <span className="text-[10px] font-black uppercase tracking-widest text-muted">{barMonths[i]}</span>
-                         </div>
-                       ))}
-                     </div>
+              {/* Top KPI row */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {[
+                  { label: 'Total Listings', value: liveStats?.totalOpps ?? '—', sub: 'Active in DB', color: '#E8A020' },
+                  { label: 'Registered Users', value: liveStats?.totalUsers ?? '—', sub: 'Since launch', color: '#34C27A' },
+                  { label: 'Premium Members', value: liveStats?.premiumUsers ?? '—', sub: 'Active subscriptions', color: '#4A9EE8' },
+                  { label: 'Est. Revenue', value: liveStats?.estimatedRevenue ? `₦${Number((liveStats.estimatedRevenue / 1000).toFixed(1))}K` : '₦0', sub: 'Estimated total', color: '#8B5CF6' },
+                ].map((kpi, i) => (
+                  <div key={i} className="glass-gradient border border-[var(--border)] rounded-[2rem] p-8">
+                    <div className="text-[10px] font-black uppercase tracking-widest text-muted mb-3">{kpi.label}</div>
+                    <div className="font-syne text-3xl font-black" style={{ color: kpi.color }}>{kpi.value}</div>
+                    <div className="text-[10px] text-muted mt-2">{kpi.sub}</div>
                   </div>
+                ))}
+              </div>
 
-                  <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-10 space-y-8">
-                     <h3 className="font-syne text-xl font-black text-primary">Traffic Origins</h3>
-                     <div className="space-y-6">
-                       {[
-                         { loc: 'Lagos, Nigeria', pct: 42, color: 'amber' },
-                         { loc: 'Nairobi, Kenya', pct: 18, color: 'primary' },
-                         { loc: 'Accra, Ghana', pct: 15, color: 'blue' },
-                         { loc: 'Cape Town, SA', pct: 12, color: 'success' },
-                       ].map((region, idx) => (
-                         <div key={idx} className="space-y-2">
-                           <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-                             <span className="text-primary">{region.loc}</span>
-                             <span className="text-muted">{region.pct}%</span>
-                           </div>
-                           <div className="h-2 bg-[var(--icon-bg)] rounded-full overflow-hidden">
-                             <div 
-                               className={`h-full bg-${region.color} transition-all duration-1000 delay-300`} 
-                               style={{ width: `${region.pct}%` }}
-                             />
-                           </div>
-                         </div>
-                       ))}
-                     </div>
-                  </div>
-               </div>
+              {/* User breakdown */}
+              <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-10 space-y-6">
+                <h3 className="font-syne text-lg font-black text-primary">User Breakdown</h3>
+                <div className="space-y-4">
+                  {[
+                    { label: 'Free Users', value: (liveStats?.totalUsers || 0) - (liveStats?.premiumUsers || 0), color: 'bg-white/10', textColor: '#9A9C8E' },
+                    { label: 'Premium Members', value: liveStats?.premiumUsers || 0, color: 'bg-[#34C27A]', textColor: '#34C27A' },
+                  ].map((row, i) => {
+                    const total = liveStats?.totalUsers || 1
+                    const pct = Math.round((row.value / total) * 100)
+                    return (
+                      <div key={i} className="space-y-2">
+                        <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
+                          <span className="text-primary">{row.label}</span>
+                          <span style={{ color: row.textColor }}>{row.value} &nbsp;({pct}%)</span>
+                        </div>
+                        <div className="h-2 bg-[var(--icon-bg)] rounded-full overflow-hidden">
+                          <div className={`h-full ${row.color} transition-all duration-1000`} style={{ width: `${pct}%` }} />
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Platform info */}
+              <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-10">
+                <h3 className="font-syne text-lg font-black text-primary mb-6">Platform Status</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-6 text-sm">
+                  {[
+                    { label: 'Database', value: process.env.NODE_ENV === 'production' ? 'Neon PostgreSQL' : 'Connected', status: true },
+                    { label: 'Environment', value: 'Production', status: true },
+                    { label: 'Region', value: 'West Africa Focus', status: true },
+                  ].map((item, i) => (
+                    <div key={i}>
+                      <div className="text-[10px] font-black uppercase tracking-widest text-muted mb-2">{item.label}</div>
+                      <div className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+                        <span className="font-bold text-primary text-xs">{item.value}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </div>
