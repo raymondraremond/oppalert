@@ -19,6 +19,12 @@ export default function EventDetailPage() {
   const [regError, setRegError] = useState('')
   const [regSuccess, setRegSuccess] = useState(false)
 
+  // Fire-and-forget view tracking
+  useEffect(() => {
+    if (!slug || slug.startsWith('sample-')) return
+    fetch(`/api/events/${slug}/view`, { method: 'POST' }).catch(() => {})
+  }, [slug])
+
   useEffect(() => {
     if (!slug) return
 
@@ -309,6 +315,82 @@ export default function EventDetailPage() {
               </p>
             </form>
           )}
+        </div>
+
+        {/* Share bar — below registration card */}
+        <div style={{
+          background: '#141710',
+          border: '1px solid #252D22',
+          borderRadius: 12,
+          padding: '1rem',
+          marginTop: 12,
+        }}>
+          <div style={{
+            fontSize: 12, fontWeight: 700, color: '#555C50',
+            marginBottom: 10, letterSpacing: '0.5px',
+            textTransform: 'uppercase',
+          }}>
+            Share this event
+          </div>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <button
+              onClick={() => {
+                const url = window.location.href
+                navigator.clipboard.writeText(url)
+                  .then(() => {
+                    const btn = document.getElementById('copyBtn')
+                    if (btn) {
+                      btn.textContent = 'Copied!'
+                      btn.style.color = '#34C27A'
+                      setTimeout(() => {
+                        btn.textContent = 'Copy Link'
+                        btn.style.color = '#9A9C8E'
+                      }, 2000)
+                    }
+                  })
+                  .catch(() => {})
+              }}
+              id="copyBtn"
+              style={{
+                padding: '7px 14px', background: 'transparent',
+                border: '1px solid #252D22', borderRadius: 8,
+                fontSize: 12, color: '#9A9C8E',
+                cursor: 'pointer', fontFamily: 'inherit',
+              }}
+            >
+              Copy Link
+            </button>
+            <a
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('Check out this event on OppAlert!')}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: 'none' }}
+            >
+              <button style={{
+                padding: '7px 14px', background: 'transparent',
+                border: '1px solid #252D22', borderRadius: 8,
+                fontSize: 12, color: '#9A9C8E',
+                cursor: 'pointer', fontFamily: 'inherit',
+              }}>
+                Share on X
+              </button>
+            </a>
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent('Check out this event: ' + (typeof window !== 'undefined' ? window.location.href : ''))}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: 'none' }}
+            >
+              <button style={{
+                padding: '7px 14px', background: 'transparent',
+                border: '1px solid #1A3D2A', borderRadius: 8,
+                fontSize: 12, color: '#34C27A',
+                cursor: 'pointer', fontFamily: 'inherit',
+              }}>
+                Share on WhatsApp
+              </button>
+            </a>
+          </div>
         </div>
       </div>
     </div>

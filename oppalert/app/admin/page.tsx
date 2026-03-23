@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { getCategoryLabel, calculateDaysRemaining } from '@/lib/utils'
+import Toast from '@/components/Toast'
 import {
   Plus,
   Search,
@@ -26,6 +27,152 @@ import {
   Zap,
   Inbox,
 } from 'lucide-react'
+
+function UsersTab() {
+  const [users, setUsers] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
+
+  useEffect(() => {
+    fetch('/api/admin/users', {
+      headers: {
+        Authorization: `Bearer ${(() => { try { return JSON.parse(localStorage.getItem('user') || '{}').token || '' } catch { return '' } })()}`,
+      },
+    })
+      .then(r => r.json())
+      .then(data => { if (data.data) setUsers(data.data) })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
+
+  const updateUserStatus = async (userId: string, status: string) => {
+    try {
+      const token = (() => { try { return JSON.parse(localStorage.getItem('user') || '{}').token || '' } catch { return '' } })()
+      const res = await fetch(`/api/admin/users/${userId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setToast({ message: data.error || 'Failed to update user', type: 'error' })
+        return
+      }
+      setUsers(prev => prev.map(u => u.id === userId ? { ...u, status } : u))
+      setToast({ message: `User promoted to ${status}`, type: 'success' })
+    } catch {
+      setToast({ message: 'Network error', type: 'error' })
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-10 text-center">
+        <Loader2 size={32} className="mx-auto text-amber animate-spin mb-4" />
+        <p className="text-muted font-bold text-sm">Loading users...</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      {toast && (
+        <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />
+      )}
+      <h3 className="text-primary font-bold">{users.length} Registered Users</h3>
+      <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse min-w-[900px]">
+            <thead>
+              <tr className="border-b border-[var(--border)] bg-[var(--icon-bg)]">
+                {['Name', 'Email', 'Plan / Status', 'Joined', 'Action'].map((h) => (
+                  <th key={h} className="px-8 py-6 text-[10px] font-black uppercase tracking-widest text-muted">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5">
+              {users.map((u: any) => (
+                <tr key={u.id} className="hover:bg-[var(--icon-bg)] transition-colors">
+                  <td className="px-8 py-5">
+                    <div className="font-bold text-primary">{u.full_name || 'Unknown'}</div>
+                  </td>
+                  <td className="px-8 py-5 text-xs text-muted font-medium">{u.email}</td>
+                  <td className="px-8 py-5">
+                    {u.status === 'admin' ? (
+                      <span style={{
+                        background: '#2A1E06',
+                        color: '#E8A020',
+                        border: '1px solid rgba(232,160,32,0.4)',
+                        padding: '3px 12px',
+                        borderRadius: 100,
+                        fontSize: 10,
+                        fontWeight: 800,
+                        letterSpacing: '0.8px',
+                        textTransform: 'uppercase',
+                      }}>ADMIN</span>
+                    ) : u.status === 'premium' ? (
+                      <span className="badge badge-blue" style={{ textTransform: 'uppercase', fontSize: 10 }}>Premium</span>
+                    ) : (
+                      <span style={{
+                        background: '#1C2119', color: '#555C50',
+                        padding: '3px 10px', borderRadius: 100,
+                        fontSize: 10, fontWeight: 700,
+                      }}>Free</span>
+                    )}
+                  </td>
+                  <td className="px-8 py-5 text-xs text-subtle">
+                    {u.created_at ? new Date(u.created_at).toLocaleDateString() : '—'}
+                  </td>
+                  <td className="px-8 py-5">
+                    {u.status === 'admin' ? (
+                      <span style={{ color: '#E8A020', fontSize: 11, fontWeight: 700 }}>—</span>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => updateUserStatus(u.id, 'admin')}
+                          style={{
+                            padding: '5px 14px',
+                            background: '#2A1E06',
+                            border: '1px solid rgba(232,160,32,0.4)',
+                            borderRadius: 8,
+                            fontSize: 11, fontWeight: 700,
+                            color: '#E8A020', cursor: 'pointer',
+                            fontFamily: 'inherit',
+                          }}
+                        >
+                          Make Admin
+                        </button>
+                        {u.status !== 'premium' && (
+                          <button
+                            onClick={() => updateUserStatus(u.id, 'premium')}
+                            style={{
+                              padding: '5px 14px',
+                              background: 'transparent',
+                              border: '1px solid #313D2C',
+                              borderRadius: 8,
+                              fontSize: 11, fontWeight: 700,
+                              color: '#9A9C8E', cursor: 'pointer',
+                              fontFamily: 'inherit',
+                            }}
+                          >
+                            Make Premium
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 function EventsTab() {
   const [events, setEvents] = useState<any[]>([])
@@ -232,6 +379,8 @@ const barMonths = ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan']
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('opps')
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [adminToast, setAdminToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
+  const [currentUser, setCurrentUser] = useState<any>(null)
   const [publishSuccess, setPublishSuccess] = useState(false)
   const [isPublishing, setIsPublishing] = useState(false)
   const [liveOpps, setLiveOpps] = useState<any[]>([])
@@ -255,6 +404,13 @@ export default function AdminPage() {
     }
     return () => { document.body.style.overflow = 'unset' }
   }, [showCreateModal])
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('user')
+      if (stored) setCurrentUser(JSON.parse(stored))
+    } catch {}
+  }, [])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -296,7 +452,7 @@ export default function AdminPage() {
   const tabs = [
     { id: 'opps', label: 'Core Opportunities' },
     { id: 'submissions', label: 'Submissions' },
-    { id: 'users', label: 'User Directory' },
+    ...(currentUser?.plan === 'admin' ? [{ id: 'users', label: 'User Directory' }] : []),
     { id: 'featured', label: 'Promotion Slots' },
     { id: 'analytics', label: 'System Analytics' },
   ]
@@ -353,6 +509,9 @@ export default function AdminPage() {
 
   return (
     <main className="min-h-screen pt-24 pb-20 px-6">
+      {adminToast && (
+        <Toast message={adminToast.message} type={adminToast.type} onClose={() => setAdminToast(null)} />
+      )}
       <div className="max-w-7xl mx-auto space-y-10">
         
         {/* ── HEADER ── */}
@@ -494,15 +653,8 @@ export default function AdminPage() {
           )}
 
           {/* USERS TAB */}
-          {activeTab === 'users' && (
-            <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] overflow-hidden">
-               <div className="p-10 text-center space-y-4">
-                  <Users size={48} className="mx-auto text-muted opacity-40" />
-                  <h3 className="font-syne text-xl font-black text-primary">Identity Management</h3>
-                  <p className="text-subtle font-medium max-w-sm mx-auto">Access restricted to high-level system investigators. Full directory loading...</p>
-                  <button className="btn-ghost !border-[var(--glass-border)] px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-widest text-primary hover:bg-[var(--icon-bg)]">View Raw Data</button>
-               </div>
-            </div>
+          {activeTab === 'users' && currentUser?.plan === 'admin' && (
+            <UsersTab />
           )}
 
           {/* ANALYTICS TAB */}

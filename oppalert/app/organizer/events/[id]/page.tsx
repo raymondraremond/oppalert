@@ -14,6 +14,8 @@ export default function ManageEventPage() {
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('overview')
   const [copied, setCopied] = useState(false)
+  const [analytics, setAnalytics] = useState<any>(null)
+  const [analyticsLoading, setAnalyticsLoading] = useState(false)
 
   useEffect(() => {
     try {
@@ -27,6 +29,43 @@ export default function ManageEventPage() {
       router.push('/login')
     }
   }, [])
+
+  // Auto-refresh registrations every 30 seconds when on that tab
+  useEffect(() => {
+    if (activeTab !== 'registrations') return
+    const interval = setInterval(() => {
+      if (user?.token) fetchData(user.token)
+    }, 30000)
+    return () => clearInterval(interval)
+  }, [activeTab, user])
+
+  // Fetch analytics when switching to analytics tab
+  useEffect(() => {
+    if (activeTab !== 'analytics' || !user?.token || analytics) return
+    setAnalyticsLoading(true)
+    fetch(`/api/organizer/events/${eventId}/analytics`, {
+      headers: { Authorization: `Bearer ${user.token}` },
+    })
+      .then(r => r.json())
+      .then(data => setAnalytics(data))
+      .catch(() => {})
+      .finally(() => setAnalyticsLoading(false))
+  }, [activeTab, user, eventId])
+
+  const getEventStatus = (ev: any): { label: string; color: string; bg: string } => {
+    const now = new Date()
+    const start = new Date(ev.start_date)
+    const end = ev.end_date ? new Date(ev.end_date) : null
+    if (!ev.is_published) return { label: 'Draft', color: '#9A9C8E', bg: '#1C2119' }
+    if (end && now > end) return { label: 'Past', color: '#555C50', bg: '#141710' }
+    if (now >= start && (!end || now <= end)) return { label: 'Live Now', color: '#34C27A', bg: '#0F2E1C' }
+    if (start > now) {
+      const daysUntil = Math.ceil((start.getTime() - now.getTime()) / 86400000)
+      if (daysUntil <= 7) return { label: 'Starting Soon', color: '#E8A020', bg: '#2A1E06' }
+      return { label: 'Upcoming', color: '#4A9EE8', bg: '#0D1B2A' }
+    }
+    return { label: 'Published', color: '#34C27A', bg: '#0F2E1C' }
+  }
 
   const fetchData = async (token: string) => {
     try {
@@ -137,7 +176,7 @@ export default function ManageEventPage() {
     )
   }
 
-  const tabs = ['overview', 'registrations', 'share']
+  const tabs = ['overview', 'registrations', 'analytics', 'share']
 
   return (
     <div style={{
@@ -165,14 +204,13 @@ export default function ManageEventPage() {
             {event.title}
           </h1>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            <span style={{
-              background: event.is_published ? '#0F2E1C' : '#1C2119',
-              color: event.is_published ? '#34C27A' : 'var(--muted)',
-              padding: '3px 12px', borderRadius: 100,
-              fontSize: 12, fontWeight: 600,
-            }}>
-              {event.is_published ? 'Published' : 'Draft'}
-            </span>
+            {(() => { const s = getEventStatus(event); return (
+              <span style={{
+                background: s.bg, color: s.color,
+                padding: '3px 12px', borderRadius: 100,
+                fontSize: 12, fontWeight: 700,
+              }}>{s.label}</span>
+            )})()}
             <span style={{
               background: '#1C2119', color: 'var(--muted)',
               padding: '3px 12px', borderRadius: 100,
@@ -183,6 +221,17 @@ export default function ManageEventPage() {
           </div>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
+          <button
+            onClick={() => user?.token && fetchData(user.token)}
+            style={{
+              padding: '8px 16px', background: 'transparent',
+              border: '1px solid #313D2C', borderRadius: 8,
+              fontSize: 13, color: '#9A9C8E',
+              cursor: 'pointer', fontFamily: 'inherit',
+            }}
+          >
+            ↻ Refresh
+          </button>
           <button
             onClick={handleExport}
             style={{
@@ -338,17 +387,30 @@ export default function ManageEventPage() {
             <div style={{ fontSize: 14, color: 'var(--muted)' }}>
               {registrations.length} total registrations
             </div>
-            <button
-              onClick={handleExport}
-              style={{
-                padding: '8px 16px', background: '#E8A020',
-                border: 'none', borderRadius: 8,
-                fontSize: 13, fontWeight: 700, color: '#090A07',
-                cursor: 'pointer', fontFamily: 'inherit',
-              }}
-            >
-              Export as CSV
-            </button>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button
+                onClick={() => user?.token && fetchData(user.token)}
+                style={{
+                  padding: '8px 16px', background: 'transparent',
+                  border: '1px solid #313D2C', borderRadius: 8,
+                  fontSize: 13, color: '#9A9C8E',
+                  cursor: 'pointer', fontFamily: 'inherit',
+                }}
+              >
+                ↻ Refresh
+              </button>
+              <button
+                onClick={handleExport}
+                style={{
+                  padding: '8px 16px', background: '#E8A020',
+                  border: 'none', borderRadius: 8,
+                  fontSize: 13, fontWeight: 700, color: '#090A07',
+                  cursor: 'pointer', fontFamily: 'inherit',
+                }}
+              >
+                Export as CSV
+              </button>
+            </div>
           </div>
 
           {registrations.length === 0 ? (
@@ -429,6 +491,70 @@ export default function ManageEventPage() {
                   ))}
                 </tbody>
               </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Analytics tab */}
+      {activeTab === 'analytics' && (
+        <div>
+          {analyticsLoading ? (
+            <div style={{
+              background: 'var(--bg2)', border: '1px solid #252D22',
+              borderRadius: 12, padding: '3rem', textAlign: 'center', color: '#555C50',
+            }}>
+              Loading analytics...
+            </div>
+          ) : analytics ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
+              <div style={{ background: 'var(--bg2)', border: '1px solid #252D22', borderRadius: 12, padding: '1.5rem' }}>
+                <div style={{ fontSize: 11, color: '#555C50', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>Total Registrations</div>
+                <div style={{ fontFamily: 'Syne, sans-serif', fontSize: 32, fontWeight: 800, color: '#34C27A' }}>{analytics.totalRegistrations}</div>
+              </div>
+              <div style={{ background: 'var(--bg2)', border: '1px solid #252D22', borderRadius: 12, padding: '1.5rem' }}>
+                <div style={{ fontSize: 11, color: '#555C50', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>Capacity Fill</div>
+                <div style={{ fontFamily: 'Syne, sans-serif', fontSize: 32, fontWeight: 800, color: '#E8A020' }}>
+                  {event.max_capacity ? Math.round((analytics.totalRegistrations / event.max_capacity) * 100) + '%' : 'Unlimited'}
+                </div>
+                {event.max_capacity && (
+                  <div style={{ height: 6, background: '#1C2119', borderRadius: 3, marginTop: 10, overflow: 'hidden' }}>
+                    <div style={{
+                      height: '100%',
+                      width: Math.min(100, (analytics.totalRegistrations / event.max_capacity) * 100) + '%',
+                      background: analytics.totalRegistrations >= event.max_capacity ? '#F05050' : '#E8A020',
+                      borderRadius: 3,
+                      transition: 'width 0.8s ease',
+                    }} />
+                  </div>
+                )}
+              </div>
+              <div style={{ background: 'var(--bg2)', border: '1px solid #252D22', borderRadius: 12, padding: '1.5rem' }}>
+                <div style={{ fontSize: 11, color: '#555C50', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 8 }}>Page Views</div>
+                <div style={{ fontFamily: 'Syne, sans-serif', fontSize: 32, fontWeight: 800, color: '#4A9EE8' }}>{analytics.pageViews}</div>
+              </div>
+              {analytics.last7Days && analytics.last7Days.length > 0 && (
+                <div style={{ background: 'var(--bg2)', border: '1px solid #252D22', borderRadius: 12, padding: '1.5rem', gridColumn: '1 / -1' }}>
+                  <div style={{ fontSize: 11, color: '#555C50', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 16 }}>Registrations — Last 7 Days</div>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end', height: 80 }}>
+                    {analytics.last7Days.map((d: any, i: number) => {
+                      const max = Math.max(...analytics.last7Days.map((x: any) => parseInt(x.count)))
+                      const h = max > 0 ? Math.round((parseInt(d.count) / max) * 64) : 4
+                      return (
+                        <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+                          <div style={{ fontSize: 10, color: '#555C50' }}>{d.count}</div>
+                          <div style={{ width: '100%', height: h, background: '#34C27A', borderRadius: '3px 3px 0 0', minHeight: 4 }} />
+                          <div style={{ fontSize: 9, color: '#555C50' }}>{new Date(d.date).toLocaleDateString('en', { month: 'short', day: 'numeric' })}</div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div style={{ background: 'var(--bg2)', border: '1px solid #252D22', borderRadius: 12, padding: '3rem', textAlign: 'center', color: '#555C50' }}>
+              No analytics data available yet.
             </div>
           )}
         </div>
