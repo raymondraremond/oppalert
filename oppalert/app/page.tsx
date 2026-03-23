@@ -99,13 +99,13 @@ export default function HomePage() {
       <section className="pt-24 pb-32 px-6 text-center border-b border-border">
         <div className="max-w-4xl mx-auto">
           <h1 className="font-syne text-5xl md:text-7xl font-black text-primary mb-6 tracking-tighter leading-tight">
-            The Hub for African <span className="text-[#E8A020]">Excellence.</span>
+            The Hub for African <span className="text-amber">Excellence.</span>
           </h1>
           <p className="text-lg md:text-xl text-muted mb-10 max-w-2xl mx-auto leading-relaxed">
             Discover verified scholarships, remote jobs, fellowships, and grants curated specifically for the next generation of African leaders.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/opportunities" className="px-10 py-4 bg-[#E8A020] text-[#080A07] font-black rounded-2xl hover:scale-105 transition-all">
+            <Link href="/opportunities" className="px-10 py-4 bg-amber text-[#080A07] font-black rounded-2xl hover:scale-105 transition-all shadow-glow-amber">
               Browse Opportunities
             </Link>
             <Link href="/register" className="px-10 py-4 bg-bg2 text-primary border border-border font-black rounded-2xl hover:bg-surface transition-all">
@@ -120,7 +120,7 @@ export default function HomePage() {
         <h2 className="font-syne text-3xl font-black text-primary mb-12 text-center">Browse by Category</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {categories.map((cat) => (
-            <Link key={cat.slug} href={`/opportunities?cat=${cat.slug}`} className="p-6 bg-bg2 border border-border rounded-3xl hover:border-[#E8A020] transition-all text-center group">
+            <Link key={cat.slug} href={`/opportunities?cat=${cat.slug}`} className="p-6 bg-bg2 border border-border rounded-3xl hover:border-amber transition-all text-center group">
               <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">{cat.icon}</div>
               <div className="font-bold text-primary text-sm">{cat.name}</div>
             </Link>
@@ -128,15 +128,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured */}
-      <section className="py-20 px-6 bg-[#0D0F0B]">
+      {/* Featured Section */}
+      <section className="py-24 px-6 bg-[var(--bg2)] border-y border-border relative overflow-hidden">
+        <div className="absolute inset-0 bg-transparent pointer-events-none opacity-[0.03] select-none" style={{ backgroundImage: 'radial-gradient(var(--amber) 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
         <div className="container mx-auto">
           <div className="flex justify-between items-end mb-12">
             <div>
-              <h2 className="font-syne text-3xl font-black text-primary mb-2">Featured Opportunities</h2>
-              <p className="text-muted">Handpicked high-impact opportunities closing soon.</p>
+              <h2 className="font-syne text-3xl md:text-4xl font-black text-primary mb-3">Featured <span className="text-amber">Opportunities</span></h2>
+              <p className="text-muted text-lg max-w-xl">Handpicked high-impact opportunities closing soon across Africa.</p>
             </div>
-            <Link href="/opportunities" className="text-[#E8A020] font-bold hover:underline">View All →</Link>
+            <Link href="/opportunities" className="text-amber font-black uppercase tracking-widest text-xs hover:opacity-80 transition-opacity">View All Opportunities →</Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {featured.map((opp) => (
@@ -158,14 +159,14 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {sampleEvents.map((event) => (
-              <div key={event.id} className="bg-bg2 border border-border rounded-[2rem] p-8 hover:border-[#E8A020]/50 transition-all group" style={{ borderLeft: `4px solid ${event.color}` }}>
+              <div key={event.id} className="bg-bg2 border border-border rounded-[2rem] p-8 hover:border-amber/50 transition-all group" style={{ borderLeft: `4px solid ${event.color}` }}>
                 <div className="flex justify-between items-start mb-6">
                   <span className="px-3 py-1 bg-bg rounded-full text-[10px] font-black uppercase text-muted border border-border">
                     {event.event_type}
                   </span>
-                  <span className="text-[#E8A020] text-xs font-bold">{event.is_paid ? `NGN ${event.ticket_price.toLocaleString()}` : 'FREE'}</span>
+                  <span className="text-amber text-xs font-bold">{event.is_paid ? `NGN ${event.ticket_price.toLocaleString()}` : 'FREE'}</span>
                 </div>
-                <h3 className="text-xl font-bold text-primary mb-4 group-hover:text-[#E8A020] transition-colors line-clamp-2">{event.title}</h3>
+                <h3 className="text-xl font-bold text-primary mb-4 group-hover:text-amber transition-colors line-clamp-2">{event.title}</h3>
                 <div className="space-y-3 mb-8">
                   <div className="text-sm text-muted flex items-center gap-2"><Calendar size={16} /> {new Date(event.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
                   <div className="text-sm text-muted flex items-center gap-2">{event.is_online ? <><Globe size={16} /> Online</> : <><MapPin size={16} /> {event.location}</>}</div>
@@ -177,7 +178,7 @@ export default function HomePage() {
                   <span>Registration</span>
                   <span>{event.current_registrations}/{event.max_capacity} Booked</span>
                 </div>
-                <Link href={`/events/${event.slug}`} className="block w-full py-3 bg-surface text-primary text-center font-black rounded-xl group-hover:bg-[#E8A020] group-hover:text-[#080A07] transition-all">
+                <Link href={`/events/${event.slug}`} className="block w-full py-3 bg-surface text-primary text-center font-black rounded-xl group-hover:bg-amber group-hover:text-[#080A07] transition-all">
                   Register Now
                 </Link>
               </div>
@@ -187,7 +188,7 @@ export default function HomePage() {
       </section>
 
       {/* Final CTA */}
-      <section className="py-24 px-6 text-center bg-[#E8A020]">
+      <section className="py-24 px-6 text-center bg-amber shadow-[0_-20px_50px_rgba(192,112,16,0.1)]">
         <h2 className="font-syne text-4xl font-black text-[#080A07] mb-6">Ready to find your next opportunity?</h2>
         <p className="text-[#080A07] opacity-80 mb-10 text-lg max-w-xl mx-auto font-medium">Join thousands of students and professionals receiving weekly alerts.</p>
         <Link href="/register" className="px-12 py-5 bg-bg text-primary font-black rounded-2xl hover:scale-105 transition-all inline-block shadow-2xl">
