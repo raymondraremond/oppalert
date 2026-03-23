@@ -139,14 +139,15 @@ export default function DashboardPage() {
   const getBadgeStyle = () => {
     if (user.plan === "admin") {
       return {
-        background: "linear-gradient(135deg, #E8A020 0%, #FFDF90 50%, #E8A020 100%)",
-        color: "#0D0F0B"
+        background: "linear-gradient(135deg, var(--amber) 0%, #FFDF90 50%, var(--amber) 100%)",
+        color: "#0D0F0B",
+        boxShadow: "0 0 15px rgba(232, 160, 32, 0.3)"
       }
     }
     if (user.plan === "premium") {
-      return { background: "#E8A020", color: "#0D0F0B" }
+      return { background: "var(--amber)", color: "#0D0F0B", boxShadow: "0 0 10px rgba(232, 160, 32, 0.2)" }
     }
-    return { background: "#1C2119", color: "#9A9C8E" }
+    return { background: "var(--surface2)", color: "var(--muted)" }
   }
 
   return (
@@ -179,7 +180,7 @@ export default function DashboardPage() {
                     key={item.id}
                     onClick={() => setActiveTab(item.id)}
                     className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all font-bold text-sm ${
-                      isActive ? "bg-[var(--icon-bg)] text-amber border border-[var(--glass-border)]" : "text-muted hover:text-primary"
+                      isActive ? "bg-amber text-[#080A07] shadow-glow-amber hov-scale-sm" : "text-muted hover:text-primary hover:bg-[var(--icon-bg)]"
                     }`}
                   >
                     <Icon size={18} />
@@ -220,12 +221,12 @@ export default function DashboardPage() {
                   { num: 0, label: "URGENT DEADLINES", icon: Clock },
                   { num: isPremium ? "Unlimited" : `${savedCount} / 5`, label: "SAVE LIMIT", icon: Bell },
                 ].map((s, i) => (
-                  <div key={i} className="glass-gradient border border-[var(--border)] rounded-3xl p-6">
-                    <div className="w-10 h-10 rounded-xl bg-[var(--icon-bg)] flex items-center justify-center mb-6">
-                      <s.icon size={20} className="text-amber" />
+                  <div key={i} className="glass-card rounded-[2.5rem] p-8 hover:-translate-y-1 transition-all duration-300">
+                    <div className="w-12 h-12 rounded-2xl bg-[var(--icon-bg)] flex items-center justify-center mb-6 border border-[var(--glass-border)]">
+                      <s.icon size={22} className="text-amber" />
                     </div>
-                    <div className="font-syne text-4xl font-black text-primary mb-1">{s.num}</div>
-                    <p className="text-[10px] font-black uppercase tracking-widest text-muted">{s.label}</p>
+                    <div className="font-syne text-5xl font-black text-primary mb-1 tracking-tighter">{s.num}</div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-subtle">{s.label}</p>
                   </div>
                 ))}
               </div>
@@ -251,25 +252,29 @@ export default function DashboardPage() {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                   {savedOpps.map((opp) => (
-                    <div key={opp.id} className="glass-gradient border border-[var(--border)] rounded-[2rem] p-6 flex flex-col h-full">
-                      <div className="flex justify-between items-start mb-4">
-                        <div className="text-2xl">{opp.icon || "🌍"}</div>
-                        <span className={`text-[9px] font-black px-2 py-1 rounded-full ${opp.days_remaining <= 7 ? "bg-danger/10 text-danger" : "bg-amber/10 text-amber"}`}>
+                    <div key={opp.id} className="glass-card rounded-[2rem] p-8 flex flex-col h-full hover:shadow-glow-amber transition-all duration-300 group">
+                      <div className="flex justify-between items-start mb-6">
+                        <div className="w-10 h-10 rounded-xl bg-[var(--icon-bg)] flex items-center justify-center text-xl shadow-inner border border-[var(--glass-border)]">
+                          {opp.icon || "🌍"}
+                        </div>
+                        <span className={`text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${opp.days_remaining <= 7 ? "bg-danger/10 text-danger border border-danger/20" : "bg-amber/10 text-amber border border-amber/20"}`}>
                           {opp.days_remaining || 0} DAYS LEFT
                         </span>
                       </div>
-                      <h3 className="font-bold text-primary mb-1 line-clamp-1">{opp.title}</h3>
-                      <p className="text-xs text-muted mb-4">{opp.organization || opp.org}</p>
-                      <div className="flex gap-2 mb-6">
-                        <span className="text-[9px] font-bold px-2 py-1 bg-blue-500/10 text-blue-400 rounded-md uppercase">{opp.category || opp.cat}</span>
-                        <span className="text-[9px] font-bold px-2 py-1 bg-white/5 text-subtle rounded-md uppercase">{opp.funding_type || opp.fund}</span>
+                      <h3 className="font-syne font-bold text-lg text-primary mb-1 line-clamp-1">{opp.title}</h3>
+                      <p className="text-xs text-muted mb-6 font-medium tracking-tight opacity-70">{opp.organization || opp.org}</p>
+                      
+                      <div className="flex flex-wrap gap-2 mb-8">
+                        <span className="text-[9px] font-black px-2.5 py-1 bg-[var(--icon-bg)] text-subtle border border-[var(--glass-border)] rounded-lg uppercase tracking-wider">{opp.category || opp.cat}</span>
+                        <span className="text-[9px] font-black px-2.5 py-1 bg-[var(--icon-bg)] text-subtle border border-[var(--glass-border)] rounded-lg uppercase tracking-wider">{opp.funding_type || opp.fund}</span>
                       </div>
-                      <div className="mt-auto flex gap-3">
-                        <Link href={`/opportunities/${opp.id}`} className="flex-1 py-3 bg-white/5 hover:bg-white/10 text-primary text-[10px] font-black uppercase tracking-widest rounded-xl text-center transition-all flex items-center justify-center gap-2">
-                          View <ArrowRight size={12} />
+                      
+                      <div className="mt-auto flex gap-4">
+                        <Link href={`/opportunities/${opp.id}`} className="flex-[2] py-3.5 bg-amber text-[#080A07] text-[10px] font-black uppercase tracking-widest rounded-2xl text-center transition-all flex items-center justify-center gap-2 shadow-glow-amber active:scale-95 hov-scale-sm">
+                          View Details <ArrowRight size={12} strokeWidth={3} />
                         </Link>
-                        <button onClick={() => handleRemoveSaved(opp.id)} className="p-3 bg-danger/10 hover:bg-danger/20 text-danger rounded-xl transition-all">
-                          <Trash2 size={14} />
+                        <button onClick={() => handleRemoveSaved(opp.id)} className="flex-1 py-3.5 bg-danger/10 hover:bg-danger/20 text-danger border border-danger/10 rounded-2xl transition-all flex items-center justify-center group/del active:scale-95">
+                          <Trash2 size={16} strokeWidth={2.5} className="group-hover/del:scale-110 transition-transform" />
                         </button>
                       </div>
                     </div>
@@ -282,8 +287,15 @@ export default function DashboardPage() {
           {activeTab === "alerts" && (
              <div className="animate-fade-up space-y-8">
                 <h1 className="font-syne text-4xl font-black text-primary">Smart <span className="text-amber">Alerts</span></h1>
-                <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-8">
-                  <p className="text-subtle font-medium">Alert preferences are coming soon.</p>
+                <div className="glass-card rounded-[3rem] p-12 text-center max-w-2xl">
+                  <div className="w-16 h-16 rounded-2xl bg-[var(--icon-bg)] flex items-center justify-center mx-auto mb-8 text-amber">
+                    <Bell size={28} />
+                  </div>
+                  <h3 className="font-syne text-xl font-black text-primary mb-4">Smart Alerts is coming soon</h3>
+                  <p className="text-subtle font-medium leading-relaxed mb-8">Get notified instantly when new opportunities matching your profile are posted. We're building this feature right now.</p>
+                  <div className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--icon-bg)] rounded-full text-[10px] font-black uppercase tracking-widest text-muted border border-[var(--glass-border)]">
+                    <Sparkles size={14} /> Featured Beta Release
+                  </div>
                 </div>
              </div>
           )}

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { opportunities as seedData } from '@/lib/data'
 import OpportunityCard from '@/components/OpportunityCard'
-import { GraduationCap, Briefcase, Users, Coins, Leaf, Rocket, Calendar, Globe, MapPin } from 'lucide-react'
+import { GraduationCap, Briefcase, Users, Coins, Leaf, Rocket, Calendar, Globe, MapPin, ArrowRight } from 'lucide-react'
 
 const sampleEvents = [
   {
@@ -137,7 +137,9 @@ export default function HomePage() {
               <h2 className="font-syne text-3xl md:text-4xl font-black text-primary mb-3">Featured <span className="text-amber">Opportunities</span></h2>
               <p className="text-muted text-lg max-w-xl">Handpicked high-impact opportunities closing soon across Africa.</p>
             </div>
-            <Link href="/opportunities" className="text-amber font-black uppercase tracking-widest text-xs hover:opacity-80 transition-opacity">View All Opportunities →</Link>
+            <Link href="/opportunities" className="text-amber font-black uppercase tracking-widest text-xs hover:opacity-80 transition-opacity flex items-center gap-2">
+              View All Opportunities <ArrowRight size={14} strokeWidth={3} />
+            </Link>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {featured.map((opp) => (

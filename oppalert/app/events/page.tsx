@@ -1,6 +1,6 @@
-'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { Calendar, MapPin, Globe, ArrowRight, Sparkles } from 'lucide-react'
 
 const sampleEvents = [
   {
@@ -145,13 +145,13 @@ export default function EventsPage() {
             <button
               key={type}
               onClick={() => setTypeFilter(type)}
-              className={`px-6 py-2 rounded-full text-sm font-bold border transition-all whitespace-nowrap ${
+              className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.15em] border transition-all whitespace-nowrap duration-300 ${
                 typeFilter === type
-                  ? 'bg-[#E8A020] border-[#E8A020] text-[#080A07]'
-                  : 'bg-bg2 border-border text-muted hover:border-[#E8A020]'
+                  ? 'bg-amber border-amber text-[#080A07] shadow-glow-amber scale-105'
+                  : 'bg-bg2 border-border text-muted hover:border-amber hover:text-primary'
               }`}
             >
-              {type.charAt(0).toUpperCase() + type.slice(1)}
+              {type}
             </button>
           ))}
         </div>
@@ -161,19 +161,19 @@ export default function EventsPage() {
           {filteredEvents.map((event) => (
             <div 
               key={event.id} 
-              className="bg-bg2 border border-border rounded-[2rem] p-8 hover:border-[#E8A020]/50 transition-all group flex flex-col"
-              style={{ borderLeft: `5px solid ${event.color || '#E8A020'}` }}
+              className="glass-card rounded-[2.5rem] p-8 hover:-translate-y-2 transition-all duration-300 group flex flex-col hover:shadow-glow-amber"
+              style={{ borderLeft: `6px solid ${event.color || 'var(--amber)'}` }}
             >
               <div className="flex justify-between items-start mb-6">
-                <span className="px-3 py-1 bg-bg rounded-full text-[10px] font-black uppercase text-muted border border-border">
+                <span className="px-3 py-1 bg-[var(--icon-bg)] rounded-full text-[10px] font-black uppercase text-subtle border border-[var(--glass-border)]">
                   {event.event_type}
                 </span>
-                <span className="text-[#E8A020] text-xs font-bold">
+                <span className="text-amber text-xs font-black tracking-widest">
                   {event.is_paid ? `NGN ${Number(event.ticket_price).toLocaleString()}` : 'FREE'}
                 </span>
               </div>
               
-              <h3 className="text-xl font-bold text-primary mb-3 group-hover:text-[#E8A020] transition-colors line-clamp-2">
+              <h3 className="font-syne text-xl font-black text-primary mb-3 group-hover:text-amber transition-colors line-clamp-2">
                 {event.title}
               </h3>
               
@@ -181,16 +181,18 @@ export default function EventsPage() {
                 {event.description}
               </p>
 
-              <div className="space-y-3 mb-8 flex-grow">
-                <div className="text-sm text-muted flex items-center gap-2">
-                  📅 {new Date(event.start_date).toLocaleDateString('en-US', { 
-                    month: 'long', 
+              <div className="space-y-4 mb-8 flex-grow">
+                <div className="text-[11px] font-bold text-muted flex items-center gap-3 uppercase tracking-wider">
+                  <Calendar size={14} className="text-amber" />
+                  {new Date(event.start_date).toLocaleDateString('en-US', { 
+                    month: 'short', 
                     day: 'numeric', 
                     year: 'numeric' 
                   })}
                 </div>
-                <div className="text-sm text-muted flex items-center gap-2">
-                  {event.is_online ? '🌐 Online' : `📍 ${event.location}`}
+                <div className="text-[11px] font-bold text-muted flex items-center gap-3 uppercase tracking-wider">
+                  {event.is_online ? <Globe size={14} className="text-amber" /> : <MapPin size={14} className="text-amber" />}
+                  {event.is_online ? 'Online Session' : event.location}
                 </div>
               </div>
 
@@ -208,9 +210,9 @@ export default function EventsPage() {
                 
                 <Link 
                   href={`/events/${event.slug}`}
-                  className="block w-full py-4 bg-surface text-primary text-center font-black rounded-xl hover:bg-[#E8A020] hover:text-[#080A07] transition-all"
+                  className="flex items-center justify-center gap-2 w-full py-4 bg-amber text-[#080A07] text-center font-black rounded-xl hover:shadow-glow-amber transition-all uppercase text-[10px] tracking-[0.2em] active:scale-95"
                 >
-                  View Details & Register
+                  View & Register <ArrowRight size={14} strokeWidth={3} />
                 </Link>
               </div>
             </div>

@@ -58,10 +58,10 @@ export default function OpportunitiesPage() {
             <button
               key={cat.id}
               onClick={() => setActiveCat(cat.id)}
-              className={`px-6 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest whitespace-nowrap transition-all duration-300 ${
+              className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] whitespace-nowrap transition-all duration-300 ${
                 activeCat === cat.id 
-                  ? 'bg-[#E8A020] text-[#080A07] shadow-glow-amber scale-105' 
-                  : 'bg-bg2 text-muted border border-border hover:bg-surface hover:border-[#555C50]'
+                  ? 'bg-amber text-[#080A07] shadow-glow-amber scale-105' 
+                  : 'bg-bg2 text-muted border border-border hover:bg-surface hover:text-primary hover:border-subtle'
               }`}
             >
               {cat.label}
@@ -84,9 +84,10 @@ export default function OpportunitiesPage() {
         )}
         
         {!loading && opps.length === 0 && (
-          <div className="text-center py-20">
-            <div className="flex justify-center mb-4 text-[#E8A020]"><Search size={40} /></div>
-            <p className="text-subtle font-bold italic tracking-widest uppercase text-xs">No opportunities found in this category.</p>
+          <div className="text-center py-32 glass-card rounded-[3rem] animate-fade-in mx-auto max-w-2xl">
+            <div className="flex justify-center mb-6 text-amber opacity-40"><Search size={48} strokeWidth={1.5} /></div>
+            <p className="text-subtle font-bold tracking-[0.2em] uppercase text-[10px]">No opportunities found in this category.</p>
+            <button onClick={() => setActiveCat('all')} className="mt-8 text-amber font-black text-xs hover:underline uppercase">Reset Filters</button>
           </div>
         )}
       </div>
