@@ -133,7 +133,7 @@ export async function POST(req: NextRequest) {
       location || 'Remote', 
       funding_type || 'Fully Funded', 
       description || '', 
-      about || '', 
+      about || description || '', 
       eligibility || [], 
       benefits || [], 
       application_url || null, 
