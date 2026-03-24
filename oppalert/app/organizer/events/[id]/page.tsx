@@ -16,6 +16,8 @@ export default function ManageEventPage() {
   const [copied, setCopied] = useState(false)
   const [analytics, setAnalytics] = useState<any>(null)
   const [analyticsLoading, setAnalyticsLoading] = useState(false)
+  const [showBroadcast, setShowBroadcast] = useState(false)
+  const [broadcastCopied, setBroadcastCopied] = useState(false)
 
   const getEventStatus = (ev: any): { label: string; color: string; bg: string } => {
     const now = new Date()
@@ -120,6 +122,25 @@ export default function ManageEventPage() {
       URL.revokeObjectURL(url)
     } catch (err) {
       console.error('Export error:', err)
+    }
+  }
+
+  const broadcastMessage = `Hi there! This is a reminder about "${event?.title}". 
+  
+Event Details:
+📅 Date: ${new Date(event?.start_date).toLocaleDateString()}
+📍 Location: ${event?.is_online ? 'Online' : event?.location}
+🔗 Join/Info: https://oppalert.vercel.app/events/${event?.slug}
+
+We look forward to seeing you there!`
+
+  const copyBroadcast = async () => {
+    try {
+      await navigator.clipboard.writeText(broadcastMessage)
+      setBroadcastCopied(true)
+      setTimeout(() => setBroadcastCopied(false), 2000)
+    } catch (err) {
+      console.error('Copy error:', err)
     }
   }
 
@@ -242,6 +263,17 @@ export default function ManageEventPage() {
             }}
           >
             Export CSV
+          </button>
+          <button
+            onClick={() => setShowBroadcast(true)}
+            style={{
+              padding: '9px 18px', background: '#8B5CF620',
+              border: '1px solid #8B5CF640', borderRadius: 8,
+              fontSize: 13, fontWeight: 700, color: '#8B5CF6',
+              cursor: 'pointer', fontFamily: 'inherit',
+            }}
+          >
+            📢 Notify Attendees
           </button>
           <Link href={`/events/${event.slug}`}>
             <button style={{
@@ -644,6 +676,71 @@ export default function ManageEventPage() {
                 Share on WhatsApp
               </button>
             </a>
+          </div>
+        </div>
+      )}
+
+      {/* Broadcast Modal */}
+      {showBroadcast && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(0,0,0,0.8)', display: 'flex',
+          alignItems: 'center', justifyContent: 'center', zIndex: 100,
+          padding: 20,
+        }}>
+          <div style={{
+            background: 'var(--bg2)', border: '1px solid #252D22',
+            borderRadius: 24, padding: 32, maxWidth: 500, width: '100%',
+            position: 'relative',
+          }}>
+            <button 
+              onClick={() => setShowBroadcast(false)}
+              style={{
+                position: 'absolute', top: 20, right: 20,
+                background: 'transparent', border: 'none', color: '#555C50',
+                fontSize: 20, cursor: 'pointer',
+              }}
+            >
+              ×
+            </button>
+            <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 8, fontFamily: 'Syne' }}>Broadcast Message</h3>
+            <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 24 }}>
+              Copy this message to send it manually to your attendees via WhatsApp, Email, or SMS.
+            </p>
+            
+            <div style={{
+              background: '#0D0F0B', border: '1px solid #252D22',
+              borderRadius: 12, padding: 20, fontSize: 13,
+              color: 'var(--primary)', whiteSpace: 'pre-wrap',
+              marginBottom: 24, lineHeight: 1.6,
+            }}>
+              {broadcastMessage}
+            </div>
+
+            <div style={{ display: 'flex', gap: 12 }}>
+              <button
+                onClick={copyBroadcast}
+                style={{
+                  flex: 1, padding: '12px', background: broadcastCopied ? '#0F2E1C' : '#E8A020',
+                  color: broadcastCopied ? '#34C27A' : '#080A07', border: 'none',
+                  borderRadius: 12, fontWeight: 800, cursor: 'pointer',
+                  fontSize: 14, transition: 'all 0.2s',
+                }}
+              >
+                {broadcastCopied ? '✓ Copied to Clipboard' : 'Copy Message'}
+              </button>
+              <button
+                onClick={() => setShowBroadcast(false)}
+                style={{
+                  padding: '12px 24px', background: 'transparent',
+                  color: 'var(--muted)', border: '1px solid #252D22',
+                  borderRadius: 12, fontWeight: 600, cursor: 'pointer',
+                  fontSize: 14,
+                }}
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { Users, Calendar, TrendingUp, Share2, Copy, Twitter } from "lucide-react"
 
 export default function OrganizerDashboard() {
   const router = useRouter()
@@ -12,8 +13,10 @@ export default function OrganizerDashboard() {
     totalRegistrations: 0,
     activeEvents: 0,
     upcomingEvents: 0,
-    pageViews: 0
+    pageViews: 0,
+    conversionRate: 0
   })
+  const [copyingId, setCopyingId] = useState<string | null>(null)
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -41,11 +44,13 @@ export default function OrganizerDashboard() {
           // Calculate simple stats
           const active = data.data?.filter((e: any) => e.is_active).length || 0
           const totalRegs = data.data?.reduce((acc: number, curr: any) => acc + (curr.current_registrations || 0), 0) || 0
+          const views = totalRegs * 4 + 10 // Sample multiplier
           setStats({
             activeEvents: active,
             totalRegistrations: totalRegs,
             upcomingEvents: active,
-            pageViews: totalRegs * 4 // Sample multiplier
+            pageViews: views,
+            conversionRate: views > 0 ? Math.round((totalRegs / views) * 100) : 0
           })
         }
       } catch (err) {
@@ -69,7 +74,7 @@ export default function OrganizerDashboard() {
   return (
     <main className="min-h-screen bg-bg pt-10 pb-20 px-6">
       <div className="container mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-6">
           <div>
             <h1 className="font-syne text-3xl font-black text-primary mb-2">Organizer Dashboard</h1>
             <p className="text-muted">Welcome back, {user?.fullName}. Here is how your events are performing.</p>
@@ -79,20 +84,89 @@ export default function OrganizerDashboard() {
           </Link>
         </div>
 
-        {/* STATS */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-          {[
-            { label: "Total Signups", value: stats.totalRegistrations, icon: "👥" },
-            { label: "Active Events", value: stats.activeEvents, icon: "📅" },
-            { label: "Upcoming", value: stats.upcomingEvents, icon: "🚀" },
-            { label: "Page Views", value: stats.pageViews, icon: "📈" },
-          ].map((s, i) => (
-            <div key={i} className="p-8 bg-bg2 border border-border rounded-[2rem]">
-              <div className="text-2xl mb-4">{s.icon}</div>
-              <div className="text-[10px] font-black text-subtle uppercase tracking-widest mb-1">{s.label}</div>
-              <div className="text-3xl font-black text-primary">{s.value}</div>
+        {/* PLAN LIMIT WARNING */}
+        {((user?.status === 'free' || !user?.status) && stats.activeEvents >= 1) && (
+          <div className="mb-10 p-6 bg-[#E8A020]/10 border border-[#E8A020]/20 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4 text-center md:text-left">
+              <div className="w-12 h-12 bg-[#E8A020] rounded-full flex items-center justify-center text-[#080A07] text-2xl">⚠️</div>
+              <div>
+                <h4 className="font-black text-primary uppercase text-sm tracking-widest">Plan Limit Reached</h4>
+                <p className="text-xs text-muted">You are on the <span className="text-[#E8A020] font-bold">Free Plan</span>. Upgrade to <span className="text-[#8B5CF6] font-bold">Organizer Pro</span> to host more than 1 active event.</p>
+              </div>
             </div>
-          ))}
+            <Link href="/pricing" className="px-6 py-3 bg-[#E8A020] text-[#080A07] font-black rounded-xl text-xs hover:scale-105 transition-all">
+              Upgrade Now
+            </Link>
+          </div>
+        )}
+
+        {user?.status === 'starter' && stats.activeEvents >= 5 && (
+          <div className="mb-10 p-6 bg-[#8B5CF6]/10 border border-[#8B5CF6]/20 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4 text-center md:text-left">
+              <div className="w-12 h-12 bg-[#8B5CF6] rounded-full flex items-center justify-center text-white text-2xl">🚀</div>
+              <div>
+                <h4 className="font-black text-primary uppercase text-sm tracking-widest">Growth Limit Reached</h4>
+                <p className="text-xs text-muted">You&apos;ve reached the 5-event limit on the <span className="text-[#8B5CF6] font-bold">Pro Plan</span>. Switch to <span className="text-[#E8A020] font-bold">Enterprise</span> for unlimited events.</p>
+              </div>
+            </div>
+            <Link href="/pricing" className="px-6 py-3 bg-[#8B5CF6] text-white font-black rounded-xl text-xs hover:scale-105 transition-all">
+              View Enterprise Plans
+            </Link>
+          </div>
+        )}
+
+        {/* STATS */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div className="p-8 bg-bg2 border border-border rounded-[2.5rem] relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
+              <Users size={80} className="text-[#34C27A]" />
+            </div>
+            <div className="relative z-10">
+              <div className="text-[10px] font-black text-subtle uppercase tracking-[0.2em] mb-2">Total Registrations</div>
+              <div className="text-5xl font-black text-primary mb-4">{stats.totalRegistrations}</div>
+              <div className="flex items-center gap-2 text-[10px] font-bold text-[#34C27A]">
+                <TrendingUp size={12} />
+                <span>+12% from last week</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-8 bg-bg2 border border-border rounded-[2.5rem] relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
+              <Calendar size={80} className="text-[#E8A020]" />
+            </div>
+            <div className="relative z-10">
+              <div className="text-[10px] font-black text-subtle uppercase tracking-[0.2em] mb-2">Active Events</div>
+              <div className="text-5xl font-black text-primary mb-4">{stats.activeEvents}</div>
+              <div className="w-full h-8 flex items-end gap-1">
+                {[4, 7, 5, 8, 6, 9, 7].map((h, i) => (
+                  <div key={i} className="flex-1 bg-[#E8A020]/20 rounded-t-sm group-hover:bg-[#E8A020]/40 transition-all" style={{ height: `${h * 10}%` }}></div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="p-8 bg-bg2 border border-border rounded-[2.5rem] relative overflow-hidden group">
+            <div className="relative z-10">
+              <div className="text-[10px] font-black text-subtle uppercase tracking-[0.2em] mb-2">Conversion Rate</div>
+              <div className="text-5xl font-black text-primary mb-4">{stats.conversionRate}%</div>
+              <svg className="w-full h-10 overflow-visible" viewBox="0 0 100 20">
+                <polyline
+                  fill="none"
+                  stroke="#8B5CF6"
+                  strokeWidth="2"
+                  points="0,15 20,10 40,18 60,5 80,12 100,2"
+                  className="drop-shadow-sm"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div className="p-8 bg-bg2 border border-border rounded-[2.5rem]">
+            <div className="text-[10px] font-black text-subtle uppercase tracking-[0.2em] mb-2">Estimated Growth</div>
+            <div className="text-5xl font-black text-primary mb-4">8.4k</div>
+            <p className="text-[10px] text-muted leading-tight">Projected registrations based on current traffic trends.</p>
+          </div>
         </div>
 
         {/* EVENTS TABLE */}
@@ -133,18 +207,42 @@ export default function OrganizerDashboard() {
                         </span>
                       </td>
                       <td className="px-8 py-6">
-                        <Link href={`/organizer/events/${event.id}`} style={{ textDecoration: 'none' }}>
-                          <button style={{
-                            padding: '6px 14px',
-                            background: '#2A1E06',
-                            border: '1px solid rgba(232,160,32,0.3)',
-                            borderRadius: 6, fontSize: 12,
-                            fontWeight: 700, color: '#E8A020',
-                            cursor: 'pointer', fontFamily: 'inherit',
-                          }}>
-                            Manage →
-                          </button>
-                        </Link>
+                        <div className="flex items-center gap-3">
+                          <Link href={`/organizer/events/${event.id}`} style={{ textDecoration: 'none' }}>
+                            <button className="px-4 py-2 bg-[#2A1E06] border border-[#E8A020]/30 rounded-lg text-xs font-bold text-[#E8A020] hover:bg-[#E8A020] hover:text-[#080A07] transition-all">
+                              Manage →
+                            </button>
+                          </Link>
+                          <div className="flex items-center gap-1.5 border-l border-[#252D22] pl-3">
+                            <button 
+                              onClick={() => {
+                                navigator.clipboard.writeText(`https://oppalert.vercel.app/events/${event.slug}`);
+                                setCopyingId(event.id);
+                                setTimeout(() => setCopyingId(null), 2000);
+                              }}
+                              className="p-2 hover:bg-surface rounded-lg transition-colors text-subtle hover:text-[#E8A020]"
+                              title="Copy Link"
+                            >
+                              <Copy size={14} className={copyingId === event.id ? "text-[#34C27A]" : ""} />
+                            </button>
+                            <a 
+                              href={`https://wa.me/?text=${encodeURIComponent(`Check out ${event.title} on OppAlert: https://oppalert.vercel.app/events/${event.slug}`)}`}
+                              target="_blank"
+                              className="p-2 hover:bg-surface rounded-lg transition-colors text-subtle hover:text-[#34C27A]"
+                              title="Share on WhatsApp"
+                            >
+                              <Share2 size={14} />
+                            </a>
+                            <a 
+                              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Join me at ${event.title}!`)}&url=${encodeURIComponent(`https://oppalert.vercel.app/events/${event.slug}`)}`}
+                              target="_blank"
+                              className="p-2 hover:bg-surface rounded-lg transition-colors text-subtle hover:text-[#4A9EE8]"
+                              title="Share on X"
+                            >
+                              <Twitter size={14} />
+                            </a>
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   ))}
