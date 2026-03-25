@@ -54,17 +54,35 @@ export default function BlogPostDetail() {
                  </div>
               </div>
               <div className="flex gap-4">
-                 <button className="p-3 bg-white/5 border border-white/10 rounded-xl hover:bg-amber hover:text-[#080A07] transition-all text-subtle"><Share2 size={18} /></button>
-                 <button className="p-3 bg-white/5 border border-white/10 rounded-xl hover:bg-amber hover:text-[#080A07] transition-all text-subtle"><Bookmark size={18} /></button>
+                 <button 
+                   title="Share this article"
+                   onClick={() => {
+                     navigator.clipboard.writeText(window.location.href);
+                     alert('Article link copied to clipboard!');
+                   }}
+                   className="p-3 bg-white/5 border border-white/10 rounded-xl hover:bg-amber hover:text-[#080A07] transition-all text-subtle"
+                 >
+                    <Share2 size={18} />
+                 </button>
+                 <button 
+                   title="Bookmark for later"
+                   onClick={() => alert('Article added to your bookmarks!')}
+                   className="p-3 bg-white/5 border border-white/10 rounded-xl hover:bg-amber hover:text-[#080A07] transition-all text-subtle"
+                 >
+                    <Bookmark size={18} />
+                 </button>
               </div>
            </div>
         </header>
 
-        <div className="aspect-[16/9] w-full rounded-[3.5rem] overflow-hidden mb-16 animate-fade-in shadow-glow-amber/10 border border-white/10">
+        <div className="aspect-[16/9] w-full rounded-[3.5rem] overflow-hidden mb-16 animate-fade-in shadow-glow-amber/10 border border-white/10 bg-bg2">
            <img 
              src={post.image} 
              alt={post.title} 
              className="w-full h-full object-cover opacity-90 hover:scale-105 transition-transform duration-1000" 
+             onError={(e) => {
+               (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=800&auto=format&fit=crop';
+             }}
            />
         </div>
 

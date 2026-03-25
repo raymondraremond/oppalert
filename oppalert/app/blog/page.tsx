@@ -58,10 +58,23 @@ export default function BlogPage() {
                  <img 
                    src={post.image} 
                    alt={post.title} 
-                   className="w-full h-full object-cover grayscale-[0.5] opacity-40 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" 
+                   className="w-full h-full object-cover opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700 bg-bg2" 
+                   onError={(e) => {
+                     (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=800&auto=format&fit=crop';
+                   }}
                  />
                  <div className="absolute inset-0 bg-gradient-to-t from-[#080A07]/80 to-transparent opacity-60 group-hover:opacity-20 transition-opacity" />
-                 <Bookmark className="absolute top-6 right-6 text-white/20 group-hover:text-amber transition-colors" size={20} />
+                 <button 
+                   title="Bookmark article"
+                   onClick={(e) => {
+                     e.preventDefault();
+                     e.stopPropagation();
+                     alert('Article bookmarked!');
+                   }}
+                   className="absolute top-6 right-6 p-3 rounded-xl bg-black/40 border border-white/10 text-white/40 hover:text-amber hover:bg-black/60 transition-all z-20 backdrop-blur-md"
+                 >
+                    <Bookmark size={20} />
+                 </button>
               </div>
               <div className="space-y-4">
                 <div className="flex items-center gap-2 text-[10px] font-black text-amber uppercase tracking-[0.2em] mb-2">
