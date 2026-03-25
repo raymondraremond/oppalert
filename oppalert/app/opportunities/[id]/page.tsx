@@ -51,6 +51,7 @@ export default function OpportunityDetailPage({ params }: Props) {
       const views = parseInt(localStorage.getItem('oppViews') || '0')
       localStorage.setItem('oppViews', (views + 1).toString())
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.id])
 
   if (isLoading && !opp) {

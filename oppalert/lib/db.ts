@@ -109,4 +109,5 @@ export async function query(text: string, params?: any[]): Promise<any> {
   }
 }
 
-export default { query };
+const db = { query };
+export default db;

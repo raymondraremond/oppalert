@@ -292,7 +292,7 @@ export default function DashboardPage() {
                     <Bell size={28} />
                   </div>
                   <h3 className="font-syne text-xl font-black text-primary mb-4">Smart Alerts is coming soon</h3>
-                  <p className="text-subtle font-medium leading-relaxed mb-8">Get notified instantly when new opportunities matching your profile are posted. We&apos;re building this feature right now.</p>
+                  <p className="text-subtle font-medium leading-relaxed mb-8">{"Get notified instantly when new opportunities matching your profile are posted. We're building this feature right now."}</p>
                   <div className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--icon-bg)] rounded-full text-[10px] font-black uppercase tracking-widest text-muted border border-[var(--glass-border)]">
                     <Sparkles size={14} /> Featured Beta Release
                   </div>

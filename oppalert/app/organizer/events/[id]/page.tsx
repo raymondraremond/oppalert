@@ -77,6 +77,7 @@ export default function ManageEventPage() {
     } catch {
       router.push('/login')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, fetchData])
 
   // Auto-refresh registrations every 30 seconds when on that tab
@@ -86,6 +87,7 @@ export default function ManageEventPage() {
       if (user?.token) fetchData(user.token)
     }, 30000)
     return () => clearInterval(interval)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, user, fetchData])
 
   // Fetch analytics when switching to analytics tab
@@ -99,6 +101,7 @@ export default function ManageEventPage() {
       .then(data => setAnalytics(data))
       .catch(() => {})
       .finally(() => setAnalyticsLoading(false))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, user, eventId, analytics])
 
   const handleExport = async () => {
