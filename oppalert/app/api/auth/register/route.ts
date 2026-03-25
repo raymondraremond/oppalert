@@ -1,22 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { hashPassword, signToken } from "@/lib/auth";
-import dns from "dns";
-import { promisify } from "util";
-
-const resolveMx = promisify(dns.resolveMx);
-
-async function isValidEmailDomain(email: string) {
-  const domain = email.split("@")[1];
-  if (!domain) return false;
-  try {
-    const records = await resolveMx(domain);
-    return records && records.length > 0;
-  } catch (e) {
-    return false;
-  }
-}
+import { hashPassword, signToken, isValidEmailDomain } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
+
   try {
     const body = await req.json();
     const { email, password, fullName, country, status } = body;

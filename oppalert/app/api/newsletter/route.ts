@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { isValidEmailDomain } from '@/lib/auth';
 
 export async function POST(req: NextRequest) {
   try {
@@ -8,7 +9,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Valid email required' }, { status: 400 });
     }
 
+    const isValidDomain = await isValidEmailDomain(email);
+    if (!isValidDomain) {
+      return NextResponse.json({ error: "Please provide a valid, existing email address." }, { status: 400 });
+    }
+
     if (process.env.DATABASE_URL) {
+
       const { query } = await import('@/lib/db');
       await query(
         'INSERT INTO newsletter_subscribers (email, frequency) VALUES ($1, $2) ON CONFLICT (email) DO NOTHING',

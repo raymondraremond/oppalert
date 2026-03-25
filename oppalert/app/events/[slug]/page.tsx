@@ -266,14 +266,15 @@ export default function EventDetailPage() {
               )}
 
               {[
-                { name: 'fullName', placeholder: 'Full Name', type: 'text' },
-                { name: 'email', placeholder: 'Email Address', type: 'email' },
-                { name: 'phone', placeholder: 'Phone Number (optional)', type: 'tel' },
+                { name: 'fullName', placeholder: 'Full Name', type: 'text', required: true },
+                { name: 'email', placeholder: 'Email Address', type: 'email', required: true },
+                { name: 'phone', placeholder: 'Phone Number (optional)', type: 'tel', required: false },
               ].map(field => (
                 <input
                   key={field.name}
                   type={field.type}
                   placeholder={field.placeholder}
+                  required={field.required}
                   value={regForm[field.name as keyof typeof regForm]}
                   onChange={e => setRegForm(prev => ({
                     ...prev,

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sendRegistrationEmail } from '@/lib/mail'
+import { isValidEmailDomain } from '@/lib/auth'
 
 export async function POST(
   request: NextRequest,
@@ -14,6 +15,11 @@ export async function POST(
         { error: 'Full name and email are required' },
         { status: 400 }
       )
+    }
+
+    const isValidDomain = await isValidEmailDomain(email);
+    if (!isValidDomain) {
+      return NextResponse.json({ error: "Please provide a valid, existing email address." }, { status: 400 });
     }
 
     if (!process.env.DATABASE_URL) {

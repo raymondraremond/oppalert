@@ -1,8 +1,31 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { NextRequest } from "next/server";
+import dns from "dns";
+import { promisify } from "util";
 
-const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-change-in-production";
+// Strictly enforce the presence of a secure secret.
+const getSecret = () => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    console.error("CRITICAL SECURITY ERROR: JWT_SECRET environment variable is missing.");
+    throw new Error("Internal Server Error: Secure environment not configured.");
+  }
+  return secret;
+};
+
+const resolveMx = promisify(dns.resolveMx);
+
+export async function isValidEmailDomain(email: string): Promise<boolean> {
+  const domain = email.split("@")[1];
+  if (!domain) return false;
+  try {
+    const records = await resolveMx(domain);
+    return records && records.length > 0;
+  } catch (e) {
+    return false;
+  }
+}
 
 export async function hashPassword(password: string): Promise<string> {
   return await bcrypt.hash(password, 12);
@@ -13,12 +36,12 @@ export async function comparePassword(password: string, hash: string): Promise<b
 }
 
 export function signToken(payload: { id: string; plan: string; email: string }): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: "30d" });
+  return jwt.sign(payload, getSecret(), { expiresIn: "30d" });
 }
 
 export function verifyToken(token: string): { id: string; plan: string; email: string } | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as { id: string; plan: string; email: string };
+    return jwt.verify(token, getSecret()) as { id: string; plan: string; email: string };
   } catch {
     return null;
   }
