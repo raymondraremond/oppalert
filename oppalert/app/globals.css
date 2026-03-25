@@ -308,9 +308,7 @@ html {
   text-rendering: optimizeLegibility;
 }
 
-img {
-  loading: lazy;
-}
+/* Images – use HTML loading="lazy" attribute instead of CSS */
 
 .animate-fade-up {
   animation: fade-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -478,17 +476,4 @@ img {
 .event-type-conference { border-left: 3px solid #F97316; }
 .event-type-hackathon  { border-left: 3px solid #F05050; }
 
-/* Skeleton loading pulse */
-@keyframes skeleton-pulse {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.7; }
-}
 
-@media (max-width: 768px) {
-  .hide-mobile { display: none !important; }
-  .show-mobile { display: flex !important; }
-}
-@media (min-width: 769px) {
-  .show-mobile { display: none !important; }
-  .hide-mobile { display: flex !important; }
-}
