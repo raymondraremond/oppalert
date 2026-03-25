@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Syne, Inter } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 import { NextAuthProvider } from '@/components/providers'
 import { ThemeProvider } from '@/components/theme-provider'
 
@@ -49,7 +50,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${syne.variable} ${inter.variable}`} suppressHydrationWarning>
-      <body className="bg-bg text-primary">
+      <body className="bg-bg text-primary min-h-screen flex flex-col">
         <ThemeProvider
           attribute="data-theme"
           defaultTheme="dark"
@@ -58,7 +59,8 @@ export default function RootLayout({
         >
           <NextAuthProvider>
             <Navbar />
-            <main>{children}</main>
+            <main className="flex-grow">{children}</main>
+            <Footer />
           </NextAuthProvider>
         </ThemeProvider>
       </body>

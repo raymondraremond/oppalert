@@ -117,7 +117,7 @@ export default function Navbar() {
               fontWeight: 800, fontSize: 14, color: '#090A07', fontFamily: 'Syne, sans-serif',
             }}>O</div>
             <span style={{ fontFamily: 'Syne, sans-serif', fontSize: 18, fontWeight: 800, color: 'var(--primary)' }}>
-              Opp<span style={{ color: 'var(--amber)' }}>Alert</span>
+              Opp<span style={{ color: 'var(--amber)' }}>Fetch</span>
             </span>
           </div>
         </Link>

@@ -1,4 +1,4 @@
-# OppAlert 🚀
+# OppFetch 🚀
 
 > **"Never miss an opportunity again."**
 
@@ -30,7 +30,7 @@ That's it. The app runs fully with mock data out of the box — no database requ
 ## Project Structure
 
 ```
-oppalert/
+oppfetch/
 ├── app/
 │   ├── page.tsx                    ← Landing page
 │   ├── opportunities/
@@ -265,4 +265,4 @@ Or connect your GitHub repo to Vercel for automatic deploys on every push.
 
 ## Support
 
-Built with ❤️ for Africa.
+Built with ❤️ by the OppFetch team.
