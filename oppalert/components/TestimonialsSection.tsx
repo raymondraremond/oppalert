@@ -5,7 +5,7 @@ const testimonials = [
     name: 'Chioma Eze',
     initials: 'CE',
     role: 'Final Year Student, UNILAG',
-    text: 'OppAlert helped me discover the Chevening Scholarship weeks before my classmates. The alerts are a game-changer.',
+    text: 'OppFetch helped me discover the Chevening Scholarship weeks before my classmates. The alerts are a game-changer.',
     color: '#3DAA6A',
   },
   {
@@ -19,7 +19,7 @@ const testimonials = [
     name: 'Fatima Al-Hassan',
     initials: 'FA',
     role: 'Startup Founder, Nairobi',
-    text: 'Finding grant funding used to take hours. OppAlert consolidates everything in one place. Truly efficient.',
+    text: 'Finding grant funding used to take hours. OppFetch consolidates everything in one place. Truly efficient.',
     color: '#E8A020',
   },
 ]

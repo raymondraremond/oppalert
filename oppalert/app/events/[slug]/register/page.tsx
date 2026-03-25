@@ -133,8 +133,8 @@ export default function EventRegisterPage({
           <div className="mt-10 pt-8 border-t border-border">
             <p className="text-[10px] font-bold text-subtle uppercase tracking-widest mb-4">Invite your friends</p>
             <div className="flex justify-center gap-4">
-               <a href={`https://twitter.com/intent/tweet?text=I just registered for ${event.title} on OppAlert! Join me:&url=${window.location.origin}/events/${event.slug}`} target="_blank" className="text-[#1DA1F2] font-bold text-sm">Twitter</a>
-               <a href={`https://wa.me/?text=I just registered for ${event.title} on OppAlert! Join me: ${window.location.origin}/events/${event.slug}`} target="_blank" className="text-[#25D366] font-bold text-sm">WhatsApp</a>
+               <a href={`https://twitter.com/intent/tweet?text=I just registered for ${event.title} on OppFetch! Join me:&url=${window.location.origin}/events/${event.slug}`} target="_blank" className="text-[#1DA1F2] font-bold text-sm">Twitter</a>
+               <a href={`https://wa.me/?text=I just registered for ${event.title} on OppFetch! Join me: ${window.location.origin}/events/${event.slug}`} target="_blank" className="text-[#25D366] font-bold text-sm">WhatsApp</a>
             </div>
           </div>
         </div>

@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { opportunities } from '@/lib/data'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = process.env.NEXT_PUBLIC_APP_URL || 'https://oppalert.com'
+  const base = process.env.NEXT_PUBLIC_APP_URL || 'https://OppFetch.com'
 
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: base, lastModified: new Date(), changeFrequency: 'daily', priority: 1 },

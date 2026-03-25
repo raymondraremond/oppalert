@@ -186,17 +186,16 @@ export default function CreateEventPage() {
                 fontSize: 13, color: '#E8A020',
                 wordBreak: 'break-all',
               }}>
-                oppalert.vercel.app/events/{success.slug}
+                oppfetch.com/events/{success.slug}
               </div>
               <button
                 onClick={async () => {
-                  const url = `https://oppalert.vercel.app/events/${success.slug}`
+                  const url = `https://oppfetch.com/events/${success.slug}`
                   try {
                     await navigator.clipboard.writeText(url)
                     setCopied(true)
                     setTimeout(() => setCopied(false), 2000)
                   } catch {
-                    // Fallback for browsers that block clipboard
                     const el = document.createElement('textarea')
                     el.value = url
                     document.body.appendChild(el)
@@ -219,6 +218,39 @@ export default function CreateEventPage() {
               >
                 {copied ? <span style={{ display: 'flex', alignItems: 'center', gap: 6, justifyItems: 'center', WebkitJustifyContent: 'center', justifyContent: 'center' }}><Check size={16}/> Copied!</span> : 'Copy Link'}
               </button>
+            </div>
+          )}
+
+          {success.published && (
+            <div style={{ display: 'flex', gap: 10, marginBottom: 24, justifyContent: 'center' }}>
+              <a 
+                href={`https://wa.me/?text=${encodeURIComponent(`I just created ${success.title} on OppFetch! Register here: https://oppfetch.com/events/${success.slug}`)}`}
+                target="_blank"
+                style={{ textDecoration: 'none' }}
+              >
+                <button style={{
+                  padding: '10px 16px', background: '#25D36620',
+                  border: '1px solid #25D36640', borderRadius: 8,
+                  fontSize: 12, fontWeight: 700, color: '#25D366',
+                  cursor: 'pointer', fontFamily: 'inherit',
+                }}>
+                  Share to WhatsApp
+                </button>
+              </a>
+              <a 
+                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://oppfetch.com/events/${success.slug}`)}`}
+                target="_blank"
+                style={{ textDecoration: 'none' }}
+              >
+                <button style={{
+                  padding: '10px 16px', background: '#0A66C220',
+                  border: '1px solid #0A66C240', borderRadius: 8,
+                  fontSize: 12, fontWeight: 700, color: '#0A66C2',
+                  cursor: 'pointer', fontFamily: 'inherit',
+                }}>
+                  Share to LinkedIn
+                </button>
+              </a>
             </div>
           )}
 

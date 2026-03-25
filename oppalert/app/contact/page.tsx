@@ -33,7 +33,7 @@ export default function ContactPage() {
               
               <div className="space-y-6">
                 {[
-                  { icon: Mail, label: 'Email', value: 'hello@oppalert.com', sub: 'Response within 24 hours' },
+                  { icon: Mail, label: 'Email', value: 'hello@OppFetch.com', sub: 'Response within 24 hours' },
                   { icon: Phone, label: 'Phone', value: '+234 810 000 0000', sub: 'Mon-Fri, 9am - 5pm WAT' },
                   { icon: MapPin, label: 'Headquarters', value: 'Lagos, Nigeria', sub: 'Remote-first globally' }
                 ].map((item, idx) => (

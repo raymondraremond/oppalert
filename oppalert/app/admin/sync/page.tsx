@@ -20,7 +20,7 @@ export default function AdminSyncPage() {
   useEffect(() => {
     // Load last sync times
     try {
-      const stored = localStorage.getItem('oppalert_last_syncs')
+      const stored = localStorage.getItem('OppFetch_last_syncs')
       if (stored) {
         setLastSyncs(JSON.parse(stored))
       }
@@ -40,7 +40,7 @@ export default function AdminSyncPage() {
       if (data.success) {
         const newSyncs = { ...lastSyncs, [id]: new Date().toLocaleString() }
         setLastSyncs(newSyncs)
-        localStorage.setItem('oppalert_last_syncs', JSON.stringify(newSyncs))
+        localStorage.setItem('OppFetch_last_syncs', JSON.stringify(newSyncs))
       }
     } catch (error: any) {
       setResults(prev => ({ ...prev, [id]: { success: false, error: error.message } }))

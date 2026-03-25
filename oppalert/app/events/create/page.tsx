@@ -22,7 +22,7 @@ export default function EventsCreateLandingPage() {
           <span className="text-[#E8A020]">an unforgettable event.</span>
         </h1>
         <p className="text-xl text-muted max-w-3xl mx-auto mb-12 leading-relaxed">
-          OppAlert gives African educators and community leaders professional tools to host events that matter. From intimate workshops to large conferences.
+          OppFetch gives African educators and community leaders professional tools to host events that matter. From intimate workshops to large conferences.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/organizer" className="px-10 py-4 bg-[#E8A020] text-[#080A07] font-black rounded-2xl hover:scale-105 transition-all text-lg shadow-glow-amber">
@@ -137,7 +137,7 @@ export default function EventsCreateLandingPage() {
           <div className="relative z-10 px-8">
             <h2 className="font-syne text-4xl md:text-5xl font-black text-primary mb-8 tracking-tighter">Ready to host your first event?</h2>
             <p className="text-xl text-muted mb-12 max-w-2xl mx-auto">
-              Join hundreds of African organizers already using OppAlert to grow their communities.
+              Join hundreds of African organizers already using OppFetch to grow their communities.
             </p>
             <Link href="/organizer" className="px-12 py-5 bg-[#E8A020] text-[#080A07] font-black rounded-2xl hover:scale-105 transition-all text-xl shadow-glow-amber inline-block">
               Get Started Free →

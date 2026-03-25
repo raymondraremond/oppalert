@@ -2,7 +2,7 @@ export default function TermsPage() {
   const terms = [
     {
       title: '1. Platform Use',
-      content: 'OppAlert provides information regarding educational and career opportunities. While we verify all listings, users are responsible for their applications and interactions with third-party organizations.'
+      content: 'OppFetch provides information regarding educational and career opportunities. While we verify all listings, users are responsible for their applications and interactions with third-party organizations.'
     },
     {
       title: '2. Account Responsibility',
@@ -14,7 +14,7 @@ export default function TermsPage() {
     },
     {
       title: '4. Limitation of Liability',
-      content: 'OppAlert is not liable for any direct or indirect consequences resulting from your application to or acceptance of any opportunities found on our platform.'
+      content: 'OppFetch is not liable for any direct or indirect consequences resulting from your application to or acceptance of any opportunities found on our platform.'
     },
     {
       title: '5. Modifications',
@@ -44,13 +44,13 @@ export default function TermsPage() {
 
           <div className="bg-amber/5 border border-amber/20 rounded-[2.5rem] p-10 md:p-14 text-center">
             <h3 className="font-syne text-xl font-black text-primary mb-4">Agreement to Terms</h3>
-            <p className="text-subtle font-medium mb-8">By creating an account or browsing OppAlert, you acknowledge that you have read and agreed to these terms.</p>
-            <a href="mailto:hello@oppalert.com" className="text-amber font-black uppercase tracking-widest text-xs hover:underline underline-offset-8">I have a legal question</a>
+            <p className="text-subtle font-medium mb-8">By creating an account or browsing OppFetch, you acknowledge that you have read and agreed to these terms.</p>
+            <a href="mailto:hello@OppFetch.com" className="text-amber font-black uppercase tracking-widest text-xs hover:underline underline-offset-8">I have a legal question</a>
           </div>
         </div>
 
         <p className="mt-20 text-[10px] text-center text-muted font-black uppercase tracking-widest leading-relaxed">
-          © {new Date().getFullYear()} OppAlert Inc. All rights reserved. Registered in Lagos, Nigeria.
+          © {new Date().getFullYear()} OppFetch Inc. All rights reserved. Registered in Lagos, Nigeria.
         </p>
       </div>
     </main>

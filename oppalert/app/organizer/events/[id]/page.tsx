@@ -130,7 +130,7 @@ export default function ManageEventPage() {
 Event Details:
 📅 Date: ${new Date(event?.start_date).toLocaleDateString()}
 📍 Location: ${event?.is_online ? 'Online' : event?.location}
-🔗 Join/Info: https://oppalert.vercel.app/events/${event?.slug}
+🔗 Join/Info: https://OppFetch.vercel.app/events/${event?.slug}
 
 We look forward to seeing you there!`
 
@@ -146,7 +146,7 @@ We look forward to seeing you there!`
 
   const copyEventLink = async () => {
     if (!event?.slug) return
-    const url = `https://oppalert.vercel.app/events/${event.slug}`
+    const url = `https://OppFetch.vercel.app/events/${event.slug}`
     try {
       await navigator.clipboard.writeText(url)
     } catch {
@@ -618,7 +618,7 @@ We look forward to seeing you there!`
                 fontSize: 13, color: '#E8A020',
                 wordBreak: 'break-all',
               }}>
-                https://oppalert.vercel.app/events/{event.slug}
+                https://OppFetch.vercel.app/events/{event.slug}
               </div>
               <button
                 onClick={copyEventLink}
@@ -641,39 +641,57 @@ We look forward to seeing you there!`
           <div style={{
             display: 'flex', gap: 12, flexWrap: 'wrap',
           }}>
-            <a 
-              href={`https://twitter.com/intent/tweet?text=Join%20me%20at%20${encodeURIComponent(event.title)}%20on%20OppAlert!%20Register%20here:&url=https://oppalert.vercel.app/events/${event.slug}`}
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent(`${event.title} — Register here: https://oppfetch.com/events/${event.slug}`)}`}
               target="_blank"
               rel="noopener noreferrer"
               style={{ textDecoration: 'none' }}
             >
               <button style={{
                 padding: '10px 20px',
-                background: '#1a1a2e',
+                background: '#25D36620',
+                border: '1px solid #25D36640',
+                borderRadius: 8, fontSize: 13,
+                fontWeight: 700, color: '#25D366',
+                cursor: 'pointer', fontFamily: 'inherit',
+              }}>
+                Share on WhatsApp
+              </button>
+            </a>
+
+            <a
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://oppfetch.com/events/${event.slug}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: 'none' }}
+            >
+              <button style={{
+                padding: '10px 20px',
+                background: '#0A66C220',
+                border: '1px solid #0A66C240',
+                borderRadius: 8, fontSize: 13,
+                fontWeight: 700, color: '#0A66C2',
+                cursor: 'pointer', fontFamily: 'inherit',
+              }}>
+                Share on LinkedIn
+              </button>
+            </a>
+
+            <a
+              href={`https://twitter.com/intent/tweet?text=Join%20me%20at%20${encodeURIComponent(event.title)}%20on%20OppFetch!%20Register%20here:&url=https://oppfetch.com/events/${event.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ textDecoration: 'none' }}
+            >
+              <button style={{
+                padding: '10px 20px',
+                background: 'transparent',
                 border: '1px solid #2E3530',
                 borderRadius: 8, fontSize: 13,
                 color: 'var(--primary)', cursor: 'pointer',
                 fontFamily: 'inherit',
               }}>
                 Share on X/Twitter
-              </button>
-            </a>
-            
-            <a
-              href={`https://wa.me/?text=${encodeURIComponent(event.title + ' — Register here: https://oppalert.vercel.app/events/' + event.slug)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ textDecoration: 'none' }}
-            >
-              <button style={{
-                padding: '10px 20px',
-                background: '#0F2E1C',
-                border: '1px solid #1A3D2A',
-                borderRadius: 8, fontSize: 13,
-                color: '#34C27A', cursor: 'pointer',
-                fontFamily: 'inherit',
-              }}>
-                Share on WhatsApp
               </button>
             </a>
           </div>

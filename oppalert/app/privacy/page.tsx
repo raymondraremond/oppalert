@@ -14,7 +14,7 @@ export default function PrivacyPage() {
     },
     {
       title: '4. Cookies & Tracking',
-      content: 'We use essential cookies to maintain your login session. We do not use intrusive advertising trackers or third-party cookies that monitor your browsing behavior outside of OppAlert.'
+      content: 'We use essential cookies to maintain your login session. We do not use intrusive advertising trackers or third-party cookies that monitor your browsing behavior outside of OppFetch.'
     },
     {
       title: '5. Data Rights',
@@ -45,12 +45,12 @@ export default function PrivacyPage() {
           <div className="bg-primary/5 border border-primary/20 rounded-[2.5rem] p-10 md:p-14 text-center">
             <h3 className="font-syne text-xl font-black text-primary mb-4">Questions about your data?</h3>
             <p className="text-subtle font-medium mb-8">Detailed information about our security protocols and regional data compliance is available upon request.</p>
-            <a href="mailto:privacy@oppalert.com" className="text-primary font-black uppercase tracking-widest text-xs hover:underline underline-offset-8">Contact Security Team</a>
+            <a href="mailto:privacy@OppFetch.com" className="text-primary font-black uppercase tracking-widest text-xs hover:underline underline-offset-8">Contact Security Team</a>
           </div>
         </div>
 
         <p className="mt-20 text-[10px] text-center text-muted font-black uppercase tracking-widest leading-relaxed">
-          OppAlert complies with global data protection standards (GDPR / NDPR) to ensure your privacy is protected.
+          OppFetch complies with global data protection standards (GDPR / NDPR) to ensure your privacy is protected.
         </p>
       </div>
     </main>

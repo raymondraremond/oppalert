@@ -2,7 +2,7 @@ import { Opportunity } from '../types';
 import { OpportunityAdapter, OpportunityQuery } from './types';
 
 export class DbAdapter implements OpportunityAdapter {
-  name = 'OppAlert Database';
+  name = 'OppFetch Database';
 
   async search(query: OpportunityQuery): Promise<Opportunity[]> {
     try {

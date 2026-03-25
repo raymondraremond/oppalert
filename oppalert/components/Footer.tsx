@@ -81,7 +81,7 @@ export default function Footer() {
 
         <div className="pt-10 border-t flex flex-col md:flex-row justify-between items-center gap-6" style={{borderColor: 'var(--border)'}}>
           <div className="text-[13px] text-subtle font-medium">
-            © {new Date().getFullYear()} OppAlert. Built with ❤️ for Africa.
+            © {new Date().getFullYear()} OppFetch. Built with ❤️ for Africa.
           </div>
           <div className="flex gap-8 items-center">
             <div className="flex items-center gap-2">

@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://oppalert.vercel.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://OppFetch.vercel.app";
 
 // Reusable transporter using Gmail
 const transporter = nodemailer.createTransport({
@@ -26,7 +26,7 @@ export async function sendRegistrationEmail(toEmail: string, userName: string, e
   const htmlContent = `
     <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; background-color: #080A07; color: #EDE8DF; padding: 40px; border-radius: 20px; border: 1px solid #252D22;">
       <div style="text-align: center; margin-bottom: 30px;">
-        <h1 style="color: #E8A020; margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 2px;">OppAlert</h1>
+        <h1 style="color: #E8A020; margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 2px;">OppFetch</h1>
       </div>
       
       <h2 style="font-size: 20px; color: #EDE8DF; margin-bottom: 20px;">Registration Confirmed! 🎉</h2>
@@ -57,15 +57,15 @@ export async function sendRegistrationEmail(toEmail: string, userName: string, e
       <hr style="border: none; border-top: 1px solid #252D22; margin: 40px 0 20px;" />
       
       <div style="text-align: center; color: #555C50; font-size: 12px;">
-        <p>This email was sent from OppAlert because you registered for an event.</p>
-        <p>© ${new Date().getFullYear()} OppAlert. All rights reserved.</p>
+        <p>This email was sent from OppFetch because you registered for an event.</p>
+        <p>© ${new Date().getFullYear()} OppFetch. All rights reserved.</p>
       </div>
     </div>
   `;
 
   try {
     await transporter.sendMail({
-      from: `"OppAlert Events" <${process.env.GMAIL_EMAIL}>`,
+      from: `"OppFetch Events" <${process.env.GMAIL_EMAIL}>`,
       to: toEmail,
       subject: `Registration Confirmed: ${eventTitle}`,
       html: htmlContent,
@@ -91,7 +91,7 @@ export async function sendOrganizerEventCreatedEmail(toEmail: string, eventTitle
   const htmlContent = `
     <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; background-color: #080A07; color: #EDE8DF; padding: 40px; border-radius: 20px; border: 1px solid #252D22;">
       <div style="text-align: center; margin-bottom: 30px;">
-        <h1 style="color: #E8A020; margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 2px;">OppAlert Organizer</h1>
+        <h1 style="color: #E8A020; margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 2px;">OppFetch Organizer</h1>
       </div>
       
       <h2 style="font-size: 20px; color: #EDE8DF; margin-bottom: 20px;">Your Event is Live! 🚀</h2>
@@ -121,15 +121,15 @@ export async function sendOrganizerEventCreatedEmail(toEmail: string, eventTitle
       <hr style="border: none; border-top: 1px solid #252D22; margin: 40px 0 20px;" />
       
       <div style="text-align: center; color: #555C50; font-size: 12px;">
-        <p>This email was sent to notify you of a successful event creation on OppAlert.</p>
-        <p>© ${new Date().getFullYear()} OppAlert. All rights reserved.</p>
+        <p>This email was sent to notify you of a successful event creation on OppFetch.</p>
+        <p>© ${new Date().getFullYear()} OppFetch. All rights reserved.</p>
       </div>
     </div>
   `;
 
   try {
     await transporter.sendMail({
-      from: `"OppAlert Organizer" <${process.env.GMAIL_EMAIL}>`,
+      from: `"OppFetch Organizer" <${process.env.GMAIL_EMAIL}>`,
       to: toEmail,
       subject: `Event Live: ${eventTitle}`,
       html: htmlContent,

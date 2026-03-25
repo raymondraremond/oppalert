@@ -15,8 +15,8 @@ export async function POST(req: NextRequest) {
     if (event.event === 'charge.completed' && event.data?.status === 'successful') {
       const { tx_ref, customer } = event.data;
 
-      // tx_ref format: "oppalert-{userId}"
-      const userId = tx_ref?.replace('oppalert-', '');
+      // tx_ref format: "OppFetch-{userId}"
+      const userId = tx_ref?.replace('OppFetch-', '');
 
       if (userId && process.env.DATABASE_URL) {
         const { query } = await import('@/lib/db');
@@ -36,12 +36,12 @@ export async function POST(req: NextRequest) {
         if (customer?.email && process.env.RESEND_API_KEY) {
           const { Resend } = await import('resend');
           const resend = new Resend(process.env.RESEND_API_KEY);
-          const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://oppalert.vercel.app';
+          const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://OppFetch.vercel.app';
           await resend.emails.send({
-            from: process.env.EMAIL_FROM || 'alerts@oppalert.com',
+            from: process.env.EMAIL_FROM || 'alerts@OppFetch.com',
             to: customer.email,
-            subject: "You're now Premium on OppAlert \u26A1",
-            html: `<h1>Welcome to OppAlert Premium!</h1><p>Your Flutterwave payment was successful. You now have unlimited access.</p><p><a href="${APP_URL}/dashboard">Go to Dashboard</a></p>`
+            subject: "You're now Premium on OppFetch \u26A1",
+            html: `<h1>Welcome to OppFetch Premium!</h1><p>Your Flutterwave payment was successful. You now have unlimited access.</p><p><a href="${APP_URL}/dashboard">Go to Dashboard</a></p>`
           });
         }
       }

@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
 
     if (process.env.GMAIL_EMAIL && process.env.GMAIL_APP_PASSWORD) {
       const nodemailer = await import("nodemailer");
-      const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://oppalert.vercel.app";
+      const APP_URL = process.env.NEXT_PUBLIC_APP_URL || "https://OppFetch.vercel.app";
       
       const transporter = nodemailer.createTransport({
         service: "gmail",
@@ -29,11 +29,11 @@ export async function POST(req: NextRequest) {
       });
 
       await transporter.sendMail({
-        from: `"OppAlert" <${process.env.GMAIL_EMAIL}>`,
+        from: `"OppFetch" <${process.env.GMAIL_EMAIL}>`,
         to: email,
-        subject: "Welcome to OppAlert \uD83C\uDF93",
+        subject: "Welcome to OppFetch \uD83C\uDF93",
         html: `<div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-          <h2 style="color: #333;">Welcome to OppAlert! \uD83C\uDF89</h2>
+          <h2 style="color: #333;">Welcome to OppFetch! \uD83C\uDF89</h2>
           <p style="color: #555; line-height: 1.6;">You have successfully subscribed to our premium alerts.</p>
           <p style="color: #555; line-height: 1.6;">To ensure you never miss out on exclusive scholarships and jobs, click the link below to verify your subscription and explore opportunities:</p>
           <div style="margin-top: 25px;">

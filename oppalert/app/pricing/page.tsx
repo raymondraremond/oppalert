@@ -84,55 +84,55 @@ export default function PricingPage() {
               <div className="mb-10">
                 <h3 className="text-sm font-black text-subtle uppercase tracking-widest mb-2">Starter (Free)</h3>
                 <div className="text-5xl font-black text-primary mb-4">Free</div>
-                <p className="text-sm text-muted">Test the waters with your first event.</p>
+                <p className="text-sm text-muted">Unlimited event listings and standard links.</p>
               </div>
               <ul className="space-y-5 mb-12 flex-1">
-                <li className="text-sm text-primary flex items-center gap-3"><CheckCircle2 size={16} className="text-[#34C27A]" /> 1 Active Event listing</li>
-                <li className="text-sm text-primary flex items-center gap-3"><CheckCircle2 size={16} className="text-[#34C27A]" /> Up to 50 Registrations</li>
-                <li className="text-sm text-primary flex items-center gap-3"><CheckCircle2 size={16} className="text-[#34C27A]" /> Basic event page</li>
-                <li className="text-sm text-subtle flex items-center gap-3 opacity-50"><ShieldCheck size={16} /> No analytics</li>
+                <li className="text-sm text-primary flex items-center gap-3"><CheckCircle2 size={16} className="text-[#34C27A]" /> Unlimited Event listings</li>
+                <li className="text-sm text-primary flex items-center gap-3"><CheckCircle2 size={16} className="text-[#34C27A]" /> Custom Event Links</li>
+                <li className="text-sm text-primary flex items-center gap-3"><CheckCircle2 size={16} className="text-[#34C27A]" /> Basic attendance tracking</li>
+                <li className="text-sm text-subtle flex items-center gap-3 opacity-50"><ShieldCheck size={16} /> Standard placement</li>
               </ul>
               <Link href="/register" className="w-full py-4 bg-transparent border border-border text-primary font-black rounded-2xl text-center hover:bg-surface transition-all">
-                Start Hosting
+                Start Posting Free
               </Link>
             </div>
 
-            {/* ORGANIZER PRO */}
+            {/* ORGANIZER BOOST */}
             <div className="p-10 bg-bg2 border-2 border-[#8B5CF6] rounded-[3rem] shadow-glow-purple flex flex-col scale-105 z-10">
               <div className="mb-10">
                 <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-sm font-black text-[#8B5CF6] uppercase tracking-widest text-[10px]">Starter Plan</h3>
+                  <h3 className="text-sm font-black text-[#8B5CF6] uppercase tracking-widest text-[10px]">Boost Plan</h3>
                   <span className="px-2 py-0.5 bg-[#8B5CF6]/20 text-[#8B5CF6] text-[10px] font-black rounded uppercase tracking-tighter">Popular</span>
                 </div>
-                <div className="text-4xl font-black text-primary mb-4 flex items-baseline gap-1">7,500 <span className="text-sm font-bold text-subtle uppercase">NGN/mo</span></div>
-                <p className="text-sm text-muted">Perfect for growing communities.</p>
+                <div className="text-4xl font-black text-primary mb-4 flex items-baseline gap-1">5,000 <span className="text-sm font-bold text-subtle uppercase">NGN/event</span></div>
+                <p className="text-sm text-muted">Get featured and reach more attendees.</p>
               </div>
               <ul className="space-y-5 mb-12 flex-1">
-                <li className="text-sm text-primary flex items-center gap-3"><Zap size={16} className="text-[#8B5CF6]" /> Up to 5 Active Events</li>
-                <li className="text-sm text-primary flex items-center gap-3"><Zap size={16} className="text-[#8B5CF6]" /> Unlimited Registrations</li>
-                <li className="text-sm text-primary flex items-center gap-3"><Zap size={16} className="text-[#8B5CF6]" /> Basic Registration Analytics</li>
+                <li className="text-sm text-primary flex items-center gap-3"><Zap size={16} className="text-[#8B5CF6]" /> Featured Placement (7 Days)</li>
+                <li className="text-sm text-primary flex items-center gap-3"><Zap size={16} className="text-[#8B5CF6]" /> Pinned to top of category</li>
+                <li className="text-sm text-primary flex items-center gap-3"><Zap size={16} className="text-[#8B5CF6]" /> Social media mention</li>
                 <li className="text-sm text-primary flex items-center gap-3"><Zap size={16} className="text-[#8B5CF6]" /> CSV Data Export</li>
               </ul>
               <Link href="/register" className="w-full py-4 bg-[#8B5CF6] text-white font-black rounded-2xl text-center hover:opacity-90 transition-all">
-                Go Pro Now
+                Boost My Event
               </Link>
             </div>
 
-            {/* ORGANIZER ENTERPRISE */}
+            {/* ORGANIZER PREMIUM */}
             <div className="p-10 bg-bg2 border border-[#E8A020] rounded-[3rem] flex flex-col transition-all hover:border-[#E8A020]/50">
               <div className="mb-10">
-                <h3 className="text-sm font-black text-[#E8A020] uppercase tracking-widest mb-2">Enterprise</h3>
-                <div className="text-4xl font-black text-primary mb-4 flex items-baseline gap-1">45,000 <span className="text-sm font-bold text-subtle uppercase">NGN/mo</span></div>
-                <p className="text-sm text-muted">The ultimate tool for large scale events.</p>
+                <h3 className="text-sm font-black text-[#E8A020] uppercase tracking-widest mb-2">Premium</h3>
+                <div className="text-4xl font-black text-primary mb-4 flex items-baseline gap-1">10,000 <span className="text-sm font-bold text-subtle uppercase">NGN/event</span></div>
+                <p className="text-sm text-muted">Maximum visibility for large scale events.</p>
               </div>
               <ul className="space-y-5 mb-12 flex-1">
-                <li className="text-sm text-primary flex items-center gap-3"><Crown size={16} className="text-[#E8A020]" /> Unlimited Event Listings</li>
-                <li className="text-sm text-primary flex items-center gap-3"><Crown size={16} className="text-[#E8A020]" /> Priority Homepage Placement</li>
-                <li className="text-sm text-primary flex items-center gap-3"><Crown size={16} className="text-[#E8A020]" /> Advanced Analytics <span className="text-[9px] bg-[#E8A020]/20 text-[#E8A020] px-1.5 py-0.5 rounded ml-1 font-black whitespace-nowrap">COMING SOON</span></li>
-                <li className="text-sm text-primary flex items-center gap-3"><Crown size={16} className="text-[#E8A020]" /> Dedicated Success Manager</li>
+                <li className="text-sm text-primary flex items-center gap-3"><Crown size={16} className="text-[#E8A020]" /> Homepage Banner (7 Days)</li>
+                <li className="text-sm text-primary flex items-center gap-3"><Crown size={16} className="text-[#E8A020]" /> Email Blast to 5k+ members</li>
+                <li className="text-sm text-primary flex items-center gap-3"><Crown size={16} className="text-[#E8A020]" /> Advanced Registration Analytics</li>
+                <li className="text-sm text-primary flex items-center gap-3"><Crown size={16} className="text-[#E8A020]" /> Dedicated Support</li>
               </ul>
               <Link href="/register" className="w-full py-4 bg-transparent border border-[#E8A020] text-[#E8A020] font-black rounded-2xl text-center hover:bg-[#E8A020]/5 transition-all">
-                Contact Sales
+                Get Premium
               </Link>
             </div>
           </div>

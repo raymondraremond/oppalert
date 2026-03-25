@@ -6,7 +6,7 @@ import { NextAuthProvider } from '@/components/providers'
 import { ThemeProvider } from '@/components/theme-provider'
 
 export const metadata: Metadata = {
-  title: 'OppAlert — Never Miss an Opportunity Again',
+  title: 'OppFetch — Never Miss an Opportunity Again',
   description:
     'Discover verified scholarships, remote jobs, fellowships, grants, and startup funding across Africa. Smart alerts. Zero spam.',
   keywords: [
@@ -18,11 +18,11 @@ export const metadata: Metadata = {
     'international internships',
   ],
   openGraph: {
-    title: 'OppAlert — Never Miss an Opportunity Again',
+    title: 'OppFetch — Never Miss an Opportunity Again',
     description: 'Verified scholarships, jobs, fellowships, grants for Africa.',
-    siteName: 'OppAlert',
+    siteName: 'OppFetch',
     type: 'website',
-    url: 'https://oppalert.vercel.app',
+    url: 'https://OppFetch.vercel.app',
   },
 }
 

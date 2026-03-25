@@ -84,33 +84,18 @@ export default function OrganizerDashboard() {
           </Link>
         </div>
 
-        {/* PLAN LIMIT WARNING */}
-        {((user?.status === 'free' || !user?.status) && stats.activeEvents >= 1) && (
-          <div className="mb-10 p-6 bg-[#E8A020]/10 border border-[#E8A020]/20 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-6">
+        {/* PLAN LIMIT WARNINGS REMOVED FOR FREEMIUM MODEL */}
+        {(user?.status === 'free' || !user?.status) && (
+          <div className="mb-10 p-6 bg-[#34C27A]/10 border border-[#34C27A]/20 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4 text-center md:text-left">
-              <div className="w-12 h-12 bg-[#E8A020] rounded-full flex items-center justify-center text-[#080A07] text-2xl">⚠️</div>
+              <div className="w-12 h-12 bg-[#34C27A] rounded-full flex items-center justify-center text-[#080A07] text-2xl">✨</div>
               <div>
-                <h4 className="font-black text-primary uppercase text-sm tracking-widest">Plan Limit Reached</h4>
-                <p className="text-xs text-muted">You are on the <span className="text-[#E8A020] font-bold">Free Plan</span>. Upgrade to <span className="text-[#8B5CF6] font-bold">Organizer Pro</span> to host more than 1 active event.</p>
+                <h4 className="font-black text-primary uppercase text-sm tracking-widest">Free Supply Model Active</h4>
+                <p className="text-xs text-muted">You are on the <span className="text-[#34C27A] font-bold">Standard Free Plan</span>. Create unlimited events and share links with your community.</p>
               </div>
             </div>
-            <Link href="/pricing" className="px-6 py-3 bg-[#E8A020] text-[#080A07] font-black rounded-xl text-xs hover:scale-105 transition-all">
-              Upgrade Now
-            </Link>
-          </div>
-        )}
-
-        {user?.status === 'starter' && stats.activeEvents >= 5 && (
-          <div className="mb-10 p-6 bg-[#8B5CF6]/10 border border-[#8B5CF6]/20 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-4 text-center md:text-left">
-              <div className="w-12 h-12 bg-[#8B5CF6] rounded-full flex items-center justify-center text-white text-2xl">🚀</div>
-              <div>
-                <h4 className="font-black text-primary uppercase text-sm tracking-widest">Growth Limit Reached</h4>
-                <p className="text-xs text-muted">You&apos;ve reached the 5-event limit on the <span className="text-[#8B5CF6] font-bold">Pro Plan</span>. Switch to <span className="text-[#E8A020] font-bold">Enterprise</span> for unlimited events.</p>
-              </div>
-            </div>
-            <Link href="/pricing" className="px-6 py-3 bg-[#8B5CF6] text-white font-black rounded-xl text-xs hover:scale-105 transition-all">
-              View Enterprise Plans
+            <Link href="/pricing" className="px-6 py-3 bg-[#34C27A] text-[#080A07] font-black rounded-xl text-xs hover:scale-105 transition-all">
+              Boost My Events
             </Link>
           </div>
         )}
@@ -216,7 +201,7 @@ export default function OrganizerDashboard() {
                           <div className="flex items-center gap-1.5 border-l border-[#252D22] pl-3">
                             <button 
                               onClick={() => {
-                                navigator.clipboard.writeText(`https://oppalert.vercel.app/events/${event.slug}`);
+                                navigator.clipboard.writeText(`https://OppFetch.vercel.app/events/${event.slug}`);
                                 setCopyingId(event.id);
                                 setTimeout(() => setCopyingId(null), 2000);
                               }}
@@ -226,7 +211,7 @@ export default function OrganizerDashboard() {
                               <Copy size={14} className={copyingId === event.id ? "text-[#34C27A]" : ""} />
                             </button>
                             <a 
-                              href={`https://wa.me/?text=${encodeURIComponent(`Check out ${event.title} on OppAlert: https://oppalert.vercel.app/events/${event.slug}`)}`}
+                              href={`https://wa.me/?text=${encodeURIComponent(`Check out ${event.title} on OppFetch: https://oppfetch?events/${event.slug}`)}`}
                               target="_blank"
                               className="p-2 hover:bg-surface rounded-lg transition-colors text-subtle hover:text-[#34C27A]"
                               title="Share on WhatsApp"
@@ -234,7 +219,7 @@ export default function OrganizerDashboard() {
                               <Share2 size={14} />
                             </a>
                             <a 
-                              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Join me at ${event.title}!`)}&url=${encodeURIComponent(`https://oppalert.vercel.app/events/${event.slug}`)}`}
+                              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`Join me at ${event.title}!`)}&url=${encodeURIComponent(`https://OppFetch.vercel.app/events/${event.slug}`)}`}
                               target="_blank"
                               className="p-2 hover:bg-surface rounded-lg transition-colors text-subtle hover:text-[#4A9EE8]"
                               title="Share on X"

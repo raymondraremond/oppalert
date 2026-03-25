@@ -16,7 +16,7 @@ export default function AboutPage() {
             The Future of <span className="text-amber-gradient drop-shadow-glow-amber">African Talent.</span>
           </h1>
           <p className="text-subtle text-xl md:text-2xl font-medium leading-relaxed max-w-3xl mx-auto">
-            OppAlert is a mission-driven platform dedicated to connecting students and professionals across Africa with life-changing global opportunities.
+            OppFetch is a mission-driven platform dedicated to connecting students and professionals across Africa with life-changing global opportunities.
           </p>
         </section>
 
@@ -29,7 +29,7 @@ export default function AboutPage() {
                  Information gap remains one of the biggest hurdles for African youth. While thousands of scholarships, grants, and jobs exist specifically for the continent, finding them shouldn&apos;t be a full-time job.
                </p>
                <p className="text-lg text-subtle font-medium leading-relaxed">
-                 We built OppAlert to democratize access. By using a combination of human verification and smart scanning, we ensure that you see the most relevant opportunities the moment they go live.
+                 We built OppFetch to democratize access. By using a combination of human verification and smart scanning, we ensure that you see the most relevant opportunities the moment they go live.
                </p>
              </div>
              
@@ -91,7 +91,7 @@ export default function AboutPage() {
            <div className="flex items-center gap-10">
               <Github size={48} />
               <Globe size={48} />
-              <div className="font-syne font-black text-3xl tracking-tighter">OPPALERT <span className="text-subtle opacity-50">v2.0</span></div>
+              <div className="font-syne font-black text-3xl tracking-tighter">OppFetch <span className="text-subtle opacity-50">v2.0</span></div>
            </div>
            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-muted text-center">
              Engineered for the Digital African Economy · Secure · Fast · Transparent

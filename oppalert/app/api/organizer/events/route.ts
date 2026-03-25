@@ -5,13 +5,17 @@ import { sendOrganizerEventCreatedEmail } from '@/lib/mail'
 function generateSlug(title: string): string {
   const base = title
     .toLowerCase()
+    .trim()
     .replace(/[^a-z0-9\s]/g, '')
     .replace(/\s+/g, '-')
-    .slice(0, 50)
+    .slice(0, 40)
+  
+  // Simple 3-char random suffix for uniqueness without clutter
   const suffix = Math.random()
     .toString(36)
-    .substring(2, 7)
-  return base + '-' + suffix
+    .substring(2, 5)
+    
+  return `${base}-${suffix}`
 }
 
 export async function GET(request: NextRequest) {

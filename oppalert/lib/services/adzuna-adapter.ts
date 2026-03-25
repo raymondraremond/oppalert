@@ -42,7 +42,7 @@ export class AdzunaAdapter implements OpportunityAdapter {
   }
 
   private mapToOpportunity(job: any): Opportunity {
-    // Mapping Adzuna fields to OppAlert schema
+    // Mapping Adzuna fields to OppFetch schema
     const deadlineStr = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toLocaleDateString(); // Mock deadline as 30 days from now
 
     return {

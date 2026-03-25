@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Webhook signature failed' }, { status: 400 });
   }
 
-  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://oppalert.vercel.app';
+  const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://OppFetch.vercel.app';
 
   try {
     switch (event.type) {
@@ -58,10 +58,10 @@ export async function POST(req: NextRequest) {
             const { Resend } = await import('resend');
             const resend = new Resend(process.env.RESEND_API_KEY);
             await resend.emails.send({
-              from: process.env.EMAIL_FROM || 'alerts@oppalert.com',
+              from: process.env.EMAIL_FROM || 'alerts@OppFetch.com',
               to: userEmail,
-              subject: "You're now Premium on OppAlert \u26A1",
-              html: `<h1>Welcome to OppAlert Premium!</h1><p>You now have unlimited saved opportunities and instant alerts.</p><p><a href="${APP_URL}/dashboard">Go to Dashboard</a></p>`
+              subject: "You're now Premium on OppFetch \u26A1",
+              html: `<h1>Welcome to OppFetch Premium!</h1><p>You now have unlimited saved opportunities and instant alerts.</p><p><a href="${APP_URL}/dashboard">Go to Dashboard</a></p>`
             });
           }
         }
@@ -91,10 +91,10 @@ export async function POST(req: NextRequest) {
           const { Resend } = await import('resend');
           const resend = new Resend(process.env.RESEND_API_KEY);
           await resend.emails.send({
-            from: process.env.EMAIL_FROM || 'alerts@oppalert.com',
+            from: process.env.EMAIL_FROM || 'alerts@OppFetch.com',
             to: customerEmail,
-            subject: 'Action Required: OppAlert Payment Failed',
-            html: '<p>Your payment for OppAlert Premium failed. Please update your payment method to keep your subscription active.</p>'
+            subject: 'Action Required: OppFetch Payment Failed',
+            html: '<p>Your payment for OppFetch Premium failed. Please update your payment method to keep your subscription active.</p>'
           });
         }
         break;

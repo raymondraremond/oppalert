@@ -65,7 +65,7 @@ export default function NewsletterForm() {
             Share with a friend who needs this
           </p>
           <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
-            <a href="https://twitter.com/intent/tweet?text=Just%20found%20OppAlert%20-%20free%20platform%20for%20African%20students%20to%20find%20scholarships%20and%20remote%20jobs%20oppalert.vercel.app"
+            <a href="https://twitter.com/intent/tweet?text=Just%20found%20OppFetch%20-%20free%20platform%20for%20African%20students%20to%20find%20scholarships%20and%20remote%20jobs%20OppFetch.vercel.app"
                target="_blank" rel="noopener noreferrer"
                style={{ textDecoration: 'none', flex: 1 }}>
               <button style={{
@@ -78,7 +78,7 @@ export default function NewsletterForm() {
                 Share on X/Twitter
               </button>
             </a>
-            <a href="https://wa.me/?text=Found%20this%20free%20platform%20for%20scholarships%20and%20remote%20jobs%20for%20Africans%20oppalert.vercel.app"
+            <a href="https://wa.me/?text=Found%20this%20free%20platform%20for%20scholarships%20and%20remote%20jobs%20for%20Africans%20OppFetch.vercel.app"
                target="_blank" rel="noopener noreferrer"
                style={{ textDecoration: 'none', flex: 1 }}>
               <button style={{

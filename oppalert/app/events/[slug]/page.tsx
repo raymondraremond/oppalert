@@ -41,7 +41,7 @@ export default function EventDetailPage() {
         current_registrations: 0,
         is_paid: false,
         ticket_price: 0,
-        organizer_name: 'OppAlert',
+        organizer_name: 'OppFetch',
         is_published: true,
         slug,
       })
@@ -182,7 +182,7 @@ export default function EventDetailPage() {
           <div style={{
             fontSize: 14, color: '#555C50', marginBottom: 24,
           }}>
-            Organized by {event.organizer_name || 'OppAlert'}
+            Organized by {event.organizer_name || 'OppFetch'}
           </div>
 
           <div style={{
@@ -361,7 +361,7 @@ export default function EventDetailPage() {
               Copy Link
             </button>
             <a
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('Check out this event on OppAlert!')}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('Check out this event on OppFetch!')}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
               target="_blank"
               rel="noopener noreferrer"
               style={{ textDecoration: 'none' }}
