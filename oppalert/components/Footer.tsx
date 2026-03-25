@@ -63,10 +63,10 @@ export default function Footer() {
                 { label: 'Organizers Hub', href: '/organizer' },
                 { label: 'Pricing Plans', href: '/pricing' },
                 { label: 'Create Listing', href: '/organizer/create' },
-                { label: 'Success Stories', href: '#' }
+                { label: 'Success Stories', href: '/success-stories' }
               ].map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-sm text-subtle hover:text-amber transition-colors font-semibold">
+                  <Link href={link.href} className="text-sm text-subtle hover:text-amber transition-colors font-semibold outline-none focus:text-amber">
                     {link.label}
                   </Link>
                 </li>
@@ -86,7 +86,7 @@ export default function Footer() {
                 { label: 'Internships', href: '/opportunities?cat=internship' }
               ].map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-sm text-subtle hover:text-amber transition-colors font-semibold">
+                  <Link href={link.href} className="text-sm text-subtle hover:text-amber transition-colors font-semibold outline-none focus:text-amber">
                     {link.label}
                   </Link>
                 </li>
@@ -99,14 +99,14 @@ export default function Footer() {
             <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-8">Resources</h4>
             <ul className="space-y-4">
               {[
-                { label: 'Career Blog', href: '#' },
-                { label: 'Help Center', href: '#' },
-                { label: 'API Reference', href: '#' },
-                { label: 'Brand Assets', href: '#' },
-                { label: 'Contact Support', href: '/contact' }
+                { label: 'Career Blog', href: '/blog' },
+                { label: 'Help Center', href: '/help' },
+                { label: 'API Reference', href: '/api-docs' },
+                { label: 'Brand Assets', href: '/brand' },
+                { label: 'Contact Support', href: '/help' }
               ].map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="text-sm text-subtle hover:text-amber transition-colors font-semibold">
+                  <Link href={link.href} className="text-sm text-subtle hover:text-amber transition-colors font-semibold outline-none focus:text-amber">
                     {link.label}
                   </Link>
                 </li>
@@ -118,7 +118,7 @@ export default function Footer() {
           <div className="col-span-2 md:col-span-1 lg:col-span-1">
             <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-8">Stay Updated</h4>
             <p className="text-xs text-subtle mb-6 leading-relaxed">Join 5,000+ Africans getting the best opportunities weekly.</p>
-            <form onSubmit={handleSubscribe} className="relative">
+            <form onSubmit={handleSubscribe} className="relative mb-8">
               <input
                 type="email"
                 placeholder="email@example.com"
@@ -131,35 +131,50 @@ export default function Footer() {
                 {subscribed ? <Zap size={14} className="animate-pulse" /> : <ArrowRight size={14} />}
               </button>
             </form>
-            {subscribed && <p className="text-[10px] text-emerald font-bold mt-2 animate-fade-up">Success! Check your inbox.</p>}
-            <div className="mt-8 p-4 bg-white/[0.02] border border-white/5 rounded-2xl">
+            {subscribed && <p className="text-[10px] text-emerald font-bold mt-2 animate-fade-up mb-4">Success! Check your inbox.</p>}
+            
+            <div className="space-y-4 mb-8">
+               <a href="mailto:oppFetch@gmail.com" className="flex items-center gap-3 group">
+                  <Mail size={14} className="text-amber group-hover:scale-110 transition-transform" />
+                  <span className="text-[11px] font-bold text-subtle group-hover:text-amber transition-colors font-mono">oppFetch@gmail.com</span>
+               </a>
+               <div className="flex items-center gap-3">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald shadow-[0_0_8px_rgba(52,194,122,0.5)]" />
+                  <span className="text-[11px] font-bold text-subtle font-mono">+234 808 989 5943</span>
+               </div>
+            </div>
+
+            <div className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl">
                <div className="flex items-center gap-3">
                   <ShieldCheck size={16} className="text-emerald" />
                   <span className="text-[10px] font-bold text-muted uppercase tracking-wider">Trusted by Institutions</span>
                </div>
             </div>
           </div>
+
+
         </div>
 
         {/* Bottom Bar */}
         <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
           <div className="flex items-center gap-6">
              <span className="text-[11px] font-bold text-subtle uppercase tracking-widest">© {new Date().getFullYear()} OppFetch Inc.</span>
-             <Link href="/privacy" className="text-[11px] font-bold text-muted hover:text-white uppercase tracking-widest transition-colors">Privacy</Link>
-             <Link href="/terms" className="text-[11px] font-bold text-muted hover:text-white uppercase tracking-widest transition-colors">Terms</Link>
+             <Link href="/privacy" className="text-[11px] font-bold text-muted hover:text-white uppercase tracking-widest transition-colors outline-none focus:text-white">Privacy</Link>
+             <Link href="/terms" className="text-[11px] font-bold text-muted hover:text-white uppercase tracking-widest transition-colors outline-none focus:text-white">Terms</Link>
           </div>
           
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2">
                <div className="w-1.5 h-1.5 rounded-full bg-emerald animate-pulse" />
-               <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">All Systems Live</span>
+               <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Live Monitoring Official</span>
             </div>
             <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/5">
                 <Globe size={12} className="text-muted" />
-                <span className="text-[10px] font-bold text-muted uppercase">Africa Central</span>
+                <span className="text-[10px] font-bold text-muted uppercase">Lagos, Nigeria</span>
             </div>
           </div>
         </div>
+
       </div>
     </footer>
   )
