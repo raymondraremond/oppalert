@@ -19,7 +19,7 @@ export const BLOG_POSTS: BlogPost[] = [
     date: "March 20, 2024",
     author: "OppFetch Editorial",
     readTime: "8 min read",
-    image: "https://images.unsplash.com/photo-1523050335192-ce127ad46ffb?q=80&w=800&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1541339907198-e08756eaaaf8?q=80&w=800&auto=format&fit=crop",
     content: `
       <p>Securing a fully funded scholarship is often the most significant hurdle for ambitious African students looking to study abroad. In 2024, the landscape has become more competitive but also more accessible through digital transformation.</p>
 
