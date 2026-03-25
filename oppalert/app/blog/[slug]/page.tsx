@@ -36,40 +36,40 @@ export default function BlogPostDetail() {
         
         <header className="mb-12 animate-fade-up">
            <div className="flex items-center gap-4 mb-6">
-              <span className="px-3 py-1 bg-amber text-[#080A07] text-[10px] font-black uppercase tracking-widest rounded-full">{post.category}</span>
+              <span className="px-3 py-1 bg-amber text-[#080A07] text-[10px] font-black uppercase tracking-widest rounded-full animate-pulse-slow">{post.category}</span>
               <span className="text-xs text-subtle font-bold flex items-center gap-1"><Clock size={12} /> {post.readTime}</span>
               <span className="text-xs text-subtle font-bold flex items-center gap-1"><Calendar size={12} /> {post.date}</span>
            </div>
-           <h1 className="font-syne text-4xl md:text-6xl font-black mb-8 tracking-tighter leading-[1.1]">
+           <h1 className="font-syne text-4xl md:text-6xl font-black mb-8 tracking-tighter leading-[1.1] text-white">
              {post.title}
            </h1>
-           <div className="flex items-center justify-between py-8 border-y border-white/5">
+           <div className="flex items-center justify-between py-8 border-y border-white/10 bg-white/[0.01] px-6 rounded-2xl">
               <div className="flex items-center gap-4">
-                 <div className="w-12 h-12 rounded-full bg-amber-gradient flex items-center justify-center font-black text-[#080A07]">
+                 <div className="w-12 h-12 rounded-full bg-amber-gradient flex items-center justify-center font-black text-[#080A07] shadow-glow-amber/20">
                     {post.author[0]}
                  </div>
                  <div>
-                    <p className="text-sm font-black">{post.author}</p>
-                    <p className="text-[10px] text-muted uppercase tracking-widest">Editorial Team</p>
+                    <p className="text-sm font-black text-white">{post.author}</p>
+                    <p className="text-[10px] text-muted uppercase tracking-widest">OppFetch Editorial Team</p>
                  </div>
               </div>
               <div className="flex gap-4">
-                 <button className="p-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all text-subtle"><Share2 size={18} /></button>
-                 <button className="p-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all text-subtle"><Bookmark size={18} /></button>
+                 <button className="p-3 bg-white/5 border border-white/10 rounded-xl hover:bg-amber hover:text-[#080A07] transition-all text-subtle"><Share2 size={18} /></button>
+                 <button className="p-3 bg-white/5 border border-white/10 rounded-xl hover:bg-amber hover:text-[#080A07] transition-all text-subtle"><Bookmark size={18} /></button>
               </div>
            </div>
         </header>
 
-        <div className="aspect-[16/9] w-full rounded-[3rem] overflow-hidden mb-16 animate-fade-in shadow-glow-amber/5">
+        <div className="aspect-[16/9] w-full rounded-[3.5rem] overflow-hidden mb-16 animate-fade-in shadow-glow-amber/10 border border-white/10">
            <img 
              src={post.image} 
              alt={post.title} 
-             className="w-full h-full object-cover grayscale-0 opacity-80" 
+             className="w-full h-full object-cover opacity-90 hover:scale-105 transition-transform duration-1000" 
            />
         </div>
 
         <article className="prose prose-invert prose-amber max-w-none animate-fade-up">
-           <div className="text-xl text-subtle leading-relaxed italic mb-12 border-l-4 border-amber pl-8">
+           <div className="text-xl md:text-2xl text-white/90 leading-relaxed italic mb-12 border-l-4 border-amber pl-8 py-2 bg-amber/[0.02] rounded-r-2xl">
              {post.excerpt}
            </div>
            
@@ -80,15 +80,19 @@ export default function BlogPostDetail() {
         </article>
 
         {/* Share & Footer */}
-        <footer className="mt-20 pt-12 border-t border-white/5 animate-fade-in">
-           <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-8 text-center">Share this article</h4>
-           <div className="flex justify-center gap-6 mb-16">
+        <footer className="mt-32 pt-12 border-t border-white/10 animate-fade-in">
+           <div className="text-center mb-12">
+              <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-amber mb-4">Sharing is Caring</h4>
+              <p className="text-sm text-subtle">Help others discover this opportunity.</p>
+           </div>
+           
+           <div className="flex justify-center gap-8 mb-20">
               {shareLinks.map((link, i) => (
-                <button key={i} className="flex flex-col items-center gap-2 group">
-                   <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center text-subtle group-hover:bg-amber group-hover:text-[#080A07] transition-all">
-                      <link.icon size={22} />
+                <button key={i} className="flex flex-col items-center gap-3 group">
+                   <div className="w-16 h-16 rounded-[1.5rem] bg-white/5 border border-white/10 flex items-center justify-center text-subtle group-hover:bg-amber-gradient group-hover:text-[#080A07] group-hover:shadow-glow-amber/20 group-hover:-translate-y-2 transition-all duration-500">
+                      <link.icon size={24} />
                    </div>
-                   <span className="text-[10px] font-bold text-muted uppercase group-hover:text-amber transition-colors">{link.label}</span>
+                   <span className="text-[10px] font-bold text-muted uppercase tracking-widest group-hover:text-amber transition-colors">{link.label}</span>
                 </button>
               ))}
            </div>

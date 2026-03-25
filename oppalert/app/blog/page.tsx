@@ -30,21 +30,21 @@ export default function BlogPage() {
         </div>
 
         {/* Featured Card */}
-        <div className="relative aspect-[21/9] w-full rounded-[3rem] overflow-hidden mb-20 group animate-fade-in shadow-glow-amber/10">
+        <div className="relative aspect-[21/9] w-full rounded-[3rem] overflow-hidden mb-20 group animate-fade-in shadow-glow-amber/20 border border-white/10">
            <img 
              src={BLOG_POSTS[0].image} 
              alt="Featured" 
-             className="w-full h-full object-cover grayscale opacity-40 group-hover:scale-105 transition-transform duration-700"
+             className="w-full h-full object-cover opacity-60 group-hover:scale-105 group-hover:opacity-80 transition-all duration-1000"
            />
-           <div className="absolute inset-0 bg-gradient-to-t from-[#080A07] via-[#080A07]/40 to-transparent" />
+           <div className="absolute inset-0 bg-gradient-to-t from-[#080A07] via-[#080A07]/20 to-transparent" />
            <div className="absolute bottom-0 left-0 p-12 max-w-2xl">
               <div className="flex items-center gap-4 mb-4">
-                 <span className="px-3 py-1 bg-amber text-[#080A07] text-[10px] font-black uppercase tracking-widest rounded-full">{BLOG_POSTS[0].category}</span>
+                 <span className="px-3 py-1 bg-amber text-[#080A07] text-[10px] font-black uppercase tracking-widest rounded-full animate-pulse-slow">{BLOG_POSTS[0].category}</span>
                  <span className="text-xs text-subtle font-bold flex items-center gap-1"><Clock size={12} /> {BLOG_POSTS[0].readTime}</span>
               </div>
-              <h2 className="text-4xl font-black mb-4 tracking-tight leading-tight group-hover:text-amber transition-colors">{BLOG_POSTS[0].title}</h2>
-              <p className="text-subtle mb-8 md:block hidden">{BLOG_POSTS[0].excerpt}</p>
-              <Link href={`/blog/${BLOG_POSTS[0].slug}`} className="inline-flex items-center gap-2 text-amber text-xs font-black uppercase tracking-widest group/btn">
+              <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tight leading-tight group-hover:text-amber transition-colors drop-shadow-2xl">{BLOG_POSTS[0].title}</h2>
+              <p className="text-subtle mb-8 md:block hidden leading-relaxed">{BLOG_POSTS[0].excerpt}</p>
+              <Link href={`/blog/${BLOG_POSTS[0].slug}`} className="inline-flex items-center gap-3 text-amber text-xs font-black uppercase tracking-widest group/btn bg-white/5 border border-white/10 px-6 py-3 rounded-xl hover:bg-amber hover:text-[#080A07] transition-all">
                 Read Full Guide <ArrowRight size={14} className="group-hover/btn:translate-x-2 transition-transform" />
               </Link>
            </div>
@@ -53,36 +53,42 @@ export default function BlogPage() {
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
           {BLOG_POSTS.map((post, i) => (
-            <Link key={post.slug} href={`/blog/${post.slug}`} className="group cursor-pointer animate-fade-up block" style={{ animationDelay: `${i * 100}ms` }}>
-              <div className="aspect-[4/3] rounded-[2.5rem] overflow-hidden mb-8 border border-white/5 bg-white/5 relative">
+            <Link key={post.slug} href={`/blog/${post.slug}`} className="group cursor-pointer animate-fade-up block relative animate-float" style={{ animationDelay: `${i * 150}ms` }}>
+              <div className="aspect-[4/3] rounded-[2.5rem] overflow-hidden mb-8 border border-white/10 bg-white/5 relative shadow-glow-amber/0 group-hover:shadow-glow-amber/10 transition-shadow">
                  <img 
                    src={post.image} 
                    alt={post.title} 
-                   className="w-full h-full object-cover grayscale opacity-20 group-hover:scale-110 group-hover:opacity-60 transition-all duration-700" 
+                   className="w-full h-full object-cover grayscale-[0.5] opacity-40 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" 
                  />
+                 <div className="absolute inset-0 bg-gradient-to-t from-[#080A07]/80 to-transparent opacity-60 group-hover:opacity-20 transition-opacity" />
                  <Bookmark className="absolute top-6 right-6 text-white/20 group-hover:text-amber transition-colors" size={20} />
               </div>
               <div className="space-y-4">
-                <div className="flex items-center gap-2 text-[10px] font-black text-amber uppercase tracking-widest">
-                   {post.category} <ChevronRight size={10} /> {post.date}
+                <div className="flex items-center gap-2 text-[10px] font-black text-amber uppercase tracking-[0.2em] mb-2">
+                   {post.category} <ChevronRight size={10} className="text-white/20" /> {post.date}
                 </div>
-                <h3 className="text-xl font-black leading-[1.3] group-hover:text-amber transition-colors">{post.title}</h3>
-                <p className="text-sm text-subtle leading-relaxed line-clamp-3">{post.excerpt}</p>
+                <h3 className="text-2xl font-black leading-[1.2] group-hover:text-amber transition-colors tracking-tight">{post.title}</h3>
+                <p className="text-sm text-subtle leading-relaxed line-clamp-2 italic">{post.excerpt}</p>
                 <div className="pt-6 border-t border-white/5 flex items-center justify-between">
-                   <div className="flex items-center gap-2">
-                     <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[10px] font-black">{post.author?.[0] || 'O'}</div>
-                     <span className="text-xs font-bold text-muted">{post.author}</span>
+                   <div className="flex items-center gap-3">
+                     <div className="w-10 h-10 rounded-full bg-bg2 border border-white/10 flex items-center justify-center text-[11px] font-black text-amber">{post.author?.[0] || 'O'}</div>
+                     <span className="text-xs font-bold text-muted group-hover:text-white transition-colors">{post.author}</span>
                    </div>
-                   <span className="text-[10px] font-medium text-white/20 uppercase tracking-widest">{post.readTime}</span>
+                   <div className="flex items-center gap-1.5 py-1 px-3 rounded-full bg-white/5 border border-white/5 text-[10px] font-bold text-white/30 uppercase tracking-widest">
+                     <Clock size={10} /> {post.readTime}
+                   </div>
                 </div>
               </div>
+              
+              {/* Subtle ambient float effect on title */}
+              <div className="absolute -inset-4 bg-amber/0 group-hover:bg-amber/[0.02] rounded-[3rem] -z-10 transition-colors" />
             </Link>
           ))}
         </div>
 
         {/* Newsletter In-page */}
         <div className="mt-32 p-16 rounded-[4rem] bg-bg2 border border-white/5 relative overflow-hidden text-center animate-fade-in">
-           <div className="absolute top-0 right-0 w-64 h-64 bg-amber/5 blur-[100px] rounded-full" />
+           <div className="absolute top-0 right-0 w-64 h-64 bg-amber/5 blur-[100px] rounded-full animate-pulse-slow" />
            <h2 className="text-3xl font-black mb-4 tracking-tight">Don&apos;t miss a beat.</h2>
            <p className="text-subtle mb-10 max-w-sm mx-auto leading-relaxed text-sm">Get our monthly digest of high-impact opportunities directly in your inbox.</p>
            <form className="max-w-md mx-auto flex gap-4">
@@ -98,7 +104,25 @@ export default function BlogPage() {
            </form>
         </div>
       </div>
+
+      <style jsx global>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+        }
+        @keyframes pulse-slow {
+          0%, 100% { opacity: 0.4; transform: scale(1); }
+          50% { opacity: 0.8; transform: scale(1.05); }
+        }
+        .animate-float {
+          animation: float 6s ease-in-out infinite;
+        }
+        .animate-pulse-slow {
+          animation: pulse-slow 4s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   )
 }
+
 
