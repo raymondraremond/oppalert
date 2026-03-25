@@ -6,11 +6,27 @@ export async function GET(
 ) {
   try {
     if (!process.env.DATABASE_URL) {
-      return NextResponse.json(
-        { error: 'Database not configured' },
-        { status: 503 }
-      )
+      // Mock fallback for local development
+      return NextResponse.json({
+        data: {
+          id: 'mock-id',
+          slug: params.slug,
+          title: params.slug.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' '),
+          description: 'This is a mock event description for local development. In production, this data will come from your PostgreSQL database.',
+          event_type: 'workshop',
+          location: 'Lagos, Nigeria',
+          is_online: true,
+          start_date: new Date().toISOString(),
+          end_date: new Date(Date.now() + 3600000).toISOString(),
+          organizer_name: 'OppFetch Organizer',
+          is_published: true,
+          is_active: true,
+          current_registrations: 42,
+          max_capacity: 100
+        }
+      })
     }
+
 
     const { query } = await import('@/lib/db')
 

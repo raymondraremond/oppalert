@@ -2,21 +2,15 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getUserFromRequest } from '@/lib/auth'
 import { sendOrganizerEventCreatedEmail } from '@/lib/mail'
 
-function generateSlug(title: string): string {
-  const base = title
+// Helper to clean the title into a Luma-style slug
+function cleanSlug(title: string): string {
+  return title
     .toLowerCase()
     .trim()
-    .replace(/[^a-z0-9\s]/g, '')
-    .replace(/\s+/g, '-')
-    .slice(0, 40)
-  
-  // Simple 3-char random suffix for uniqueness without clutter
-  const suffix = Math.random()
-    .toString(36)
-    .substring(2, 5)
-    
-  return `${base}-${suffix}`
+    .replace(/[^a-z0-9]/g, '') // Remove everything except letters and numbers (no hyphens per user request)
+    .slice(0, 50)
 }
+
 
 export async function GET(request: NextRequest) {
   try {
@@ -95,7 +89,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const slug = generateSlug(title)
+    let slug = cleanSlug(title) || 'event'
 
     if (!process.env.DATABASE_URL) {
       return NextResponse.json({
@@ -106,6 +100,17 @@ export async function POST(request: NextRequest) {
     }
 
     const { query } = await import('@/lib/db')
+
+    // Check if slug already exists
+    const existingResult = await query(
+      'SELECT id FROM events WHERE slug = $1',
+      [slug]
+    )
+
+    if (existingResult.rows.length > 0) {
+      // Append a small random suffix ONLY if it exists
+      slug = `${slug}${Math.random().toString(36).substring(2, 5)}`
+    }
 
     const result = await query(
       `INSERT INTO events (

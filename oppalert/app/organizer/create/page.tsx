@@ -187,11 +187,11 @@ export default function CreateEventPage() {
                 fontSize: 13, color: '#E8A020',
                 wordBreak: 'break-all',
               }}>
-                oppfetch.com/events/{success.slug}
+                {typeof window !== 'undefined' ? `${window.location.host}/${success.slug}` : `oppfetch.com/${success.slug}`}
               </div>
               <button
                 onClick={async () => {
-                  const url = `https://oppfetch.com/events/${success.slug}`
+                  const url = `${window.location.origin}/${success.slug}`
                   try {
                     await navigator.clipboard.writeText(url)
                     setCopied(true)
@@ -225,7 +225,7 @@ export default function CreateEventPage() {
           {success.published && (
             <div style={{ display: 'flex', gap: 10, marginBottom: 24, justifyContent: 'center' }}>
               <a 
-                href={`https://wa.me/?text=${encodeURIComponent(`I just created ${success.title} on OppFetch! Register here: https://oppfetch.com/events/${success.slug}`)}`}
+                href={`https://wa.me/?text=${encodeURIComponent(`I just created ${success.title} on OppFetch! Register here: ${window.location.origin}/${success.slug}`)}`}
                 target="_blank"
                 style={{ textDecoration: 'none' }}
               >
@@ -239,7 +239,7 @@ export default function CreateEventPage() {
                 </button>
               </a>
               <a 
-                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://oppfetch.com/events/${success.slug}`)}`}
+                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${window.location.origin}/${success.slug}`)}`}
                 target="_blank"
                 style={{ textDecoration: 'none' }}
               >

@@ -645,7 +645,7 @@ We look forward to seeing you there!`
             display: 'flex', gap: 12, flexWrap: 'wrap',
           }}>
             <a
-              href={`https://wa.me/?text=${encodeURIComponent(`${event.title} — Register here: https://oppfetch.com/events/${event.slug}`)}`}
+              href={`https://wa.me/?text=${encodeURIComponent(`${event.title} — Register here: ${typeof window !== 'undefined' ? window.location.origin : 'https://oppfetch.com'}/${event.slug}`)}`}
               target="_blank"
               rel="noopener noreferrer"
               style={{ textDecoration: 'none' }}
@@ -663,7 +663,7 @@ We look forward to seeing you there!`
             </a>
 
             <a
-              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://oppfetch.com/events/${event.slug}`)}`}
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${typeof window !== 'undefined' ? window.location.origin : 'https://oppfetch.com'}/${event.slug}`)}`}
               target="_blank"
               rel="noopener noreferrer"
               style={{ textDecoration: 'none' }}
