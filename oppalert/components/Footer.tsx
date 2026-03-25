@@ -29,11 +29,14 @@ export default function Footer() {
           
           {/* Column 1: Brand */}
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
-            <Link href="/" className="flex items-center gap-3 mb-8 group">
-              <div className="w-10 h-10 rounded-xl bg-amber-gradient shadow-glow-amber flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-                 <Zap size={18} className="text-[#080A07] fill-current" />
+            <Link href="/" className="flex items-center gap-3 mb-8 group" style={{ textDecoration: 'none' }}>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-glow-amber" style={{
+                background: 'linear-gradient(135deg, var(--amber), #C87020)',
+                fontWeight: 900, fontSize: 22, color: '#090A07', fontFamily: 'Syne, sans-serif',
+              }}>
+                 o
               </div>
-              <div className="font-syne text-2xl font-black tracking-tighter">
+              <div className="font-syne text-2xl font-black tracking-tighter text-primary">
                 Opp<span className="text-amber">Fetch</span>
               </div>
             </Link>

@@ -94,21 +94,24 @@ export default function HomePage() {
   ]
 
   return (
-    <main className="min-h-screen bg-bg">
+    <main className="min-h-screen bg-bg overflow-x-hidden">
       {/* Hero */}
-      <section className="pt-24 pb-32 px-6 text-center border-b border-border">
+      <section className="pt-24 pb-32 px-6 text-center border-b border-border relative overflow-hidden">
+        {/* Subtle background glows */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-amber/5 blur-[120px] rounded-full -z-10 pointer-events-none" />
+        
         <div className="max-w-4xl mx-auto">
-          <h1 className="font-syne text-5xl md:text-7xl font-black text-primary mb-6 tracking-tighter leading-tight">
+          <h1 className="font-syne text-5xl md:text-7xl font-black text-primary mb-6 tracking-tighter leading-tight animate-fade-up">
             The Hub for African <span className="text-amber">Excellence.</span>
           </h1>
-          <p className="text-lg md:text-xl text-muted mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-muted mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-up" style={{ animationDelay: '150ms', animationFillMode: 'backwards' }}>
             Discover verified scholarships, remote jobs, fellowships, and grants curated specifically for the next generation of African leaders.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/opportunities" className="px-10 py-4 bg-amber text-[#080A07] font-black rounded-2xl hover:scale-105 transition-all shadow-glow-amber">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up" style={{ animationDelay: '300ms', animationFillMode: 'backwards' }}>
+            <Link href="/opportunities" className="px-10 py-4 bg-amber text-[#080A07] font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-glow-amber">
               Browse Opportunities
             </Link>
-            <Link href="/register" className="px-10 py-4 bg-bg2 text-primary border border-border font-black rounded-2xl hover:bg-surface transition-all">
+            <Link href="/register" className="px-10 py-4 bg-bg2 text-primary border border-border font-black rounded-2xl hover:bg-surface active:scale-95 transition-all">
               Join Free Community
             </Link>
           </div>
@@ -117,12 +120,12 @@ export default function HomePage() {
 
       {/* Categories */}
       <section className="py-20 px-6 container mx-auto">
-        <h2 className="font-syne text-3xl font-black text-primary mb-12 text-center">Browse by Category</h2>
+        <h2 className="font-syne text-3xl font-black text-primary mb-12 text-center animate-fade-up">Browse by Category</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {categories.map((cat) => (
-            <Link key={cat.slug} href={`/opportunities?cat=${cat.slug}`} className="p-6 bg-bg2 border border-border rounded-3xl hover:border-amber transition-all text-center group">
-              <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">{cat.icon}</div>
-              <div className="font-bold text-primary text-sm">{cat.name}</div>
+          {categories.map((cat, idx) => (
+            <Link key={cat.slug} href={`/opportunities?cat=${cat.slug}`} className="p-6 bg-bg2 border border-border rounded-3xl hover:border-amber transition-all text-center group animate-fade-up" style={{ animationDelay: `${(idx + 1) * 100}ms`, animationFillMode: 'backwards' }}>
+              <div className="text-3xl mb-3 group-hover:scale-110 group-hover:-translate-y-1 transition-transform duration-300">{cat.icon}</div>
+              <div className="font-bold text-primary text-sm group-hover:text-amber transition-colors">{cat.name}</div>
             </Link>
           ))}
         </div>

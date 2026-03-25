@@ -131,17 +131,17 @@ export default function EventsPage() {
     <div className="min-h-screen bg-bg pt-28 pb-32">
       <div className="max-w-7xl mx-auto px-6">
         <div className="mb-16">
-          <h1 className="font-syne text-4xl md:text-6xl font-black text-primary mb-6">
+          <h1 className="font-syne text-4xl md:text-6xl font-black text-primary mb-6 animate-fade-up">
             Next-Gen <span className="text-[#E8A020]">Events.</span>
           </h1>
-          <p className="text-muted text-lg max-w-2xl leading-relaxed">
+          <p className="text-muted text-lg max-w-2xl leading-relaxed animate-fade-up" style={{ animationDelay: '150ms', animationFillMode: 'backwards' }}>
             Discover workshops, webinars, and meetups designed to accelerate 
             your professional growth in Africa.
           </p>
         </div>
 
         {/* Filters */}
-        <div className="flex gap-3 mb-12 overflow-x-auto pb-4 no-scrollbar">
+        <div className="flex gap-3 mb-12 overflow-x-auto pb-4 no-scrollbar animate-fade-up" style={{ animationDelay: '250ms', animationFillMode: 'backwards' }}>
           {['all', 'bootcamp', 'workshop', 'webinar', 'meetup', 'hackathon'].map(type => (
             <button
               key={type}
@@ -159,11 +159,11 @@ export default function EventsPage() {
 
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredEvents.map((event) => (
+          {filteredEvents.map((event, idx) => (
             <div 
               key={event.id} 
-              className="glass-card rounded-[2.5rem] p-8 hover:-translate-y-2 transition-all duration-300 group flex flex-col hover:shadow-glow-amber"
-              style={{ borderLeft: `6px solid ${event.color || 'var(--amber)'}` }}
+              className="glass-card rounded-[2.5rem] p-8 hover:-translate-y-2 transition-all duration-300 group flex flex-col hover:shadow-glow-amber animate-fade-up"
+              style={{ borderLeft: `6px solid ${event.color || 'var(--amber)'}`, animationDelay: `${(idx + 1) * 100}ms`, animationFillMode: 'backwards' }}
             >
               <div className="flex justify-between items-start mb-6">
                 <span className="px-3 py-1 bg-[var(--icon-bg)] rounded-full text-[10px] font-black uppercase text-subtle border border-[var(--glass-border)]">
