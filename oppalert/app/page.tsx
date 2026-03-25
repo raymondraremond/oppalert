@@ -96,22 +96,36 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-bg overflow-x-hidden">
       {/* Hero */}
-      <section className="pt-24 pb-32 px-6 text-center border-b border-border relative overflow-hidden">
-        {/* Subtle background glows */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-amber/5 blur-[120px] rounded-full -z-10 pointer-events-none" />
+      <section className="text-center border-b border-border relative overflow-hidden flex flex-col justify-center min-h-[90vh] px-6">
         
-        <div className="max-w-4xl mx-auto">
-          <h1 className="font-syne text-5xl md:text-7xl font-black text-primary mb-6 tracking-tighter leading-tight animate-fade-up">
-            The Hub for African <span className="text-amber">Excellence.</span>
+        {/* Cinematic Aurora/Fluid Background Matrix */}
+        <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none bg-[#080A07]">
+          {/* Moving Orbs mimicking a slow tech video loop */}
+          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#E8A020]/20 blur-[120px] rounded-full animate-float" style={{ animationDuration: '15s' }} />
+          <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-[#34C27A]/15 blur-[150px] rounded-full animate-float" style={{ animationDuration: '20s', animationDelay: '2s' }} />
+          <div className="absolute top-[40%] left-[30%] w-[40%] h-[40%] bg-[#E8A020]/10 blur-[100px] rounded-full animate-pulse-soft" style={{ animationDuration: '10s' }} />
+          
+          {/* Subtle Grid Overlay for that SaaS 'Network' feel */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_10%,transparent_100%)]" />
+        </div>
+
+        <div className="max-w-5xl mx-auto relative z-10 w-full">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-8 animate-fade-up">
+             <span className="w-2 h-2 rounded-full bg-[#34C27A] animate-pulse"></span>
+             <span className="text-[10px] font-black uppercase tracking-widest text-[#E8A020]">The New OppFetch 2.0 is Live</span>
+          </div>
+
+          <h1 className="font-syne text-6xl md:text-8xl font-black text-white mb-8 tracking-tighter leading-[1.1] animate-fade-up" style={{ animationDelay: '100ms', animationFillMode: 'backwards' }}>
+            The Hub for African <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E8A020] to-[#F5D080]">Excellence.</span>
           </h1>
-          <p className="text-lg md:text-xl text-muted mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-up" style={{ animationDelay: '150ms', animationFillMode: 'backwards' }}>
-            Discover verified scholarships, remote jobs, fellowships, and grants curated specifically for the next generation of African leaders.
+          <p className="text-lg md:text-xl text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-up font-medium" style={{ animationDelay: '200ms', animationFillMode: 'backwards' }}>
+            Experience the next level of opportunity discovery. Verified scholarships, remote tech jobs, fellowships, and VC grants curated for African leaders.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up" style={{ animationDelay: '300ms', animationFillMode: 'backwards' }}>
-            <Link href="/opportunities" className="px-10 py-4 bg-amber text-[#080A07] font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-glow-amber">
+          <div className="flex flex-col sm:flex-row gap-5 justify-center animate-fade-up" style={{ animationDelay: '300ms', animationFillMode: 'backwards' }}>
+            <Link href="/opportunities" className="px-12 py-5 bg-[#E8A020] text-[#080A07] font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_40px_rgba(232,160,32,0.4)] tracking-wide">
               Browse Opportunities
             </Link>
-            <Link href="/register" className="px-10 py-4 bg-bg2 text-primary border border-border font-black rounded-2xl hover:bg-surface active:scale-95 transition-all">
+            <Link href="/register" className="px-12 py-5 bg-white/5 backdrop-blur-md text-white border border-white/10 font-black rounded-2xl hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all tracking-wide">
               Join Free Community
             </Link>
           </div>
