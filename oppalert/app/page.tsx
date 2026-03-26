@@ -101,12 +101,11 @@ export default function HomePage() {
     <main className="min-h-screen bg-bg overflow-x-hidden">
       {/* Hero */}
       <section className="text-center relative overflow-hidden flex flex-col justify-center min-h-[85vh] px-6" style={{
-        background: `radial-gradient(ellipse 80% 50% at 50% -20%, rgba(232,160,32,0.08) 0%, transparent 70%), #080A07`,
+        background: '#080A07',
       }}>
         {/* Background remains same or slightly enhanced */}
         <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#E8A020]/10 blur-[120px] rounded-full animate-float" />
-          <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-[#34C27A]/10 blur-[150px] rounded-full animate-float" style={{ animationDelay: '2s' }} />
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(232,160,32,0.12)_0%,transparent_70%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_10%,transparent_100%)]" />
         </div>
 
