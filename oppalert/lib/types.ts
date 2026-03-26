@@ -4,6 +4,8 @@ export type FundingType = 'Fully Funded' | 'Partial Funding' | 'Paid Position' |
 export interface Opportunity {
   id: string
   icon?: string
+  image?: string
+  image_url?: string
   
   // App/Mock fields
   title: string
