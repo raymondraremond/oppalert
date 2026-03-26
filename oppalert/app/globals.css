@@ -60,7 +60,7 @@ header, nav {
 }
 
 html {
-  scroll-behavior: smooth;
+  /* removed smooth scroll for speed */
 }
 
 body {
@@ -530,7 +530,6 @@ body {
 }
 
 html {
-  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }

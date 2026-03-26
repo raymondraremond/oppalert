@@ -109,13 +109,12 @@ export default function Navbar() {
         height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
       }}>
         <Link href="/" style={{ textDecoration: 'none' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <div style={{
-              width: 30, height: 30, borderRadius: 8,
-              background: 'linear-gradient(135deg, var(--amber), #C87020)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontWeight: 900, fontSize: 18, color: '#090A07', fontFamily: 'Syne, sans-serif', paddingBottom: 2,
-            }}>o</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <img 
+              src="/icon.png" 
+              alt="OppFetch" 
+              style={{ width: 28, height: 28, objectFit: 'contain' }} 
+            />
             <span style={{ fontFamily: 'Syne, sans-serif', fontSize: 18, fontWeight: 800, color: 'var(--primary)' }}>
               Opp<span style={{ color: 'var(--amber)' }}>Fetch</span>
             </span>
