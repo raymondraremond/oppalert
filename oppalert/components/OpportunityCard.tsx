@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import SaveButton from './SaveButton'
 import { Clock } from 'lucide-react'
-import { motion } from 'framer-motion'
 
 interface OpportunityCardProps {
   opportunity: any
@@ -20,52 +19,46 @@ export default function OpportunityCard({ opportunity, deadlineOverride, index =
     if (days < 0) return 'Expired'
     return new Date(deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
   }
-  
-  // High-quality UNIQUE Unsplash imagery for every card
-  const getImageUrl = (category: string, id: string) => {
-    const keywords = {
-      scholarship: 'university,library,student',
-      job: 'office,technology,working',
-      grant: 'funding,investment,startup',
-      fellowship: 'collaboration,community,research',
-      internship: 'apprentice,learning,office',
-      startup: 'innovation,entrepreneur,laptop',
-      other: 'abstract,network,technology'
-    }
-    const kw = (keywords as any)[category.toLowerCase()] || keywords.other
-    return `https://images.unsplash.com/photo-${id.length > 10 ? id : '1521737711867-e3b97375f902'}?auto=format&fit=crop&w=800&q=80&sig=${id}-${index}`
-  }
 
-  // Use a fallback if id is not a standard unsplash id - but for "unique" requirement, 
-  // we'll append a signature to a featured search if the opportunity doesn't have an image
+  // Use a fallback if id is not a standard unsplash id
   const imageUrl = opportunity.image_url || `https://source.unsplash.com/featured/1600x900?${(cat === 'other' ? 'technology' : cat)},modern,minimal&sig=${opportunity.id || index}`
   const deadlineText = deadlineOverride || getDeadlineDisplay(opportunity.deadline, opportunity.days_remaining)
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ 
-        duration: 0.6, 
-        delay: index * 0.1, 
-        ease: [0.16, 1, 0.3, 1] 
-      }}
+    <div
       className="h-full"
+      style={{
+        animation: `fadeUp 0.6s ease both`,
+        animationDelay: `${index * 100}ms`,
+      }}
     >
       <Link 
         href={`/opportunities/${opportunity.id}`}
         className="group flex flex-col bg-[#0D0F0B] border border-[#2E3530] rounded-[2rem] overflow-hidden hover:border-[#E8A020] transition-all duration-500 hover:shadow-[0_0_40px_rgba(232,160,32,0.1)] block h-full relative"
-        style={{ textDecoration: 'none' }}
+        style={{
+          textDecoration: 'none',
+          transition: 'transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease',
+          willChange: 'transform',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'translateY(-4px)'
+          e.currentTarget.style.boxShadow = '0 16px 48px rgba(0,0,0,0.35)'
+          e.currentTarget.style.borderColor = '#313D2C'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'none'
+          e.currentTarget.style.boxShadow = 'none'
+          e.currentTarget.style.borderColor = '#2E3530'
+        }}
       >
         {/* Top Image Section */}
         <div className="relative aspect-[16/9] w-full overflow-hidden">
           <div className="absolute inset-0 bg-black/30 group-hover:bg-transparent transition-colors duration-500 z-10 pointer-events-none" />
-          <motion.img 
+          <img 
             src={imageUrl} 
             alt={opportunity.title} 
-            whileHover={{ scale: 1.1 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+            loading="lazy"
           />
           {/* Floating Save Button */}
           <div className="absolute top-4 right-4 z-20" onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}>
@@ -115,6 +108,6 @@ export default function OpportunityCard({ opportunity, deadlineOverride, index =
         {/* Hover Highlight Overlay */}
         <div className="absolute inset-0 border-2 border-transparent group-hover:border-[#E8A020]/20 rounded-[2rem] pointer-events-none transition-colors" />
       </Link>
-    </motion.div>
+    </div>
   )
 }

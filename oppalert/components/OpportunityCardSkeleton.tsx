@@ -15,8 +15,8 @@ export default function OpportunityCardSkeleton() {
           borderRadius: i === 0 ? 10 : 6,
           background: '#1C2119',
           marginBottom: i === 0 ? 14 : 8,
-          animation: 'skeleton-pulse 1.5s ease infinite',
-          animationDelay: `${i * 0.1}s`,
+          animation: 'skeleton-pulse 1.5s ease-in-out infinite',
+          animationDelay: `${i * 150}ms`,
         }} />
       ))}
     </div>

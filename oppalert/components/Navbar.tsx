@@ -88,7 +88,7 @@ export default function Navbar() {
     fontSize: 14,
     fontWeight: 500,
     cursor: 'pointer',
-    transition: 'all 0.3s',
+    transition: 'color 0.15s ease, background 0.15s ease',
     textDecoration: 'none',
   })
 
@@ -102,7 +102,7 @@ export default function Navbar() {
       backdropFilter: scrolled ? 'blur(20px)' : 'none',
       borderBottom: scrolled ? '1px solid var(--border)' : '1px solid transparent',
       height: 60,
-      transition: 'all 0.3s ease',
+      transition: 'background 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease',
     }}>
       <div style={{
         maxWidth: 1100, margin: '0 auto', padding: '0 1.5rem',
@@ -164,7 +164,11 @@ export default function Navbar() {
                 border: '2px solid var(--amber)', display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: 12, fontWeight: 800, color: 'var(--amber)', cursor: 'pointer',
                 fontFamily: 'Syne, sans-serif', userSelect: 'none',
-              }}>{getInitials()}</div>
+                transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)' }}
+              onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)' }}
+              >{getInitials()}</div>
               {showDropdown && (
                 <div style={{
                   position: 'absolute', right: 0, top: 44, background: 'var(--bg2)',
@@ -194,8 +198,8 @@ export default function Navbar() {
             </div>
           ) : (
             <>
-              <Link href="/login"><button style={{ padding: '7px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600, background: 'transparent', border: '1px solid var(--border)', color: 'var(--muted)', cursor: 'pointer', fontFamily: 'inherit' }}>Log In</button></Link>
-              <Link href="/register"><button style={{ padding: '7px 16px', borderRadius: 8, fontSize: 13, fontWeight: 700, background: 'var(--amber)', border: 'none', color: '#090A07', cursor: 'pointer', fontFamily: 'inherit' }}>Join Free →</button></Link>
+              <Link href="/login"><button className="btn-animate" style={{ padding: '7px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600, background: 'transparent', border: '1px solid var(--border)', color: 'var(--muted)', cursor: 'pointer', fontFamily: 'inherit' }}>Log In</button></Link>
+              <Link href="/register"><button className="btn-animate" style={{ padding: '7px 16px', borderRadius: 8, fontSize: 13, fontWeight: 700, background: 'var(--amber)', border: 'none', color: '#090A07', cursor: 'pointer', fontFamily: 'inherit' }}>{"Join Free \u2192"}</button></Link>
             </>
           )}
         </div>

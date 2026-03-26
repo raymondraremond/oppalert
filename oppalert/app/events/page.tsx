@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import ScrollReveal from '@/components/ScrollReveal'
 import { Calendar, MapPin, Globe, ArrowRight, Sparkles } from 'lucide-react'
 
 const sampleEvents = [
@@ -128,24 +129,32 @@ export default function EventsPage() {
     : events.filter(e => e.event_type === typeFilter)
 
   return (
-    <div className="min-h-screen bg-bg pt-28 pb-32">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="mb-16">
-          <h1 className="font-syne text-4xl md:text-6xl font-black text-primary mb-6 animate-fade-up">
-            Next-Gen <span className="text-[#E8A020]">Events.</span>
+    <div className="min-h-screen bg-bg pb-32">
+      {/* Hero bar */}
+      <div style={{
+        background: `radial-gradient(ellipse 60% 80% at 50% 0%, rgba(232,160,32,0.06) 0%, transparent 60%), #0A0C09`,
+        borderBottom: '1px solid #141710',
+        padding: '40px 1.5rem 32px',
+      }}>
+        <div className="max-w-7xl mx-auto">
+          <h1 className="font-syne text-4xl md:text-6xl font-black text-primary mb-6" style={{ animation: 'fadeUp 0.6s ease both' }}>
+            {"Next-Gen "}<span className="text-[#E8A020]">Events.</span>
           </h1>
-          <p className="text-muted text-lg max-w-2xl leading-relaxed animate-fade-up" style={{ animationDelay: '150ms', animationFillMode: 'backwards' }}>
+          <p className="text-muted text-lg max-w-2xl leading-relaxed" style={{ animation: 'fadeUp 0.6s ease both', animationDelay: '150ms' }}>
             Discover workshops, webinars, and meetups designed to accelerate 
             your professional growth in Africa.
           </p>
         </div>
+      </div>
 
+      <div className="max-w-7xl mx-auto px-6 pt-10">
         {/* Filters */}
-        <div className="flex gap-3 mb-12 overflow-x-auto pb-4 no-scrollbar animate-fade-up" style={{ animationDelay: '250ms', animationFillMode: 'backwards' }}>
+        <div className="stagger-children flex gap-3 mb-12 overflow-x-auto pb-4 no-scrollbar">
           {['all', 'bootcamp', 'workshop', 'webinar', 'meetup', 'hackathon'].map(type => (
             <button
               key={type}
               onClick={() => setTypeFilter(type)}
+              style={{ animation: 'fadeUp 0.5s ease both' }}
               className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.15em] border transition-all whitespace-nowrap duration-300 ${
                 typeFilter === type
                   ? 'bg-amber border-amber text-[#080A07] shadow-glow-amber scale-105'
@@ -160,63 +169,64 @@ export default function EventsPage() {
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredEvents.map((event, idx) => (
-            <div 
-              key={event.id} 
-              className="glass-card rounded-[2.5rem] p-8 hover:-translate-y-2 transition-all duration-300 group flex flex-col hover:shadow-glow-amber animate-fade-up"
-              style={{ borderLeft: `6px solid ${event.color || 'var(--amber)'}`, animationDelay: `${(idx + 1) * 100}ms`, animationFillMode: 'backwards' }}
-            >
-              <div className="flex justify-between items-start mb-6">
-                <span className="px-3 py-1 bg-[var(--icon-bg)] rounded-full text-[10px] font-black uppercase text-subtle border border-[var(--glass-border)]">
-                  {event.event_type}
-                </span>
-                <span className="text-amber text-xs font-black tracking-widest">
-                  {event.is_paid ? `NGN ${Number(event.ticket_price).toLocaleString()}` : 'FREE'}
-                </span>
-              </div>
-              
-              <h3 className="font-syne text-xl font-black text-primary mb-3 group-hover:text-amber transition-colors line-clamp-2">
-                {event.title}
-              </h3>
-              
-              <p className="text-subtle text-sm mb-6 line-clamp-2 leading-relaxed">
-                {event.description}
-              </p>
-
-              <div className="space-y-4 mb-8 flex-grow">
-                <div className="text-[11px] font-bold text-muted flex items-center gap-3 uppercase tracking-wider">
-                  <Calendar size={14} className="text-amber" />
-                  {new Date(event.start_date).toLocaleDateString('en-US', { 
-                    month: 'short', 
-                    day: 'numeric', 
-                    year: 'numeric' 
-                  })}
-                </div>
-                <div className="text-[11px] font-bold text-muted flex items-center gap-3 uppercase tracking-wider">
-                  {event.is_online ? <Globe size={14} className="text-amber" /> : <MapPin size={14} className="text-amber" />}
-                  {event.is_online ? 'Online Session' : event.location}
-                </div>
-              </div>
-
-              <div className="mt-auto pt-6 border-t border-border/50">
-                <div className="w-full bg-bg rounded-full h-1.5 mb-4 overflow-hidden">
-                  <div 
-                    className="h-full bg-[#E8A020]" 
-                    style={{ width: `${Math.min((event.current_registrations / (event.max_capacity || 100)) * 100, 100)}%` }}
-                  ></div>
-                </div>
-                <div className="flex justify-between text-[10px] font-black text-subtle uppercase mb-8">
-                  <span>Capacity</span>
-                  <span>{event.current_registrations}/{event.max_capacity || '∞'} Booked</span>
+            <ScrollReveal key={event.id} delay={idx * 80}>
+              <div 
+                className="glass-card rounded-[2.5rem] p-8 transition-all duration-300 group flex flex-col card-hover"
+                style={{ borderLeft: `6px solid ${event.color || 'var(--amber)'}` }}
+              >
+                <div className="flex justify-between items-start mb-6">
+                  <span className="px-3 py-1 bg-[var(--icon-bg)] rounded-full text-[10px] font-black uppercase text-subtle border border-[var(--glass-border)]">
+                    {event.event_type}
+                  </span>
+                  <span className="text-amber text-xs font-black tracking-widest">
+                    {event.is_paid ? `NGN ${Number(event.ticket_price).toLocaleString()}` : 'FREE'}
+                  </span>
                 </div>
                 
-                <Link 
-                  href={`/events/${event.slug}`}
-                  className="flex items-center justify-center gap-2 w-full py-4 bg-amber text-[#080A07] text-center font-black rounded-xl hover:shadow-glow-amber transition-all uppercase text-[10px] tracking-[0.2em] active:scale-95"
-                >
-                  View & Register <ArrowRight size={14} strokeWidth={3} />
-                </Link>
+                <h3 className="font-syne text-xl font-black text-primary mb-3 group-hover:text-amber transition-colors line-clamp-2">
+                  {event.title}
+                </h3>
+                
+                <p className="text-subtle text-sm mb-6 line-clamp-2 leading-relaxed">
+                  {event.description}
+                </p>
+
+                <div className="space-y-4 mb-8 flex-grow">
+                  <div className="text-[11px] font-bold text-muted flex items-center gap-3 uppercase tracking-wider">
+                    <Calendar size={14} className="text-amber" />
+                    {new Date(event.start_date).toLocaleDateString('en-US', { 
+                      month: 'short', 
+                      day: 'numeric', 
+                      year: 'numeric' 
+                    })}
+                  </div>
+                  <div className="text-[11px] font-bold text-muted flex items-center gap-3 uppercase tracking-wider">
+                    {event.is_online ? <Globe size={14} className="text-amber" /> : <MapPin size={14} className="text-amber" />}
+                    {event.is_online ? 'Online Session' : event.location}
+                  </div>
+                </div>
+
+                <div className="mt-auto pt-6 border-t border-border/50">
+                  <div className="w-full bg-bg rounded-full h-1.5 mb-4 overflow-hidden">
+                    <div 
+                      className="h-full bg-[#E8A020]" 
+                      style={{ width: `${Math.min((event.current_registrations / (event.max_capacity || 100)) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                  <div className="flex justify-between text-[10px] font-black text-subtle uppercase mb-8">
+                    <span>Capacity</span>
+                    <span>{event.current_registrations}/{event.max_capacity || '\u221E'} Booked</span>
+                  </div>
+                  
+                  <Link 
+                    href={`/events/${event.slug}`}
+                    className="flex items-center justify-center gap-2 w-full py-4 bg-amber text-[#080A07] text-center font-black rounded-xl hover:shadow-glow-amber transition-all uppercase text-[10px] tracking-[0.2em] active:scale-95 btn-animate"
+                  >
+                    {"View & Register"} <ArrowRight size={14} strokeWidth={3} />
+                  </Link>
+                </div>
               </div>
-            </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>
