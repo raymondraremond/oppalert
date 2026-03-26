@@ -703,4 +703,20 @@ html {
 .event-type-conference { border-left: 3px solid #F97316; }
 .event-type-hackathon  { border-left: 3px solid #F05050; }
 
+/* Image fade in when loaded */
+@keyframes imageFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+img {
+  animation: imageFadeIn 0.3s ease;
+}
+
+/* Prevent layout shift while image loads */
+img[loading="lazy"] {
+  background: #1C2119;
+}
+
+
 

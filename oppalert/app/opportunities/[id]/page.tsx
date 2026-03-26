@@ -104,6 +104,64 @@ export default function OpportunityDetailPage({ params }: Props) {
         </Link>
       </div>
 
+      {/* Hero Image Section */}
+      <div style={{
+        width: '100%',
+        height: 300,
+        position: 'relative',
+        overflow: 'hidden',
+        borderRadius: 16,
+        marginBottom: 28,
+        background: '#1C2119',
+      }} className="animate-fade-up">
+        <img
+          src={opp.image || 
+            `https://picsum.photos/seed/${opp.id}/1200/400`}
+          alt={opp.title}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            display: 'block',
+          }}
+          loading="eager"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement
+            target.src = 
+              `https://picsum.photos/seed/${cat}/1200/400`
+          }}
+        />
+        
+        {/* Dark gradient overlay at bottom for text readability */}
+        <div style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: '50%',
+          background: 
+            'linear-gradient(transparent, rgba(8,10,7,0.8))',
+        }} />
+        
+        {/* Category badge on image */}
+        <div style={{
+          position: 'absolute',
+          top: 16,
+          left: 16,
+          background: 'rgba(8,10,7,0.75)',
+          backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          borderRadius: 100,
+          padding: '4px 14px',
+          fontSize: 12,
+          fontWeight: 700,
+          color: '#EDE8DF',
+          textTransform: 'capitalize',
+        }}>
+          {cat}
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-12">
         <div className="space-y-8 animate-fade-up">
           <div className="glass-gradient border border-border rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden group">
