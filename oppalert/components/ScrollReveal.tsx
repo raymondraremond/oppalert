@@ -19,25 +19,25 @@ export default function ScrollReveal({
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setTimeout(() => setVisible(true), delay)
+          setVisible(true)
           observer.disconnect()
         }
       },
-      { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+      { threshold: 0.05, rootMargin: '0px 0px -20px 0px' }
     )
     if (ref.current) observer.observe(ref.current)
     return () => observer.disconnect()
-  }, [delay])
+  }, [])
 
   return (
     <div ref={ref} className={className} style={{
       opacity: visible ? 1 : 0,
       transform: visible ? 'none' : (
-        direction === 'up' ? 'translateY(28px)' :
-        direction === 'left' ? 'translateX(-28px)' :
-        direction === 'right' ? 'translateX(28px)' : 'none'
+        direction === 'up' ? 'translateY(20px)' :
+        direction === 'left' ? 'translateX(-20px)' :
+        direction === 'right' ? 'translateX(20px)' : 'none'
       ),
-      transition: 'opacity 0.55s ease, transform 0.55s ease',
+      transition: 'opacity 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)',
       willChange: visible ? 'auto' : 'opacity, transform',
     }}>
       {children}

@@ -94,9 +94,11 @@ export default function CapsuleNav() {
       >
         {/* Logo */}
         <Link href="/" className="pl-3 group flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-[#E8A020] flex items-center justify-center font-black text-[#080A07] text-sm group-hover:scale-110 transition-transform">
-            o
-          </div>
+          <img 
+            src="/icon.png" 
+            alt="OppFetch" 
+            className="w-8 h-8 object-contain group-hover:scale-110 transition-transform" 
+          />
           <span className="font-syne font-black text-white text-lg tracking-tighter group-hover:text-[#E8A020] transition-colors hide-mobile">
             Opp<span className="text-[#E8A020]">Fetch</span>
           </span>

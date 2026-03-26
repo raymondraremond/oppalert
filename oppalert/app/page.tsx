@@ -154,7 +154,7 @@ export default function HomePage() {
       <section className="py-20 px-6 container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Card 1: Link Tool / Typing Animation */}
-          <ScrollReveal className="md:col-span-2" delay={0}>
+          <ScrollReveal className="md:col-span-2" direction="none">
             <div className="bg-[#1A1D18] border border-white/5 rounded-[2.5rem] p-10 relative overflow-hidden group min-h-[400px] card-hover">
               <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
                  <Share2 size={120} className="text-[#E8A020]" />
@@ -195,7 +195,7 @@ export default function HomePage() {
           </ScrollReveal>
 
           {/* Card 2: Engagement Indicator */}
-          <ScrollReveal delay={100}>
+          <ScrollReveal delay={100} direction="none">
             <div className="bg-[#0D0F0B] border border-[#E8A020]/20 rounded-[2.5rem] p-10 flex flex-col justify-between overflow-hidden relative shadow-glow-amber/5 card-hover h-full">
               <div className="relative z-10">
                 <div className="w-12 h-12 rounded-2xl bg-[#34C27A]/10 flex items-center justify-center mb-6">
@@ -232,7 +232,7 @@ export default function HomePage() {
           </ScrollReveal>
 
           {/* Card 3: Featured Preview / Browse Context */}
-          <ScrollReveal delay={200}>
+          <ScrollReveal delay={200} direction="none">
             <div className="md:col-span-1 bg-[#1A1D18] border border-white/5 rounded-[2.5rem] p-8 flex flex-col justify-center relative overflow-hidden group card-hover h-full">
                <div className="text-center mb-8">
                  <h3 className="font-syne text-xl font-black text-white mb-2">Discovery Hub</h3>
@@ -245,7 +245,7 @@ export default function HomePage() {
             </div>
           </ScrollReveal>
 
-          <ScrollReveal className="md:col-span-2" delay={300}>
+          <ScrollReveal className="md:col-span-2" delay={300} direction="none">
             <div className="bg-[#E8A020] rounded-[2.5rem] p-10 flex flex-col md:flex-row items-center justify-between overflow-hidden relative card-hover">
               <div className="max-w-md relative z-10 text-center md:text-left mb-8 md:mb-0">
                 <h3 className="font-syne text-4xl font-black text-[#080A07] mb-4">Elite Seekers.</h3>
