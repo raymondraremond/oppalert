@@ -47,7 +47,7 @@ export default function PremiumUpgradeBanner() {
         </div>
         <div style={{ fontSize: 12, color: 'var(--muted)' }}>
           Get instant alerts and never miss a deadline. 
-          Only ₦1,500/month.
+          Only ₦2,500/month.
         </div>
       </div>
       <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>

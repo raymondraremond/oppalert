@@ -89,8 +89,8 @@ export default function PricingPage() {
               <ul className="space-y-5 mb-12 flex-1">
                 <li className="text-sm text-primary flex items-center gap-3"><CheckCircle2 size={16} className="text-[#34C27A]" /> Unlimited Event listings</li>
                 <li className="text-sm text-primary flex items-center gap-3"><CheckCircle2 size={16} className="text-[#34C27A]" /> Custom Event Links</li>
+                <li className="text-sm text-primary flex items-center gap-3"><CheckCircle2 size={16} className="text-[#34C27A]" /> Notify Attendees (Broadcast)</li>
                 <li className="text-sm text-primary flex items-center gap-3"><CheckCircle2 size={16} className="text-[#34C27A]" /> Basic attendance tracking</li>
-                <li className="text-sm text-subtle flex items-center gap-3 opacity-50"><ShieldCheck size={16} /> Standard placement</li>
               </ul>
               <Link href="/register" className="w-full py-4 bg-transparent border border-border text-primary font-black rounded-2xl text-center hover:bg-surface transition-all">
                 Start Posting Free

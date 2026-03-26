@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Syne, Inter } from 'next/font/google'
 import './globals.css'
-import Navbar from '@/components/Navbar'
+import CapsuleNav from '@/components/CapsuleNav'
 import Footer from '@/components/Footer'
 import { NextAuthProvider } from '@/components/providers'
 import { ThemeProvider } from '@/components/theme-provider'
@@ -58,7 +58,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <NextAuthProvider>
-            <Navbar />
+            <CapsuleNav />
             <main className="flex-grow">{children}</main>
             <Footer />
           </NextAuthProvider>

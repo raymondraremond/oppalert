@@ -25,7 +25,7 @@ export default function PremiumBanner() {
         
         <Link href="/pricing" className="shrink-0 w-full md:w-auto">
           <button className="btn-primary w-full py-3.5 px-8 text-sm font-black uppercase tracking-widest rounded-xl shadow-glow-amber hover:scale-[1.02] active:scale-[0.98] transition-all">
-            Upgrade for ₦1,500
+            Upgrade for ₦2,500
             <ArrowRight size={16} className="ml-2 stroke-[3]" />
           </button>
         </Link>

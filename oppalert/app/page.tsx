@@ -3,7 +3,9 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { opportunities as seedData } from '@/lib/data'
 import OpportunityCard from '@/components/OpportunityCard'
-import { GraduationCap, Briefcase, Users, Coins, Leaf, Rocket, Calendar, Globe, MapPin, ArrowRight } from 'lucide-react'
+import { GraduationCap, Briefcase, Users, Coins, Leaf, Rocket, Calendar, Globe, MapPin, ArrowRight, Share2, MousePointer2, TrendingUp } from 'lucide-react'
+import Typewriter from 'typewriter-effect'
+import { motion } from 'framer-motion'
 
 const sampleEvents = [
   {
@@ -96,52 +98,186 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-bg overflow-x-hidden">
       {/* Hero */}
-      <section className="text-center border-b border-border relative overflow-hidden flex flex-col justify-center min-h-[90vh] px-6">
-        
-        {/* Cinematic Aurora/Fluid Background Matrix */}
+      <section className="text-center relative overflow-hidden flex flex-col justify-center min-h-[85vh] px-6">
+        {/* Background remains same or slightly enhanced */}
         <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none bg-[#080A07]">
-          {/* Moving Orbs mimicking a slow tech video loop */}
-          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#E8A020]/20 blur-[120px] rounded-full animate-float" style={{ animationDuration: '15s' }} />
-          <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-[#34C27A]/15 blur-[150px] rounded-full animate-float" style={{ animationDuration: '20s', animationDelay: '2s' }} />
-          <div className="absolute top-[40%] left-[30%] w-[40%] h-[40%] bg-[#E8A020]/10 blur-[100px] rounded-full animate-pulse-soft" style={{ animationDuration: '10s' }} />
-          
-          {/* Subtle Grid Overlay for that SaaS 'Network' feel */}
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_10%,transparent_100%)]" />
+          <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#E8A020]/10 blur-[120px] rounded-full animate-float" />
+          <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-[#34C27A]/10 blur-[150px] rounded-full animate-float" style={{ animationDelay: '2s' }} />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_10%,transparent_100%)]" />
         </div>
 
-        <div className="max-w-5xl mx-auto relative z-10 w-full">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-8 animate-fade-up">
-             <span className="w-2 h-2 rounded-full bg-[#34C27A] animate-pulse"></span>
-             <span className="text-[10px] font-black uppercase tracking-widest text-[#E8A020]">The New OppFetch 2.0 is Live</span>
-          </div>
+        <div className="max-w-4xl mx-auto relative z-10 w-full py-20">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-8"
+          >
+             <span className="w-2 h-2 rounded-full bg-[#E8A020] animate-pulse"></span>
+             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#E8A020]">Surgical UI Upgrade 3.0</span>
+          </motion.div>
 
-          <h1 className="font-syne text-6xl md:text-8xl font-black text-white mb-8 tracking-tighter leading-[1.1] animate-fade-up" style={{ animationDelay: '100ms', animationFillMode: 'backwards' }}>
-            The Hub for African <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#E8A020] to-[#F5D080]">Excellence.</span>
-          </h1>
-          <p className="text-lg md:text-xl text-white/70 mb-12 max-w-2xl mx-auto leading-relaxed animate-fade-up font-medium" style={{ animationDelay: '200ms', animationFillMode: 'backwards' }}>
-            Experience the next level of opportunity discovery. Verified scholarships, remote tech jobs, fellowships, and VC grants curated for African leaders.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-5 justify-center animate-fade-up" style={{ animationDelay: '300ms', animationFillMode: 'backwards' }}>
-            <Link href="/opportunities" className="px-12 py-5 bg-[#E8A020] text-[#080A07] font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_40px_rgba(232,160,32,0.4)] tracking-wide">
-              Browse Opportunities
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="font-syne text-6xl md:text-8xl font-black text-white mb-8 tracking-tighter leading-[1.05]"
+          >
+            Empowering <span className="text-[#E8A020]">African</span> <br />Leaders.
+          </motion.h1>
+          
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-lg md:text-xl text-white/50 mb-12 max-w-2xl mx-auto leading-relaxed border-l-2 border-[#E8A020]/30 pl-6 text-left"
+          >
+            The premium gateway to verified scholarships, remote jobs, and VC funding. Built for the ambitious African professional.
+          </motion.p>
+          
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="flex flex-col sm:flex-row gap-5 justify-center"
+          >
+            <Link href="/opportunities" className="px-10 py-5 bg-[#E8A020] text-[#080A07] font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-glow-amber tracking-wider flex items-center justify-center gap-2">
+              Browse Opportunities <ArrowRight size={20} />
             </Link>
-            <Link href="/register" className="px-12 py-5 bg-white/5 backdrop-blur-md text-white border border-white/10 font-black rounded-2xl hover:bg-white/10 hover:border-white/20 active:scale-95 transition-all tracking-wide">
-              Join Free Community
+            <Link href="/register?type=organizer" className="px-10 py-5 bg-transparent text-white border-2 border-white/10 font-black rounded-2xl hover:bg-white/5 hover:border-[#E8A020]/40 active:scale-95 transition-all tracking-wider flex items-center justify-center gap-2">
+              Host an Event — Free
             </Link>
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Categories */}
+      {/* Bento Landing Page Features */}
       <section className="py-20 px-6 container mx-auto">
-        <h2 className="font-syne text-3xl font-black text-primary mb-12 text-center animate-fade-up">Browse by Category</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {categories.map((cat, idx) => (
-            <Link key={cat.slug} href={`/opportunities?cat=${cat.slug}`} className="p-6 bg-bg2 border border-border rounded-3xl hover:border-amber transition-all text-center group animate-fade-up" style={{ animationDelay: `${(idx + 1) * 100}ms`, animationFillMode: 'backwards' }}>
-              <div className="text-3xl mb-3 group-hover:scale-110 group-hover:-translate-y-1 transition-transform duration-300">{cat.icon}</div>
-              <div className="font-bold text-primary text-sm group-hover:text-amber transition-colors">{cat.name}</div>
-            </Link>
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Card 1: Link Tool / Typing Animation */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="md:col-span-2 bg-[#1A1D18] border border-white/5 rounded-[2.5rem] p-10 relative overflow-hidden group min-h-[400px]"
+          >
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+               <Share2 size={120} className="text-[#E8A020]" />
+            </div>
+            <div className="relative z-10 max-w-md">
+              <div className="w-12 h-12 rounded-2xl bg-[#E8A020]/10 flex items-center justify-center mb-6">
+                <MousePointer2 className="text-[#E8A020]" />
+              </div>
+              <h3 className="font-syne text-3xl font-black text-white mb-4">Launch in seconds.</h3>
+              <p className="text-[#A0A59A] mb-10 text-lg leading-relaxed">
+                Create beautiful event pages with short links that actually convert. Now 100% free for all African organizers.
+              </p>
+              
+              <div className="bg-[#080A07] p-6 rounded-2xl border border-white/10 shadow-2xl font-mono text-sm">
+                <div className="flex items-center gap-2 text-white/40 mb-3 text-[10px] uppercase font-bold tracking-widest pl-1">
+                  <div className="w-2 h-2 rounded-full bg-red-500/50"></div>
+                  <div className="w-2 h-2 rounded-full bg-yellow-500/50"></div>
+                  <div className="w-2 h-2 rounded-full bg-green-500/50"></div>
+                  <span className="ml-2">Live URL Generator</span>
+                </div>
+                <div className="flex items-center gap-3 text-lg">
+                  <span className="text-[#E8A020]">oppfetch.com/</span>
+                  <div className="text-white font-bold border-b border-[#E8A020]/40 pb-1">
+                    <Typewriter
+                      options={{
+                        strings: ['tech-summit-2025', 'founder-meetup', 'design-bootcamp', 'ai-workshop-lagos'],
+                        autoStart: true,
+                        loop: true,
+                        delay: 50,
+                        deleteSpeed: 30
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Card 2: Engagement Indicator */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="bg-[#0D0F0B] border border-[#E8A020]/20 rounded-[2.5rem] p-10 flex flex-col justify-between overflow-hidden relative shadow-glow-amber/5"
+          >
+            <div className="relative z-10">
+              <div className="w-12 h-12 rounded-2xl bg-[#34C27A]/10 flex items-center justify-center mb-6">
+                <TrendingUp className="text-[#34C27A]" />
+              </div>
+              <h3 className="font-syne text-2xl font-black text-white mb-2">Massive Reach.</h3>
+              <p className="text-[#A0A59A] text-sm leading-relaxed">
+                Access a network of 48,000+ top African talent instantly.
+              </p>
+            </div>
+
+            <div className="mt-10 relative">
+               <div className="text-6xl font-black text-[#E8A020] mb-2">98%</div>
+               <div className="text-[10px] font-bold text-white/40 uppercase tracking-widest pl-1">Average Conversion Rate</div>
+               
+               {/* Visual Chart Placeholder */}
+               <div className="flex items-end gap-2 h-20 mt-6">
+                  {[40, 60, 45, 80, 55, 95, 70].map((h, i) => (
+                    <motion.div 
+                      key={i}
+                      initial={{ height: 0 }}
+                      whileInView={{ height: `${h}%` }}
+                      transition={{ delay: 0.5 + (i * 0.1), duration: 0.8 }}
+                      className={`flex-1 rounded-t-lg ${i === 5 ? 'bg-[#E8A020]' : 'bg-white/10'}`}
+                    />
+                  ))}
+               </div>
+            </div>
+          </motion.div>
+
+          {/* Card 3: Featured Preview / Browse Context */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="md:col-span-1 bg-[#1A1D18] border border-white/5 rounded-[2.5rem] p-8 flex flex-col justify-center relative overflow-hidden group"
+          >
+             <div className="text-center mb-8">
+                <h3 className="font-syne text-xl font-black text-white mb-2">Discovery Hub</h3>
+                <p className="text-white/40 text-[10px] uppercase font-bold tracking-[0.2em]">Verified Opportunities Only</p>
+             </div>
+             
+             <div className="scale-90 opacity-60 group-hover:opacity-100 group-hover:scale-95 transition-all duration-500 -rotate-2 group-hover:rotate-0">
+                {featured[0] && <OpportunityCard opportunity={featured[0]} index={0} />}
+             </div>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="md:col-span-2 bg-[#E8A020] rounded-[2.5rem] p-10 flex flex-col md:flex-row items-center justify-between overflow-hidden relative"
+          >
+            <div className="max-w-md relative z-10 text-center md:text-left mb-8 md:mb-0">
+              <h3 className="font-syne text-4xl font-black text-[#080A07] mb-4">Elite Seekers.</h3>
+              <p className="text-[#080A07]/70 text-lg leading-relaxed font-bold">
+                Get 48h early access to listings and premium WhatsApp alerts. ₦2,500/mo.
+              </p>
+              <Link href="/pricing" className="mt-8 inline-block px-8 py-4 bg-[#080A07] text-white font-black rounded-2xl hover:scale-105 transition-all">
+                Become a Member
+              </Link>
+            </div>
+            <div className="w-full md:w-1/3 opacity-20 md:opacity-100">
+               <div className="grid grid-cols-2 gap-2">
+                  {categories.slice(0, 4).map((c, i) => (
+                    <div key={i} className="p-4 bg-[#080A07] rounded-2xl text-white flex items-center justify-center">
+                       {c.icon}
+                    </div>
+                  ))}
+               </div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
