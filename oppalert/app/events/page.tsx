@@ -131,98 +131,105 @@ export default function EventsPage() {
   return (
     <div className="min-h-screen bg-bg pb-32">
       {/* Hero bar */}
-      <div style={{
-        background: `radial-gradient(ellipse 60% 80% at 50% 0%, rgba(232,160,32,0.06) 0%, transparent 60%), #0A0C09`,
-        borderBottom: '1px solid #141710',
-        padding: '40px 1.5rem 32px',
-      }}>
-        <div className="max-w-7xl mx-auto">
-          <h1 className="font-syne text-4xl md:text-6xl font-black text-primary mb-6" style={{ animation: 'fadeUp 0.6s ease both' }}>
-            {"Next-Gen "}<span className="text-[#E8A020]">Events.</span>
+      <section className="relative pt-32 pb-20 px-6 bg-bg overflow-hidden border-b border-border/50">
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-amber/20 to-transparent"></div>
+        <div className="absolute top-[-10%] right-1/4 w-[500px] h-[500px] bg-emerald/5 blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
+        <div className="absolute top-[-20%] left-1/4 w-[600px] h-[600px] bg-amber/5 blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
+
+        <div className="max-w-6xl mx-auto relative z-10 text-center">
+          <h1 className="font-serif text-5xl md:text-7xl font-bold text-primary mb-6 tracking-tight" style={{ animation: 'fadeUp 0.6s ease both' }}>
+            {"Next-Gen "}<span className="text-amber italic">Events.</span>
           </h1>
-          <p className="text-muted text-lg max-w-2xl leading-relaxed" style={{ animation: 'fadeUp 0.6s ease both', animationDelay: '150ms' }}>
+          <p className="text-muted text-lg max-w-2xl mx-auto leading-relaxed font-medium" style={{ animation: 'fadeUp 0.6s ease both', animationDelay: '150ms' }}>
             Discover workshops, webinars, and meetups designed to accelerate 
             your professional growth in Africa.
           </p>
         </div>
-      </div>
+      </section>
 
-      <div className="max-w-7xl mx-auto px-6 pt-10">
+      <div className="container mx-auto px-6 py-12">
         {/* Filters */}
-        <div className="stagger-children flex gap-3 mb-12 overflow-x-auto pb-4 no-scrollbar">
-          {['all', 'bootcamp', 'workshop', 'webinar', 'meetup', 'hackathon'].map(type => (
-            <button
-              key={type}
-              onClick={() => setTypeFilter(type)}
-              style={{ animation: 'fadeUp 0.5s ease both' }}
-              className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.15em] border transition-all whitespace-nowrap duration-300 ${
-                typeFilter === type
-                  ? 'bg-amber border-amber text-[#080A07] shadow-glow-amber scale-105'
-                  : 'bg-bg2 border-border text-muted hover:border-amber hover:text-primary'
-              }`}
-            >
-              {type}
-            </button>
-          ))}
+        <div className="flex justify-center mb-16">
+          <div className="stagger-children flex gap-3 overflow-x-auto pb-4 no-scrollbar max-w-full">
+            {['all', 'bootcamp', 'workshop', 'webinar', 'meetup', 'hackathon'].map(type => (
+              <button
+                key={type}
+                onClick={() => setTypeFilter(type)}
+                style={{ animation: 'fadeUp 0.5s ease both' }}
+                className={`px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest whitespace-nowrap transition-all duration-300 ${
+                  typeFilter === type
+                    ? 'bg-amber border border-amber text-[#080A07] shadow-glow-amber scale-[1.02]'
+                    : 'bg-surface/50 border border-border text-muted hover:border-amber/40 hover:text-primary'
+                }`}
+              >
+                {type}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {filteredEvents.map((event, idx) => (
             <ScrollReveal key={event.id} delay={idx * 80}>
               <div 
-                className="glass-card rounded-[2.5rem] p-8 transition-all duration-300 group flex flex-col card-hover"
-                style={{ borderLeft: `6px solid ${event.color || 'var(--amber)'}` }}
+                className="bg-surface/30 border border-border backdrop-blur-sm rounded-3xl p-8 transition-all duration-500 group flex flex-col hover:border-amber/40 hover:shadow-glow-amber h-full relative overflow-hidden"
               >
+                <div className="absolute top-0 left-0 w-1.5 h-full" style={{ backgroundColor: event.color || 'var(--amber)' }} />
+                
                 <div className="flex justify-between items-start mb-6">
-                  <span className="px-3 py-1 bg-[var(--icon-bg)] rounded-full text-[10px] font-black uppercase text-subtle border border-[var(--glass-border)]">
+                  <span className="px-3 py-1.5 bg-surface2 rounded-md text-[10px] font-black uppercase text-primary/80 border border-border">
                     {event.event_type}
                   </span>
-                  <span className="text-amber text-xs font-black tracking-widest">
+                  <span className={`text-xs font-black tracking-widest px-3 py-1.5 rounded-full border ${
+                    event.is_paid 
+                      ? 'bg-amber/10 text-amber border-amber/20' 
+                      : 'bg-emerald/10 text-emerald border-emerald/20'
+                  }`}>
                     {event.is_paid ? `NGN ${Number(event.ticket_price).toLocaleString()}` : 'FREE'}
                   </span>
                 </div>
                 
-                <h3 className="font-syne text-xl font-black text-primary mb-3 group-hover:text-amber transition-colors line-clamp-2">
+                <h3 className="font-serif text-2xl font-bold text-primary mb-3 group-hover:text-amber transition-colors line-clamp-2 tracking-tight">
                   {event.title}
                 </h3>
                 
-                <p className="text-subtle text-sm mb-6 line-clamp-2 leading-relaxed">
+                <p className="text-muted font-sans text-sm mb-8 line-clamp-2 leading-relaxed">
                   {event.description}
                 </p>
 
                 <div className="space-y-4 mb-8 flex-grow">
                   <div className="text-[11px] font-bold text-muted flex items-center gap-3 uppercase tracking-wider">
-                    <Calendar size={14} className="text-amber" />
+                    <Calendar size={16} className="text-amber" />
                     {new Date(event.start_date).toLocaleDateString('en-US', { 
                       month: 'short', 
                       day: 'numeric', 
                       year: 'numeric' 
                     })}
                   </div>
-                  <div className="text-[11px] font-bold text-muted flex items-center gap-3 uppercase tracking-wider">
-                    {event.is_online ? <Globe size={14} className="text-amber" /> : <MapPin size={14} className="text-amber" />}
+                  <div className="text-[11px] font-bold text-muted flex items-center gap-3 uppercase tracking-wider bg-surface/50 p-2.5 rounded-lg border border-border/50">
+                    {event.is_online ? <Globe size={16} className="text-info" /> : <MapPin size={16} className="text-danger" />}
                     {event.is_online ? 'Online Session' : event.location}
                   </div>
                 </div>
 
                 <div className="mt-auto pt-6 border-t border-border/50">
-                  <div className="w-full bg-bg rounded-full h-1.5 mb-4 overflow-hidden">
+                  <div className="flex justify-between items-end mb-2">
+                    <span className="text-[10px] font-bold text-muted uppercase tracking-widest">Capacity</span>
+                    <span className="text-xs font-black text-primary">{event.current_registrations} / {event.max_capacity || '\u221E'} <span className="text-muted/60 font-medium">Booked</span></span>
+                  </div>
+                  <div className="w-full bg-surface2 rounded-full h-2 mb-8 overflow-hidden border border-border/50">
                     <div 
-                      className="h-full bg-[#E8A020]" 
+                      className="h-full bg-gradient-to-r from-amber to-amber-light transition-all duration-1000" 
                       style={{ width: `${Math.min((event.current_registrations / (event.max_capacity || 100)) * 100, 100)}%` }}
                     ></div>
-                  </div>
-                  <div className="flex justify-between text-[10px] font-black text-subtle uppercase mb-8">
-                    <span>Capacity</span>
-                    <span>{event.current_registrations}/{event.max_capacity || '\u221E'} Booked</span>
                   </div>
                   
                   <Link 
                     href={`/events/${event.slug}`}
-                    className="flex items-center justify-center gap-2 w-full py-4 bg-amber text-[#080A07] text-center font-black rounded-xl hover:shadow-glow-amber transition-all uppercase text-[10px] tracking-[0.2em] active:scale-95 btn-animate"
+                    className="flex items-center justify-center gap-2 w-full py-4 bg-surface text-primary border border-border font-bold rounded-xl hover:bg-amber hover:text-[#080A07] hover:border-amber transition-all uppercase text-xs tracking-widest active:scale-[0.98]"
                   >
-                    {"View & Register"} <ArrowRight size={14} strokeWidth={3} />
+                    View & Register <ArrowRight size={16} strokeWidth={2.5} />
                   </Link>
                 </div>
               </div>

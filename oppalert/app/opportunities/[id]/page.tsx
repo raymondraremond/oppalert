@@ -10,6 +10,7 @@ import SaveButton from '@/components/SaveButton'
 import ApplyButton from '@/components/ApplyButton'
 import { getCategoryLabel, calculateDaysRemaining } from '@/lib/utils'
 import { CategoryIcon, Globe, Coins, MapPin, Calendar, Share2, Zap, Check, ChevronLeft } from '@/lib/icons'
+import ScrollReveal from '@/components/ScrollReveal'
 
 interface Props {
   params: { id: string }
@@ -97,172 +98,177 @@ export default function OpportunityDetailPage({ params }: Props) {
 
   return (
     <main className="min-h-screen pt-24 px-6 max-w-7xl mx-auto pb-20">
-      <div className="mb-8 animate-fade-up">
-        <Link href="/opportunities" className="inline-flex items-center gap-2 text-subtle hover:text-[#E8A020] font-bold text-xs uppercase tracking-[0.2em] transition-all group">
+      <div className="mb-8 overflow-hidden">
+        <Link href="/opportunities" className="inline-flex items-center gap-2 text-muted hover:text-amber font-bold text-xs uppercase tracking-[0.2em] transition-all group">
           <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
           Back to Listings
         </Link>
       </div>
 
       {/* Hero Image Section */}
-      <div style={{
-        width: '100%',
-        height: 300,
-        position: 'relative',
-        overflow: 'hidden',
-        borderRadius: 16,
-        marginBottom: 28,
-        background: '#1C2119',
-      }} className="animate-fade-up">
+      <div className="relative w-full h-[300px] md:h-[400px] overflow-hidden rounded-[2rem] mb-10 border border-border/50 group">
         <img
-          src={opp.image || 
-            `https://picsum.photos/seed/${opp.id}/1200/400`}
+          src={opp.image || `https://picsum.photos/seed/${opp.id}/1200/600`}
           alt={opp.title}
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            display: 'block',
-          }}
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           loading="eager"
           onError={(e) => {
             const target = e.target as HTMLImageElement
-            target.src = 
-              `https://picsum.photos/seed/${cat}/1200/400`
+            target.src = `https://picsum.photos/seed/${cat}/1200/600`
           }}
         />
         
-        {/* Dark gradient overlay at bottom for text readability */}
-        <div style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: '50%',
-          background: 
-            'linear-gradient(transparent, rgba(8,10,7,0.8))',
-        }} />
+        {/* Overlays */}
+        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-bg via-bg/40 to-transparent" />
         
         {/* Category badge on image */}
-        <div style={{
-          position: 'absolute',
-          top: 16,
-          left: 16,
-          background: 'rgba(8,10,7,0.75)',
-          backdropFilter: 'blur(8px)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          borderRadius: 100,
-          padding: '4px 14px',
-          fontSize: 12,
-          fontWeight: 700,
-          color: '#EDE8DF',
-          textTransform: 'capitalize',
-        }}>
+        <div className="absolute top-6 left-6 px-4 py-2 bg-bg/80 backdrop-blur-md border border-white/10 rounded-full text-xs font-bold text-primary capitalize tracking-wide shadow-xl z-20">
           {cat}
+        </div>
+
+        {/* Floating save on image */}
+        <div className="absolute top-6 right-6 z-20">
+           <SaveButton oppId={params.id} />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-12">
-        <div className="space-y-8 animate-fade-up">
-          <div className="glass-gradient border border-border rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#E8A020]/5 blur-[80px] -z-10" />
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-12">
+        <div className="space-y-10">
+          <ScrollReveal>
+            <div className="bg-surface/30 border border-border/60 rounded-[3rem] p-8 md:p-12 relative overflow-hidden group backdrop-blur-sm">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-amber/5 blur-[80px] -z-10" />
 
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-              <div className="flex items-center gap-5">
-                <div className="w-16 h-16 rounded-2xl bg-icon-bg flex items-center justify-center border border-border group-hover:rotate-3 transition-transform">
-                  <CategoryIcon cat={cat} size={32} className="text-[#E8A020]" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-[#E8A020] uppercase tracking-widest mb-1">{org}</p>
-                  <div className="flex gap-2">
-                    <span className="px-3 py-1 bg-icon-bg rounded-full text-[10px] font-bold text-muted flex flex-shrink-0 items-center gap-1.5">
-                      <CategoryIcon cat={cat} size={12} />
-                      {getCategoryLabel(cat)}
-                    </span>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-10">
+                <div className="flex items-center gap-6">
+                  <div className="w-20 h-20 rounded-2xl bg-surface2 flex items-center justify-center border border-border group-hover:rotate-3 transition-transform shadow-inner">
+                    <CategoryIcon cat={cat} size={40} className="text-amber" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-amber uppercase tracking-widest mb-2">{org}</p>
+                    <div className="flex gap-2">
+                      <span className="px-4 py-1.5 bg-surface2 border border-border rounded-full text-[10px] font-black text-primary/80 uppercase tracking-widest flex items-center gap-2">
+                        <CategoryIcon cat={cat} size={14} />
+                        {getCategoryLabel(cat)}
+                      </span>
+                    </div>
                   </div>
                 </div>
+                <button 
+                  onClick={() => {
+                    navigator.clipboard.writeText(window.location.href)
+                    setShared(true)
+                    setTimeout(() => setShared(false), 2000)
+                  }}
+                  className="px-6 py-3.5 bg-surface/50 border border-border text-primary text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-surface transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm"
+                >
+                  {shared ? '✓ URL Copied' : <><Share2 size={16} /> Share Opportunity</>}
+                </button>
               </div>
-              <button 
-                onClick={() => {
-                  navigator.clipboard.writeText(window.location.href)
-                  setShared(true)
-                  setTimeout(() => setShared(false), 2000)
-                }}
-                className="px-6 py-3 bg-icon-bg border border-border text-muted text-xs font-black uppercase tracking-widest rounded-xl hover:bg-surface transition-all flex items-center gap-2"
-              >
-                {shared ? '✓ Copied' : <><Share2 size={16} /> Share</>}
-              </button>
-            </div>
 
-            <h1 className="font-syne text-3xl md:text-5xl font-black text-primary leading-tight mb-8">
-              {title}
-            </h1>
+              <h1 className="font-serif text-3xl md:text-5xl font-bold text-primary leading-tight mb-10 tracking-tight">
+                {title}
+              </h1>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {[
-                { label: 'Location', value: loc, icon: <MapPin size={16} /> },
-                { label: 'Closing Date', value: deadlineStr, icon: <Calendar size={16} /> },
-                { label: 'Funding', value: fund, icon: <Zap size={16} /> },
-              ].map((item) => (
-                <div key={item.label} className="bg-icon-bg/50 border border-border rounded-2xl p-4">
-                  <div className="flex items-center gap-2 text-subtle mb-2 text-[10px] uppercase font-black tracking-widest">
-                    {item.icon} {item.label}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                {[
+                  { label: 'Location', value: loc, icon: <MapPin size={18} className="text-amber" /> },
+                  { label: 'Closing Date', value: deadlineStr, icon: <Calendar size={18} className="text-amber" /> },
+                  { label: 'Funding', value: fund, icon: <Zap size={18} className="text-amber" /> },
+                ].map((item) => (
+                  <div key={item.label} className="bg-surface2/50 border border-border rounded-2xl p-5 hover:border-amber/20 transition-colors group/item">
+                    <div className="flex items-center gap-2 text-muted mb-3 text-[10px] uppercase font-black tracking-widest group-hover/item:text-amber transition-colors">
+                      {item.icon} {item.label}
+                    </div>
+                    <p className="text-sm font-bold text-primary flex-wrap">{item.value}</p>
                   </div>
-                  <p className="text-sm font-bold text-primary">{item.value}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-6">
-            <div className="bg-bg2 border border-border rounded-[2rem] p-8 md:p-10">
-              <div className="flex items-center gap-4 mb-6">
-                 <div className="w-10 h-10 rounded-xl bg-[#E8A020]/10 flex items-center justify-center text-[#E8A020]"><Globe size={20} /></div>
-                 <h2 className="font-syne text-xl font-black text-primary">About</h2>
-              </div>
-              <p className="text-muted text-base leading-relaxed whitespace-pre-line">{about}</p>
-            </div>
-
-            <div className="bg-bg2 border border-border rounded-[2rem] p-8 md:p-10">
-              <div className="flex items-center gap-4 mb-6">
-                 <div className="w-10 h-10 rounded-xl bg-[#E8A020]/10 flex items-center justify-center text-[#E8A020]"><Check size={20} /></div>
-                 <h2 className="font-syne text-xl font-black text-primary">Eligibility</h2>
-              </div>
-              <ul className="space-y-4">
-                {elig.map((item, i) => (
-                  <li key={i} className="flex gap-4 text-muted text-sm font-medium">
-                    <span className="text-[#E8A020] text-lg leading-none">✓</span> {item}
-                  </li>
                 ))}
-              </ul>
+              </div>
             </div>
+          </ScrollReveal>
+
+          <div className="space-y-8">
+            <ScrollReveal delay={100}>
+              <div className="bg-surface/30 border border-border rounded-[2.5rem] p-8 md:p-12 backdrop-blur-sm">
+                <div className="flex items-center gap-4 mb-8">
+                   <div className="w-12 h-12 rounded-xl bg-amber/10 flex items-center justify-center text-amber shadow-inner"><Globe size={24} /></div>
+                   <h2 className="font-serif text-2xl font-bold text-primary">About</h2>
+                </div>
+                <p className="text-muted text-lg leading-relaxed whitespace-pre-line font-serif italic text-primary/80 mb-8 border-l-4 border-amber/20 pl-6">
+                  {about}
+                </p>
+                <div className="h-px w-full bg-gradient-to-r from-border/50 to-transparent mb-8" />
+                <p className="text-muted text-base leading-relaxed whitespace-pre-line">{desc}</p>
+              </div>
+            </ScrollReveal>
+
+            <ScrollReveal delay={200}>
+              <div className="bg-surface/30 border border-border rounded-[2.5rem] p-8 md:p-12 backdrop-blur-sm">
+                <div className="flex items-center gap-4 mb-8">
+                   <div className="w-12 h-12 rounded-xl bg-amber/10 flex items-center justify-center text-amber shadow-inner"><Check size={24} /></div>
+                   <h2 className="font-serif text-2xl font-bold text-primary">Eligibility</h2>
+                </div>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {elig.map((item, i) => (
+                    <li key={i} className="flex gap-4 p-4 bg-surface2/40 border border-border/50 rounded-2xl text-muted text-sm font-medium hover:border-amber/30 transition-colors">
+                      <span className="text-amber text-lg leading-none">✓</span> {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </ScrollReveal>
           </div>
         </div>
 
-        <aside className="space-y-6">
-          <div className="bg-[#E8A020] rounded-[2.5rem] p-8 text-[#080A07] text-center shadow-glow-amber">
-            <p className="text-[10px] font-black uppercase tracking-widest mb-4 opacity-70">
-              {days <= 0 ? 'Deadline Passed' : 'Closes In'}
-            </p>
-            <div className="font-syne text-7xl font-black tracking-tighter mb-2">{days <= 0 ? 0 : days}</div>
-            <p className="text-sm font-black uppercase tracking-widest mb-8">Days Left</p>
-            <div className="w-full bg-bg/10 h-2 rounded-full overflow-hidden mb-4">
-              <div className="h-full bg-bg" style={{ width: `${progressPct}%` }} />
+        <aside className="space-y-8">
+          <ScrollReveal delay={300}>
+            <div className="bg-surface/30 border border-border rounded-[2.5rem] p-8 text-center backdrop-blur-sm relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-b from-amber/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] mb-6 text-muted">
+                {days <= 0 ? 'Deadline Passed' : 'Time Remaining'}
+              </p>
+              <div className="font-serif text-7xl font-bold tracking-tight mb-2 text-primary">
+                {days <= 0 ? 0 : days}
+              </div>
+              <p className="text-xs font-bold uppercase tracking-widest mb-10 text-amber">Days Left</p>
+              <div className="w-full bg-surface2 h-2.5 rounded-full overflow-hidden mb-6 border border-border">
+                <div 
+                  className={`h-full bg-gradient-to-r from-amber to-amber-light transition-all duration-1000 ${days <= 3 && days > 0 ? 'animate-pulse' : ''}`} 
+                  style={{ width: `${progressPct}%` }} 
+                />
+              </div>
+              <div className="text-[10px] font-bold text-muted uppercase tracking-widest mb-2">Application Status</div>
+              <div className="font-bold text-primary text-sm mb-0">
+                {days <= 0 ? (
+                   <span className="text-danger">EXPIRED</span>
+                ) : days <= 7 ? (
+                   <span className="text-red-500">CLOSING SOON</span>
+                ) : (
+                   <span className="text-emerald text-xs">OPEN FOR APPLICATIONS</span>
+                )}
+              </div>
             </div>
-          </div>
+          </ScrollReveal>
 
-          <div className="bg-bg2 border border-border rounded-[2.5rem] p-8 space-y-4">
-            <ApplyButton applyUrl={applyUrl} oppId={params.id} disabled={days <= 0} />
-            <SaveButton oppId={params.id} />
-          </div>
+          <ScrollReveal delay={400}>
+            <div className="bg-surface/30 border border-border rounded-[2.5rem] p-8 space-y-4 backdrop-blur-sm">
+              <ApplyButton applyUrl={applyUrl} oppId={params.id} disabled={days <= 0} />
+              <div className="flex justify-center">
+                <SaveButton oppId={params.id} />
+              </div>
+            </div>
+          </ScrollReveal>
 
-          <AffiliateCard />
+          <ScrollReveal delay={500}>
+            <AffiliateCard />
+          </ScrollReveal>
         </aside>
       </div>
 
       {related.length > 0 && (
-        <section className="mt-24 pt-20 border-t border-border">
-          <h2 className="font-syne text-3xl font-black text-primary mb-12">Similar <span className="text-[#E8A020]">Opportunities</span></h2>
+        <section className="mt-32 pt-20 border-t border-border/50">
+          <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary mb-12 tracking-tight">
+            Similar <span className="text-amber italic">Opportunities</span>
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {related.map((r) => (
               <OpportunityCard key={r.id} opportunity={r} />

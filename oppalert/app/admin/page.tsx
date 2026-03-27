@@ -93,72 +93,48 @@ function UsersTab() {
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5">
+            <tbody className="divide-y divide-border/20">
               {users.map((u: any) => (
-                <tr key={u.id} className="hover:bg-[var(--icon-bg)] transition-colors">
-                  <td className="px-8 py-5">
-                    <div className="font-bold text-primary">{u.full_name || 'Unknown'}</div>
+                <tr key={u.id} className="hover:bg-surface2/30 transition-all duration-300">
+                  <td className="px-8 py-6">
+                    <div className="font-bold text-primary text-sm">{u.full_name || 'Anonymous'}</div>
                   </td>
-                  <td className="px-8 py-5 text-xs text-muted font-medium">{u.email}</td>
-                  <td className="px-8 py-5">
+                  <td className="px-8 py-6 text-[11px] text-muted font-bold uppercase tracking-wider opacity-70">{u.email}</td>
+                  <td className="px-8 py-6">
                     {u.status === 'admin' ? (
-                      <span style={{
-                        background: '#2A1E06',
-                        color: '#E8A020',
-                        border: '1px solid rgba(232,160,32,0.4)',
-                        padding: '3px 12px',
-                        borderRadius: 100,
-                        fontSize: 10,
-                        fontWeight: 800,
-                        letterSpacing: '0.8px',
-                        textTransform: 'uppercase',
-                      }}>ADMIN</span>
+                      <span className="px-4 py-1.5 rounded-full bg-amber/10 border border-amber/30 text-amber text-[9px] font-black uppercase tracking-widest shadow-sm shadow-amber/5">
+                        System Admin
+                      </span>
                     ) : u.status === 'premium' ? (
-                      <span className="badge badge-blue" style={{ textTransform: 'uppercase', fontSize: 10 }}>Premium</span>
+                      <span className="px-4 py-1.5 rounded-full bg-emerald/10 border border-emerald/30 text-emerald text-[9px] font-black uppercase tracking-widest shadow-sm shadow-emerald/5">
+                        Elite Member
+                      </span>
                     ) : (
-                      <span style={{
-                        background: '#1C2119', color: '#555C50',
-                        padding: '3px 10px', borderRadius: 100,
-                        fontSize: 10, fontWeight: 700,
-                      }}>Free</span>
+                      <span className="px-4 py-1.5 rounded-full bg-surface2 border border-border text-muted text-[9px] font-black uppercase tracking-widest">
+                        Standard
+                      </span>
                     )}
                   </td>
-                  <td className="px-8 py-5 text-xs text-subtle">
+                  <td className="px-8 py-6 text-xs text-subtle font-medium">
                     {u.created_at ? new Date(u.created_at).toLocaleDateString() : '—'}
                   </td>
-                  <td className="px-8 py-5">
+                  <td className="px-8 py-6">
                     {u.status === 'admin' ? (
-                      <span style={{ color: '#E8A020', fontSize: 11, fontWeight: 700 }}>—</span>
+                      <span className="text-muted opacity-30">—</span>
                     ) : (
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-3">
                         <button
                           onClick={() => updateUserStatus(u.id, 'admin')}
-                          style={{
-                            padding: '5px 14px',
-                            background: '#2A1E06',
-                            border: '1px solid rgba(232,160,32,0.4)',
-                            borderRadius: 8,
-                            fontSize: 11, fontWeight: 700,
-                            color: '#E8A020', cursor: 'pointer',
-                            fontFamily: 'inherit',
-                          }}
+                          className="px-4 py-2 bg-amber/10 border border-amber/30 text-amber rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber hover:text-black transition-all"
                         >
-                          Make Admin
+                          Dev Admin
                         </button>
                         {u.status !== 'premium' && (
                           <button
                             onClick={() => updateUserStatus(u.id, 'premium')}
-                            style={{
-                              padding: '5px 14px',
-                              background: 'transparent',
-                              border: '1px solid #313D2C',
-                              borderRadius: 8,
-                              fontSize: 11, fontWeight: 700,
-                              color: '#9A9C8E', cursor: 'pointer',
-                              fontFamily: 'inherit',
-                            }}
+                            className="px-4 py-2 bg-surface border border-border text-muted rounded-xl text-[10px] font-black uppercase tracking-widest hover:border-amber hover:text-amber transition-all"
                           >
-                            Make Premium
+                            Set Premium
                           </button>
                         )}
                       </div>
@@ -231,10 +207,10 @@ function EventsTab() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h3 className="text-primary font-bold">{events.length} Active Events</h3>
-        <Link href="/organizer/create" className="px-5 py-2 bg-[#E8A020] text-[#080A07] font-bold rounded-xl text-xs uppercase tracking-widest">
-          Create Event
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <h3 className="text-2xl font-serif font-bold text-primary">{events.length} Live Opportunities</h3>
+        <Link href="/organizer/create" className="px-8 py-4 bg-amber text-black font-black rounded-2xl text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-amber/10 hover:scale-105 active:scale-95 transition-all">
+          Index Opportunity
         </Link>
       </div>
 
@@ -515,24 +491,25 @@ export default function AdminPage() {
       <div className="max-w-7xl mx-auto space-y-10">
         
         {/* ── HEADER ── */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-10">
           <div className="animate-fade-up">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-danger/10 border border-danger/20 text-danger font-black text-[8px] uppercase tracking-widest mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-danger animate-pulse" />
-              Restricted Admin Console
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 font-black text-[9px] uppercase tracking-[0.2em] mb-6">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+              Restricted Terminal — Level 4 Access
             </div>
-            <h1 className="font-syne text-4xl md:text-6xl font-black text-primary tracking-tighter mb-2">
-              System <span className="text-amber-gradient drop-shadow-glow-amber">Control</span>
+            <h1 className="font-serif text-5xl md:text-7xl font-black text-primary tracking-tight mb-2">
+              System <span className="text-amber italic">Control.</span>
             </h1>
-            <p className="text-subtle font-medium">Global management of African opportunity clusters.</p>
+            <p className="text-muted text-xl font-medium max-w-xl">Global management of the African opportunity index.</p>
           </div>
           
           <button
             onClick={() => setShowCreateModal(true)}
-            className="btn-primary animate-fade-up px-8 py-4 rounded-2xl shadow-glow-amber text-bg font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:scale-[1.05] transition-all"
+            className="group relative px-10 py-5 bg-amber text-black font-black uppercase text-xs tracking-[0.2em] rounded-[2rem] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-amber/10 flex items-center gap-3 overflow-hidden"
           >
-            <Plus size={18} className="stroke-[3]" />
-            New Opportunity
+            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+            <Plus size={18} className="relative z-10" />
+            <span className="relative z-10">Deploy New Data</span>
           </button>
         </div>
 

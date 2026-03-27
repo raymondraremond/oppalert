@@ -7,6 +7,7 @@ import {
   ArrowRight, Zap, Check, Mail, ChevronRight, ShieldCheck, Settings,
   ExternalLink, AlertCircle, Search, Trash2, LayoutDashboard
 } from "lucide-react"
+import ScrollReveal from "@/components/ScrollReveal"
 
 const navItems = [
   { id: "overview", label: "Overview", icon: BarChart3 },
@@ -127,8 +128,8 @@ export default function DashboardPage() {
 
   if (isLoading || !user) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[80vh]">
-        <div className="w-16 h-16 border-4 border-[var(--border)] border-t-amber rounded-full animate-spin" />
+      <div className="flex flex-col items-center justify-center min-h-screen bg-bg">
+        <div className="w-16 h-16 border-4 border-amber/20 border-t-amber rounded-full animate-spin" />
       </div>
     )
   }
@@ -138,146 +139,195 @@ export default function DashboardPage() {
   
   const getBadgeStyle = () => {
     if (user.plan === "admin") {
-      return {
-        background: "linear-gradient(135deg, var(--amber) 0%, #FFDF90 50%, var(--amber) 100%)",
-        color: "#0D0F0B",
-        boxShadow: "0 0 15px rgba(232, 160, 32, 0.3)"
-      }
+      return "bg-gradient-to-r from-amber to-amber-light text-black shadow-lg shadow-amber/20"
     }
     if (user.plan === "premium") {
-      return { background: "var(--amber)", color: "#0D0F0B", boxShadow: "0 0 10px rgba(232, 160, 32, 0.2)" }
+      return "bg-amber text-black shadow-lg shadow-amber/10"
     }
-    return { background: "var(--surface2)", color: "var(--muted)" }
+    return "bg-surface2 text-muted border border-border"
   }
 
   return (
-    <main className="min-h-screen pt-24 pb-20 px-6">
+    <main className="min-h-screen pt-24 pb-20 px-6 relative overflow-hidden bg-bg">
+      {/* Background Decor */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-amber/5 blur-[120px] rounded-full -z-10 pointer-events-none" />
+      
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-10">
         {/* SIDEBAR */}
-        <aside className="w-full lg:w-72 shrink-0 space-y-6">
-          <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-8 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-amber/5 blur-3xl -z-10" />
-            <div className="flex flex-col items-center text-center">
-              <div className="w-20 h-20 rounded-[1.5rem] bg-amber-gradient p-1 mb-4">
-                <div className="w-full h-full rounded-[1.2rem] bg-bg flex items-center justify-center font-syne text-2xl font-black text-amber">
-                  {(firstName[0] || user.email[0]).toUpperCase()}
+        <aside className="w-full lg:w-72 shrink-0">
+          <ScrollReveal>
+            <div className="bg-surface/30 border border-border/60 rounded-[3rem] p-8 md:p-10 backdrop-blur-xl relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-amber/5 blur-3xl -z-10" />
+              
+              <div className="flex flex-col items-center text-center">
+                <div className="w-24 h-24 rounded-[2rem] bg-surface2 p-1 mb-6 border border-border shadow-inner group/avatar">
+                  <div className="w-full h-full rounded-[1.8rem] bg-bg flex items-center justify-center font-serif text-3xl font-bold text-amber group-hover:scale-95 transition-transform">
+                    {(firstName[0] || user.email[0]).toUpperCase()}
+                  </div>
+                </div>
+                <h3 className="font-serif text-xl font-bold text-primary mb-2 line-clamp-1">{user.fullName || "User"}</h3>
+                <div className="mb-8">
+                  <span className={`text-[9px] font-black uppercase tracking-[0.2em] px-5 py-2 rounded-full ${getBadgeStyle()}`}>
+                    {planLabel}
+                  </span>
                 </div>
               </div>
-              <h3 className="font-syne text-lg font-black text-primary mb-1">{user.fullName || "User"}</h3>
-              <div className="mb-6">
-                <span className="text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full" style={getBadgeStyle()}>
-                  {planLabel}
-                </span>
-              </div>
+
+              <nav className="space-y-2 mt-4">
+                {navItems.map((item) => {
+                  const Icon = item.icon
+                  const isActive = activeTab === item.id
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => setActiveTab(item.id)}
+                      className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl transition-all font-bold text-sm ${
+                        isActive 
+                        ? "bg-amber text-black shadow-xl shadow-amber/20" 
+                        : "text-muted hover:text-primary hover:bg-surface2 border border-transparent hover:border-border/50"
+                      }`}
+                    >
+                      <Icon size={18} />
+                      {item.label}
+                    </button>
+                  )
+                })}
+                
+                {user.plan === "admin" && (
+                  <Link href="/admin" className="w-full flex items-center gap-4 px-6 py-4 rounded-2xl text-muted hover:text-amber transition-all font-bold text-sm border border-transparent hover:bg-surface2">
+                    <LayoutDashboard size={18} />
+                    Admin Panel
+                  </Link>
+                )}
+              </nav>
+
+              <div className="h-px w-full bg-gradient-to-r from-transparent via-border/50 to-transparent my-8" />
+
+              <button onClick={handleLogout} className="flex items-center gap-4 px-6 py-3 text-red-500/60 hover:text-red-500 font-black uppercase tracking-widest text-[10px] w-full transition-colors group">
+                <LogOut size={16} className="group-hover:-translate-x-1 transition-transform" />
+                Sign Out
+              </button>
             </div>
-
-            <nav className="space-y-2 mt-8">
-              {navItems.map((item) => {
-                const Icon = item.icon
-                const isActive = activeTab === item.id
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveTab(item.id)}
-                    className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all font-bold text-sm ${
-                      isActive ? "bg-amber text-[#080A07] shadow-glow-amber hov-scale-sm" : "text-muted hover:text-primary hover:bg-[var(--icon-bg)]"
-                    }`}
-                  >
-                    <Icon size={18} />
-                    {item.label}
-                  </button>
-                )
-              })}
-              
-              {user.plan === "admin" && (
-                <Link href="/admin" className="w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl text-muted hover:text-amber transition-all font-bold text-sm">
-                  <LayoutDashboard size={18} />
-                  Admin Panel
-                </Link>
-              )}
-            </nav>
-
-            <button onClick={handleLogout} className="flex items-center gap-4 px-5 py-3 mt-8 text-danger/60 hover:text-danger font-black uppercase tracking-widest text-[10px] w-full">
-              <LogOut size={16} />
-              Sign Out
-            </button>
-          </div>
+          </ScrollReveal>
         </aside>
 
         {/* CONTENT */}
-        <div className="flex-1 space-y-10">
+        <div className="flex-1 space-y-12">
           {activeTab === "overview" && (
-            <div className="animate-fade-up space-y-10">
-              <div>
-                <h1 className="font-syne text-4xl font-black text-primary mb-2">
-                  Welcome, <span className="text-amber">{firstName || "there"}</span>
-                </h1>
-                <p className="text-subtle font-medium">Your opportunity dashboard is ready.</p>
-              </div>
+            <div className="space-y-12">
+              <ScrollReveal>
+                <div>
+                  <h1 className="font-serif text-4xl md:text-5xl font-bold text-primary mb-4 tracking-tight">
+                    Welcome, <span className="text-amber italic">{firstName || "there"}</span>
+                  </h1>
+                  <p className="text-muted font-medium text-lg leading-relaxed max-w-2xl opacity-70">
+                    Your global career dashboard is ready. You currently have {savedCount} items awaiting your attention.
+                  </p>
+                </div>
+              </ScrollReveal>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 {[
-                  { num: savedCount, label: "SAVED ITEMS", icon: Heart },
-                  { num: 0, label: "URGENT DEADLINES", icon: Clock },
-                  { num: isPremium ? "Unlimited" : `${savedCount} / 5`, label: "SAVE LIMIT", icon: Bell },
+                  { num: savedCount, label: "SAVED ITEMS", icon: Heart, delay: 100 },
+                  { num: 0, label: "URGENT DEADLINES", icon: Clock, delay: 200 },
+                  { num: isPremium ? "∞" : `${savedCount} / 5`, label: "SAVE LIMIT", icon: ShieldCheck, delay: 300 },
                 ].map((s, i) => (
-                  <div key={i} className="glass-card rounded-[2.5rem] p-8 hover:-translate-y-1 transition-all duration-300">
-                    <div className="w-12 h-12 rounded-2xl bg-[var(--icon-bg)] flex items-center justify-center mb-6 border border-[var(--glass-border)]">
-                      <s.icon size={22} className="text-amber" />
+                  <ScrollReveal key={i} delay={s.delay}>
+                    <div className="bg-surface/30 border border-border/50 rounded-[2.5rem] p-8 hover:-translate-y-1 transition-all duration-300 group backdrop-blur-sm shadow-sm hover:shadow-xl hover:shadow-amber/5">
+                      <div className="w-14 h-14 rounded-2xl bg-surface2 flex items-center justify-center mb-8 border border-border shadow-inner group-hover:bg-amber/10 group-hover:border-amber/20 transition-colors">
+                        <s.icon size={24} className="text-amber" />
+                      </div>
+                      <div className="font-serif text-5xl font-bold text-primary mb-2 tracking-tighter">{s.num}</div>
+                      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted">{s.label}</p>
                     </div>
-                    <div className="font-syne text-5xl font-black text-primary mb-1 tracking-tighter">{s.num}</div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-subtle">{s.label}</p>
-                  </div>
+                  </ScrollReveal>
                 ))}
               </div>
+
+              {/* Quick Actions / Tips */}
+              <ScrollReveal delay={400}>
+                <div className="bg-emerald/5 border border-emerald/20 rounded-[3rem] p-8 md:p-10 relative overflow-hidden">
+                   <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                      <div className="flex items-center gap-6">
+                         <div className="w-16 h-16 rounded-3xl bg-emerald/10 flex items-center justify-center text-emerald">
+                            <Zap size={32} />
+                         </div>
+                         <div>
+                            <h4 className="font-serif text-xl font-bold text-white mb-1">Boost your applications</h4>
+                            <p className="text-muted text-sm max-w-md">Premium users are 4.5x more likely to secure international fellowships. Upgrade today.</p>
+                         </div>
+                      </div>
+                      <Link href="/pricing" className="px-8 py-4 bg-emerald text-black font-black uppercase text-xs tracking-widest rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-emerald/20">
+                         Go Premium
+                      </Link>
+                   </div>
+                </div>
+              </ScrollReveal>
             </div>
           )}
 
           {activeTab === "saved" && (
-            <div className="animate-fade-up space-y-8">
-              <h1 className="font-syne text-4xl font-black text-primary">Saved <span className="text-amber">Items</span></h1>
+            <div className="space-y-10">
+              <ScrollReveal>
+                <div className="flex items-center justify-between">
+                  <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary tracking-tight">
+                    Saved <span className="text-amber italic">Items</span>
+                  </h2>
+                  <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted">
+                    <Search size={14} /> Search saved
+                  </div>
+                </div>
+              </ScrollReveal>
               
               {savedLoading ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {[1, 2, 3].map(i => (
-                    <div key={i} className="h-64 rounded-[2rem] bg-[var(--icon-bg)] animate-pulse" />
+                    <div key={i} className="h-64 rounded-[2.5rem] bg-surface2 animate-pulse border border-border/50" />
                   ))}
                 </div>
               ) : savedOpps.length === 0 ? (
-                <div className="glass-gradient border border-[var(--border)] rounded-[3rem] p-16 text-center">
-                  <Heart size={48} className="mx-auto text-muted mb-6 opacity-20" />
-                  <h3 className="font-syne text-xl font-black text-primary mb-3">No saved items yet</h3>
-                  <Link href="/opportunities" className="btn-primary px-8 py-3 rounded-2xl font-black uppercase tracking-widest text-xs inline-block">Browse Opportunities</Link>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {savedOpps.map((opp) => (
-                    <div key={opp.id} className="glass-card rounded-[2rem] p-8 flex flex-col h-full hover:shadow-glow-amber transition-all duration-300 group">
-                      <div className="flex justify-between items-start mb-6">
-                        <div className="w-10 h-10 rounded-xl bg-[var(--icon-bg)] flex items-center justify-center text-xl shadow-inner border border-[var(--glass-border)]">
-                          {opp.icon || "🌍"}
-                        </div>
-                        <span className={`text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${opp.days_remaining <= 7 ? "bg-danger/10 text-danger border border-danger/20" : "bg-amber/10 text-amber border border-amber/20"}`}>
-                          {opp.days_remaining || 0} DAYS LEFT
-                        </span>
-                      </div>
-                      <h3 className="font-syne font-bold text-lg text-primary mb-1 line-clamp-1">{opp.title}</h3>
-                      <p className="text-xs text-muted mb-6 font-medium tracking-tight opacity-70">{opp.organization || opp.org}</p>
-                      
-                      <div className="flex flex-wrap gap-2 mb-8">
-                        <span className="text-[9px] font-black px-2.5 py-1 bg-[var(--icon-bg)] text-subtle border border-[var(--glass-border)] rounded-lg uppercase tracking-wider">{opp.category || opp.cat}</span>
-                        <span className="text-[9px] font-black px-2.5 py-1 bg-[var(--icon-bg)] text-subtle border border-[var(--glass-border)] rounded-lg uppercase tracking-wider">{opp.funding_type || opp.fund}</span>
-                      </div>
-                      
-                      <div className="mt-auto flex gap-4">
-                        <Link href={`/opportunities/${opp.id}`} className="flex-[2] py-3.5 bg-amber text-[#080A07] text-[10px] font-black uppercase tracking-widest rounded-2xl text-center transition-all flex items-center justify-center gap-2 shadow-glow-amber active:scale-95 hov-scale-sm">
-                          View Details <ArrowRight size={12} strokeWidth={3} />
-                        </Link>
-                        <button onClick={() => handleRemoveSaved(opp.id)} className="flex-1 py-3.5 bg-danger/10 hover:bg-danger/20 text-danger border border-danger/10 rounded-2xl transition-all flex items-center justify-center group/del active:scale-95">
-                          <Trash2 size={16} strokeWidth={2.5} className="group-hover/del:scale-110 transition-transform" />
-                        </button>
-                      </div>
+                <ScrollReveal delay={100}>
+                  <div className="bg-surface/30 border border-border/50 rounded-[3rem] p-16 text-center backdrop-blur-sm">
+                    <div className="w-24 h-24 rounded-full bg-surface2 flex items-center justify-center mx-auto mb-8 border border-border">
+                       <Heart size={40} className="text-muted/30" />
                     </div>
+                    <h3 className="font-serif text-2xl font-bold text-primary mb-4">Your collection is empty</h3>
+                    <p className="text-muted mb-10 max-w-md mx-auto">Explore thousands of scholarships, jobs, and grants and save them for later.</p>
+                    <Link href="/opportunities" className="px-8 py-4 bg-amber text-black font-black uppercase tracking-widest text-xs rounded-2xl hover:scale-105 shadow-xl shadow-amber/10 inline-block transition-all">
+                      Browse Opportunities
+                    </Link>
+                  </div>
+                </ScrollReveal>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {savedOpps.map((opp, idx) => (
+                    <ScrollReveal key={opp.id} delay={idx * 50}>
+                      <div className="bg-surface/30 border border-border rounded-[2.5rem] p-8 flex flex-col h-full hover:border-amber/30 transition-all duration-500 group relative overflow-hidden backdrop-blur-sm">
+                        <div className="flex justify-between items-start mb-8">
+                          <div className="w-12 h-12 rounded-2xl bg-surface2 flex items-center justify-center text-xl shadow-inner border border-border group-hover:scale-110 transition-transform">
+                            {opp.icon || "🌍"}
+                          </div>
+                          <span className={`text-[9px] font-black px-4 py-2 rounded-full uppercase tracking-widest ${opp.days_remaining <= 7 ? "bg-red-500/10 text-red-500 border border-red-500/20" : "bg-emerald/10 text-emerald border border-emerald/20"}`}>
+                            {opp.days_remaining || 0} DAYS LEFT
+                          </span>
+                        </div>
+                        <h3 className="font-serif font-bold text-xl text-primary mb-2 line-clamp-1 leading-tight">{opp.title}</h3>
+                        <p className="text-xs text-muted mb-8 font-medium tracking-tight opacity-70 group-hover:opacity-100 transition-opacity">{opp.organization || opp.org}</p>
+                        
+                        <div className="flex flex-wrap gap-2 mb-10">
+                          <span className="text-[9px] font-black px-3 py-1.5 bg-surface2 text-muted border border-border rounded-lg uppercase tracking-wider">{opp.category || opp.cat}</span>
+                        </div>
+                        
+                        <div className="mt-auto flex gap-3">
+                          <Link href={`/opportunities/${opp.id}`} className="flex-[3] py-4 bg-surface2 border border-border text-primary text-[10px] font-black uppercase tracking-widest rounded-2xl text-center transition-all flex items-center justify-center gap-2 hover:bg-amber hover:text-black hover:border-amber active:scale-95">
+                            Details <ArrowRight size={14} />
+                          </Link>
+                          <button onClick={() => handleRemoveSaved(opp.id)} className="flex-1 py-4 bg-red-500/5 hover:bg-red-500/10 text-red-500 border border-red-500/20 rounded-2xl transition-all flex items-center justify-center active:scale-95 group/del">
+                            <Trash2 size={16} className="group-hover/del:scale-110 transition-transform" />
+                          </button>
+                        </div>
+                      </div>
+                    </ScrollReveal>
                   ))}
                 </div>
               )}
@@ -285,29 +335,56 @@ export default function DashboardPage() {
           )}
 
           {activeTab === "alerts" && (
-             <div className="animate-fade-up space-y-8">
-                <h1 className="font-syne text-4xl font-black text-primary">Smart <span className="text-amber">Alerts</span></h1>
-                <div className="glass-card rounded-[3rem] p-12 text-center max-w-2xl">
-                  <div className="w-16 h-16 rounded-2xl bg-[var(--icon-bg)] flex items-center justify-center mx-auto mb-8 text-amber">
-                    <Bell size={28} />
-                  </div>
-                  <h3 className="font-syne text-xl font-black text-primary mb-4">Smart Alerts is coming soon</h3>
-                  <p className="text-subtle font-medium leading-relaxed mb-8">{"Get notified instantly when new opportunities matching your profile are posted. We're building this feature right now."}</p>
-                  <div className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--icon-bg)] rounded-full text-[10px] font-black uppercase tracking-widest text-muted border border-[var(--glass-border)]">
-                    <Sparkles size={14} /> Featured Beta Release
+             <ScrollReveal>
+                <div className="space-y-10">
+                  <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary tracking-tight">Smart <span className="text-amber italic">Alerts</span></h2>
+                  <div className="bg-surface/30 border border-border rounded-[3rem] p-12 md:p-16 text-center max-w-3xl backdrop-blur-sm flex flex-col items-center">
+                    <div className="w-20 h-20 rounded-[2.5rem] bg-surface2 flex items-center justify-center mb-10 text-amber shadow-inner border border-border">
+                      <Bell size={32} />
+                    </div>
+                    <h3 className="font-serif text-3xl font-bold text-primary mb-6 italic underline decoration-amber/30 decoration-4 underline-offset-8">Coming Soon</h3>
+                    <p className="text-muted text-lg leading-relaxed max-w-md mx-auto mb-12 opacity-80">{"We're calibrating our AI to notify you instantly when opportunities matching your dream career path are published."}</p>
+                    <div className="inline-flex items-center gap-2 px-6 py-3 bg-amber/10 rounded-full text-[10px] font-black uppercase tracking-[0.2em] text-amber border border-amber/20">
+                      <Sparkles size={14} /> Early Access Program
+                    </div>
                   </div>
                 </div>
-             </div>
+             </ScrollReveal>
           )}
 
           {activeTab === "profile" && (
-             <div className="animate-fade-up space-y-8">
-                <h1 className="font-syne text-4xl font-black text-primary">My <span className="text-amber">Profile</span></h1>
-                <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-8">
-                   <p className="text-subtle font-medium">Email: {user.email}</p>
-                   <p className="text-subtle font-medium">Plan: {user.plan}</p>
+             <ScrollReveal>
+                <div className="space-y-10">
+                  <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary tracking-tight">My <span className="text-amber italic">Profile</span></h2>
+                  <div className="bg-surface/30 border border-border rounded-[3rem] p-8 md:p-12 backdrop-blur-sm max-w-2xl">
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-2">
+                           <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] pl-1">Email Connection</label>
+                           <div className="p-4 bg-surface2 border border-border rounded-2xl text-primary text-sm font-bold flex items-center gap-3">
+                              <Mail size={16} className="text-amber" />
+                              {user.email}
+                           </div>
+                        </div>
+                        <div className="space-y-2">
+                           <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] pl-1">Selected Plan</label>
+                           <div className="p-4 bg-surface2 border border-border rounded-2xl text-primary text-sm font-bold flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                 <ShieldCheck size={16} className="text-amber" />
+                                 {planLabel}
+                              </div>
+                              <Link href="/pricing" className="text-[9px] text-amber hover:underline">Change</Link>
+                           </div>
+                        </div>
+                     </div>
+                     <div className="mt-12 h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
+                     <div className="mt-8 flex justify-end">
+                        <button className="px-6 py-3 bg-surface2 text-muted text-[10px] font-black uppercase tracking-widest rounded-xl hover:text-amber border border-transparent hover:border-amber/20 transition-all">
+                           Delete Data & Account
+                        </button>
+                     </div>
+                  </div>
                 </div>
-             </div>
+             </ScrollReveal>
           )}
         </div>
       </div>

@@ -2,6 +2,8 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { Calendar, MapPin, Users, Coins, ArrowLeft, Share2, Globe, Check, Zap, Mail, Phone, User, ExternalLink, ShieldCheck, Clock } from 'lucide-react'
+import ScrollReveal from '@/components/ScrollReveal'
 
 export default function EventDetailPage() {
   const params = useParams()
@@ -32,16 +34,16 @@ export default function EventDetailPage() {
     if (slug.startsWith('sample-')) {
       setEvent({
         title: slug.replace('sample-', '').replace(/-/g, ' '),
-        description: 'Sample event description',
+        description: 'Join this exclusive bootcamp for African tech talent. Master high-demand skills and connect with top mentors in the industry.\n\nParticipants will engage in high-intensity technical sessions, collaborative lab work, and direct networking with ecosystem leaders. This is a high-impact node cluster specifically designed for those ready to scale their absolute potential.',
         event_type: 'bootcamp',
         start_date: new Date().toISOString(),
         location: 'Lagos, Nigeria',
         is_online: false,
         max_capacity: 100,
-        current_registrations: 0,
+        current_registrations: 42,
         is_paid: false,
         ticket_price: 0,
-        organizer_name: 'OppFetch',
+        organizer_name: 'OppAlert Nexus',
         is_published: true,
         slug,
       })
@@ -56,10 +58,10 @@ export default function EventDetailPage() {
         if (data.data) {
           setEvent(data.data)
         } else {
-          setError('Event not found')
+          setError('Event cluster not found')
         }
       })
-      .catch(() => setError('Failed to load event'))
+      .catch(() => setError('Failed to synchronize event data'))
       .finally(() => setLoading(false))
   }, [slug])
 
@@ -70,7 +72,7 @@ export default function EventDetailPage() {
 
     try {
       if (!regForm.fullName || !regForm.email) {
-        setRegError('Name and email are required')
+        setRegError('Full identity and email vector required')
         return
       }
 
@@ -96,7 +98,7 @@ export default function EventDetailPage() {
 
       setRegSuccess(true)
     } catch {
-      setRegError('Something went wrong. Please try again.')
+      setRegError('Failed to synchronize registration segment')
     } finally {
       setRegLoading(false)
     }
@@ -104,35 +106,24 @@ export default function EventDetailPage() {
 
   if (loading) {
     return (
-      <div style={{
-        minHeight: '100vh', display: 'flex',
-        alignItems: 'center', justifyContent: 'center',
-        color: '#555C50',
-      }}>
-        Loading event...
+      <div className="min-h-screen flex items-center justify-center bg-bg">
+        <div className="flex flex-col items-center gap-6">
+          <div className="w-16 h-16 border-4 border-amber/20 border-t-amber rounded-full animate-spin" />
+          <p className="text-muted font-black text-[10px] uppercase tracking-[0.4em] animate-pulse">Syncing Event Node...</p>
+        </div>
       </div>
     )
   }
 
   if (error || !event) {
     return (
-      <div style={{
-        minHeight: '100vh', display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center', justifyContent: 'center',
-        color: '#555C50', gap: 16,
-      }}>
-        <div style={{ fontSize: 48 }}>🎪</div>
-        <div>Event not found</div>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-bg px-6 text-center">
+        <div className="w-24 h-24 bg-surface/30 rounded-[2rem] border border-border flex items-center justify-center text-4xl mb-10 shadow-premium">🎪</div>
+        <h1 className="font-serif text-4xl font-bold text-primary mb-6">Cluster Not Found.</h1>
+        <p className="text-muted mb-12 max-w-md font-medium leading-relaxed opacity-80">The requested event node has been de-indexed or the transmission link is broken.</p>
         <Link href="/events">
-          <button style={{
-            padding: '10px 20px', background: '#E8A020',
-            border: 'none', borderRadius: 8,
-            fontSize: 13, fontWeight: 700,
-            color: '#090A07', cursor: 'pointer',
-            fontFamily: 'inherit',
-          }}>
-            Browse Events
+          <button className="px-10 py-5 bg-amber text-black font-black uppercase text-[10px] tracking-[0.3em] rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-amber/10">
+            Browse Neural Hub
           </button>
         </Link>
       </div>
@@ -140,260 +131,229 @@ export default function EventDetailPage() {
   }
 
   return (
-    <div style={{
-      maxWidth: 1000, margin: '0 auto',
-      padding: '40px 1.5rem 80px',
-    }}>
-      <Link href="/events" style={{
-        textDecoration: 'none', color: '#555C50',
-        fontSize: 13, display: 'inline-flex',
-        alignItems: 'center', gap: 4, marginBottom: 24,
-      }}>
-        ← All Events
-      </Link>
+    <main className="min-h-screen pt-32 pb-40 px-6 relative overflow-hidden bg-bg">
+      {/* Background Decor */}
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-amber/5 blur-[150px] rounded-full -z-10 animate-pulse-soft" />
+      <div className="absolute bottom-0 left-[-10%] w-[500px] h-[500px] bg-emerald/5 blur-[120px] rounded-full -z-10" />
 
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 340px',
-        gap: 32, alignItems: 'start',
-      }}>
+      <div className="max-w-7xl mx-auto">
+        <ScrollReveal>
+          <Link href="/events" className="group inline-flex items-center gap-3 text-amber text-[10px] font-black uppercase tracking-[0.3em] mb-12 hover:translate-x-[-4px] transition-transform">
+            <ArrowLeft size={16} /> Back to Hub
+          </Link>
+        </ScrollReveal>
 
-        {/* Left — Event details */}
-        <div>
-          <div style={{
-            display: 'inline-flex', padding: '3px 10px',
-            borderRadius: 100, marginBottom: 16,
-            background: '#2A1E0622', color: '#E8A020',
-            fontSize: 11, fontWeight: 700,
-            letterSpacing: '0.5px', textTransform: 'uppercase',
-          }}>
-            {event.event_type}
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-20 items-start">
+          
+          {/* Main Details Cluster */}
+          <div className="space-y-16">
+            <ScrollReveal>
+              <div className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-amber/20 to-transparent rounded-[3rem] blur-xl opacity-0 group-hover:opacity-40 transition-opacity" />
+                <div className="bg-surface/30 backdrop-blur-xl border border-border/60 rounded-[3.5rem] p-10 md:p-16 relative overflow-hidden shadow-premium">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-amber/5 blur-[80px] -z-10" />
+                  
+                  <div className="flex flex-wrap items-center gap-4 mb-10">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber/10 border border-amber/20 rounded-full text-[9px] font-black text-amber uppercase tracking-[0.2em]">
+                      <Zap size={14} />
+                      {event.event_type}
+                    </div>
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald/10 border border-emerald/20 rounded-full text-[9px] font-black text-emerald uppercase tracking-[0.2em]">
+                      <ShieldCheck size={14} /> Verified Node
+                    </div>
+                  </div>
 
-          <h1 style={{
-            fontFamily: 'Syne, sans-serif',
-            fontSize: 'clamp(22px, 4vw, 36px)',
-            fontWeight: 800, marginBottom: 8,
-            lineHeight: 1.2,
-          }}>
-            {event.title}
-          </h1>
+                  <h1 className="font-serif text-5xl md:text-7xl font-black text-primary leading-none mb-10 tracking-tight">
+                    {event.title}
+                  </h1>
 
-          <div style={{
-            fontSize: 14, color: '#555C50', marginBottom: 24,
-          }}>
-            Organized by {event.organizer_name || 'OppFetch'}
-          </div>
+                  <div className="flex items-center gap-6 mb-12 p-1 pt-0">
+                    <div className="w-16 h-16 rounded-[1.2rem] bg-amber text-black flex items-center justify-center font-serif font-black text-2xl shadow-glow-amber">
+                      {event.organizer_name?.[0] || 'O'}
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black text-muted uppercase tracking-[0.3em] mb-1.5 opacity-60">Architected By</p>
+                      <p className="text-xl font-bold text-primary tracking-tight">{event.organizer_name || 'OppAlert Nexus'}</p>
+                    </div>
+                  </div>
 
-          <div style={{
-            display: 'flex', flexWrap: 'wrap',
-            gap: 12, marginBottom: 28,
-          }}>
-            {[
-              { icon: '📅', text: new Date(event.start_date || new Date()).toLocaleDateString('en-NG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) },
-              { icon: event.is_online ? '🌐' : '📍', text: event.is_online ? 'Online' : event.location },
-              { icon: '👥', text: event.max_capacity ? (event.max_capacity - (event.current_registrations || 0)) + ' spots left' : 'Unlimited spots' },
-              { icon: '💰', text: event.is_paid ? 'NGN ' + Number(event.ticket_price).toLocaleString() : 'Free' },
-            ].map(chip => (
-              <div key={chip.text} style={{
-                background: 'var(--bg2)',
-                border: '1px solid #252D22',
-                borderRadius: 8, padding: '6px 14px',
-                fontSize: 13, color: 'var(--muted)',
-                display: 'flex', alignItems: 'center', gap: 6,
-              }}>
-                {chip.icon} {chip.text}
-              </div>
-            ))}
-          </div>
-
-          <div style={{
-            fontFamily: 'Syne, sans-serif',
-            fontSize: 16, fontWeight: 700, marginBottom: 12,
-          }}>
-            About this event
-          </div>
-          <p style={{
-            fontSize: 14, color: 'var(--muted)',
-            lineHeight: 1.8,
-          }}>
-            {event.description}
-          </p>
-        </div>
-
-        {/* Right — Registration card */}
-        <div style={{
-          background: 'var(--bg2)',
-          border: '1px solid #252D22',
-          borderRadius: 16, padding: '1.5rem',
-          position: 'sticky', top: 80,
-        }}>
-          <div style={{
-            fontFamily: 'Syne, sans-serif',
-            fontSize: 18, fontWeight: 800, marginBottom: 16,
-          }}>
-            {event.is_paid
-              ? 'NGN ' + Number(event.ticket_price).toLocaleString()
-              : 'Free Event'}
-          </div>
-
-          {regSuccess ? (
-            <div style={{ textAlign: 'center', padding: '1rem 0' }}>
-              <div style={{ fontSize: 40, marginBottom: 12 }}>🎉</div>
-              <div style={{
-                fontFamily: 'Syne, sans-serif',
-                fontSize: 16, fontWeight: 700,
-                color: '#34C27A', marginBottom: 8,
-              }}>
-                Registration Confirmed!
-              </div>
-              <p style={{ fontSize: 13, color: 'var(--muted)' }}>
-                Check your email for confirmation details.
-              </p>
-            </div>
-          ) : (
-            <form onSubmit={handleRegister}>
-              {regError && (
-                <div style={{
-                  background: '#1A0808',
-                  border: '1px solid rgba(240,80,80,0.3)',
-                  borderRadius: 8, padding: '10px 14px',
-                  color: '#F05050', fontSize: 13,
-                  marginBottom: 14,
-                }}>
-                  {regError}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    {[
+                      { icon: <Calendar className="text-amber" size={20} />, label: 'Temporal Node', text: new Date(event.start_date || new Date()).toLocaleDateString('en-NG', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) },
+                      { icon: <Clock className="text-amber" size={20} />, label: 'Standard Time', text: new Date(event.start_date || new Date()).toLocaleTimeString('en-NG', { hour: '2-digit', minute: '2-digit' }) },
+                      { icon: event.is_online ? <Globe className="text-emerald" size={20} /> : <MapPin className="text-emerald" size={20} />, label: 'Deployment Mode', text: event.is_online ? 'Digital Experience' : event.location },
+                      { icon: <Users className="text-amber" size={20} />, label: 'Capacity Status', text: event.max_capacity ? (event.max_capacity - (event.current_registrations || 0)) + ' slots available' : 'Unlimited Node Access' },
+                    ].map((chip) => (
+                      <div key={chip.label} className="bg-bg/40 border border-border/80 rounded-[2rem] p-8 hover:border-amber/30 transition-all group/item shadow-inner">
+                         <div className="flex items-center gap-3 text-muted mb-4 text-[10px] uppercase font-black tracking-[0.3em] group-hover/item:text-amber transition-colors">
+                            {chip.icon} {chip.label}
+                         </div>
+                         <p className="text-sm font-bold text-primary leading-tight opacity-90">{chip.text}</p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              )}
+              </div>
+            </ScrollReveal>
 
-              {[
-                { name: 'fullName', placeholder: 'Full Name', type: 'text', required: true },
-                { name: 'email', placeholder: 'Email Address', type: 'email', required: true },
-                { name: 'phone', placeholder: 'Phone Number (optional)', type: 'tel', required: false },
-              ].map(field => (
-                <input
-                  key={field.name}
-                  type={field.type}
-                  placeholder={field.placeholder}
-                  required={field.required}
-                  value={regForm[field.name as keyof typeof regForm]}
-                  onChange={e => setRegForm(prev => ({
-                    ...prev,
-                    [field.name]: e.target.value,
-                  }))}
-                  style={{
-                    width: '100%', padding: '10px 14px',
-                    background: '#1C2119',
-                    border: '1px solid #252D22',
-                    borderRadius: 8, color: 'var(--primary)',
-                    fontSize: 14, outline: 'none',
-                    fontFamily: 'inherit', marginBottom: 10,
-                    boxSizing: 'border-box',
-                  }}
-                />
-              ))}
-
-              <button
-                type="submit"
-                disabled={regLoading}
-                style={{
-                  width: '100%', padding: '13px',
-                  background: regLoading ? '#9A7010' : '#E8A020',
-                  border: 'none', borderRadius: 10,
-                  fontSize: 14, fontWeight: 700,
-                  color: '#090A07',
-                  cursor: regLoading ? 'not-allowed' : 'pointer',
-                  fontFamily: 'inherit', marginTop: 4,
-                }}
-              >
-                {regLoading ? 'Registering...' : 'Register Now →'}
-              </button>
-
-              <p style={{
-                fontSize: 11, color: '#555C50',
-                textAlign: 'center', marginTop: 10,
-              }}>
-                Free registration · No credit card needed
-              </p>
-            </form>
-          )}
-        </div>
-
-        {/* Share bar — below registration card */}
-        <div style={{
-          background: '#141710',
-          border: '1px solid #252D22',
-          borderRadius: 12,
-          padding: '1rem',
-          marginTop: 12,
-        }}>
-          <div style={{
-            fontSize: 12, fontWeight: 700, color: '#555C50',
-            marginBottom: 10, letterSpacing: '0.5px',
-            textTransform: 'uppercase',
-          }}>
-            Share this event
+            <ScrollReveal delay={100}>
+              <div className="bg-surface/30 backdrop-blur-xl border border-border/60 rounded-[3rem] p-10 md:p-16 space-y-12">
+                <div className="flex items-center gap-6">
+                   <div className="w-16 h-16 rounded-2xl bg-surface/50 border border-border flex items-center justify-center text-amber shadow-xl group-hover:scale-110 transition-transform"><Globe size={32} /></div>
+                   <h2 className="font-serif text-3xl font-black text-primary tracking-tight">Technical Breakdown.</h2>
+                </div>
+                <div className="prose prose-invert prose-amber max-w-none">
+                  <div className="text-muted text-xl leading-relaxed whitespace-pre-line font-serif italic text-primary/80 mb-12 border-l-4 border-amber/30 pl-10">
+                    Join this immersive neural cluster designed to synchronize your trajectory with the highest industry standards.
+                  </div>
+                  <div className="text-muted text-lg leading-relaxed whitespace-pre-line font-medium opacity-90">
+                    {event.description}
+                  </div>
+                </div>
+                
+                <div className="pt-12 border-t border-border/40 flex flex-wrap gap-8">
+                   <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 rounded-full bg-emerald/10 border border-emerald/20 flex items-center justify-center text-emerald shadow-lg"><Check size={14} /></div>
+                      <span className="text-[10px] font-black text-muted uppercase tracking-[0.3em]">Verified Listing</span>
+                   </div>
+                   <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 rounded-full bg-amber/10 border border-amber/20 flex items-center justify-center text-amber shadow-lg"><Zap size={14} /></div>
+                      <span className="text-[10px] font-black text-muted uppercase tracking-[0.3em]">Priority Access</span>
+                   </div>
+                </div>
+              </div>
+            </ScrollReveal>
           </div>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            <button
-              onClick={() => {
-                const url = window.location.href
-                navigator.clipboard.writeText(url)
-                  .then(() => {
-                    const btn = document.getElementById('copyBtn')
-                    if (btn) {
-                      btn.textContent = 'Copied!'
-                      btn.style.color = '#34C27A'
-                      setTimeout(() => {
-                        btn.textContent = 'Copy Link'
-                        btn.style.color = '#9A9C8E'
-                      }, 2000)
-                    }
-                  })
-                  .catch(() => {})
-              }}
-              id="copyBtn"
-              style={{
-                padding: '7px 14px', background: 'transparent',
-                border: '1px solid #252D22', borderRadius: 8,
-                fontSize: 12, color: '#9A9C8E',
-                cursor: 'pointer', fontFamily: 'inherit',
-              }}
-            >
-              Copy Link
-            </button>
-            <a
-              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('Check out this event on OppFetch!')}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ textDecoration: 'none' }}
-            >
-              <button style={{
-                padding: '7px 14px', background: 'transparent',
-                border: '1px solid #252D22', borderRadius: 8,
-                fontSize: 12, color: '#9A9C8E',
-                cursor: 'pointer', fontFamily: 'inherit',
-              }}>
-                Share on X
-              </button>
-            </a>
-            <a
-              href={`https://wa.me/?text=${encodeURIComponent('Check out this event: ' + (typeof window !== 'undefined' ? window.location.href : ''))}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ textDecoration: 'none' }}
-            >
-              <button style={{
-                padding: '7px 14px', background: 'transparent',
-                border: '1px solid #1A3D2A', borderRadius: 8,
-                fontSize: 12, color: '#34C27A',
-                cursor: 'pointer', fontFamily: 'inherit',
-              }}>
-                Share on WhatsApp
-              </button>
-            </a>
-          </div>
+
+          {/* Right Sidebar — Registration Interface */}
+          <aside className="space-y-10 lg:sticky lg:top-32">
+            <ScrollReveal delay={200}>
+              <div className="bg-surface/30 backdrop-blur-3xl border border-border/60 rounded-[3.5rem] p-10 relative overflow-hidden group shadow-premium">
+                <div className="absolute inset-0 bg-gradient-to-b from-amber/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                
+                <div className="flex justify-between items-start mb-12">
+                  <h3 className="font-serif text-2xl font-bold text-primary leading-tight">Sync <br/>Your Spot.</h3>
+                  <div className="px-5 py-2.5 bg-amber/10 border border-amber/20 rounded-2xl text-2xl font-black text-amber tracking-tighter shadow-glow-amber">
+                    {event.is_paid ? '₦' + Number(event.ticket_price).toLocaleString() : 'FREE'}
+                  </div>
+                </div>
+
+                {regSuccess ? (
+                  <div className="text-center py-12">
+                    <div className="w-24 h-24 bg-emerald/10 text-emerald rounded-[2rem] flex items-center justify-center text-5xl mx-auto mb-8 shadow-inner border border-emerald/20 animate-scale-up">✓</div>
+                    <h4 className="font-serif text-3xl font-bold text-white mb-4 tracking-tight">Node Sync Complete.</h4>
+                    <p className="text-muted text-sm leading-relaxed mb-12 font-medium opacity-80">Registration successful. Check your email for identity verification and entry vectors.</p>
+                    <button onClick={() => setRegSuccess(false)} className="text-[10px] font-black text-amber uppercase tracking-[0.3em] hover:opacity-70 transition-all">Add another Participant</button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleRegister} className="space-y-6">
+                    {regError && (
+                      <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-5 text-red-500 text-xs font-bold mb-6 flex items-center gap-4 animate-shake">
+                        <div className="w-8 h-8 rounded-xl bg-red-500/20 flex items-center justify-center text-lg">!</div>
+                        {regError}
+                      </div>
+                    )}
+
+                    <div className="space-y-2.5">
+                      <label className="text-[10px] font-black text-muted uppercase tracking-[0.3em] ml-1 opacity-60">Identity designation</label>
+                      <div className="relative group/input">
+                        <User className="absolute left-5 top-1/2 -translate-y-1/2 text-muted group-focus-within/input:text-amber transition-colors" size={20} />
+                        <input
+                          type="text"
+                          placeholder="Chidi Okafor"
+                          required
+                          value={regForm.fullName}
+                          onChange={e => setRegForm(prev => ({ ...prev, fullName: e.target.value }))}
+                          className="w-full pl-14 pr-6 py-5 bg-bg/40 border border-border/80 rounded-[1.5rem] text-primary text-sm font-bold focus:border-amber/50 focus:bg-surface/50 outline-none transition-all placeholder:text-muted/20"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2.5">
+                      <label className="text-[10px] font-black text-muted uppercase tracking-[0.3em] ml-1 opacity-60">Digital Vector (Email)</label>
+                      <div className="relative group/input">
+                        <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-muted group-focus-within/input:text-amber transition-colors" size={20} />
+                        <input
+                          type="email"
+                          placeholder="chidi@nexus.com"
+                          required
+                          value={regForm.email}
+                          onChange={e => setRegForm(prev => ({ ...prev, email: e.target.value }))}
+                          className="w-full pl-14 pr-6 py-5 bg-bg/40 border border-border/80 rounded-[1.5rem] text-primary text-sm font-bold focus:border-amber/50 focus:bg-surface/50 outline-none transition-all placeholder:text-muted/20"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2.5 pb-2">
+                       <label className="text-[10px] font-black text-muted uppercase tracking-[0.3em] ml-1 opacity-60">Phone link (Optional)</label>
+                       <div className="relative group/input">
+                        <Phone className="absolute left-5 top-1/2 -translate-y-1/2 text-muted group-focus-within/input:text-amber transition-colors" size={20} />
+                        <input
+                          type="tel"
+                          placeholder="+234 XXX XXX XXXX"
+                          value={regForm.phone}
+                          onChange={e => setRegForm(prev => ({ ...prev, phone: e.target.value }))}
+                          className="w-full pl-14 pr-6 py-5 bg-bg/40 border border-border/80 rounded-[1.5rem] text-primary text-sm font-bold focus:border-amber/50 focus:bg-surface/50 outline-none transition-all placeholder:text-muted/20"
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={regLoading}
+                      className="w-full py-6 bg-amber text-black font-black uppercase text-[11px] tracking-[0.3em] rounded-[1.5rem] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-2xl shadow-amber/20 disabled:opacity-50 disabled:cursor-not-allowed group relative overflow-hidden"
+                    >
+                      <span className="relative z-10 flex items-center justify-center gap-3">
+                        {regLoading ? 'Processing...' : (
+                          <>Deploy Registration <ExternalLink size={16} /></>
+                        )}
+                      </span>
+                      <div className="absolute inset-x-0 bottom-0 h-1 bg-black/10 transition-transform origin-left scale-x-0 group-hover:scale-x-100" />
+                    </button>
+
+                    <p className="text-[9px] text-muted text-center pt-4 font-black uppercase tracking-[0.4em] opacity-40">
+                       Encrypted Transaction · 256-bit Node Sig
+                    </p>
+                  </form>
+                )}
+              </div>
+            </ScrollReveal>
+
+            {/* Share Interface */}
+            <ScrollReveal delay={300}>
+              <div className="bg-surface/30 backdrop-blur-xl border border-border/60 rounded-[3rem] p-8 shadow-premium">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="w-10 h-10 rounded-xl bg-surface2 border border-border flex items-center justify-center text-amber"><Share2 size={18} /></div>
+                  <span className="text-[10px] font-black text-muted uppercase tracking-[0.3em]">Broadcast Node</span>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <button 
+                    onClick={() => {
+                        navigator.clipboard.writeText(window.location.href)
+                        const el = document.getElementById('copy-status')
+                        if (el) {
+                            el.textContent = 'COPIED!'
+                            setTimeout(() => el.textContent = 'LINK CLONE', 2000)
+                        }
+                    }}
+                    className="py-4 bg-surface2 border border-border rounded-2xl text-[10px] font-black text-muted hover:text-amber transition-all uppercase tracking-[0.2em] shadow-xl hover:scale-[1.02]"
+                  >
+                    <span id="copy-status">LINK CLONE</span>
+                  </button>
+                  <a 
+                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('Syncing with ' + event.title + ' on OppAlert.')}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`}
+                    target="_blank"
+                    className="py-4 bg-surface2 border border-border rounded-2xl flex items-center justify-center text-muted hover:text-amber transition-all shadow-xl hover:scale-[1.02]"
+                  >
+                    <Share2 size={18} />
+                  </a>
+                </div>
+              </div>
+            </ScrollReveal>
+          </aside>
+
         </div>
       </div>
-    </div>
+    </main>
   )
 }

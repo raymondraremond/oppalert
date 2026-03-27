@@ -11,6 +11,7 @@ const config: Config = {
       fontFamily: {
         syne: ['var(--font-syne)', 'sans-serif'],
         dm: ['var(--font-dm)', 'sans-serif'],
+        serif: ['var(--font-dm-serif)', 'serif'],
       },
       colors: {
         bg: 'var(--bg)',

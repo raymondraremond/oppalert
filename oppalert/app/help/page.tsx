@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { ArrowLeft, Mail, Phone, MessageSquare, Search, ChevronDown, CheckCircle, HelpCircle, LifeBuoy } from 'lucide-react'
+import { ArrowLeft, Mail, Phone, MessageSquare, Search, ChevronDown, CheckCircle, HelpCircle, LifeBuoy, Zap } from 'lucide-react'
 import { useState } from 'react'
 
 export default function HelpPage() {
@@ -9,167 +9,144 @@ export default function HelpPage() {
   const faqs = [
     {
       q: "How do I verify if an opportunity is real?",
-      a: "OppFetch uses a multi-step verification process. We cross-reference official domain names, verify contact details of the organization, and check against known scam databases before listing any opportunity."
+      a: "OppAlert uses a multi-step verification process. We cross-reference official domain names, verify contact details of the organization, and check against known scam databases before listing any opportunity."
     },
     {
-      q: "Is OppFetch free to use for students?",
-      a: "Yes! Searching for opportunities, setting up alerts, and reading our career guides is 100% free for all users. We monetize through organic partnerships and featured organizer tools."
+      q: "Is OppAlert free to use for students?",
+      a: "Yes! Searching for opportunities, setting up alerts, and reading our career guides is 100% free for all users. We monetize through elite partnerships and featured advisor tools."
     },
     {
       q: "How can I post an event as an organizer?",
-      a: "Simply click 'Post Listing' in the organizer hub. You can create a basic listing for free in minutes. We also offer 'Boost' and 'Premium' options for higher reach."
+      a: "Simply click 'Index Opportunity' in the organizer hub. You can create a base listing for free in minutes. We also offer 'Boost' and 'Elite' options for maximum visibility."
     },
     {
       q: "What countries do you support?",
-      a: "We primary focus on 54 African countries, including Nigeria, Ghana, Kenya, South Africa, and Egypt. However, many opportunities listed are international fellowships open to all."
+      a: "Our focus is on 54 African countries, including Nigeria, Ghana, Kenya, and Egypt. However, many indexed listings are international fellowships open to the global African diaspora."
     }
   ]
 
   return (
-    <div className="min-h-screen bg-[#080A07] text-primary pt-32 pb-24">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-16 animate-fade-up">
-           <Link href="/" className="inline-flex items-center gap-2 text-amber text-xs font-black uppercase tracking-widest mb-8 hover:underline">
-            <ArrowLeft size={14} /> Back to Hub
+    <div className="min-h-screen bg-bg text-primary pt-32 pb-32 px-6 relative overflow-hidden">
+      {/* Background Glows */}
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-amber/5 blur-[150px] rounded-full -z-10" />
+      <div className="absolute bottom-1/4 left-0 w-[500px] h-[500px] bg-emerald/5 blur-[100px] rounded-full -z-10" />
+
+      <div className="container mx-auto max-w-7xl">
+        <div className="text-center mb-24 space-y-8 animate-fade-up">
+           <Link href="/" className="group inline-flex items-center gap-3 text-amber text-[10px] font-black uppercase tracking-[0.3em] mb-4 hover:translate-x-[-4px] transition-transform">
+            <ArrowLeft size={16} /> Back to Hub
           </Link>
-          <h1 className="font-syne text-5xl md:text-7xl font-black mb-6 tracking-tighter">
-            How can we <span className="text-amber">help?</span>
+          <h4 className="text-[10px] font-black text-amber uppercase tracking-[0.4em] mb-4">Support Center</h4>
+          <h1 className="font-serif text-6xl md:text-8xl font-black mb-8 tracking-tight leading-none">
+            How can we <span className="text-amber italic">assist?</span>
           </h1>
-          <div className="relative max-w-xl mx-auto mt-12">
-             <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-white/20" size={20} />
+          <div className="relative max-w-2xl mx-auto mt-12 group">
+             <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-amber transition-colors" size={24} />
              <input 
                type="text" 
-               placeholder="Search help articles..."
-               className="w-full bg-white/5 border border-white/5 rounded-3xl pl-16 pr-6 py-6 text-lg outline-none focus:border-amber/50 transition-all font-medium" 
+               placeholder="Search our knowledge base..."
+               className="w-full bg-surface/30 border border-border/80 rounded-[2.5rem] pl-16 pr-8 py-7 text-lg outline-none focus:border-amber/50 transition-all font-bold shadow-2xl shadow-black/20" 
              />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-20 items-start">
            {/* FAQ Section */}
-           <div className="space-y-6 animate-fade-up">
-              <h2 className="text-2xl font-black uppercase tracking-widest text-white/40 mb-10">Frequently Asked Questions</h2>
-              {faqs.map((faq, i) => (
-                <div key={i} className="glass-card rounded-3xl border border-white/5 overflow-hidden group">
-                   <button 
-                     onClick={() => setActiveFaq(activeFaq === i ? null : i)}
-                     className="w-full px-8 py-6 flex items-center justify-between text-left hover:bg-white/[0.02] transition-colors"
-                   >
-                      <h3 className="font-bold text-lg">{faq.q}</h3>
-                      <ChevronDown className={`text-amber transition-transform duration-300 ${activeFaq === i ? 'rotate-180' : ''}`} size={20} />
-                   </button>
-                   {activeFaq === i && (
-                     <div className="px-8 pb-8 text-subtle leading-relaxed text-base animate-fade-down">
-                        {faq.a}
+           <div className="space-y-8 animate-fade-up">
+              <div className="flex items-center gap-4 mb-12">
+                 <div className="w-1.5 h-1.5 rounded-full bg-amber" />
+                 <h2 className="text-[12px] font-black uppercase tracking-[0.3em] text-muted">Core Intelligence FAQ</h2>
+              </div>
+              
+              <div className="space-y-4">
+                {faqs.map((faq, i) => (
+                  <div key={i} className="group relative">
+                     <div className={`absolute -inset-0.5 bg-gradient-to-r from-amber/20 to-transparent rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity blur-sm -z-10 ${activeFaq === i ? 'opacity-100' : ''}`} />
+                     <div className={`bg-surface/30 backdrop-blur-xl rounded-[2rem] border border-border/60 overflow-hidden transition-all duration-500 ${activeFaq === i ? 'bg-surface/50 border-amber/30' : ''}`}>
+                        <button 
+                          onClick={() => setActiveFaq(activeFaq === i ? null : i)}
+                          className="w-full px-10 py-8 flex items-center justify-between text-left transition-colors"
+                        >
+                           <h3 className="font-bold text-xl md:text-2xl transition-colors group-hover:text-amber">{faq.q}</h3>
+                           <div className={`w-10 h-10 rounded-full bg-surface2 border border-border flex items-center justify-center text-amber transition-transform duration-500 ${activeFaq === i ? 'rotate-180 bg-amber text-black border-amber' : ''}`}>
+                              <ChevronDown size={20} />
+                           </div>
+                        </button>
+                        <div className={`overflow-hidden transition-all duration-500 ease-in-out ${activeFaq === i ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                           <div className="px-10 pb-10 text-muted leading-relaxed text-lg font-medium italic opacity-80 border-t border-border/20 pt-8">
+                              {faq.a}
+                           </div>
+                        </div>
                      </div>
-                   )}
-                </div>
-              ))}
+                  </div>
+                ))}
+              </div>
            </div>
 
            {/* Contact Sidebar */}
-           <aside className="sticky top-32 animate-fade-up" style={{ animationDelay: '200ms' }}>
-              <div className="p-10 rounded-[3rem] bg-bg2 border border-white/5 relative overflow-hidden">
-                 <div className="absolute top-0 right-0 w-32 h-32 bg-emerald/5 blur-[80px] rounded-full" />
-                 <h2 className="text-2xl font-black mb-8">Contact Support</h2>
-                 <p className="text-sm text-subtle leading-relaxed mb-10">Our dedicated team is ready to assist you with any inquiries or technical issues.</p>
+           <aside className="sticky top-32 animate-fade-up">
+              <div className="p-12 rounded-[4rem] bg-surface/30 backdrop-blur-3xl border border-border/50 relative overflow-hidden shadow-premium">
+                 <div className="absolute top-0 right-0 w-32 h-32 bg-amber/5 blur-[80px] rounded-full" />
+                 <h2 className="font-serif text-3xl font-bold mb-8">Direct Access.</h2>
+                 <p className="text-sm text-muted leading-relaxed mb-12 font-medium">Our tactical response team is on standby for high-priority inquiries.</p>
                  
-                 <div className="space-y-8">
-                    <a href="mailto:oppFetch@gmail.com" className="flex items-center gap-6 group">
-                       <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-amber group-hover:scale-110 transition-transform">
-                          <Mail size={22} />
+                 <div className="space-y-10">
+                    <a href="mailto:hello@oppalert.com" className="flex items-center gap-6 group">
+                       <div className="w-14 h-14 rounded-2xl bg-surface/80 border border-border flex items-center justify-center text-amber group-hover:bg-amber group-hover:text-black transition-all shadow-xl">
+                          <Mail size={24} />
                        </div>
                        <div>
-                          <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-1">Email Us</p>
-                          <p className="font-bold text-primary group-hover:text-amber transition-colors">oppFetch@gmail.com</p>
+                          <p className="text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-1">Email Terminal</p>
+                          <p className="font-bold text-lg text-primary group-hover:text-amber transition-colors">hello@oppalert.com</p>
                        </div>
                     </a>
                     <a href="tel:+2348089895943" className="flex items-center gap-6 group">
-                       <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-emerald group-hover:scale-110 transition-transform">
-                          <Phone size={22} />
+                       <div className="w-14 h-14 rounded-2xl bg-surface/80 border border-border flex items-center justify-center text-emerald group-hover:bg-emerald group-hover:text-black transition-all shadow-xl">
+                          <Phone size={24} />
                        </div>
                        <div>
-                          <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-1">Call Support</p>
-                          <p className="font-bold text-primary group-hover:text-emerald transition-colors">+234 808 989 5943</p>
+                          <p className="text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-1">Direct Line</p>
+                          <p className="font-bold text-lg text-primary group-hover:text-emerald transition-colors">+234 808 989 5943</p>
                        </div>
                     </a>
                     <div className="flex items-center gap-6 group cursor-pointer">
-                       <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-amber group-hover:scale-110 transition-transform">
-                          <MessageSquare size={22} />
+                       <div className="w-14 h-14 rounded-2xl bg-surface/80 border border-border flex items-center justify-center text-amber group-hover:scale-110 transition-transform shadow-xl">
+                          <MessageSquare size={24} />
                        </div>
                        <div>
-                          <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em] mb-1">Live Chat</p>
-                          <p className="font-bold text-primary">Typical response &lt; 2h</p>
+                          <p className="text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-1">Live Interface</p>
+                          <p className="font-bold text-lg text-primary">Est. response &lt; 2h</p>
                        </div>
                     </div>
                  </div>
 
-                 <div className="mt-12 pt-10 border-t border-white/5 text-center">
-                    <div className="flex justify-center gap-3 mb-4">
-                       <CheckCircle size={16} className="text-emerald" />
-                       <span className="text-[10px] font-black text-muted uppercase tracking-widest">Verified Support Link</span>
+                 <div className="mt-16 pt-12 border-t border-border/40 text-center">
+                    <div className="flex justify-center items-center gap-3">
+                       <CheckCircle size={18} className="text-emerald" />
+                       <span className="text-[11px] font-black text-muted uppercase tracking-[0.3em]">Verified Support Link</span>
                     </div>
                  </div>
               </div>
            </aside>
         </div>
 
-        {/* Categories of Help */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-32">
+        {/* Global Support Categories */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-40">
            {[
-             { title: 'Technical Guide', desc: 'Integration docs, API endpoints, and technical troubleshooting.', icon: LifeBuoy },
-             { title: 'User Account', desc: 'Password reset, profile management, and notification settings.', icon: UserIcon },
-             { title: 'Safety & Trust', desc: 'Reporting scams, verification badges, and privacy controls.', icon: ShieldIcon }
+             { title: 'Technical Archives', desc: 'Integration protocols, API endpoints, and technical troubleshooting data.', icon: LifeBuoy, color: 'amber' },
+             { title: 'Entity Profile', desc: 'Credential reset, security management, and notification clusters.', icon: HelpCircle, color: 'emerald' },
+             { title: 'Safety Protocol', desc: 'Submission screening, verification tokens, and privacy overrides.', icon: Zap, color: 'amber' }
            ].map((category, i) => (
-             <div key={i} className="p-8 rounded-[2rem] border border-white/5 hover:border-amber/20 transition-all cursor-pointer group">
-                <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-amber mb-8 group-hover:bg-amber group-hover:text-[#080A07] transition-all">
-                   <category.icon size={28} />
+             <div key={i} className="p-10 rounded-[3rem] bg-surface/30 border border-border/50 hover:border-amber/30 transition-all cursor-pointer group hover:bg-surface/50">
+                <div className={`w-16 h-16 rounded-2xl bg-${category.color}/10 border border-${category.color}/20 flex items-center justify-center text-${category.color} mb-10 group-hover:scale-110 transition-transform shadow-xl`}>
+                   <category.icon size={32} />
                 </div>
-                <h3 className="text-xl font-black mb-4">{category.title}</h3>
-                <p className="text-sm text-subtle leading-relaxed">{category.desc}</p>
+                <h3 className="font-serif text-2xl font-bold mb-4">{category.title}</h3>
+                <p className="text-sm text-muted leading-relaxed font-medium">{category.desc}</p>
              </div>
            ))}
         </div>
       </div>
     </div>
-  )
-}
-
-function UserIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
-  )
-}
-
-function ShieldIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
-    </svg>
   )
 }

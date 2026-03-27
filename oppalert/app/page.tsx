@@ -6,59 +6,15 @@ import OpportunityCard from '@/components/OpportunityCard'
 import ScrollReveal from '@/components/ScrollReveal'
 import AnimatedCounter from '@/components/AnimatedCounter'
 import OpportunityTicker from '@/components/OpportunityTicker'
-import { GraduationCap, Briefcase, Users, Coins, Leaf, Rocket, Calendar, Globe, MapPin, ArrowRight, Share2, MousePointer2, TrendingUp } from 'lucide-react'
-import Typewriter from 'typewriter-effect'
-
-const sampleEvents = [
-  {
-    id: 'sample-1',
-    title: 'Data Science Bootcamp Lagos 2025',
-    organizer_name: 'TechAfrica Hub',
-    event_type: 'bootcamp',
-    start_date: '2025-04-15T09:00:00Z',
-    location: 'Lagos, Nigeria',
-    is_online: false,
-    max_capacity: 100,
-    current_registrations: 55,
-    is_paid: false,
-    ticket_price: 0,
-    slug: 'sample-data-science-bootcamp',
-    color: '#E8A020',
-  },
-  {
-    id: 'sample-2',
-    title: 'Remote Work Masterclass for Africans',
-    organizer_name: 'AfriWork Community',
-    event_type: 'workshop',
-    start_date: '2025-04-20T14:00:00Z',
-    location: 'Online',
-    is_online: true,
-    max_capacity: 500,
-    current_registrations: 234,
-    is_paid: false,
-    ticket_price: 0,
-    slug: 'sample-remote-work-masterclass',
-    color: '#4A9EE8',
-  },
-  {
-    id: 'sample-3',
-    title: 'Startup Pitch Night Nairobi',
-    organizer_name: 'Nairobi Tech Week',
-    event_type: 'meetup',
-    start_date: '2025-05-02T18:00:00Z',
-    location: 'Nairobi, Kenya',
-    is_online: false,
-    max_capacity: 150,
-    current_registrations: 89,
-    is_paid: true,
-    ticket_price: 2000,
-    slug: 'sample-startup-pitch-night',
-    color: '#8B5CF6',
-  },
-]
+import { 
+  GraduationCap, Briefcase, Users, Coins, Leaf, Rocket, 
+  Search, ArrowRight, CheckCircle2, ShieldCheck, 
+  Globe2, Zap, Star, LayoutGrid, Building2
+} from 'lucide-react'
 
 export default function HomePage() {
   const [featured, setFeatured] = useState(seedData.filter(o => o.is_featured))
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -78,258 +34,228 @@ export default function HomePage() {
     fetchFeatured()
   }, [])
 
-  const getDeadlineText = (opp: any): string => {
-    const days = parseInt(opp.days_remaining)
-    if (!isNaN(days) && days > 0) {
-      if (days === 1) return "1 day left"
-      if (days < 30) return days + " days left"
-      return Math.ceil(days / 30) + " months left"
-    }
-    return "Open"
-  }
-
   const categories = [
-    { name: 'Scholarships', icon: <GraduationCap size={32} className="mx-auto" />, slug: 'scholarship' },
-    { name: 'Remote Jobs', icon: <Briefcase size={32} className="mx-auto" />, slug: 'job' },
-    { name: 'Fellowships', icon: <Users size={32} className="mx-auto" />, slug: 'fellowship' },
-    { name: 'Grants', icon: <Coins size={32} className="mx-auto" />, slug: 'grant' },
-    { name: 'Internships', icon: <Leaf size={32} className="mx-auto" />, slug: 'internship' },
-    { name: 'Startup Funding', icon: <Rocket size={32} className="mx-auto" />, slug: 'startup' },
+    { name: 'Scholarships', icon: GraduationCap, slug: 'scholarship', count: '450+', color: 'text-amber' },
+    { name: 'Remote Jobs', icon: Briefcase, slug: 'job', count: '1.2k+', color: 'text-emerald' },
+    { name: 'Fellowships', icon: Users, slug: 'fellowship', count: '85+', color: 'text-info' },
+    { name: 'Grants', icon: Coins, slug: 'grant', count: '120+', color: 'text-terra' },
+    { name: 'Internships', icon: Leaf, slug: 'internship', count: '300+', color: 'text-purple-400' },
+    { name: 'Startup Funding', icon: Rocket, slug: 'startup', count: '50+', color: 'text-pink-400' },
   ]
 
   return (
     <main className="min-h-screen bg-bg">
-      {/* Hero */}
-      <section className="text-center relative flex flex-col justify-center min-h-[85vh] px-6" style={{
-        background: '#080A07',
-      }}>
-        {/* Simple Background */}
-        <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(232,160,32,0.12)_0%,transparent:70%)]" />
+      {/* Hero Section - Search First */}
+      <section className="relative pt-32 pb-24 px-6 overflow-hidden">
+        {/* Warm Background Element */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10 pointer-events-none">
+          <div className="absolute top-[-20%] left-1/4 w-[800px] h-[800px] bg-amber/10 blur-[140px] rounded-full mix-blend-screen" />
+          <div className="absolute bottom-10 right-1/4 w-[500px] h-[500px] bg-emerald/5 blur-[120px] rounded-full mix-blend-screen" />
         </div>
 
-        <div className="max-w-4xl mx-auto relative z-10 w-full py-20">
-          <div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-8"
-            style={{ animation: 'fadeUp 0.6s ease both' }}
-          >
-             <span className="live-dot"></span>
-             <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#E8A020]">{"Now live \u2014 73+ verified opportunities"}</span>
-          </div>
+        <div className="max-w-6xl mx-auto text-center relative z-10">
+          <ScrollReveal direction="none">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface/80 border border-border backdrop-blur-md mb-8 shadow-sm">
+              <span className="flex h-2 w-2 relative">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber"></span>
+              </span>
+              <span className="text-xs font-bold tracking-wide text-primary">
+                73+ New Opportunities added today
+              </span>
+            </div>
+          </ScrollReveal>
 
-          <h1
-            className="font-syne text-4xl sm:text-5xl md:text-8xl font-black text-white mb-8 tracking-tighter leading-[1.05]"
-            style={{ animation: 'slideInLeft 0.8s ease both' }}
-          >
-            Empowering <span className="text-[#E8A020]">African</span> <br />Leaders.
-          </h1>
+          <ScrollReveal delay={100}>
+            <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-primary leading-[1.05] mb-8 tracking-tight max-w-5xl mx-auto">
+              Your gateway to <span className="text-amber italic">global</span> success.
+            </h1>
+          </ScrollReveal>
 
-          <p
-            className="text-lg md:text-xl text-white/50 mb-12 max-w-2xl mx-auto leading-relaxed border-l-2 border-[#E8A020]/30 pl-6 text-left"
-            style={{ animation: 'slideInLeft 0.8s ease both', animationDelay: '150ms' }}
-          >
-            The premium gateway to verified scholarships, remote jobs, and VC funding. Built for the ambitious African professional.
-          </p>
+          <ScrollReveal delay={200}>
+            <p className="text-lg md:text-xl text-muted max-w-3xl mx-auto mb-14 leading-relaxed font-medium">
+              Discover verified scholarships, remote jobs, and funding tailored for the ambitious African professional. Zero spam, just high-impact opportunities.
+            </p>
+          </ScrollReveal>
 
-          <div
-            className="flex flex-col sm:flex-row gap-5 justify-center"
-            style={{ animation: 'fadeUp 0.8s ease both', animationDelay: '300ms' }}
-          >
-            <Link href="/opportunities" className="btn-animate px-10 py-5 bg-[#E8A020] text-[#080A07] font-black rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-glow-amber tracking-wider flex items-center justify-center gap-2">
-              Browse Opportunities <ArrowRight size={20} />
-            </Link>
-            <Link href="/register?type=organizer" className="btn-animate px-10 py-5 bg-transparent text-white border-2 border-white/10 font-black rounded-2xl hover:bg-white/5 hover:border-[#E8A020]/40 active:scale-95 transition-all tracking-wider flex items-center justify-center gap-2">
-              {"Host an Event \u2014 Free"}
-            </Link>
+          {/* Large Search Bar */}
+          <ScrollReveal delay={300}>
+            <div className="max-w-4xl mx-auto mb-16 relative">
+              <div className="relative group p-2.5 bg-surface/50 backdrop-blur-2xl border border-glass-border rounded-full shadow-premium focus-within:border-amber/40 transition-all duration-500">
+                <div className="flex flex-col md:flex-row items-center gap-2">
+                  <div className="flex-1 flex items-center gap-4 px-6 w-full">
+                    <Search className="text-muted group-focus-within:text-amber transition-colors" size={24} />
+                    <input 
+                      type="text" 
+                      placeholder="Search scholarships, internships, or remote jobs..."
+                      className="w-full bg-transparent border-none outline-none py-4 text-primary placeholder:text-muted/60 font-medium text-lg leading-none"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+                  <button className="w-full md:w-auto px-10 py-5 bg-gradient-to-r from-amber to-amber-light text-[#080A07] font-bold rounded-full hover:scale-[1.02] active:scale-[0.98] transition-all shadow-glow-amber flex items-center justify-center gap-2 text-base">
+                    Find Matches <ArrowRight size={18} strokeWidth={2.5} />
+                  </button>
+                </div>
+              </div>
+              <div className="mt-6 flex flex-wrap justify-center gap-6 text-sm font-semibold tracking-wide text-muted/80">
+                <span className="text-subtle">Popular searches:</span>
+                <Link href="/opportunities?q=masters" className="hover:text-amber transition-colors border-b border-transparent hover:border-amber/30 pb-0.5">Masters fully funded</Link>
+                <Link href="/opportunities?q=remote" className="hover:text-amber transition-colors border-b border-transparent hover:border-amber/30 pb-0.5">Remote SWE roles</Link>
+                <Link href="/opportunities?q=startup" className="hover:text-amber transition-colors border-b border-transparent hover:border-amber/30 pb-0.5">Seed stage grants</Link>
+              </div>
+            </div>
+          </ScrollReveal>
+
+          {/* Social Proof - Logo Cloud */}
+          <ScrollReveal delay={400} direction="none">
+            <div className="pt-12 mt-12 border-t border-border/60">
+              <p className="text-xs font-bold uppercase tracking-widest text-subtle mb-10">Trusted by students & founders from global institutions</p>
+              <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-8 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700">
+                <div className="font-serif text-2xl font-bold">Google</div>
+                <div className="font-serif text-2xl font-bold">Microsoft</div>
+                <div className="font-serif text-2xl font-bold">Andela</div>
+                <div className="font-serif text-2xl font-bold">Paystack</div>
+                <div className="font-serif text-2xl font-bold">Flutterwave</div>
+              </div>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-24 px-6 border-y border-border/60 bg-surface/30 relative">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        <div className="container mx-auto relative z-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 max-w-6xl mx-auto">
+            {[
+              { label: 'Verified Opportunities', value: 4500, suffix: '+' },
+              { label: 'Total Funding Disbursed', value: 12, prefix: '$', suffix: 'M+' },
+              { label: 'Active Monthly Users', value: 50, suffix: 'k+' },
+              { label: 'Partner Organizations', value: 120, suffix: '+' },
+            ].map((stat, i) => (
+              <div key={i} className="text-center group">
+                <div className="text-4xl md:text-6xl font-serif text-amber mb-3 group-hover:scale-105 transition-transform duration-300">
+                  <AnimatedCounter target={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
+                </div>
+                <div className="text-xs font-bold uppercase tracking-widest text-muted group-hover:text-primary transition-colors">{stat.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Opportunity Ticker */}
-      <OpportunityTicker />
+      {/* Categories Grid */}
+      <section className="py-24 px-6 relative overflow-hidden">
+        <div className="container mx-auto">
+          <div className="flex justify-between items-end mb-16">
+            <div className="max-w-xl">
+              <h2 className="font-serif text-4xl md:text-5xl text-primary mb-4 tracking-tight">Browse by <span className="text-amber italic">Path</span></h2>
+              <p className="text-muted leading-relaxed font-medium">Explore curated categories designed to accelerate your career or startup journey.</p>
+            </div>
+            <Link href="/opportunities" className="hidden md:flex items-center gap-2 text-xs font-black uppercase tracking-widest text-amber hover:opacity-80 transition-opacity">
+              Explore All <ArrowRight size={14} />
+            </Link>
+          </div>
 
-      {/* Bento Landing Page Features */}
-      <section className="py-20 px-6 container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1: Link Tool / Typing Animation */}
-          <ScrollReveal className="md:col-span-2" direction="none">
-            <div className="bg-[#1A1D18] border border-white/5 rounded-[2.5rem] p-6 md:p-10 relative overflow-hidden group min-h-[400px] card-hover">
-              <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-                 <Share2 size={120} className="text-[#E8A020]" />
-              </div>
-              <div className="relative z-10 max-w-md">
-                <div className="w-12 h-12 rounded-2xl bg-[#E8A020]/10 flex items-center justify-center mb-6">
-                  <MousePointer2 className="text-[#E8A020]" />
-                </div>
-                <h3 className="font-syne text-3xl font-black text-white mb-4">Launch in seconds.</h3>
-                <p className="text-[#A0A59A] mb-10 text-lg leading-relaxed">
-                  Create beautiful event pages with short links that actually convert. Now 100% free for all African organizers.
-                </p>
-
-                <div className="bg-[#080A07] p-4 md:p-6 rounded-2xl border border-white/10 shadow-2xl font-mono text-sm">
-                  <div className="flex items-center gap-2 text-white/40 mb-3 text-[10px] uppercase font-bold tracking-widest pl-1">
-                    <div className="w-2 h-2 rounded-full bg-red-500/50"></div>
-                    <div className="w-2 h-2 rounded-full bg-yellow-500/50"></div>
-                    <div className="w-2 h-2 rounded-full bg-green-500/50"></div>
-                    <span className="ml-2">Live URL Generator</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {categories.map((cat, i) => (
+              <ScrollReveal key={i} delay={i * 50}>
+                <Link 
+                  href={`/opportunities?cat=${cat.slug}`}
+                  className="group relative p-8 bg-surface/30 border border-border rounded-[2rem] hover:border-amber/30 hover:bg-surface/50 transition-all duration-500 overflow-hidden card-hover"
+                >
+                  <div className={`w-14 h-14 rounded-2xl bg-surface border border-border flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 ${cat.color}`}>
+                    <cat.icon size={28} />
                   </div>
-                  <div className="flex items-center gap-3 text-lg">
-                    <span className="text-[#E8A020]">oppfetch.com/</span>
-                    <div className="text-white font-bold border-b border-[#E8A020]/40 pb-1">
-                      <Typewriter
-                        options={{
-                          strings: ['tech-summit-2025', 'founder-meetup', 'design-bootcamp', 'ai-workshop-lagos'],
-                          autoStart: true,
-                          loop: true,
-                          delay: 50,
-                          deleteSpeed: 30
-                        }}
-                      />
+                  <h3 className="text-xl font-bold text-primary mb-2">{cat.name}</h3>
+                  <p className="text-sm text-muted mb-6">Discover the latest {cat.name.toLowerCase()} tailored for your growth.</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-black text-amber uppercase tracking-widest">{cat.count} listings</span>
+                    <div className="w-8 h-8 rounded-full bg-amber/10 flex items-center justify-center text-amber translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all">
+                      <ArrowRight size={14} />
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          </ScrollReveal>
-
-          {/* Card 2: Engagement Indicator */}
-          <ScrollReveal delay={100} direction="none">
-            <div className="bg-[#0D0F0B] border border-[#E8A020]/20 rounded-[2.5rem] p-6 md:p-10 flex flex-col justify-between overflow-hidden relative shadow-glow-amber/5 card-hover h-full">
-              <div className="relative z-10">
-                <div className="w-12 h-12 rounded-2xl bg-[#34C27A]/10 flex items-center justify-center mb-6">
-                  <TrendingUp className="text-[#34C27A]" />
-                </div>
-                <h3 className="font-syne text-2xl font-black text-white mb-2">Massive Reach.</h3>
-                <p className="text-[#A0A59A] text-sm leading-relaxed">
-                  {"Access a network of 48,000+ top African talent instantly."}
-                </p>
-              </div>
-
-              <div className="mt-10 relative">
-                 <div className="text-5xl md:text-6xl font-black text-[#E8A020] mb-2">
-                   <AnimatedCounter target={98} suffix="%" />
-                 </div>
-                 <div className="text-[10px] font-bold text-white/40 uppercase tracking-widest pl-1">Average Conversion Rate</div>
-
-                 {/* Visual Chart */}
-                 <div className="flex items-end gap-2 h-20 mt-6">
-                   {[40, 60, 45, 80, 55, 95, 70].map((h, i) => (
-                     <div
-                       key={i}
-                       className={`flex-1 rounded-t-lg ${i === 5 ? 'bg-[#E8A020]' : 'bg-white/10'}`}
-                       style={{
-                         height: `${h}%`,
-                         animation: 'fadeUp 0.6s ease both',
-                         animationDelay: `${500 + (i * 100)}ms`,
-                       }}
-                     />
-                   ))}
-                 </div>
-              </div>
-            </div>
-          </ScrollReveal>
-
-          {/* Card 3: Featured Preview / Browse Context */}
-          <ScrollReveal delay={200} direction="none">
-            <div className="md:col-span-1 bg-[#1A1D18] border border-white/5 rounded-[2.5rem] p-6 md:p-8 flex flex-col justify-center relative overflow-hidden group card-hover h-full">
-               <div className="text-center mb-8">
-                 <h3 className="font-syne text-xl font-black text-white mb-2">Discovery Hub</h3>
-                 <p className="text-white/40 text-[10px] uppercase font-bold tracking-[0.2em]">Verified Opportunities Only</p>
-               </div>
-
-               <div className="scale-90 opacity-60 group-hover:opacity-100 group-hover:scale-95 transition-all duration-500 -rotate-2 group-hover:rotate-0">
-                 {featured[0] && <OpportunityCard opportunity={featured[0]} index={0} />}
-               </div>
-            </div>
-          </ScrollReveal>
-
-          <ScrollReveal className="md:col-span-2" delay={300} direction="none">
-            <div className="bg-[#E8A020] rounded-[2.5rem] p-6 md:p-10 flex flex-col md:flex-row items-center justify-between overflow-hidden relative card-hover">
-              <div className="max-w-md relative z-10 text-center md:text-left mb-8 md:mb-0">
-                <h3 className="font-syne text-3xl md:text-4xl font-black text-[#080A07] mb-4">Elite Seekers.</h3>
-                <p className="text-[#080A07]/70 text-base md:text-lg leading-relaxed font-bold">
-                  {"Get 48h early access to listings and premium WhatsApp alerts. \u20A62,500/mo."}
-                </p>
-                <Link href="/pricing" className="mt-8 inline-block px-8 py-4 bg-[#080A07] text-white font-black rounded-2xl hover:scale-105 transition-all text-sm md:text-base">
-                  Become a Member
                 </Link>
-              </div>
-              <div className="w-full md:w-1/3 opacity-20 md:opacity-100">
-                 <div className="grid grid-cols-2 gap-2">
-                   {categories.slice(0, 4).map((c, i) => (
-                     <div key={i} className="p-4 bg-[#080A07] rounded-2xl text-white flex items-center justify-center">
-                        {c.icon}
-                     </div>
-                   ))}
-                 </div>
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* Featured Section */}
-      <section className="py-24 px-6 bg-[var(--bg2)] border-y border-border relative overflow-hidden">
-        <div className="absolute inset-0 bg-transparent pointer-events-none opacity-[0.03] select-none" style={{ backgroundImage: 'radial-gradient(var(--amber) 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
-        <div className="container mx-auto">
-          <ScrollReveal>
-            <div className="flex justify-between items-end mb-12">
-              <div>
-                <h2 className="font-syne text-3xl md:text-4xl font-black text-primary mb-3">Featured <span className="text-amber">Opportunities</span></h2>
-                <p className="text-muted text-lg max-w-xl">Handpicked high-impact opportunities closing soon across Africa.</p>
-              </div>
-              <Link href="/opportunities" className="text-amber font-black uppercase tracking-widest text-xs hover:opacity-80 transition-opacity flex items-center gap-2 link-animate">
-                View All Opportunities <ArrowRight size={14} strokeWidth={3} />
-              </Link>
-            </div>
-          </ScrollReveal>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featured.map((opp, index) => (
-              <ScrollReveal key={opp.id} delay={index * 100}>
-                <OpportunityCard opportunity={opp} deadlineOverride={getDeadlineText(opp)} />
               </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Events */}
-      <section className="py-16 md:py-24 px-6 border-t border-border">
+      {/* Featured Opportunities */}
+      <section className="py-24 px-6 bg-surface/10 relative">
         <div className="container mx-auto">
-          <ScrollReveal>
-            <div className="flex flex-col md:flex-row justify-between md:items-end gap-6 mb-12">
-              <div>
-                <h2 className="font-syne text-2xl md:text-3xl font-black text-primary mb-2">{"Upcoming Events & Bootcamps"}</h2>
-                <p className="text-muted text-sm md:text-base">Level up with community-led workshops and meetups.</p>
+          <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-16">
+            <div>
+              <h2 className="font-serif text-4xl md:text-5xl text-primary mb-4 tracking-tight">Handpicked for <span className="text-amber italic">You</span></h2>
+              <div className="flex items-center gap-4">
+                <div className="flex -space-x-2">
+                  {[1,2,3].map(i => (
+                    <div key={i} className="w-8 h-8 rounded-full border-2 border-bg bg-surface2 flex items-center justify-center text-[10px] font-bold">A</div>
+                  ))}
+                </div>
+                <p className="text-xs font-bold text-muted uppercase tracking-widest">Joined by 1,200+ seekers today</p>
               </div>
-              <Link href="/events" className="text-[#E8A020] font-bold link-animate text-sm">{"View All Events \u2192"}</Link>
             </div>
-          </ScrollReveal>
+            <div className="flex gap-2 bg-surface p-1 rounded-xl border border-border">
+              <button className="px-4 py-2 text-[10px] font-black uppercase tracking-widest bg-amber text-[#080A07] rounded-lg">Recent</button>
+              <button className="px-4 py-2 text-[10px] font-black uppercase tracking-widest text-muted hover:text-primary rounded-lg transition-colors">Expiring</button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            {featured.map((opp, index) => (
+              <OpportunityCard key={opp.id} opportunity={opp} index={index} />
+            ))}
+          </div>
+
+          <div className="text-center">
+            <Link href="/opportunities" className="inline-flex items-center gap-3 px-10 py-5 bg-surface border border-border rounded-2xl text-primary font-black uppercase tracking-widest hover:bg-border transition-all">
+              Browse All Opportunities <ArrowRight size={18} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Trust / Testimonials */}
+      <section className="py-24 px-6 relative overflow-hidden bg-bg">
+        <div className="container mx-auto max-w-6xl">
+          <div className="max-w-4xl mx-auto text-center mb-16">
+            <h2 className="font-serif text-4xl md:text-5xl text-primary mb-6">Real stories from our <span className="text-amber italic">community</span>.</h2>
+            <div className="flex justify-center gap-1.5 mb-8 text-amber">
+              {[1,2,3,4,5].map(i => <Star key={i} size={24} fill="currentColor" />)}
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            {sampleEvents.map((event, index) => (
-              <ScrollReveal key={event.id} delay={index * 120}>
-                <div className="bg-bg2 border border-border rounded-[2rem] p-6 md:p-8 hover:border-amber/50 transition-all group card-hover" style={{ borderLeft: `4px solid ${event.color}` }}>
-                  <div className="flex justify-between items-start mb-6">
-                    <span className="px-3 py-1 bg-bg rounded-full text-[10px] font-black uppercase text-muted border border-border">
-                      {event.event_type}
-                    </span>
-                    <span className="text-amber text-xs font-bold">{event.is_paid ? `NGN ${event.ticket_price.toLocaleString()}` : 'FREE'}</span>
+            {[
+              { 
+                text: "OppAlert helped me secure my first fully-funded Masters in the UK. The alerts are incredibly timely and well-organized.",
+                author: "Chinwendu A.", role: "Scholarship Recipient", avatar: "CA" 
+              },
+              { 
+                text: "As a startup founder, finding the right grants is like looking for a needle in a haystack. This platform saved us months.",
+                author: "Musa K.", role: "Tech Founder", avatar: "MK" 
+              },
+              { 
+                text: "The remote job listings are high quality and actually verified. I got hired within 3 weeks of joining.",
+                author: "Sarah O.", role: "Senior Engineer", avatar: "SO" 
+              },
+            ].map((t, i) => (
+              <ScrollReveal key={i} delay={i * 100}>
+                <div className="p-10 bg-surface/30 border border-border rounded-3xl relative h-full flex flex-col hover:border-amber/30 transition-colors duration-300">
+                  <div className="absolute -top-5 left-10 p-2.5 bg-amber rounded-xl text-[#080A07] shadow-lg">
+                    <Star size={18} fill="currentColor" />
                   </div>
-                  <h3 className="text-lg md:text-xl font-bold text-primary mb-4 group-hover:text-amber transition-colors line-clamp-2">{event.title}</h3>
-                  <div className="space-y-3 mb-8">
-                    <div className="text-xs md:text-sm text-muted flex items-center gap-2"><Calendar size={16} /> {new Date(event.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
-                    <div className="text-xs md:text-sm text-muted flex items-center gap-2">{event.is_online ? <><Globe size={16} /> Online</> : <><MapPin size={16} /> {event.location}</>}</div>
+                  <p className="text-base text-primary/80 mb-8 mt-4 leading-relaxed italic flex-1">&quot;{t.text}&quot;</p>
+                  <div className="flex items-center gap-4 pt-6 border-t border-border/50">
+                    <div className="w-12 h-12 rounded-full bg-amber/10 border border-amber/20 flex items-center justify-center font-bold text-amber">{t.avatar}</div>
+                    <div>
+                      <div className="text-sm font-bold text-primary">{t.author}</div>
+                      <div className="text-xs text-muted font-medium">{t.role}</div>
+                    </div>
                   </div>
-                  <div className="w-full bg-bg rounded-full h-1.5 mb-4 overflow-hidden">
-                    <div className="h-full" style={{ width: `${(event.current_registrations / event.max_capacity) * 100}%`, backgroundColor: event.color }}></div>
-                  </div>
-                  <div className="flex justify-between text-[10px] font-black text-subtle uppercase mb-8">
-                    <span>Registration</span>
-                    <span>{event.current_registrations}/{event.max_capacity} Booked</span>
-                  </div>
-                  <Link href={`/events/${event.slug}`} className="block w-full py-3 bg-surface text-primary text-center font-black rounded-xl group-hover:bg-amber group-hover:text-[#080A07] transition-all btn-animate text-xs md:text-sm">
-                    Register Now
-                  </Link>
                 </div>
               </ScrollReveal>
             ))}
@@ -338,15 +264,26 @@ export default function HomePage() {
       </section>
 
       {/* Final CTA */}
-      <ScrollReveal className="reveal-scale">
-        <section className="py-16 md:py-24 px-6 text-center bg-amber shadow-[0_-20px_50px_rgba(192,112,16,0.1)]">
-          <h2 className="font-syne text-2xl md:text-4xl font-black text-[#080A07] mb-6">Ready to find your next opportunity?</h2>
-          <p className="text-[#080A07] opacity-80 mb-10 text-base md:text-lg max-w-xl mx-auto font-medium">Join thousands of students and professionals receiving weekly alerts.</p>
-          <Link href="/register" className="btn-animate px-8 md:px-12 py-4 md:py-5 bg-bg text-primary font-black rounded-2xl hover:scale-105 transition-all inline-block shadow-2xl text-sm md:text-base">
-            {"Create Free Account \u2192"}
-          </Link>
-        </section>
-      </ScrollReveal>
+      <section className="py-32 px-6">
+        <div className="max-w-5xl mx-auto bg-amber-gradient rounded-[3rem] p-12 md:p-24 text-center relative overflow-hidden shadow-premium">
+          <div className="absolute top-0 left-0 w-full h-full opacity-10 mix-blend-overlay">
+            <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,black_1px,transparent_1px)] bg-[size:24px_24px]" />
+          </div>
+          
+          <ScrollReveal direction="none">
+            <h2 className="font-serif text-4xl md:text-6xl text-[#080A07] mb-8 tracking-tight">Your next big move <br />starts <span className="italic">here</span>.</h2>
+            <p className="text-lg md:text-xl text-[#080A07]/70 max-w-xl mx-auto mb-12 font-bold">Join 50,000+ African youth and professionals discovering their future today.</p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/register" className="px-10 py-5 bg-[#080A07] text-white font-black rounded-2xl hover:scale-105 transition-all shadow-2xl flex items-center justify-center gap-2">
+                Create Free Account <ArrowRight size={20} />
+              </Link>
+              <Link href="/opportunities" className="px-10 py-5 bg-white/20 backdrop-blur-md text-[#080A07] border border-[#080A07]/10 font-black rounded-2xl hover:bg-white/30 transition-all flex items-center justify-center gap-2">
+                Explore Opportunities
+              </Link>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
     </main>
   )
 }

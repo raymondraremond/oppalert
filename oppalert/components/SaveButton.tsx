@@ -1,13 +1,15 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { Heart } from 'lucide-react'
 
 interface Props {
   oppId: string
   oppTitle?: string
+  variant?: 'compact' | 'full'
 }
 
-export default function SaveButton({ oppId, oppTitle }: Props) {
+export default function SaveButton({ oppId, oppTitle, variant = 'full' }: Props) {
   const [saved, setSaved] = useState(false)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
@@ -35,7 +37,6 @@ export default function SaveButton({ oppId, oppTitle }: Props) {
         if (!res.ok) return
         const data = await res.json()
         
-        // Check if this opportunity is in saved list
         const isSaved = data?.some(
           (opp: any) => 
             opp.id === oppId || 
@@ -49,11 +50,12 @@ export default function SaveButton({ oppId, oppTitle }: Props) {
     checkSaved()
   }, [oppId])
 
-  const handleSave = async () => {
-    // Check if logged in first
+  const handleSave = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
     const stored = localStorage.getItem('user')
     if (!stored) {
-      // Redirect to login
       localStorage.setItem('loginRedirect', window.location.pathname)
       router.push('/login?next=' + encodeURIComponent(window.location.pathname))
       return
@@ -74,7 +76,6 @@ export default function SaveButton({ oppId, oppTitle }: Props) {
 
     try {
       if (saved) {
-        // UNSAVE — DELETE request
         const res = await fetch('/api/user/saved', {
           method: 'DELETE',
           headers: {
@@ -85,7 +86,6 @@ export default function SaveButton({ oppId, oppTitle }: Props) {
         })
         if (res.ok) setSaved(false)
       } else {
-        // SAVE — POST request
         const res = await fetch('/api/user/saved', {
           method: 'POST',
           headers: {
@@ -98,9 +98,6 @@ export default function SaveButton({ oppId, oppTitle }: Props) {
         if (res.status === 403) {
           const data = await res.json()
           if (data.upgrade) {
-            alert(
-              "You have reached the 5 save limit on the free plan.\n\nUpgrade to Premium for unlimited saves."
-            )
             router.push('/pricing?reason=save-limit')
             return
           }
@@ -115,30 +112,39 @@ export default function SaveButton({ oppId, oppTitle }: Props) {
     }
   }
 
+  if (variant === 'compact') {
+      return (
+        <button
+          onClick={handleSave}
+          disabled={loading}
+          className={`flex items-center justify-center transition-all duration-300 ${loading ? 'opacity-50 cursor-not-allowed' : 'active:scale-75'}`}
+          title={saved ? 'Remove from Saved' : 'Save for Later'}
+        >
+          <Heart 
+            size={18} 
+            className={`transition-all duration-500 ${saved ? 'fill-amber text-amber scale-110' : 'text-white group-hover/save:text-amber'}`} 
+            strokeWidth={saved ? 0 : 2.5}
+          />
+        </button>
+      )
+  }
+
   return (
     <button
       onClick={handleSave}
       disabled={loading}
-      style={{
-        width: '100%',
-        padding: '11px',
-        borderRadius: 10,
-        border: saved ? '2px solid #E8A020' : '1px solid #252D22',
-        background: saved ? 'rgba(232,160,32,0.1)' : 'transparent',
-        color: saved ? '#E8A020' : 'var(--muted)',
-        fontSize: 13,
-        fontWeight: 700,
-        cursor: loading ? 'not-allowed' : 'pointer',
-        transition: 'all 0.2s',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 6,
-        fontFamily: 'inherit',
-        opacity: loading ? 0.7 : 1,
-      }}
+      className={`w-full py-4 rounded-2xl border font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 active:scale-[0.98] ${
+        saved 
+          ? 'bg-amber/10 border-amber text-amber shadow-lg shadow-amber/10' 
+          : 'bg-surface2/50 border-border text-muted hover:border-amber hover:text-primary'
+      } ${loading ? 'opacity-70 cursor-wait' : ''}`}
     >
-      {loading ? 'Saving...' : saved ? '♥ Saved' : '♡ Save for Later'}
+      <Heart 
+        size={16} 
+        className={`transition-transform duration-500 ${saved ? 'fill-amber text-amber scale-110' : ''}`} 
+        strokeWidth={saved ? 0 : 2.5}
+      />
+      {loading ? 'Processing...' : saved ? 'In your Collection' : 'Save for Later'}
     </button>
   )
 }

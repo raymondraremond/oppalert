@@ -19,27 +19,26 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-[#080A07] border-t border-white/5 pt-24 pb-12 relative overflow-hidden">
+    <footer className="bg-bg border-t border-border/50 pt-24 pb-12 relative overflow-hidden">
       {/* Background Glows */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-amber/5 blur-[120px] rounded-full -z-10" />
-      <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-emerald/5 blur-[100px] rounded-full -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-amber/5 blur-[120px] rounded-full mix-blend-screen pointer-events-none -z-10" />
 
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="container mx-auto max-w-7xl px-6">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-12 lg:gap-8 mb-20">
           
           {/* Column 1: Brand */}
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
-            <Link href="/" className="flex items-center gap-3 md:gap-4 mb-8 group" style={{ textDecoration: 'none' }}>
-              <img 
-                src="/icon.png" 
-                alt="OppFetch" 
-                className="w-8 h-8 md:w-10 md:h-10 object-contain group-hover:scale-110 transition-transform duration-500" 
-              />
-              <div className="font-syne text-xl md:text-2xl font-black tracking-tighter text-primary">
-                Opp<span className="text-amber">Fetch</span>
+            <Link href="/" className="flex items-center gap-3 mb-8 group outline-none">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber/20 to-amber/5 border border-amber/20 flex items-center justify-center shadow-inner relative overflow-hidden group-hover:scale-105 transition-transform">
+                <div className="absolute inset-0 bg-amber/10 blur-md group-hover:bg-amber/20 transition-colors" />
+                <img src="/icon.png" alt="OppAlert" className="w-6 h-6 object-contain relative z-10 drop-shadow-sm" />
+              </div>
+              <div className="font-serif text-2xl font-bold tracking-tight text-primary">
+                Opp<span className="text-amber italic">Alert</span>
               </div>
             </Link>
-            <p className="text-sm text-subtle leading-relaxed mb-10 max-w-[240px]">
+            <p className="text-sm text-muted leading-relaxed mb-10 max-w-[240px]">
               The leading premium platform for discovering high-impact opportunities across Africa. Verified listings. Zero noise.
             </p>
             <div className="flex gap-4">
@@ -49,7 +48,7 @@ export default function Footer() {
                 { icon: Instagram, href: '#' },
                 { icon: Github, href: '#' }
               ].map((Social, idx) => (
-                <a key={idx} href={Social.href} className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center text-subtle hover:text-amber hover:border-amber/50 transition-all duration-300">
+                <a key={idx} href={Social.href} className="w-10 h-10 rounded-xl bg-surface/50 border border-border flex items-center justify-center text-muted hover:text-amber hover:border-amber/50 hover:bg-surface transition-all duration-300">
                   <Social.icon size={18} />
                 </a>
               ))}
@@ -118,38 +117,40 @@ export default function Footer() {
 
           {/* Column 5: Newsletter */}
           <div className="col-span-2 md:col-span-1 lg:col-span-1">
-            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40 mb-8">Stay Updated</h4>
-            <p className="text-xs text-subtle mb-6 leading-relaxed">Join 5,000+ Africans getting the best opportunities weekly.</p>
+            <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-muted mb-8">Stay Updated</h4>
+            <p className="text-xs text-muted mb-6 leading-relaxed">Join 5,000+ Africans getting the best opportunities weekly.</p>
             <form onSubmit={handleSubscribe} className="relative mb-8">
               <input
                 type="email"
                 placeholder="email@example.com"
                 required
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs focus:border-amber/50 outline-none transition-all placeholder:text-white/20"
+                className="w-full bg-surface/30 border border-border rounded-xl px-4 py-3.5 text-xs text-primary focus:border-amber/50 outline-none transition-all placeholder:text-muted/50 font-medium"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-              <button type="submit" className="absolute right-2 top-2 w-8 h-8 rounded-lg bg-amber flex items-center justify-center text-[#080A07] hover:scale-105 active:scale-95 transition-all">
-                {subscribed ? <Zap size={14} className="animate-pulse" /> : <ArrowRight size={14} />}
-              </button>
+              <div className="absolute right-2 top-2">
+                <button type="submit" className="w-8 h-8 rounded-lg bg-amber flex items-center justify-center text-[#080A07] hover:scale-105 active:scale-95 transition-all shadow-sm">
+                  {subscribed ? <Zap size={14} className="animate-pulse" /> : <ArrowRight size={14} />}
+                </button>
+              </div>
             </form>
-            {subscribed && <p className="text-[10px] text-emerald font-bold mt-2 animate-fade-up mb-4">Success! Check your inbox.</p>}
+            {subscribed && <p className="text-[10px] text-emerald font-bold mt-2 animate-in fade-in slide-in-from-bottom-1 mb-4">Success! Check your inbox.</p>}
             
             <div className="space-y-4 mb-8">
-               <a href="mailto:oppFetch@gmail.com" className="flex items-center gap-3 group">
+               <a href="mailto:hello@oppalert.com" className="flex items-center gap-3 group">
                   <Mail size={14} className="text-amber group-hover:scale-110 transition-transform" />
-                  <span className="text-[11px] font-bold text-subtle group-hover:text-amber transition-colors font-mono">oppFetch@gmail.com</span>
+                  <span className="text-[11px] font-bold text-muted group-hover:text-amber transition-colors font-mono">hello@oppalert.com</span>
                </a>
                <div className="flex items-center gap-3">
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald shadow-[0_0_8px_rgba(52,194,122,0.5)]" />
-                  <span className="text-[11px] font-bold text-subtle font-mono">+234 808 989 5943</span>
+                  <span className="text-[11px] font-bold text-muted font-mono">+234 808 989 5943</span>
                </div>
             </div>
 
-            <div className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl">
+            <div className="p-4 bg-surface/30 border border-border rounded-2xl">
                <div className="flex items-center gap-3">
                   <ShieldCheck size={16} className="text-emerald" />
-                  <span className="text-[10px] font-bold text-muted uppercase tracking-wider">Trusted by Institutions</span>
+                  <span className="text-[10px] font-bold text-primary/80 uppercase tracking-wider">Trusted by Institutions</span>
                </div>
             </div>
           </div>
@@ -158,11 +159,11 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex items-center gap-6">
-             <span className="text-[11px] font-bold text-subtle uppercase tracking-widest">© {new Date().getFullYear()} OppFetch Inc.</span>
-             <Link href="/privacy" className="text-[11px] font-bold text-muted hover:text-white uppercase tracking-widest transition-colors outline-none focus:text-white">Privacy</Link>
-             <Link href="/terms" className="text-[11px] font-bold text-muted hover:text-white uppercase tracking-widest transition-colors outline-none focus:text-white">Terms</Link>
+        <div className="pt-12 border-t border-border/50 flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex flex-wrap items-center gap-6 justify-center md:justify-start">
+             <span className="text-[11px] font-bold text-muted uppercase tracking-widest">© {new Date().getFullYear()} OppAlert Inc.</span>
+             <Link href="/privacy" className="text-[11px] font-bold text-muted/80 hover:text-amber uppercase tracking-widest transition-colors outline-none focus:text-amber">Privacy</Link>
+             <Link href="/terms" className="text-[11px] font-bold text-muted/80 hover:text-amber uppercase tracking-widest transition-colors outline-none focus:text-amber">Terms</Link>
           </div>
           
           <div className="flex items-center gap-8">
@@ -170,9 +171,9 @@ export default function Footer() {
                <div className="w-1.5 h-1.5 rounded-full bg-emerald animate-pulse" />
                <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Live Monitoring Official</span>
             </div>
-            <div className="flex items-center gap-2 px-3 py-1 bg-white/5 rounded-full border border-white/5">
-                <Globe size={12} className="text-muted" />
-                <span className="text-[10px] font-bold text-muted uppercase">Lagos, Nigeria</span>
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-surface/50 rounded-full border border-border mt-4 md:mt-0">
+                <Globe size={12} className="text-muted/80" />
+                <span className="text-[10px] font-bold text-muted/80 uppercase tracking-wider">Lagos, Nigeria</span>
             </div>
           </div>
         </div>

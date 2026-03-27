@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { User, LogOut, LayoutDashboard, Settings, Menu, X, Rocket } from 'lucide-react'
+import { User, LogOut, LayoutDashboard, Settings, Menu, X, Rocket, ChevronDown, Bell, Zap } from 'lucide-react'
 import ThemeToggle from './ThemeToggle'
 
 export default function CapsuleNav() {
@@ -85,35 +85,39 @@ export default function CapsuleNav() {
   if (path === '/login' || path === '/register') return null
 
   return (
-    <div className="fixed top-6 left-0 right-0 z-[100] px-6 pointer-events-none">
+    <div className="fixed top-8 left-0 right-0 z-[100] px-6 pointer-events-none">
       <motion.nav 
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="max-w-[700px] mx-auto bg-black/40 backdrop-blur-2xl border border-white/10 rounded-full px-4 py-2 flex items-center justify-between pointer-events-auto shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        className="max-w-[760px] mx-auto bg-surface/30 backdrop-blur-2xl border border-border/60 rounded-full px-4 py-2 flex items-center justify-between pointer-events-auto shadow-2xl relative"
       >
-        {/* Logo */}
-        <Link href="/" className="pl-1 md:pl-3 group flex items-center gap-2">
-          <img 
-            src="/icon.png" 
-            alt="OppFetch" 
-            className="w-7 h-7 md:w-8 md:h-8 object-contain group-hover:scale-110 transition-transform" 
-          />
-          <span className="font-syne font-black text-white text-sm sm:text-base md:text-lg tracking-tighter group-hover:text-[#E8A020] transition-colors">
-            Opp<span className="text-[#E8A020]">Fetch</span>
+        <div className="absolute inset-0 bg-gradient-to-r from-amber/5 via-transparent to-transparent rounded-full opacity-50" />
+
+        {/* Branding */}
+        <Link href="/" className="pl-3 group flex items-center gap-3 relative z-10 transition-transform active:scale-95">
+          <div className="w-9 h-9 rounded-xl bg-bg border border-border flex items-center justify-center shadow-inner overflow-hidden group-hover:border-amber/40 transition-colors">
+            <img 
+              src="/icon.png" 
+              alt="OppAlert" 
+              className="w-5 h-5 object-contain group-hover:scale-110 transition-transform" 
+            />
+          </div>
+          <span className="font-serif font-bold text-primary text-lg tracking-tight group-hover:text-amber transition-colors">
+            Opp<span className="text-amber italic">Alert</span>
           </span>
         </Link>
 
         {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-1">
+        <div className="hidden lg:flex items-center gap-1 relative z-10">
           {navLinks.map((link) => (
             <Link 
               key={link.href} 
               href={link.href}
-              className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all ${
+              className={`px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
                 path.startsWith(link.href) 
-                  ? 'bg-[#E8A020] text-[#080A07]' 
-                  : 'text-white/60 hover:text-white hover:bg-white/5'
+                  ? 'bg-amber text-black shadow-lg shadow-amber/10' 
+                  : 'text-muted hover:text-primary hover:bg-surface2'
               }`}
             >
               {link.label}
@@ -122,59 +126,65 @@ export default function CapsuleNav() {
           {isLoggedIn && (
             <Link 
               href="/organizer"
-              className={`px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all ${
+              className={`px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
                 path.startsWith('/organizer') 
-                  ? 'bg-[#E8A020] text-[#080A07]' 
-                  : 'text-white/60 hover:text-white hover:bg-white/5'
+                  ? 'bg-amber text-black shadow-lg shadow-amber/10' 
+                  : 'text-muted hover:text-primary hover:bg-surface2'
               }`}
             >
-              Portal
+              Organizer
             </Link>
           )}
         </div>
 
         {/* Actions / User */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3 relative z-10">
           <ThemeToggle />
           
           {isLoggedIn ? (
             <div ref={dropdownRef} className="relative">
               <button 
                 onClick={() => setShowDropdown(!showDropdown)}
-                className="w-9 h-9 rounded-full bg-[#E8A020]/10 border border-[#E8A020]/30 flex items-center justify-center text-[10px] font-black text-[#E8A020] hover:border-[#E8A020] transition-colors"
+                className="flex items-center gap-2 pl-2 pr-4 py-2 bg-bg/50 border border-border rounded-full hover:border-amber/40 transition-all group/btn"
               >
-                {getInitials()}
+                <div className="w-8 h-8 rounded-full bg-amber text-black flex items-center justify-center font-black text-[10px] shadow-lg shadow-amber/10">
+                  {getInitials()}
+                </div>
+                <ChevronDown size={14} className={`text-muted transition-transform duration-300 ${showDropdown ? 'rotate-180' : ''}`} />
               </button>
               
               <AnimatePresence>
                 {showDropdown && (
                   <motion.div 
-                    initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                    initial={{ opacity: 0, scale: 0.95, y: 15 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                    className="absolute right-0 mt-4 w-48 bg-[#1A1D18] border border-white/10 rounded-2xl p-2 shadow-2xl z-20 overflow-hidden"
+                    exit={{ opacity: 0, scale: 0.95, y: 15 }}
+                    className="absolute right-0 mt-4 w-60 bg-surface/90 backdrop-blur-3xl border border-border/80 rounded-[2.5rem] p-3 shadow-premium z-20 overflow-hidden"
                   >
-                    <div className="px-4 py-3 border-b border-white/5 mb-2">
-                      <div className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-1">Signed in as</div>
-                      <div className="text-xs font-bold text-white truncate">{user.email}</div>
+                    <div className="px-5 py-4 border-b border-border/40 mb-2">
+                       <p className="text-[9px] font-black text-muted uppercase tracking-[0.2em] mb-1 opacity-50">Active Session</p>
+                       <p className="text-xs font-bold text-primary truncate leading-none">{user.email}</p>
                     </div>
                     
-                    <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2 text-xs font-bold text-white/70 hover:text-white hover:bg-white/5 rounded-xl transition-all">
-                      <LayoutDashboard size={14} /> Dashboard
+                    <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-primary hover:bg-amber hover:text-black rounded-xl transition-all mb-1">
+                      <LayoutDashboard size={14} /> My Dashboard
                     </Link>
-                    <Link href="/organizer" className="flex items-center gap-3 px-3 py-2 text-xs font-bold text-white/70 hover:text-white hover:bg-white/5 rounded-xl transition-all">
-                      <Rocket size={14} /> Organizer Hub
+                    <Link href="/organizer" className="flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-primary hover:bg-amber hover:text-black rounded-xl transition-all mb-1">
+                       <Rocket size={14} /> Organizer Hub
                     </Link>
                     {isAdmin && (
-                      <Link href="/admin" className="flex items-center gap-3 px-3 py-2 text-xs font-bold text-[#E8A020] hover:bg-[#E8A020]/5 rounded-xl transition-all">
-                        <Settings size={14} /> System Admin
+                      <Link href="/admin" className="flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-amber border border-amber/20 hover:bg-amber hover:text-black rounded-xl transition-all">
+                        <Settings size={14} /> Global Admin
                       </Link>
                     )}
+                    
+                    <div className="h-px bg-border/40 my-2 mx-4" />
+                    
                     <button 
                       onClick={handleLogout}
-                      className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-red-500/70 hover:text-red-500 hover:bg-red-500/5 rounded-xl transition-all mt-1 pt-3 border-t border-white/5 underline decoration-red-500/20 underline-offset-4"
+                      className="w-full flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-500 hover:text-white rounded-xl transition-all"
                     >
-                      <LogOut size={14} /> Log Out
+                      <LogOut size={14} /> Sign Out
                     </button>
                   </motion.div>
                 )}
@@ -182,8 +192,9 @@ export default function CapsuleNav() {
             </div>
           ) : (
             <Link href="/register">
-              <button className="bg-[#E8A020] text-[#080A07] px-3 md:px-4 py-1.5 md:py-2 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-transform flex items-center gap-2">
-                Join <span className="hidden sm:inline">Portal</span>
+              <button className="bg-amber text-black px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-amber/10 flex items-center gap-2">
+                Join <span className="hidden sm:inline">Now</span>
+                <ChevronDown size={14} className="-rotate-90 group-hover:translate-x-1" />
               </button>
             </Link>
           )}
@@ -191,7 +202,7 @@ export default function CapsuleNav() {
           {/* Mobile Toggle */}
           <button 
             onClick={() => setShowMobile(!showMobile)}
-            className="md:hidden w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-white"
+            className="lg:hidden w-10 h-10 rounded-xl bg-bg border border-border flex items-center justify-center text-primary active:scale-90 transition-transform"
           >
             {showMobile ? <X size={18} /> : <Menu size={18} />}
           </button>
@@ -202,32 +213,34 @@ export default function CapsuleNav() {
       <AnimatePresence>
         {showMobile && (
           <motion.div 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 10 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="md:hidden max-w-[700px] mx-auto bg-black/80 backdrop-blur-3xl border border-white/10 rounded-[2rem] p-6 shadow-2xl mt-4"
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 15, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className="lg:hidden max-w-[500px] mx-auto bg-surface/90 backdrop-blur-3xl border border-border/60 rounded-[3rem] p-8 shadow-premium"
           >
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
               {navLinks.map((link) => (
                 <Link 
                   key={link.href} 
                   href={link.href}
-                  className="text-lg font-syne font-black text-white hover:text-[#E8A020] transition-colors"
+                  className={`p-5 rounded-2xl text-base font-bold transition-all ${path.startsWith(link.href) ? 'bg-amber text-black' : 'text-primary bg-bg/50 border border-border'}`}
                 >
                   {link.label}
                 </Link>
               ))}
-              <hr className="border-white/5 my-2" />
+              
+              <div className="h-px bg-border/40 my-4" />
+              
               {isLoggedIn ? (
                 <>
-                  <Link href="/dashboard" className="text-white/60 font-bold">Dashboard</Link>
-                  <Link href="/organizer" className="text-white/60 font-bold">Organizer Hub</Link>
-                  <button onClick={handleLogout} className="text-red-500/60 font-bold text-left">Log Out</button>
+                  <Link href="/dashboard" className="p-5 rounded-2xl bg-bg/50 border border-border font-bold text-primary">📊 Dashboard</Link>
+                  <Link href="/organizer" className="p-5 rounded-2xl bg-bg/50 border border-border font-bold text-primary">🚀 Organizer Hub</Link>
+                  <button onClick={handleLogout} className="p-5 rounded-2xl bg-red-500/10 text-red-500 font-bold border border-red-500/20">Sign Out</button>
                 </>
               ) : (
-                <div className="flex flex-col gap-3 pt-2">
-                  <Link href="/login" className="text-white/60 font-bold">Log In</Link>
-                  <Link href="/register" className="bg-[#E8A020] text-[#080A07] py-4 rounded-2xl text-center font-black uppercase tracking-widest">Create Account</Link>
+                <div className="flex flex-col gap-4">
+                  <Link href="/login" className="p-5 rounded-2xl bg-bg/50 border border-border font-bold text-center">Log In</Link>
+                  <Link href="/register" className="p-5 rounded-2xl bg-amber text-black font-black uppercase tracking-widest text-center shadow-amber/20 shadow-lg">Create Account</Link>
                 </div>
               )}
             </div>

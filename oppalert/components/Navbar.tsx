@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import ThemeToggle from './ThemeToggle'
+import { User, LogOut, ChevronDown, Menu, X, LayoutDashboard, Briefcase, Zap } from 'lucide-react'
 
 export default function Navbar() {
   const [user, setUser] = useState<any>(null)
@@ -80,167 +81,147 @@ export default function Navbar() {
     { href: '/pricing', label: 'Pricing' },
   ]
 
-  const navLinkStyle = (href: string) => ({
-    display: 'inline-flex',
-    alignItems: 'center',
-    padding: '8px 4px',
-    margin: '0 8px',
-    fontSize: 14,
-    fontWeight: 500,
-    cursor: 'pointer',
-    transition: 'color 0.15s ease, background 0.15s ease',
-    textDecoration: 'none',
-  })
-
-  // Do not show navbar on login/register pages
+  // Hide navbar on auth pages
   if (path === '/login' || path === '/register') return null
 
   return (
-    <header style={{
-      position: 'sticky', top: 0, zIndex: 100,
-      background: scrolled ? 'var(--glass)' : 'transparent',
-      backdropFilter: scrolled ? 'blur(20px)' : 'none',
-      borderBottom: scrolled ? '1px solid var(--border)' : '1px solid transparent',
-      height: 60,
-      transition: 'background 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease',
-    }}>
-      <div style={{
-        maxWidth: 1100, margin: '0 auto', padding: '0 1.5rem',
-        height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      }}>
-        <Link href="/" style={{ textDecoration: 'none' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <img 
-              src="/icon.png" 
-              alt="OppFetch" 
-              style={{ width: 28, height: 28, objectFit: 'contain' }} 
-            />
-            <span style={{ fontFamily: 'Syne, sans-serif', fontSize: 18, fontWeight: 800, color: 'var(--primary)' }}>
-              Opp<span style={{ color: 'var(--amber)' }}>Fetch</span>
-            </span>
+    <header className={`fixed top-0 inset-x-0 z-[100] transition-all duration-500 ${
+      scrolled 
+        ? 'py-4 bg-bg/70 backdrop-blur-2xl border-b border-border/40 shadow-xl' 
+        : 'py-6 bg-transparent border-b border-transparent'
+    }`}>
+      <div className="container mx-auto max-w-7xl px-6 flex items-center justify-between">
+        
+        {/* Branding */}
+        <Link href="/" className="group flex items-center gap-3 transition-transform active:scale-95 outline-none">
+          <div className="w-10 h-10 rounded-xl bg-surface2 border border-border flex items-center justify-center shadow-inner relative overflow-hidden group-hover:border-amber/40 transition-colors">
+            <div className="absolute inset-0 bg-amber/5 blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+            <img src="/icon.png" alt="OppAlert" className="w-5 h-5 object-contain relative z-10 filter drop-shadow-sm" />
           </div>
+          <span className="font-serif text-2xl font-bold tracking-tight text-primary">
+            Opp<span className="text-amber italic">Alert</span>
+          </span>
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hide-mobile" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          {navLinks.map(link => (
-            <Link 
-              key={link.href} 
-              href={link.href} 
-              style={navLinkStyle(link.href)}
-              className={`nav-link-modern ${path.startsWith(link.href) ? 'active' : ''}`}
-            >
-              {link.label}
-            </Link>
-          ))}
-          {isLoggedIn && (
-            <Link 
-              href="/organizer" 
-              style={navLinkStyle('/organizer')}
-              className={`nav-link-modern ${path.startsWith('/organizer') ? 'active' : ''}`}
-            >
-              Organizer
-            </Link>
-          )}
-          {isAdmin && (
-            <Link 
-              href="/admin" 
-              style={navLinkStyle('/admin')}
-              className={`nav-link-modern text-amber font-bold ${path.startsWith('/admin') ? 'active' : ''}`}
-            >
-              Admin
-            </Link>
-          )}
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:flex items-center bg-surface/40 backdrop-blur-xl border border-border/60 rounded-full px-2 py-1 shadow-sm">
+          {navLinks.map(link => {
+            const isActive = path === link.href || path.startsWith(link.href + '/')
+            return (
+              <Link 
+                key={link.href} 
+                href={link.href}
+                className={`px-6 py-2.5 rounded-full text-[11px] font-black uppercase tracking-[0.15em] transition-all duration-300 ${
+                  isActive 
+                    ? 'bg-amber text-black shadow-lg shadow-amber/10' 
+                    : 'text-muted hover:text-primary hover:bg-surface2'
+                }`}
+              >
+                {link.label}
+              </Link>
+            )
+          })}
         </nav>
 
-        {/* Desktop Auth/User */}
-        <div className="hide-mobile" style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+        {/* Desktop Actions */}
+        <div className="hidden lg:flex items-center gap-4">
           <ThemeToggle />
+          
           {isLoggedIn ? (
-            <div ref={dropdownRef} style={{ position: 'relative' }}>
-              <div onClick={() => setShowDropdown(!showDropdown)} style={{
-                width: 36, height: 36, borderRadius: '50%', background: 'var(--amber-dim)',
-                border: '2px solid var(--amber)', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 12, fontWeight: 800, color: 'var(--amber)', cursor: 'pointer',
-                fontFamily: 'Syne, sans-serif', userSelect: 'none',
-                transition: 'transform 0.15s ease, box-shadow 0.15s ease',
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)' }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)' }}
-              >{getInitials()}</div>
+            <div ref={dropdownRef} className="relative">
+              <button 
+                onClick={() => setShowDropdown(!showDropdown)}
+                className="flex items-center gap-3 pl-2 pr-4 py-2 bg-surface/40 border border-border rounded-full hover:border-amber/40 transition-all active:scale-95"
+              >
+                <div className="w-8 h-8 rounded-full bg-amber text-black flex items-center justify-center font-black text-[10px] shadow-lg shadow-amber/10">
+                  {getInitials()}
+                </div>
+                <ChevronDown size={14} className={`text-muted transition-transform duration-300 ${showDropdown ? 'rotate-180' : ''}`} />
+              </button>
+
               {showDropdown && (
-                <div style={{
-                  position: 'absolute', right: 0, top: 44, background: 'var(--bg2)',
-                  border: '1px solid var(--border)', borderRadius: 12, padding: 8, minWidth: 200,
-                  zIndex: 200, boxShadow: 'var(--card-shadow, 0 8px 32px rgba(0,0,0,0.2))',
-                }}>
-                  <div style={{ padding: '8px 12px 10px', borderBottom: '1px solid var(--border)', marginBottom: 4 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--primary)', marginBottom: 2 }}>{user?.fullName || user?.full_name || 'User'}</div>
-                    <div style={{ fontSize: 11, color: 'var(--muted)' }}>{user?.email}</div>
+                <div className="absolute right-0 top-14 w-64 bg-surface/90 backdrop-blur-2xl border border-border rounded-[2rem] p-3 shadow-premium animate-in fade-in zoom-in-95 duration-200">
+                  <div className="px-5 py-4 mb-2 border-b border-border/40">
+                    <p className="text-sm font-bold text-primary truncate leading-none mb-1">{user?.fullName || user?.full_name || 'User'}</p>
+                    <p className="text-[10px] text-muted font-bold uppercase tracking-wider truncate opacity-60">{user?.email}</p>
                   </div>
-                  {[
-                    { href: '/dashboard', label: '📊 Dashboard' },
-                    { href: '/organizer', label: '🎪 Organizer' },
-                  ].map(item => (
-                    <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }} onClick={() => setShowDropdown(false)}>
-                      <div style={{ padding: '8px 12px', fontSize: 13, color: 'var(--primary)', borderRadius: 8, cursor: 'pointer' }}>{item.label}</div>
-                    </Link>
-                  ))}
+                  
+                  <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-primary hover:bg-amber hover:text-black rounded-xl transition-all mb-1">
+                    <LayoutDashboard size={14} /> Dashboard
+                  </Link>
+                  <Link href="/organizer" className="flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-primary hover:bg-amber hover:text-black rounded-xl transition-all mb-1">
+                    <Briefcase size={14} /> Organizer Portal
+                  </Link>
                   {isAdmin && (
-                    <Link href="/admin" style={{ textDecoration: 'none' }} onClick={() => setShowDropdown(false)}>
-                      <div style={{ padding: '8px 12px', fontSize: 13, color: 'var(--amber)', borderRadius: 8, cursor: 'pointer' }}>⚙️ Admin Panel</div>
+                    <Link href="/admin" className="flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-amber hover:bg-amber hover:text-black rounded-xl transition-all mb-1 border border-amber/20">
+                      <Zap size={14} /> Admin Panel
                     </Link>
                   )}
-                  <div onClick={handleLogout} style={{ padding: '8px 12px', fontSize: 13, color: 'var(--danger)', borderRadius: 8, cursor: 'pointer', marginTop: 4, borderTop: '1px solid var(--border)' }}>→ Sign Out</div>
+                  
+                  <div className="h-px bg-border/40 my-2" />
+                  
+                  <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-red-500 hover:bg-red-500 hover:text-white rounded-xl transition-all">
+                    <LogOut size={14} /> Sign Out
+                  </button>
                 </div>
               )}
             </div>
           ) : (
             <>
-              <Link href="/login"><button className="btn-animate" style={{ padding: '7px 16px', borderRadius: 8, fontSize: 13, fontWeight: 600, background: 'transparent', border: '1px solid var(--border)', color: 'var(--muted)', cursor: 'pointer', fontFamily: 'inherit' }}>Log In</button></Link>
-              <Link href="/register"><button className="btn-animate" style={{ padding: '7px 16px', borderRadius: 8, fontSize: 13, fontWeight: 700, background: 'var(--amber)', border: 'none', color: '#090A07', cursor: 'pointer', fontFamily: 'inherit' }}>{"Join Free \u2192"}</button></Link>
+              <Link href="/login" className="px-6 py-3 text-[11px] font-black uppercase tracking-[0.2em] text-muted hover:text-amber transition-colors">
+                Log In
+              </Link>
+              <Link href="/register" className="px-8 py-4 bg-amber text-black font-black uppercase text-[11px] tracking-[0.2em] rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-amber/10">
+                Join Free
+              </Link>
             </>
           )}
         </div>
 
         {/* Mobile Toggle */}
-        <div className="show-mobile" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div className="lg:hidden flex items-center gap-4">
           <ThemeToggle />
-          <button onClick={() => setShowMobile(!showMobile)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 8, color: 'var(--primary)', fontSize: 20 }}>
-            {showMobile ? '✕' : '☰'}
+          <button 
+            onClick={() => setShowMobile(!showMobile)}
+            className="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-primary"
+          >
+            {showMobile ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
 
       {/* Mobile Menu */}
       {showMobile && (
-        <div style={{ background: 'var(--bg2)', borderTop: '1px solid var(--border)', padding: '16px 1.5rem' }}>
-          {navLinks.map(link => (
-            <Link key={link.href} href={link.href} style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}>
-              <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: path.startsWith(link.href) ? 'var(--amber)' : 'var(--muted)', borderBottom: '1px solid var(--border)' }}>{link.label}</div>
-            </Link>
-          ))}
-          {isLoggedIn ? (
-            <>
-              <Link href="/dashboard" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}>
-                <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: 'var(--muted)', borderBottom: '1px solid var(--border)' }}>📊 Dashboard</div>
-              </Link>
-              <Link href="/organizer" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}>
-                <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: 'var(--muted)', borderBottom: '1px solid var(--border)' }}>🎪 Organizer</div>
-              </Link>
-              {isAdmin && (
-                <Link href="/admin" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}>
-                  <div style={{ padding: '12px 0', fontSize: 15, fontWeight: 500, color: 'var(--amber)', borderBottom: '1px solid var(--border)' }}>⚙️ Admin Panel</div>
+        <div className="lg:hidden fixed inset-0 top-[72px] bg-bg/95 backdrop-blur-3xl z-[90] p-6 animate-in slide-in-from-top duration-300">
+           <div className="space-y-4">
+              {navLinks.map(link => (
+                <Link key={link.href} href={link.href} className="block p-6 bg-surface/40 border border-border rounded-3xl text-lg font-bold text-primary active:bg-surface transition-colors">
+                  {link.label}
                 </Link>
-              )}
-              <button onClick={handleLogout} style={{ width: '100%', padding: '10px', background: 'transparent', border: '1px solid var(--danger-dim)', borderRadius: 8, fontSize: 13, color: 'var(--danger)', cursor: 'pointer', fontFamily: 'inherit', marginTop: 8 }}>Sign Out</button>
-            </>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 16 }}>
-              <Link href="/login" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}><button style={{ width: '100%', padding: '12px', background: 'transparent', border: '1px solid var(--border)', borderRadius: 8, fontSize: 14, fontWeight: 600, color: 'var(--muted)', cursor: 'pointer', fontFamily: 'inherit' }}>Log In</button></Link>
-              <Link href="/register" style={{ textDecoration: 'none' }} onClick={() => setShowMobile(false)}><button style={{ width: '100%', padding: '12px', background: 'var(--amber)', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 700, color: '#090A07', cursor: 'pointer', fontFamily: 'inherit' }}>Join Free →</button></Link>
-            </div>
-          )}
+              ))}
+              
+              <div className="pt-8 space-y-4">
+                 {isLoggedIn ? (
+                   <>
+                     <Link href="/dashboard" className="block p-5 bg-amber text-black rounded-2xl font-black uppercase tracking-widest text-center shadow-lg shadow-amber/10">
+                        Go to Dashboard
+                     </Link>
+                     <button onClick={handleLogout} className="w-full p-5 bg-red-500/10 text-red-500 border border-red-500/20 rounded-2xl font-black uppercase tracking-widest">
+                        Sign Out
+                     </button>
+                   </>
+                 ) : (
+                   <div className="grid grid-cols-1 gap-4">
+                      <Link href="/register" className="p-6 bg-amber text-black rounded-[2.5rem] font-black uppercase tracking-widest text-center shadow-xl shadow-amber/10">
+                        Join OppAlert Free
+                      </Link>
+                      <Link href="/login" className="p-6 bg-surface border border-border rounded-[2.5rem] font-bold text-muted text-center">
+                        Already have an account? Log In
+                      </Link>
+                   </div>
+                 )}
+              </div>
+           </div>
         </div>
       )}
     </header>

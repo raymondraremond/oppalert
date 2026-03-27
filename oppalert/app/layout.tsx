@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Syne, Inter } from 'next/font/google'
+import { Syne, Inter, DM_Serif_Display } from 'next/font/google'
 import './globals.css'
 import CapsuleNav from '@/components/CapsuleNav'
 import Footer from '@/components/Footer'
@@ -43,13 +43,21 @@ const inter = Inter({
   preload: true,
 })
 
+const dmSerif = DM_Serif_Display({
+  subsets: ['latin'],
+  weight: ['400'],
+  variable: '--font-dm-serif',
+  display: 'swap',
+  preload: true,
+})
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${syne.variable} ${inter.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${syne.variable} ${inter.variable} ${dmSerif.variable}`} suppressHydrationWarning>
       <body className="bg-bg text-primary min-h-screen flex flex-col">
         <ThemeProvider
           attribute="data-theme"

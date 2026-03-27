@@ -149,6 +149,24 @@ body {
     box-shadow: 0 0 20px rgba(232, 160, 32, 0.15), 0 0 40px rgba(232, 160, 32, 0.05);
   }
 
+  .shadow-premium {
+    box-shadow: 0 20px 80px -20px rgba(0, 0, 0, 0.5), 0 0 20px rgba(232, 160, 32, 0.02);
+  }
+
+  .bg-glow-amber {
+    position: relative;
+  }
+  .bg-glow-amber::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(232, 160, 32, 0.05) 0%, transparent 70%);
+    filter: blur(80px);
+    z-index: -1;
+    pointer-events: none;
+  }
+
   .hov-scale-sm:hover {
     transform: scale(1.02) translateZ(0);
   }
@@ -263,6 +281,16 @@ body {
 /* ANIMATIONS */
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-down {
+  from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
