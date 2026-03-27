@@ -29,13 +29,13 @@ export default function Footer() {
           
           {/* Column 1: Brand */}
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
-            <Link href="/" className="flex items-center gap-4 mb-8 group" style={{ textDecoration: 'none' }}>
+            <Link href="/" className="flex items-center gap-3 md:gap-4 mb-8 group" style={{ textDecoration: 'none' }}>
               <img 
                 src="/icon.png" 
                 alt="OppFetch" 
-                className="w-10 h-10 object-contain group-hover:scale-110 transition-transform duration-500" 
+                className="w-8 h-8 md:w-10 md:h-10 object-contain group-hover:scale-110 transition-transform duration-500" 
               />
-              <div className="font-syne text-2xl font-black tracking-tighter text-primary">
+              <div className="font-syne text-xl md:text-2xl font-black tracking-tighter text-primary">
                 Opp<span className="text-amber">Fetch</span>
               </div>
             </Link>

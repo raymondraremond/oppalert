@@ -153,7 +153,7 @@ export default function HomePage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Card 1: Link Tool / Typing Animation */}
           <ScrollReveal className="md:col-span-2" direction="none">
-            <div className="bg-[#1A1D18] border border-white/5 rounded-[2.5rem] p-10 relative overflow-hidden group min-h-[400px] card-hover">
+            <div className="bg-[#1A1D18] border border-white/5 rounded-[2.5rem] p-6 md:p-10 relative overflow-hidden group min-h-[400px] card-hover">
               <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
                  <Share2 size={120} className="text-[#E8A020]" />
               </div>
@@ -166,7 +166,7 @@ export default function HomePage() {
                   Create beautiful event pages with short links that actually convert. Now 100% free for all African organizers.
                 </p>
 
-                <div className="bg-[#080A07] p-6 rounded-2xl border border-white/10 shadow-2xl font-mono text-sm">
+                <div className="bg-[#080A07] p-4 md:p-6 rounded-2xl border border-white/10 shadow-2xl font-mono text-sm">
                   <div className="flex items-center gap-2 text-white/40 mb-3 text-[10px] uppercase font-bold tracking-widest pl-1">
                     <div className="w-2 h-2 rounded-full bg-red-500/50"></div>
                     <div className="w-2 h-2 rounded-full bg-yellow-500/50"></div>
@@ -194,7 +194,7 @@ export default function HomePage() {
 
           {/* Card 2: Engagement Indicator */}
           <ScrollReveal delay={100} direction="none">
-            <div className="bg-[#0D0F0B] border border-[#E8A020]/20 rounded-[2.5rem] p-10 flex flex-col justify-between overflow-hidden relative shadow-glow-amber/5 card-hover h-full">
+            <div className="bg-[#0D0F0B] border border-[#E8A020]/20 rounded-[2.5rem] p-6 md:p-10 flex flex-col justify-between overflow-hidden relative shadow-glow-amber/5 card-hover h-full">
               <div className="relative z-10">
                 <div className="w-12 h-12 rounded-2xl bg-[#34C27A]/10 flex items-center justify-center mb-6">
                   <TrendingUp className="text-[#34C27A]" />
@@ -206,7 +206,7 @@ export default function HomePage() {
               </div>
 
               <div className="mt-10 relative">
-                 <div className="text-6xl font-black text-[#E8A020] mb-2">
+                 <div className="text-5xl md:text-6xl font-black text-[#E8A020] mb-2">
                    <AnimatedCounter target={98} suffix="%" />
                  </div>
                  <div className="text-[10px] font-bold text-white/40 uppercase tracking-widest pl-1">Average Conversion Rate</div>
@@ -231,7 +231,7 @@ export default function HomePage() {
 
           {/* Card 3: Featured Preview / Browse Context */}
           <ScrollReveal delay={200} direction="none">
-            <div className="md:col-span-1 bg-[#1A1D18] border border-white/5 rounded-[2.5rem] p-8 flex flex-col justify-center relative overflow-hidden group card-hover h-full">
+            <div className="md:col-span-1 bg-[#1A1D18] border border-white/5 rounded-[2.5rem] p-6 md:p-8 flex flex-col justify-center relative overflow-hidden group card-hover h-full">
                <div className="text-center mb-8">
                  <h3 className="font-syne text-xl font-black text-white mb-2">Discovery Hub</h3>
                  <p className="text-white/40 text-[10px] uppercase font-bold tracking-[0.2em]">Verified Opportunities Only</p>
@@ -244,13 +244,13 @@ export default function HomePage() {
           </ScrollReveal>
 
           <ScrollReveal className="md:col-span-2" delay={300} direction="none">
-            <div className="bg-[#E8A020] rounded-[2.5rem] p-10 flex flex-col md:flex-row items-center justify-between overflow-hidden relative card-hover">
+            <div className="bg-[#E8A020] rounded-[2.5rem] p-6 md:p-10 flex flex-col md:flex-row items-center justify-between overflow-hidden relative card-hover">
               <div className="max-w-md relative z-10 text-center md:text-left mb-8 md:mb-0">
-                <h3 className="font-syne text-4xl font-black text-[#080A07] mb-4">Elite Seekers.</h3>
-                <p className="text-[#080A07]/70 text-lg leading-relaxed font-bold">
+                <h3 className="font-syne text-3xl md:text-4xl font-black text-[#080A07] mb-4">Elite Seekers.</h3>
+                <p className="text-[#080A07]/70 text-base md:text-lg leading-relaxed font-bold">
                   {"Get 48h early access to listings and premium WhatsApp alerts. \u20A62,500/mo."}
                 </p>
-                <Link href="/pricing" className="mt-8 inline-block px-8 py-4 bg-[#080A07] text-white font-black rounded-2xl hover:scale-105 transition-all">
+                <Link href="/pricing" className="mt-8 inline-block px-8 py-4 bg-[#080A07] text-white font-black rounded-2xl hover:scale-105 transition-all text-sm md:text-base">
                   Become a Member
                 </Link>
               </div>
@@ -294,31 +294,31 @@ export default function HomePage() {
       </section>
 
       {/* Events */}
-      <section className="py-24 px-6 border-t border-border">
+      <section className="py-16 md:py-24 px-6 border-t border-border">
         <div className="container mx-auto">
           <ScrollReveal>
-            <div className="flex justify-between items-end mb-12">
+            <div className="flex flex-col md:flex-row justify-between md:items-end gap-6 mb-12">
               <div>
-                <h2 className="font-syne text-3xl font-black text-primary mb-2">{"Upcoming Events & Bootcamps"}</h2>
-                <p className="text-muted">Level up with community-led workshops and meetups.</p>
+                <h2 className="font-syne text-2xl md:text-3xl font-black text-primary mb-2">{"Upcoming Events & Bootcamps"}</h2>
+                <p className="text-muted text-sm md:text-base">Level up with community-led workshops and meetups.</p>
               </div>
-              <Link href="/events" className="text-[#E8A020] font-bold link-animate">{"View All Events \u2192"}</Link>
+              <Link href="/events" className="text-[#E8A020] font-bold link-animate text-sm">{"View All Events \u2192"}</Link>
             </div>
           </ScrollReveal>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {sampleEvents.map((event, index) => (
               <ScrollReveal key={event.id} delay={index * 120}>
-                <div className="bg-bg2 border border-border rounded-[2rem] p-8 hover:border-amber/50 transition-all group card-hover" style={{ borderLeft: `4px solid ${event.color}` }}>
+                <div className="bg-bg2 border border-border rounded-[2rem] p-6 md:p-8 hover:border-amber/50 transition-all group card-hover" style={{ borderLeft: `4px solid ${event.color}` }}>
                   <div className="flex justify-between items-start mb-6">
                     <span className="px-3 py-1 bg-bg rounded-full text-[10px] font-black uppercase text-muted border border-border">
                       {event.event_type}
                     </span>
                     <span className="text-amber text-xs font-bold">{event.is_paid ? `NGN ${event.ticket_price.toLocaleString()}` : 'FREE'}</span>
                   </div>
-                  <h3 className="text-xl font-bold text-primary mb-4 group-hover:text-amber transition-colors line-clamp-2">{event.title}</h3>
+                  <h3 className="text-lg md:text-xl font-bold text-primary mb-4 group-hover:text-amber transition-colors line-clamp-2">{event.title}</h3>
                   <div className="space-y-3 mb-8">
-                    <div className="text-sm text-muted flex items-center gap-2"><Calendar size={16} /> {new Date(event.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
-                    <div className="text-sm text-muted flex items-center gap-2">{event.is_online ? <><Globe size={16} /> Online</> : <><MapPin size={16} /> {event.location}</>}</div>
+                    <div className="text-xs md:text-sm text-muted flex items-center gap-2"><Calendar size={16} /> {new Date(event.start_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+                    <div className="text-xs md:text-sm text-muted flex items-center gap-2">{event.is_online ? <><Globe size={16} /> Online</> : <><MapPin size={16} /> {event.location}</>}</div>
                   </div>
                   <div className="w-full bg-bg rounded-full h-1.5 mb-4 overflow-hidden">
                     <div className="h-full" style={{ width: `${(event.current_registrations / event.max_capacity) * 100}%`, backgroundColor: event.color }}></div>
@@ -327,7 +327,7 @@ export default function HomePage() {
                     <span>Registration</span>
                     <span>{event.current_registrations}/{event.max_capacity} Booked</span>
                   </div>
-                  <Link href={`/events/${event.slug}`} className="block w-full py-3 bg-surface text-primary text-center font-black rounded-xl group-hover:bg-amber group-hover:text-[#080A07] transition-all btn-animate">
+                  <Link href={`/events/${event.slug}`} className="block w-full py-3 bg-surface text-primary text-center font-black rounded-xl group-hover:bg-amber group-hover:text-[#080A07] transition-all btn-animate text-xs md:text-sm">
                     Register Now
                   </Link>
                 </div>
@@ -339,10 +339,10 @@ export default function HomePage() {
 
       {/* Final CTA */}
       <ScrollReveal className="reveal-scale">
-        <section className="py-24 px-6 text-center bg-amber shadow-[0_-20px_50px_rgba(192,112,16,0.1)]">
-          <h2 className="font-syne text-4xl font-black text-[#080A07] mb-6">Ready to find your next opportunity?</h2>
-          <p className="text-[#080A07] opacity-80 mb-10 text-lg max-w-xl mx-auto font-medium">Join thousands of students and professionals receiving weekly alerts.</p>
-          <Link href="/register" className="btn-animate px-12 py-5 bg-bg text-primary font-black rounded-2xl hover:scale-105 transition-all inline-block shadow-2xl">
+        <section className="py-16 md:py-24 px-6 text-center bg-amber shadow-[0_-20px_50px_rgba(192,112,16,0.1)]">
+          <h2 className="font-syne text-2xl md:text-4xl font-black text-[#080A07] mb-6">Ready to find your next opportunity?</h2>
+          <p className="text-[#080A07] opacity-80 mb-10 text-base md:text-lg max-w-xl mx-auto font-medium">Join thousands of students and professionals receiving weekly alerts.</p>
+          <Link href="/register" className="btn-animate px-8 md:px-12 py-4 md:py-5 bg-bg text-primary font-black rounded-2xl hover:scale-105 transition-all inline-block shadow-2xl text-sm md:text-base">
             {"Create Free Account \u2192"}
           </Link>
         </section>

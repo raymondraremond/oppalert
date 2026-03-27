@@ -93,13 +93,13 @@ export default function CapsuleNav() {
         className="max-w-[700px] mx-auto bg-black/40 backdrop-blur-2xl border border-white/10 rounded-full px-4 py-2 flex items-center justify-between pointer-events-auto shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
       >
         {/* Logo */}
-        <Link href="/" className="pl-3 group flex items-center gap-2">
+        <Link href="/" className="pl-1 md:pl-3 group flex items-center gap-2">
           <img 
             src="/icon.png" 
             alt="OppFetch" 
-            className="w-8 h-8 object-contain group-hover:scale-110 transition-transform" 
+            className="w-7 h-7 md:w-8 md:h-8 object-contain group-hover:scale-110 transition-transform" 
           />
-          <span className="font-syne font-black text-white text-lg tracking-tighter group-hover:text-[#E8A020] transition-colors hide-mobile">
+          <span className="font-syne font-black text-white text-base md:text-lg tracking-tighter group-hover:text-[#E8A020] transition-colors hide-mobile">
             Opp<span className="text-[#E8A020]">Fetch</span>
           </span>
         </Link>
@@ -182,7 +182,7 @@ export default function CapsuleNav() {
             </div>
           ) : (
             <Link href="/register">
-              <button className="bg-[#E8A020] text-[#080A07] px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-transform flex items-center gap-2">
+              <button className="bg-[#E8A020] text-[#080A07] px-3 md:px-4 py-1.5 md:py-2 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-transform flex items-center gap-2">
                 Join <span className="hidden sm:inline">Portal</span>
               </button>
             </Link>
