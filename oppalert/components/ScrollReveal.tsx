@@ -32,10 +32,10 @@ export default function ScrollReveal({
   return (
     <div ref={ref} className={className} style={{
       opacity: visible ? 1 : 0,
-      transform: visible ? 'none' : (
-        direction === 'up' ? 'translateY(20px)' :
-        direction === 'left' ? 'translateX(-20px)' :
-        direction === 'right' ? 'translateX(20px)' : 'none'
+      transform: visible ? 'translate3d(0, 0, 0)' : (
+        direction === 'up' ? 'translate3d(0, 20px, 0)' :
+        direction === 'left' ? 'translate3d(-20px, 0, 0)' :
+        direction === 'right' ? 'translate3d(20px, 0, 0)' : 'translate3d(0, 0, 0)'
       ),
       transition: 'opacity 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)',
       willChange: visible ? 'auto' : 'opacity, transform',

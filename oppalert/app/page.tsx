@@ -98,15 +98,14 @@ export default function HomePage() {
   ]
 
   return (
-    <main className="min-h-screen bg-bg overflow-x-hidden">
+    <main className="min-h-screen bg-bg">
       {/* Hero */}
-      <section className="text-center relative overflow-hidden flex flex-col justify-center min-h-[85vh] px-6" style={{
+      <section className="text-center relative flex flex-col justify-center min-h-[85vh] px-6" style={{
         background: '#080A07',
       }}>
-        {/* Background remains same or slightly enhanced */}
-        <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(232,160,32,0.12)_0%,transparent_70%)]" />
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_10%,transparent_100%)]" />
+        {/* Simple Background */}
+        <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(232,160,32,0.12)_0%,transparent:70%)]" />
         </div>
 
         <div className="max-w-4xl mx-auto relative z-10 w-full py-20">
