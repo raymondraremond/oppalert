@@ -99,7 +99,7 @@ export default function CapsuleNav() {
             alt="OppFetch" 
             className="w-7 h-7 md:w-8 md:h-8 object-contain group-hover:scale-110 transition-transform" 
           />
-          <span className="font-syne font-black text-white text-base md:text-lg tracking-tighter group-hover:text-[#E8A020] transition-colors hide-mobile">
+          <span className="font-syne font-black text-white text-sm sm:text-base md:text-lg tracking-tighter group-hover:text-[#E8A020] transition-colors">
             Opp<span className="text-[#E8A020]">Fetch</span>
           </span>
         </Link>

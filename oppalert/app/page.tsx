@@ -118,7 +118,7 @@ export default function HomePage() {
           </div>
 
           <h1
-            className="font-syne text-6xl md:text-8xl font-black text-white mb-8 tracking-tighter leading-[1.05]"
+            className="font-syne text-4xl sm:text-5xl md:text-8xl font-black text-white mb-8 tracking-tighter leading-[1.05]"
             style={{ animation: 'slideInLeft 0.8s ease both' }}
           >
             Empowering <span className="text-[#E8A020]">African</span> <br />Leaders.
