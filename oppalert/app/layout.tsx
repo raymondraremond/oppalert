@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Syne, Inter, DM_Serif_Display } from 'next/font/google'
+import { Inter } from 'next/font/google'
 import './globals.css'
 import CapsuleNav from '@/components/CapsuleNav'
 import Footer from '@/components/Footer'
@@ -27,26 +27,10 @@ export const metadata: Metadata = {
   },
 }
 
-const syne = Syne({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
-  variable: '--font-syne',
-  display: 'swap',
-  preload: true,
-})
-
 const inter = Inter({
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600'],
+  weight: ['300', '400', '500', '600', '700', '800'],
   variable: '--font-inter',
-  display: 'swap',
-  preload: true,
-})
-
-const dmSerif = DM_Serif_Display({
-  subsets: ['latin'],
-  weight: ['400'],
-  variable: '--font-dm-serif',
   display: 'swap',
   preload: true,
 })
@@ -57,8 +41,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${syne.variable} ${inter.variable} ${dmSerif.variable}`} suppressHydrationWarning>
-      <body className="bg-bg text-primary min-h-screen flex flex-col">
+    <html lang="en" className={`${inter.variable}`} suppressHydrationWarning>
+      <body className="bg-bg text-primary min-h-screen flex flex-col font-sans tracking-tight antialiased">
         <ThemeProvider
           attribute="data-theme"
           defaultTheme="dark"

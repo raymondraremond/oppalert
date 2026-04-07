@@ -33,13 +33,13 @@ export default function OpportunityCard({ opportunity, deadlineOverride, index =
         {/* Top Image Section */}
         <div className="relative w-full h-52 overflow-hidden bg-surface2">
           <img
-            src={opp.image || `https://picsum.photos/seed/${opp.id}/800/400`}
+            src={opp.image || `https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80`}
             alt={opp.title}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             loading="lazy"
             onError={(e) => {
               const target = e.target as HTMLImageElement
-              target.src = `https://picsum.photos/seed/${cat || 'opp'}/800/400`
+              target.src = `https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=800&q=80`
             }}
           />
           
@@ -92,7 +92,7 @@ export default function OpportunityCard({ opportunity, deadlineOverride, index =
             </span>
           </div>
 
-          <h3 className="font-serif text-xl md:text-2xl font-bold text-primary mb-4 leading-[1.3] tracking-tight group-hover:text-amber transition-colors line-clamp-2">
+          <h3 className="font-extrabold text-xl md:text-2xl text-primary mb-4 leading-[1.3] tracking-tighter group-hover:text-primary/80 transition-colors line-clamp-2">
             {opp.title}
           </h3>
 

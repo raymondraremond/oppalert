@@ -47,11 +47,8 @@ export default function HomePage() {
     <main className="min-h-screen bg-bg">
       {/* Hero Section - Search First */}
       <section className="relative pt-32 pb-24 px-6 overflow-hidden">
-        {/* Warm Background Element */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10 pointer-events-none">
-          <div className="absolute top-[-20%] left-1/4 w-[800px] h-[800px] bg-amber/10 blur-[140px] rounded-full mix-blend-screen" />
-          <div className="absolute bottom-10 right-1/4 w-[500px] h-[500px] bg-emerald/5 blur-[120px] rounded-full mix-blend-screen" />
-        </div>
+        {/* Subtle Background Pattern */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-surface via-bg to-bg opacity-40 -z-10 pointer-events-none" />
 
         <div className="max-w-6xl mx-auto text-center relative z-10">
           <ScrollReveal direction="none">
@@ -67,8 +64,8 @@ export default function HomePage() {
           </ScrollReveal>
 
           <ScrollReveal delay={100}>
-            <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl text-primary leading-[1.05] mb-8 tracking-tight max-w-5xl mx-auto">
-              Your gateway to <span className="text-amber italic">global</span> success.
+            <h1 className="font-extrabold text-5xl md:text-7xl lg:text-8xl text-primary leading-[1.05] mb-8 tracking-tighter max-w-5xl mx-auto">
+              Your gateway to <span className="text-amber">global</span> success.
             </h1>
           </ScrollReveal>
 
@@ -93,7 +90,7 @@ export default function HomePage() {
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />
                   </div>
-                  <button className="w-full md:w-auto px-10 py-5 bg-gradient-to-r from-amber to-amber-light text-[#080A07] font-bold rounded-full hover:scale-[1.02] active:scale-[0.98] transition-all shadow-glow-amber flex items-center justify-center gap-2 text-base">
+                  <button className="w-full md:w-auto px-10 py-5 bg-primary text-bg font-bold rounded-full hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 text-base">
                     Find Matches <ArrowRight size={18} strokeWidth={2.5} />
                   </button>
                 </div>
@@ -111,12 +108,12 @@ export default function HomePage() {
           <ScrollReveal delay={400} direction="none">
             <div className="pt-12 mt-12 border-t border-border/60">
               <p className="text-xs font-bold uppercase tracking-widest text-subtle mb-10">Trusted by students & founders from global institutions</p>
-              <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-8 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700">
-                <div className="font-serif text-2xl font-bold">Google</div>
-                <div className="font-serif text-2xl font-bold">Microsoft</div>
-                <div className="font-serif text-2xl font-bold">Andela</div>
-                <div className="font-serif text-2xl font-bold">Paystack</div>
-                <div className="font-serif text-2xl font-bold">Flutterwave</div>
+              <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-8 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700">
+                <div className="text-2xl font-black tracking-tight">Google</div>
+                <div className="text-2xl font-black tracking-tight">Microsoft</div>
+                <div className="text-2xl font-black tracking-tight">Andela</div>
+                <div className="text-2xl font-black tracking-tight">Paystack</div>
+                <div className="text-2xl font-black tracking-tight">Flutterwave</div>
               </div>
             </div>
           </ScrollReveal>
@@ -135,7 +132,7 @@ export default function HomePage() {
               { label: 'Partner Organizations', value: 120, suffix: '+' },
             ].map((stat, i) => (
               <div key={i} className="text-center group">
-                <div className="text-4xl md:text-6xl font-serif text-amber mb-3 group-hover:scale-105 transition-transform duration-300">
+                <div className="text-4xl md:text-6xl font-bold text-primary mb-3 group-hover:scale-105 transition-transform duration-300">
                   <AnimatedCounter target={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
                 </div>
                 <div className="text-xs font-bold uppercase tracking-widest text-muted group-hover:text-primary transition-colors">{stat.label}</div>
@@ -150,7 +147,7 @@ export default function HomePage() {
         <div className="container mx-auto">
           <div className="flex justify-between items-end mb-16">
             <div className="max-w-xl">
-              <h2 className="font-serif text-4xl md:text-5xl text-primary mb-4 tracking-tight">Browse by <span className="text-amber italic">Path</span></h2>
+              <h2 className="font-bold text-4xl md:text-5xl text-primary mb-4 tracking-tighter">Browse by <span className="text-amber">Path</span></h2>
               <p className="text-muted leading-relaxed font-medium">Explore curated categories designed to accelerate your career or startup journey.</p>
             </div>
             <Link href="/opportunities" className="hidden md:flex items-center gap-2 text-xs font-black uppercase tracking-widest text-amber hover:opacity-80 transition-opacity">
@@ -188,7 +185,7 @@ export default function HomePage() {
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-16">
             <div>
-              <h2 className="font-serif text-4xl md:text-5xl text-primary mb-4 tracking-tight">Handpicked for <span className="text-amber italic">You</span></h2>
+              <h2 className="font-bold text-4xl md:text-5xl text-primary mb-4 tracking-tighter">Handpicked for <span className="text-amber">You</span></h2>
               <div className="flex items-center gap-4">
                 <div className="flex -space-x-2">
                   {[1,2,3].map(i => (
@@ -222,7 +219,7 @@ export default function HomePage() {
       <section className="py-24 px-6 relative overflow-hidden bg-bg">
         <div className="container mx-auto max-w-6xl">
           <div className="max-w-4xl mx-auto text-center mb-16">
-            <h2 className="font-serif text-4xl md:text-5xl text-primary mb-6">Real stories from our <span className="text-amber italic">community</span>.</h2>
+            <h2 className="font-bold text-4xl md:text-5xl text-primary mb-6 tracking-tighter">Real stories from our <span className="text-amber">community</span>.</h2>
             <div className="flex justify-center gap-1.5 mb-8 text-amber">
               {[1,2,3,4,5].map(i => <Star key={i} size={24} fill="currentColor" />)}
             </div>
@@ -271,7 +268,7 @@ export default function HomePage() {
           </div>
           
           <ScrollReveal direction="none">
-            <h2 className="font-serif text-4xl md:text-6xl text-[#080A07] mb-8 tracking-tight">Your next big move <br />starts <span className="italic">here</span>.</h2>
+            <h2 className="font-bold text-4xl md:text-6xl text-[#080A07] mb-8 tracking-tighter">Your next big move <br />starts <span>here</span>.</h2>
             <p className="text-lg md:text-xl text-[#080A07]/70 max-w-xl mx-auto mb-12 font-bold">Join 50,000+ African youth and professionals discovering their future today.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/register" className="px-10 py-5 bg-[#080A07] text-white font-black rounded-2xl hover:scale-105 transition-all shadow-2xl flex items-center justify-center gap-2">

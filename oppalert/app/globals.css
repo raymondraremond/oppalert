@@ -7,49 +7,49 @@ header, nav {
 }
 
 :root {
-  /* DARK (Default) */
-  --bg: #0D0F0B;
-  --bg2: #141710;
-  --surface: #222820;
-  --surface2: #2A3028;
-  --border: #2E3530;
-  --border2: #3A4238;
+  /* DARK (SaaS) */
+  --bg: #000000;
+  --bg2: #0A0A0A;
+  --surface: #121212;
+  --surface2: #1A1A1A;
+  --border: #222222;
+  --border2: #333333;
   --amber: #E8A020;
   --amber-dim: #3D2E0A;
-  --primary: #F0EDE6;
-  --muted: #A0A59A;
-  --subtle: #70756A;
-  --card-bg: linear-gradient(145deg, rgba(34, 40, 32, 0.4) 0%, rgba(20, 23, 16, 0.7) 100%);
-  --glass: rgba(20, 23, 16, 0.95);
-  --glass-border: rgba(255, 255, 255, 0.05);
+  --primary: #EDEDED;
+  --muted: #A1A1AA;
+  --subtle: #71717A;
+  --card-bg: rgba(18, 18, 18, 0.8);
+  --glass: rgba(0, 0, 0, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
   --icon-bg: rgba(255, 255, 255, 0.05);
   --icon-border: rgba(255, 255, 255, 0.1);
-  --input-bg: rgba(34, 40, 32, 0.4);
-  --input-bg-focus: rgba(34, 40, 32, 0.6);
+  --input-bg: rgba(255, 255, 255, 0.03);
+  --input-bg-focus: rgba(255, 255, 255, 0.06);
   --success: #10B981;
   --danger: #EF4444;
   --info: #3B82F6;
 }
 
 [data-theme='light'] {
-  --bg: #F8F9F5;
-  --bg2: #F0F2EB;
-  --surface: #E8EBE0;
-  --surface2: #DFE3D5;
-  --border: #D0D5C5;
-  --border2: #C5CAB5;
-  --amber: #C07010;
-  --amber-dim: #FDF4E0;
-  --primary: #1A1D18;
-  --muted: #4A4D45;
-  --subtle: #6A6D65;
-  --card-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.8) 0%, rgba(245, 246, 240, 0.9) 100%);
-  --glass: rgba(255, 255, 255, 0.98);
+  --bg: #FFFFFF;
+  --bg2: #FAFAFA;
+  --surface: #F4F4F5;
+  --surface2: #E4E4E7;
+  --border: #E4E4E7;
+  --border2: #D4D4D8;
+  --amber: #D97706;
+  --amber-dim: #FEF3C7;
+  --primary: #09090B;
+  --muted: #71717A;
+  --subtle: #A1A1AA;
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --glass: rgba(255, 255, 255, 0.9);
   --glass-border: rgba(0, 0, 0, 0.08);
   --icon-bg: rgba(0, 0, 0, 0.04);
   --icon-border: rgba(0, 0, 0, 0.08);
-  --input-bg: rgba(0, 0, 0, 0.03);
-  --input-bg-focus: rgba(0, 0, 0, 0.06);
+  --input-bg: #FFFFFF;
+  --input-bg-focus: #FAFAFA;
   --success: #059669;
   --danger: #DC2626;
   --info: #2563EB;
@@ -102,47 +102,38 @@ body {
 
   /* BUTTONS */
   .btn-primary {
-    @apply font-bold rounded-xl flex items-center justify-center gap-2;
-    background: linear-gradient(135deg, #F0B030 0%, #D88030 100%);
-    color: #0D0F0B;
-    box-shadow: 0 10px 20px -5px rgba(232, 160, 32, 0.4);
-    transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
-    transform: translateZ(0);
+    @apply font-medium rounded-xl flex items-center justify-center gap-2;
+    background: var(--primary);
+    color: var(--bg);
+    box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
   }
   .btn-primary:hover {
-    transform: translateY(-2px) translateZ(0);
-    background: linear-gradient(135deg, #F5D080 0%, #E8A020 100%);
-    box-shadow: 0 4px 20px rgba(232, 160, 32, 0.3);
+    transform: translateY(-1px);
+    opacity: 0.9;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   }
   .btn-primary:active {
-    transform: translateY(0) scale(0.97) translateZ(0);
+    transform: translateY(0) scale(0.98);
   }
   
   .btn-ghost {
-    @apply border rounded-xl transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-md text-primary;
-    border-color: var(--border);
-    background-color: var(--icon-bg);
+    @apply font-medium rounded-xl transition-all duration-200 flex items-center justify-center gap-2 backdrop-blur-md text-primary bg-surface border border-border;
   }
   .btn-ghost:hover {
-    @apply text-amber -translate-y-0.5;
-    background-color: rgba(232, 160, 32, 0.1);
-    border-color: rgba(232, 160, 32, 0.4);
+    @apply bg-surface2 border-border2;
   }
 
   /* CARDS */
   .card-opp {
-    @apply rounded-2xl border p-6 cursor-pointer relative overflow-hidden backdrop-blur-xl;
-    background: var(--bg2);
+    @apply rounded-2xl border p-6 cursor-pointer relative overflow-hidden backdrop-blur-xl bg-surface;
     border-color: var(--border);
-    transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.25s ease, box-shadow 0.25s ease;
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    will-change: transform;
+    transition: all 0.2s ease;
   }
   .card-opp:hover {
-    transform: translateY(-4px) translateZ(0);
+    transform: translateY(-2px);
     border-color: var(--border2);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 2px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
   }
 
   .shadow-glow-amber {
@@ -204,17 +195,14 @@ body {
 
   /* Category Cards */
   .cat-card {
-    @apply rounded-2xl border p-6 cursor-pointer relative overflow-hidden;
-    background: var(--card-bg);
+    @apply rounded-2xl border p-6 cursor-pointer relative overflow-hidden bg-surface;
     border-color: var(--border);
-    transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.25s ease, box-shadow 0.25s ease;
-    transform: translateZ(0);
-    backface-visibility: hidden;
+    transition: all 0.2s ease;
   }
   .cat-card:hover {
-    transform: translateY(-3px) translateZ(0);
+    transform: translateY(-2px);
     border-color: var(--border2);
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   }
 
   /* Step Cards */

@@ -90,9 +90,8 @@ export default function CapsuleNav() {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        className="max-w-[760px] mx-auto bg-surface/30 backdrop-blur-2xl border border-border/60 rounded-full px-4 py-2 flex items-center justify-between pointer-events-auto shadow-2xl relative"
+        className="max-w-[760px] mx-auto bg-surface/80 backdrop-blur-xl border border-border rounded-full px-4 py-2 flex items-center justify-between pointer-events-auto shadow-sm relative"
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-amber/5 via-transparent to-transparent rounded-full opacity-50" />
 
         {/* Branding */}
         <Link href="/" className="pl-3 group flex items-center gap-3 relative z-10 transition-transform active:scale-95">
@@ -103,8 +102,8 @@ export default function CapsuleNav() {
               className="w-5 h-5 object-contain group-hover:scale-110 transition-transform" 
             />
           </div>
-          <span className="font-serif font-bold text-primary text-lg tracking-tight group-hover:text-amber transition-colors">
-            Opp<span className="text-amber italic">Alert</span>
+          <span className="font-extrabold text-primary text-lg tracking-tighter group-hover:text-amber transition-colors">
+            Opp<span className="text-amber">Alert</span>
           </span>
         </Link>
 

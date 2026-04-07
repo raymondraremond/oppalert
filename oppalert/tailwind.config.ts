@@ -9,9 +9,7 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        syne: ['var(--font-syne)', 'sans-serif'],
-        dm: ['var(--font-dm)', 'sans-serif'],
-        serif: ['var(--font-dm-serif)', 'serif'],
+        sans: ['var(--font-inter)', 'sans-serif'],
       },
       colors: {
         bg: 'var(--bg)',
@@ -46,13 +44,14 @@ const config: Config = {
         }
       },
       boxShadow: {
-        'premium': '0 20px 50px -12px rgba(0, 0, 0, 0.5)',
-        'glow-amber': '0 0 20px rgba(232, 160, 32, 0.2)',
-        'glow-amber-strong': '0 0 40px rgba(232, 160, 32, 0.4)',
+        'premium': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+        'premium-hover': '0 8px 30px -4px rgba(0, 0, 0, 0.1)',
+        'glow-amber': '0 4px 14px rgba(232, 160, 32, 0.1)',
+        'glow-amber-strong': '0 6px 20px rgba(232, 160, 32, 0.2)',
       },
       backgroundImage: {
-        'glass-gradient': 'linear-gradient(145deg, rgba(34, 40, 32, 0.4) 0%, rgba(20, 23, 16, 0.6) 100%)',
-        'amber-gradient': 'linear-gradient(135deg, #F0B030 0%, #D88030 100%)',
+        'glass-gradient': 'linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0) 100%)',
+        'amber-gradient': 'linear-gradient(135deg, var(--amber) 0%, #D88030 100%)',
       },
       backdropBlur: {
         'xs': '2px',
