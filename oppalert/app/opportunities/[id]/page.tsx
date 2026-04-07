@@ -8,6 +8,7 @@ import OpportunityCard from '@/components/OpportunityCard'
 import AffiliateCard from '@/components/AffiliateCard'
 import SaveButton from '@/components/SaveButton'
 import ApplyButton from '@/components/ApplyButton'
+import AICareerAssistant from '@/components/AICareerAssistant'
 import { getCategoryLabel, calculateDaysRemaining } from '@/lib/utils'
 import { CategoryIcon, Globe, Coins, MapPin, Calendar, Share2, Zap, Check, ChevronLeft } from '@/lib/icons'
 import ScrollReveal from '@/components/ScrollReveal'
@@ -108,7 +109,7 @@ export default function OpportunityDetailPage({ params }: Props) {
       {/* Hero Image Section */}
       <div className="relative w-full h-[300px] md:h-[400px] overflow-hidden rounded-[2rem] mb-10 border border-border/50 group">
         <img
-          src={opp.image || `https://picsum.photos/seed/${opp.id}/1200/600`}
+          src={opp.image || opp.image_url || `https://picsum.photos/seed/${opp.id}/1200/600`}
           alt={opp.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           loading="eager"
@@ -221,6 +222,10 @@ export default function OpportunityDetailPage({ params }: Props) {
 
         <aside className="space-y-8">
           <ScrollReveal delay={300}>
+            <AICareerAssistant opportunityId={opp.id} oppTitle={title} />
+          </ScrollReveal>
+
+          <ScrollReveal delay={350}>
             <div className="bg-surface/30 border border-border rounded-[2.5rem] p-8 text-center backdrop-blur-sm relative overflow-hidden group">
               <div className="absolute inset-0 bg-gradient-to-b from-amber/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <p className="text-[10px] font-black uppercase tracking-[0.3em] mb-6 text-muted">

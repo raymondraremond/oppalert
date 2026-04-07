@@ -33,7 +33,7 @@ export default function OpportunityCard({ opportunity, deadlineOverride, index =
         {/* Top Image Section */}
         <div className="relative w-full h-52 overflow-hidden bg-surface2">
           <img
-            src={opp.image || `https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80`}
+            src={opp.image || opp.image_url || `https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=800&q=80`}
             alt={opp.title}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             loading="lazy"
@@ -92,7 +92,7 @@ export default function OpportunityCard({ opportunity, deadlineOverride, index =
             </span>
           </div>
 
-          <h3 className="font-extrabold text-xl md:text-2xl text-primary mb-4 leading-[1.3] tracking-tighter group-hover:text-primary/80 transition-colors line-clamp-2">
+          <h3 className="font-extrabold text-xl md:text-2xl text-primary mb-4 leading-[1.3] tracking-tighter group-hover:text-amber transition-colors line-clamp-2 font-syne italic">
             {opp.title}
           </h3>
 

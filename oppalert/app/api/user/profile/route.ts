@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     const { query } = await import('@/lib/db');
 
     const userRes = await query(
-      'SELECT id, email, full_name as "fullName", country, status, created_at as "createdAt" FROM users WHERE id = $1',
+      'SELECT id, email, full_name as "fullName", country, status, skills, education, experience, created_at as "createdAt" FROM users WHERE id = $1',
       [decoded.id]
     );
 
@@ -36,17 +36,20 @@ export async function PATCH(req: NextRequest) {
     if (!decoded) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await req.json();
-    const { fullName, country } = body;
+    const { fullName, country, skills, education, experience } = body;
 
     const { query } = await import('@/lib/db');
 
     const updateRes = await query(
       `UPDATE users
        SET full_name = COALESCE($1, full_name),
-           country = COALESCE($2, country)
-       WHERE id = $3
-       RETURNING id, email, full_name as "fullName", country, status`,
-      [fullName || null, country || null, decoded.id]
+           country = COALESCE($2, country),
+           skills = COALESCE($3, skills),
+           education = COALESCE($4, education),
+           experience = COALESCE($5, experience)
+       WHERE id = $6
+       RETURNING id, email, full_name as "fullName", country, status, skills, education, experience`,
+      [fullName || null, country || null, skills || null, education || null, experience || null, decoded.id]
     );
 
     return NextResponse.json(updateRes.rows[0]);

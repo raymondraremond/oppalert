@@ -102,8 +102,8 @@ export default function CapsuleNav() {
               className="w-5 h-5 object-contain group-hover:scale-110 transition-transform" 
             />
           </div>
-          <span className="font-extrabold text-primary text-lg tracking-tighter group-hover:text-amber transition-colors">
-            Opp<span className="text-amber">Alert</span>
+          <span className="font-extrabold text-primary text-xl tracking-tighter group-hover:text-amber transition-colors font-syne">
+            Opp<span className="text-amber italic">Alert</span>
           </span>
         </Link>
 

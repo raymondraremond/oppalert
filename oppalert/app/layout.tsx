@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Syne } from 'next/font/google'
 import './globals.css'
 import CapsuleNav from '@/components/CapsuleNav'
 import Footer from '@/components/Footer'
@@ -35,13 +35,20 @@ const inter = Inter({
   preload: true,
 })
 
+const syne = Syne({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-syne',
+  display: 'swap',
+})
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${inter.variable} ${syne.variable}`} suppressHydrationWarning>
       <body className="bg-bg text-primary min-h-screen flex flex-col font-sans tracking-tight antialiased">
         <ThemeProvider
           attribute="data-theme"

@@ -14,6 +14,9 @@ CREATE TABLE IF NOT EXISTS users (
   full_name VARCHAR(255) NOT NULL,
   country VARCHAR(100),
   status VARCHAR(50) DEFAULT 'free',
+  skills TEXT[],
+  education TEXT,
+  experience TEXT,
   stripe_customer_id TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -21,6 +24,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS opportunities (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   icon VARCHAR(10) DEFAULT '🌍',
+  image_url TEXT,
   title VARCHAR(500) NOT NULL,
   organization VARCHAR(255),
   category VARCHAR(100),

@@ -29,6 +29,10 @@ export default function DashboardPage() {
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [country, setCountry] = useState("Nigeria")
+  const [skills, setSkills] = useState<string[]>([])
+  const [education, setEducation] = useState("")
+  const [experience, setExperience] = useState("")
+  const [skillInput, setSkillInput] = useState("")
   const [isLoading, setIsLoading] = useState(true)
 
   const getToken = () => {
@@ -61,6 +65,30 @@ export default function DashboardPage() {
     const parts = fullName.split(" ")
     setFirstName(parts[0] || "")
     setLastName(parts.slice(1).join(" ") || "")
+
+    // Fetch full profile including new fields
+    const fetchProfile = async () => {
+      const token = getToken()
+      if (!token) return
+
+      try {
+        const res = await fetch("/api/user/profile", {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        if (res.ok) {
+          const data = await res.json()
+          setSkills(data.skills || [])
+          setEducation(data.education || "")
+          setExperience(data.experience || "")
+          setCountry(data.country || "Nigeria")
+        }
+      } catch (err) {
+        console.error("Fetch profile error:", err)
+      }
+    }
+
+    fetchProfile()
+    // ... existing fetchSaved call ...
 
     const fetchSaved = async () => {
       setSavedLoading(true)
@@ -96,6 +124,49 @@ export default function DashboardPage() {
     fetchSaved()
     setIsLoading(false)
   }, [router])
+
+  const handleSaveProfile = async () => {
+    const token = getToken()
+    if (!token) return
+    setIsLoading(true)
+
+    try {
+      const res = await fetch("/api/user/profile", {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fullName: `${firstName} ${lastName}`.trim(),
+          country,
+          skills,
+          education,
+          experience,
+        }),
+      })
+
+      if (res.ok) {
+        setProfileSaved(true)
+        setTimeout(() => setProfileSaved(false), 3000)
+      }
+    } catch (err) {
+      console.error("Save profile error:", err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const addSkill = () => {
+    if (skillInput && !skills.includes(skillInput)) {
+      setSkills([...skills, skillInput])
+      setSkillInput("")
+    }
+  }
+
+  const removeSkill = (s: string) => {
+    setSkills(skills.filter(x => x !== s))
+  }
 
   const handleLogout = () => {
     localStorage.clear()
@@ -355,31 +426,87 @@ export default function DashboardPage() {
           {activeTab === "profile" && (
              <ScrollReveal>
                 <div className="space-y-10">
-                  <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary tracking-tight">My <span className="text-amber italic">Profile</span></h2>
-                  <div className="bg-surface/30 border border-border rounded-[3rem] p-8 md:p-12 backdrop-blur-sm max-w-2xl">
+                  <div className="flex justify-between items-end">
+                    <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary tracking-tight">Career <span className="text-amber italic">Profile</span></h2>
+                    {profileSaved && (
+                      <div className="flex items-center gap-2 text-emerald text-xs font-bold animate-fade-up">
+                        <Check size={14} /> Profile Saved
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="bg-surface/30 border border-border rounded-[3rem] p-8 md:p-12 backdrop-blur-sm max-w-3xl space-y-10">
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div className="space-y-2">
-                           <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] pl-1">Email Connection</label>
-                           <div className="p-4 bg-surface2 border border-border rounded-2xl text-primary text-sm font-bold flex items-center gap-3">
-                              <Mail size={16} className="text-amber" />
-                              {user.email}
-                           </div>
+                           <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] pl-1">First Name</label>
+                           <input 
+                              value={firstName} 
+                              onChange={(e) => setFirstName(e.target.value)}
+                              className="w-full p-4 bg-surface2 border border-border rounded-2xl text-primary text-sm font-bold focus:border-amber/40 outline-none transition-all"
+                           />
                         </div>
                         <div className="space-y-2">
-                           <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] pl-1">Selected Plan</label>
-                           <div className="p-4 bg-surface2 border border-border rounded-2xl text-primary text-sm font-bold flex items-center justify-between">
-                              <div className="flex items-center gap-3">
-                                 <ShieldCheck size={16} className="text-amber" />
-                                 {planLabel}
-                              </div>
-                              <Link href="/pricing" className="text-[9px] text-amber hover:underline">Change</Link>
-                           </div>
+                           <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] pl-1">Last Name</label>
+                           <input 
+                              value={lastName} 
+                              onChange={(e) => setLastName(e.target.value)}
+                              className="w-full p-4 bg-surface2 border border-border rounded-2xl text-primary text-sm font-bold focus:border-amber/40 outline-none transition-all"
+                           />
                         </div>
                      </div>
-                     <div className="mt-12 h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
-                     <div className="mt-8 flex justify-end">
-                        <button className="px-6 py-3 bg-surface2 text-muted text-[10px] font-black uppercase tracking-widest rounded-xl hover:text-amber border border-transparent hover:border-amber/20 transition-all">
-                           Delete Data & Account
+
+                     <div className="space-y-4">
+                        <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] pl-1">My Skills</label>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {skills.map(s => (
+                            <span key={s} className="px-4 py-2 bg-amber/10 border border-amber/20 text-amber text-xs font-bold rounded-full flex items-center gap-2">
+                              {s} <button onClick={() => removeSkill(s)} className="hover:text-white transition-colors"><Trash2 size={12} /></button>
+                            </span>
+                          ))}
+                        </div>
+                        <div className="flex gap-2">
+                          <input 
+                             placeholder="Add a skill (e.g. Python, Research)" 
+                             value={skillInput}
+                             onChange={(e) => setSkillInput(e.target.value)}
+                             onKeyDown={(e) => e.key === 'Enter' && addSkill()}
+                             className="flex-1 p-4 bg-surface2 border border-border rounded-2xl text-primary text-sm font-bold focus:border-amber/40 outline-none transition-all"
+                          />
+                          <button onClick={addSkill} className="px-6 bg-surface2 border border-border rounded-2xl text-primary hover:bg-amber hover:text-black hover:border-amber transition-all"><Check size={20} /></button>
+                        </div>
+                     </div>
+
+                     <div className="space-y-2">
+                        <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] pl-1">Academic Background</label>
+                        <textarea 
+                           placeholder="Describe your education history..."
+                           value={education}
+                           onChange={(e) => setEducation(e.target.value)}
+                           className="w-full p-5 bg-surface2 border border-border rounded-2xl text-primary text-sm font-bold focus:border-amber/40 outline-none transition-all min-h-[120px]"
+                        />
+                     </div>
+
+                     <div className="space-y-2">
+                        <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] pl-1">Work/Project Experience</label>
+                        <textarea 
+                           placeholder="Describe your previous roles or projects..."
+                           value={experience}
+                           onChange={(e) => setExperience(e.target.value)}
+                           className="w-full p-5 bg-surface2 border border-border rounded-2xl text-primary text-sm font-bold focus:border-amber/40 outline-none transition-all min-h-[180px]"
+                        />
+                     </div>
+
+                     <div className="pt-6 border-t border-border/40 flex justify-between items-center">
+                        <div className="flex items-center gap-3">
+                           <ShieldCheck size={20} className="text-amber" />
+                           <span className="text-xs font-bold text-muted uppercase tracking-widest">{planLabel}</span>
+                        </div>
+                        <button 
+                          onClick={handleSaveProfile}
+                          disabled={isLoading}
+                          className="px-10 py-5 bg-amber text-black font-black uppercase text-xs tracking-widest rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-amber/10 flex items-center gap-3 disabled:opacity-50"
+                        >
+                          {isLoading ? "Saving..." : <><Check size={18} /> Update Profile</>}
                         </button>
                      </div>
                   </div>
