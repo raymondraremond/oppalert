@@ -8,14 +8,23 @@ export class OpportunitySyncService {
   private jooble = new JoobleAdapter();
 
   async syncAll() {
+    const startTime = Date.now();
     console.log('Starting global opportunity sync...');
     
     const results = {
       adzuna: 0,
       jooble: 0,
+      deleted: 0,
       errors: [] as string[]
     };
 
+    // Run Cleanup
+    try {
+      results.deleted = await this.cleanupStaleOpportunities();
+    } catch (err: any) {
+      results.errors.push(`Cleanup failed: ${err.message}`);
+    }
+    
     // Sync Adzuna
     try {
       const adzunaJobs = await this.adzuna.search({ limit: 50 });
@@ -32,7 +41,37 @@ export class OpportunitySyncService {
       results.errors.push(`Jooble sync failed: ${err.message}`);
     }
 
+    // Log Results
+    const durationCount = Date.now() - startTime;
+    await this.logSync('all', results, durationCount);
+
     return results;
+  }
+
+  async cleanupStaleOpportunities(): Promise<number> {
+    console.log('Cleaning up stale opportunities...');
+    const res = await query(
+      `DELETE FROM opportunities 
+       WHERE source IN ('adzuna', 'jooble') 
+       AND (
+         deadline < NOW() - INTERVAL '30 days' OR 
+         (deadline IS NULL AND created_at < NOW() - INTERVAL '30 days')
+       )`,
+      []
+    );
+    return res.rowCount || 0;
+  }
+
+  private async logSync(source: string, results: any, duration: number) {
+    const status = results.errors.length === 0 ? 'success' : results.errors.length < 3 ? 'partial' : 'failed';
+    const errorMessage = results.errors.length > 0 ? results.errors.join('; ') : null;
+    
+    await query(
+      `INSERT INTO sync_logs (
+        source, status, items_added, items_deleted, error_message, duration_ms
+      ) VALUES ($1, $2, $3, $4, $5, $6)`,
+      [source, status, results.adzuna + results.jooble, results.deleted, errorMessage, duration]
+    );
   }
 
   private async persistOpportunities(opps: Opportunity[], source: 'adzuna' | 'jooble'): Promise<number> {
@@ -40,7 +79,6 @@ export class OpportunitySyncService {
     
     for (const opp of opps) {
       try {
-        // Use external_id from mapping or derive one
         const externalId = opp.id.startsWith(source) ? opp.id : `${source}-${opp.id}`;
         
         await query(

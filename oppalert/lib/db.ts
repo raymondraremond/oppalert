@@ -56,6 +56,18 @@ CREATE TABLE IF NOT EXISTS saved_opportunities (
   PRIMARY KEY (user_id, opportunity_id)
 );
 
+CREATE TABLE IF NOT EXISTS sync_logs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  source VARCHAR(50) NOT NULL,
+  status VARCHAR(20) NOT NULL,
+  items_added INT DEFAULT 0,
+  items_updated INT DEFAULT 0,
+  items_deleted INT DEFAULT 0,
+  error_message TEXT,
+  duration_ms INT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   organizer_id UUID REFERENCES users(id) ON DELETE CASCADE,

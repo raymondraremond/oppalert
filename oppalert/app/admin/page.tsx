@@ -349,8 +349,93 @@ function SubmissionsTab() {
   )
 }
 
-const barData = [40, 55, 48, 72, 88, 108]
-const barMonths = ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan']
+function SyncTab({ syncLogs, onSyncTrigger }: { syncLogs: any[], onSyncTrigger: () => Promise<void> }) {
+  const [isSyncing, setIsSyncing] = useState(false)
+
+  const handleSync = async () => {
+    setIsSyncing(true)
+    await onSyncTrigger()
+    setIsSyncing(false)
+  }
+
+  return (
+    <div className="space-y-8 animate-fade-up">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 bg-surface/30 border border-border/40 rounded-[2.5rem] p-10 backdrop-blur-xl">
+        <div className="space-y-2">
+          <h3 className="font-syne text-2xl font-black text-primary">Opportunity Sync Center</h3>
+          <p className="text-subtle text-sm font-medium max-w-md">Orchestrate live data ingestion from Adzuna and Jooble. System triggers automatically every 12 hours.</p>
+        </div>
+        <button
+          onClick={handleSync}
+          disabled={isSyncing}
+          className="px-10 py-5 bg-amber text-black font-black uppercase text-xs tracking-[0.2em] rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-amber/10 flex items-center gap-3 disabled:opacity-50"
+        >
+          {isSyncing ? <Loader2 size={18} className="animate-spin" /> : <Zap size={18} className="fill-current" />}
+          {isSyncing ? 'Synchronizing Index...' : 'Force System Sync'}
+        </button>
+      </div>
+
+      <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] overflow-hidden">
+        <div className="px-10 py-8 border-b border-border/20">
+          <h4 className="font-black text-[10px] uppercase tracking-[0.3em] text-muted">Transmission History</h4>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-[var(--border)] bg-[var(--icon-bg)]">
+                {['Sequence ID', 'Source', 'Status', 'Payload', 'Latency', 'Timestamp'].map((h) => (
+                  <th key={h} className="px-10 py-6 text-[10px] font-black uppercase tracking-widest text-muted">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5">
+              {syncLogs && syncLogs.length > 0 ? syncLogs.map((log) => (
+                <tr key={log.id} className="hover:bg-[var(--icon-bg)] transition-colors group">
+                  <td className="px-10 py-6">
+                    <div className="font-mono text-[10px] text-muted truncate w-32">{log.id}</div>
+                  </td>
+                  <td className="px-10 py-6">
+                    <span className="px-3 py-1 rounded-lg bg-surface2 border border-border text-[9px] font-black uppercase tracking-widest text-primary">
+                      {log.source}
+                    </span>
+                  </td>
+                  <td className="px-10 py-6">
+                    <span className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-widest ${
+                      log.status === 'success' ? 'text-success' : log.status === 'partial' ? 'text-amber' : 'text-danger'
+                    }`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${
+                        log.status === 'success' ? 'bg-success' : log.status === 'partial' ? 'bg-amber' : 'bg-danger'
+                      }`} />
+                      {log.status}
+                    </span>
+                  </td>
+                  <td className="px-10 py-6">
+                    <div className="text-xs font-bold text-primary">
+                      +{log.items_added} New · -{log.items_deleted || 0} Stale
+                    </div>
+                  </td>
+                  <td className="px-10 py-6 text-xs text-subtle font-medium">{log.duration_ms}ms</td>
+                  <td className="px-10 py-6 text-xs font-bold text-muted uppercase tracking-wider opacity-70">
+                    {new Date(log.created_at).toLocaleString()}
+                  </td>
+                </tr>
+              )) : (
+                <tr>
+                  <td colSpan={6} className="px-10 py-20 text-center">
+                    <div className="flex flex-col items-center gap-4 opacity-30">
+                      <Inbox size={48} />
+                      <p className="text-xs font-black uppercase tracking-widest">No transmissions recorded yet</p>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('opps')
@@ -431,7 +516,32 @@ export default function AdminPage() {
     { id: 'users', label: 'User Directory' },
     { id: 'featured', label: 'Promotion Slots' },
     { id: 'analytics', label: 'System Analytics' },
+    { id: 'sync', label: 'Sync Control' },
   ]
+
+  const triggerManualSync = async () => {
+    try {
+      const token = (() => { try { return JSON.parse(localStorage.getItem('user') || '{}').token || '' } catch { return '' } })()
+      const res = await fetch('/api/admin/sync', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      const data = await res.json()
+      if (res.ok) {
+        setAdminToast({ message: `Sync complete: ${data.adzuna + data.jooble} items processed`, type: 'success' })
+        // Refresh stats
+        const statsRes = await fetch('/api/admin/stats', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        const statsData = await statsRes.json()
+        if (statsData) setLiveStats(statsData)
+      } else {
+        setAdminToast({ message: data.error || 'Sync failed', type: 'error' })
+      }
+    } catch {
+      setAdminToast({ message: 'Network error during sync', type: 'error' })
+    }
+  }
 
   const handlePublish = async () => {
     if (!formData.title || !formData.application_url) return alert('Title and URL are required')
@@ -695,9 +805,17 @@ export default function AdminPage() {
                       </div>
                     </div>
                   ))}
-                </div>
               </div>
             </div>
+          </div>
+        )}
+
+          {/* SYNC TAB */}
+          {activeTab === 'sync' && (
+            <SyncTab 
+              syncLogs={liveStats?.syncLogs || []} 
+              onSyncTrigger={triggerManualSync}
+            />
           )}
         </div>
       </div>

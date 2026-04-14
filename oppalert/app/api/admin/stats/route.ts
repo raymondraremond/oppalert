@@ -26,13 +26,14 @@ export async function GET(req: NextRequest) {
 
     const { query } = await import('@/lib/db');
 
-    const [usersCountRes, premiumCountRes, recentUsersRes, oppsCountRes, activeOppsRes] = await Promise.all([
+    const [usersCountRes, premiumCountRes, recentUsersRes, oppsCountRes, activeOppsRes, syncLogsRes] = await Promise.all([
       query('SELECT COUNT(*) FROM users'),
       query("SELECT COUNT(*) FROM users WHERE status IN ('premium', 'admin')"),
       query(`SELECT id, full_name as "name", email, status as "role", created_at as "joined"
              FROM users ORDER BY created_at DESC LIMIT 10`),
       query('SELECT COUNT(*) FROM opportunities'),
       query('SELECT COUNT(*) FROM opportunities WHERE is_active = true'),
+      query('SELECT * FROM sync_logs ORDER BY created_at DESC LIMIT 5'),
     ]);
 
     return NextResponse.json({
@@ -45,7 +46,8 @@ export async function GET(req: NextRequest) {
         ...u,
         joined: new Date(u.joined).toLocaleDateString(),
         lastLogin: 'Active'
-      }))
+      })),
+      syncLogs: syncLogsRes.rows
     });
   } catch (error) {
     console.error('Admin stats error:', error);
