@@ -14,6 +14,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Forbidden. Admin access required.' }, { status: 403 });
     }
 
+    // Ensure schema is fully initialized (e.g. sync_logs table exists)
+    if (process.env.DATABASE_URL) {
+      try {
+        const { query, SCHEMA_SQL } = await import('@/lib/db');
+        await query(SCHEMA_SQL);
+      } catch (err: any) {
+        console.warn('Silent schema initialization warning:', err);
+      }
+    }
+
     const results = await syncService.syncAll();
     
     return NextResponse.json({

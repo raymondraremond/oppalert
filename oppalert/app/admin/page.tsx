@@ -528,7 +528,7 @@ export default function AdminPage() {
       })
       const data = await res.json()
       if (res.ok) {
-        setAdminToast({ message: `Sync complete: ${data.adzuna + data.jooble} items processed`, type: 'success' })
+        setAdminToast({ message: `Sync complete: ${(data.results?.adzuna || 0) + (data.results?.jooble || 0)} items processed`, type: 'success' })
         // Refresh stats
         const statsRes = await fetch('/api/admin/stats', {
           headers: { Authorization: `Bearer ${token}` }
