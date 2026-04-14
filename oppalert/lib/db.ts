@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
   full_name VARCHAR(255) NOT NULL,
   country VARCHAR(100),
   status VARCHAR(50) DEFAULT 'free',
+  role VARCHAR(20) DEFAULT 'seeker', -- 'seeker', 'organizer', 'admin'
   skills TEXT[],
   education TEXT,
   experience TEXT,
@@ -23,6 +24,8 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS opportunities (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  external_id VARCHAR(255) UNIQUE, -- ID from Adzuna/Jooble
+  source VARCHAR(50) DEFAULT 'internal', -- 'internal', 'adzuna', 'jooble'
   icon VARCHAR(10) DEFAULT '🌍',
   image_url TEXT,
   title VARCHAR(500) NOT NULL,
@@ -38,15 +41,55 @@ CREATE TABLE IF NOT EXISTS opportunities (
   deadline DATE,
   days_remaining INT DEFAULT 30,
   is_featured BOOLEAN DEFAULT FALSE,
+  is_verified BOOLEAN DEFAULT FALSE,
   is_active BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+CREATE INDEX IF NOT EXISTS idx_opps_source ON opportunities(source);
+CREATE INDEX IF NOT EXISTS idx_opps_verified ON opportunities(is_verified);
 
 CREATE TABLE IF NOT EXISTS saved_opportunities (
   user_id UUID REFERENCES users(id) ON DELETE CASCADE,
   opportunity_id UUID REFERENCES opportunities(id) ON DELETE CASCADE,
   saved_at TIMESTAMPTZ DEFAULT NOW(),
   PRIMARY KEY (user_id, opportunity_id)
+);
+
+CREATE TABLE IF NOT EXISTS events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  organizer_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  slug VARCHAR(100) UNIQUE NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  description TEXT,
+  event_type VARCHAR(50) DEFAULT 'event',
+  location VARCHAR(255),
+  is_online BOOLEAN DEFAULT FALSE,
+  online_link TEXT,
+  start_date TIMESTAMPTZ NOT NULL,
+  end_date TIMESTAMPTZ,
+  registration_deadline TIMESTAMPTZ,
+  max_capacity INT,
+  current_registrations INT DEFAULT 0,
+  is_paid BOOLEAN DEFAULT FALSE,
+  ticket_price DECIMAL(10,2) DEFAULT 0,
+  tags TEXT[],
+  is_published BOOLEAN DEFAULT FALSE,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_events_slug ON events(slug);
+CREATE INDEX IF NOT EXISTS idx_events_organizer ON events(organizer_id);
+
+CREATE TABLE IF NOT EXISTS event_registrations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  event_id UUID REFERENCES events(id) ON DELETE CASCADE,
+  full_name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  phone VARCHAR(50),
+  registered_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(event_id, email)
 );
 
 CREATE TABLE IF NOT EXISTS subscriptions (

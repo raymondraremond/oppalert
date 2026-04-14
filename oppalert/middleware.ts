@@ -4,6 +4,7 @@ import { jwtVerify } from "jose"
 // Define protected routes and their required roles
 const PROTECTED_ROUTES = [
   { path: "/admin", role: "admin" },
+  { path: "/api/admin", role: "admin" },
   { path: "/dashboard", role: "any" },
   { path: "/organizer", role: "any" },
   { path: "/profile", role: "any" },
@@ -33,8 +34,8 @@ export async function middleware(request: NextRequest) {
       const secret = new TextEncoder().encode(jwtSecret)
       const { payload } = await jwtVerify(token, secret)
       
-      // Strict role checking for admin routes
-      if (routeMatch.role === "admin" && (payload as any).plan !== "admin") {
+      // Strict role checking for admin routes (allow 'admin' and 'founder')
+      if (routeMatch.role === "admin" && !["admin", "founder"].includes((payload as any).plan)) {
         return NextResponse.redirect(new URL("/dashboard", request.url))
       }
       
@@ -57,6 +58,7 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/admin/:path*",
+    "/api/admin/:path*",
     "/dashboard/:path*",
     "/organizer/:path*",
     "/profile/:path*",

@@ -2,6 +2,7 @@ import { Opportunity, Category } from '../types';
 
 export interface OpportunityQuery {
   page?: number;
+  limit?: number;
   keyword?: string;
   location?: string;
   category?: Category;

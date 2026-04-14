@@ -28,9 +28,11 @@ export async function GET(req: NextRequest) {
         if (category) { sql += ` AND category = $${idx++}`; params.push(category); }
         if (fundingType) { sql += ` AND funding_type = $${idx++}`; params.push(fundingType); }
         if (location) { sql += ` AND location ILIKE $${idx++}`; params.push(`%${location}%`); }
+        const source = searchParams.get('source');
+        if (source) { sql += ` AND source = $${idx++}`; params.push(source); }
         if (search) { sql += ` AND (title ILIKE $${idx++} OR organization ILIKE $${idx++} OR description ILIKE $${idx++})`; params.push(`%${search}%`, `%${search}%`, `%${search}%`); idx += 2; }
 
-        sql += ` ORDER BY is_featured DESC, created_at DESC LIMIT $${idx++} OFFSET $${idx++}`;
+        sql += ` ORDER BY is_verified DESC, is_featured DESC, created_at DESC LIMIT $${idx++} OFFSET $${idx++}`;
         const finalParams = [...params, limit, offset];
 
         let countSql = 'SELECT COUNT(*) FROM opportunities WHERE is_active = true';
@@ -39,6 +41,8 @@ export async function GET(req: NextRequest) {
         if (category) { countSql += ` AND category = $${countIdx++}`; countParams.push(category); }
         if (fundingType) { countSql += ` AND funding_type = $${countIdx++}`; countParams.push(fundingType); }
         if (location) { countSql += ` AND location ILIKE $${countIdx++}`; countParams.push(`%${location}%`); }
+        const countSource = searchParams.get('source');
+        if (countSource) { countSql += ` AND source = $${countIdx++}`; countParams.push(countSource); }
         if (search) { countSql += ` AND (title ILIKE $${countIdx++} OR organization ILIKE $${countIdx++} OR description ILIKE $${countIdx++})`; countParams.push(`%${search}%`, `%${search}%`, `%${search}%`); }
 
         try {
@@ -121,7 +125,13 @@ export async function POST(req: NextRequest) {
 
     const { query } = await import('@/lib/db');
     const body = await req.json();
-    const { icon, title, organization, category, location, funding_type, description, about, eligibility, benefits, application_url, deadline, is_featured } = body;
+    const { 
+      icon, title, organization, category, location, 
+      funding_type, description, about, eligibility, 
+      benefits, application_url, deadline, is_featured,
+      is_verified = true,
+      source = 'internal'
+    } = body;
 
     if (!title) return NextResponse.json({ error: 'Title is required' }, { status: 400 });
 
@@ -138,14 +148,16 @@ export async function POST(req: NextRequest) {
       benefits || [], 
       application_url || null, 
       deadline || null, 
-      is_featured || false
+      is_featured || false,
+      is_verified,
+      source
     ];
 
     let insertRes;
     try {
       insertRes = await query(
-        `INSERT INTO opportunities (icon, title, organization, category, location, funding_type, description, about, eligibility, benefits, application_url, deadline, is_featured)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9::text[],$10::text[],$11,$12,$13) RETURNING *`,
+        `INSERT INTO opportunities (icon, title, organization, category, location, funding_type, description, about, eligibility, benefits, application_url, deadline, is_featured, is_verified, source)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9::text[],$10::text[],$11,$12,$13,$14,$15) RETURNING *`,
         values
       );
     } catch (err: any) {
@@ -153,8 +165,8 @@ export async function POST(req: NextRequest) {
         const { SCHEMA_SQL } = await import('@/lib/db');
         await query(SCHEMA_SQL);
         insertRes = await query(
-          `INSERT INTO opportunities (icon, title, organization, category, location, funding_type, description, about, eligibility, benefits, application_url, deadline, is_featured)
-           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9::text[],$10::text[],$11,$12,$13) RETURNING *`,
+          `INSERT INTO opportunities (icon, title, organization, category, location, funding_type, description, about, eligibility, benefits, application_url, deadline, is_featured, is_verified, source)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9::text[],$10::text[],$11,$12,$13,$14,$15) RETURNING *`,
           values
         );
       } else {

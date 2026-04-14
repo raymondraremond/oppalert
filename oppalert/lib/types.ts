@@ -7,35 +7,52 @@ export interface Opportunity {
   image?: string
   image_url?: string
   
-  // App/Mock fields
+  // Content
   title: string
-  org?: string
-  cat?: Category
-  loc?: string
-  fund?: FundingType
-  deadline?: string
-  days?: number
-  desc?: string
-  featured?: boolean
-  sponsored?: boolean
-  sponsoredBy?: string
-  about?: string
-  elig?: string[]
-  benefits?: string[]
-  applyUrl?: string
-  quickinfo?: Record<string, string>
-
-  // DB Fields (snake_case from Postgres)
   organization?: string
+  org?: string // Alias for organization
+  
   category?: Category
+  cat?: Category // Alias for category
+  
   location?: string
+  loc?: string // Alias for location
+  
   funding_type?: FundingType
+  fund?: FundingType // Alias for funding_type
+  
+  deadline?: string
   days_remaining?: number
+  days?: number // Alias for days_remaining
+  
   description?: string
+  desc?: string // Alias for description
+  about?: string
+  
+  eligibility?: string[]
+  elig?: string[] // Alias for eligibility
+  
+  benefits?: string[]
+  
   application_url?: string
+  applyUrl?: string // Alias for application_url
+  
+  // Flags & Metadata
   is_featured?: boolean
+  featured?: boolean // Alias for is_featured
+  
+  is_verified?: boolean
   is_active?: boolean
+  
+  source?: 'internal' | 'adzuna' | 'jooble'
+  external_id?: string
+  
   created_at?: string
+  
+  // UI & Metadata
+  quickinfo?: Record<string, string>
+  tags?: string[]
+  cost?: string
 }
 
 export interface User {

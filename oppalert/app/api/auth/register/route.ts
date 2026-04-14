@@ -5,7 +5,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { email, password, fullName, country, status } = body;
+    const { email, password, fullName, country, status, role } = body;
 
     // Validation
     if (!email || !fullName) {
@@ -35,17 +35,19 @@ export async function POST(req: NextRequest) {
       // Hash and insert
       const passwordHash = await hashPassword(password);
       let userStatus = status || 'free';
+      let userRole = role || 'seeker';
 
       // Check if admin email
       if (email.toLowerCase() === process.env.ADMIN_EMAIL?.toLowerCase()) {
         userStatus = 'admin';
+        userRole = 'admin';
       }
 
       const insertRes = await query(
-        `INSERT INTO users (email, password_hash, full_name, country, status)
-         VALUES ($1, $2, $3, $4, $5)
-         RETURNING id, email, full_name as "fullName", status`,
-        [email.toLowerCase(), passwordHash, fullName, country || null, userStatus]
+        `INSERT INTO users (email, password_hash, full_name, country, status, role)
+         VALUES ($1, $2, $3, $4, $5, $6)
+         RETURNING id, email, full_name as "fullName", status, role`,
+        [email.toLowerCase(), passwordHash, fullName, country || null, userStatus, userRole]
       );
 
       const user = insertRes.rows[0];

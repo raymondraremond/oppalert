@@ -5,13 +5,23 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRight, Globe, Sparkles, Terminal, Copy, Share2, Rocket, Search, Calendar, Users, Briefcase } from 'lucide-react'
 import TypewriterURL from '@/components/TypewriterURL'
 
-const ease = [0.16, 1, 0.3, 1]
+const ease = [0.16, 1, 0.3, 1] as any
 
 export default function HomePage() {
   const [mounted, setMounted] = useState(false)
+  const [stats, setStats] = useState({
+    users: 50000,
+    opportunities: 45,
+    countries: 150,
+    accuracy: 98
+  })
 
   useEffect(() => {
     setMounted(true)
+    fetch('/api/stats')
+      .then(res => res.json())
+      .then(data => setStats(data))
+      .catch(() => {})
   }, [])
 
   if (!mounted) return null
@@ -198,10 +208,10 @@ export default function HomePage() {
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
                  {[
-                   { icon: Globe, label: "Global Reach", count: "150+ Countries" },
-                   { icon: Rocket, label: "Daily Drops", count: "45+ New" },
-                   { icon: Users, label: "Peer Support", count: "50k+ Community" },
-                   { icon: Sparkles, label: "AI Matching", count: "98% Acc." }
+                   { icon: Globe, label: "Global Reach", count: `${stats.countries}+ Countries` },
+                   { icon: Rocket, label: "Daily Drops", count: `${stats.opportunities}+ New` },
+                   { icon: Users, label: "Peer Support", count: `${(stats.users / 1000).toFixed(0)}k+ Community` },
+                   { icon: Sparkles, label: "AI Matching", count: `${stats.accuracy}% Acc.` }
                  ].map((item, i) => (
                     <div key={i} className="p-8 rounded-[2rem] bg-surface/30 border border-white/5 hover:border-emerald-500/20 transition-all group">
                        <item.icon className="mx-auto mb-6 text-emerald-400 opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all" size={32} />

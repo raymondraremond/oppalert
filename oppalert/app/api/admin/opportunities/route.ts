@@ -45,16 +45,23 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { title, organization, category, location, funding_type, description, about, eligibility, benefits, application_url, deadline, is_featured, icon } = body;
+    const { 
+      title, organization, category, location, 
+      funding_type, description, about, eligibility, 
+      benefits, application_url, deadline, is_featured, 
+      icon, 
+      is_verified = true,
+      source = 'internal'
+    } = body;
 
     if (!title) return NextResponse.json({ error: 'Title is required' }, { status: 400 });
 
     const { query } = await import('@/lib/db');
 
     const insertRes = await query(
-      `INSERT INTO opportunities (title, organization, category, location, funding_type, description, about, eligibility, benefits, application_url, deadline, is_featured, icon)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13) RETURNING *`,
-      [title, organization, category, location, funding_type, description, about, eligibility || [], benefits || [], application_url, deadline, is_featured || false, icon || '🌍']
+      `INSERT INTO opportunities (title, organization, category, location, funding_type, description, about, eligibility, benefits, application_url, deadline, is_featured, icon, is_verified, source)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) RETURNING *`,
+      [title, organization, category, location, funding_type, description, about, eligibility || [], benefits || [], application_url, deadline, is_featured || false, icon || '🌍', is_verified, source]
     );
 
     return NextResponse.json(insertRes.rows[0], { status: 201 });

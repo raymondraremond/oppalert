@@ -1,11 +1,13 @@
 'use client'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Mail, Lock, User, ArrowRight, ShieldCheck, Zap } from 'lucide-react'
 import ScrollReveal from '@/components/ScrollReveal'
 
-export default function RegisterPage() {
+import { Suspense } from 'react'
+
+function RegisterContent() {
   const [tab, setTab] = useState<'login' | 'register'>('register')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -13,6 +15,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -51,11 +54,13 @@ export default function RegisterPage() {
     e.preventDefault()
     setError('')
     setLoading(true)
+    const role = searchParams.get('type') || 'seeker'
+
     try {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, fullName }),
+        body: JSON.stringify({ email, password, fullName, role }),
       })
       const data = await res.json()
       if (!res.ok) {
@@ -82,7 +87,6 @@ export default function RegisterPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-bg">
-      {/* Background Decor */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-amber/5 blur-[120px] rounded-full -z-10 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-emerald/5 blur-[120px] rounded-full -z-10 pointer-events-none" />
 
@@ -107,7 +111,6 @@ export default function RegisterPage() {
             </p>
           </div>
 
-          {/* Tabs */}
           <div className="flex bg-surface2 rounded-2xl p-1.5 mb-8 border border-border/50">
             {(['login', 'register'] as const).map(t => (
               <button
@@ -202,5 +205,13 @@ export default function RegisterPage() {
         </div>
       </ScrollReveal>
     </main>
+  )
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-bg flex items-center justify-center text-muted font-black uppercase tracking-[0.2em] text-[10px]">Loading Security Interface...</div>}>
+      <RegisterContent />
+    </Suspense>
   )
 }
