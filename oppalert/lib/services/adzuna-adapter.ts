@@ -3,17 +3,16 @@ import { OpportunityAdapter, OpportunityQuery } from './types';
 
 export class AdzunaAdapter implements OpportunityAdapter {
   name = 'Adzuna Jobs';
-  private appId = process.env.ADZUNA_APP_ID;
-  private appKey = process.env.ADZUNA_APP_KEY;
-
   async search(query: OpportunityQuery): Promise<Opportunity[]> {
-    if (!this.appId || !this.appKey) return [];
+    const appId = process.env.ADZUNA_APP_ID;
+    const appKey = process.env.ADZUNA_APP_KEY;
+    if (!appId || !appKey) return [];
     
     // Default country to za (South Africa) as it has good coverage for Africa, 
     // but in a real app this would be dynamic or 'gb' for global
     const country = 'za'; 
     const page = query.page || 1;
-    let url = `https://api.adzuna.com/v1/api/jobs/${country}/search/${page}?app_id=${this.appId}&app_key=${this.appKey}&content-type=application/json`;
+    let url = `https://api.adzuna.com/v1/api/jobs/${country}/search/${page}?app_id=${appId}&app_key=${appKey}&content-type=application/json`;
 
     if (query.keyword) url += `&what=${encodeURIComponent(query.keyword)}`;
     if (query.location) url += `&where=${encodeURIComponent(query.location)}`;

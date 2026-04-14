@@ -3,17 +3,17 @@ import { OpportunityAdapter, OpportunityQuery } from './types';
 
 export class JoobleAdapter implements OpportunityAdapter {
   name = 'Jooble Jobs';
-  private apiKey = process.env.JOOBLE_API_KEY;
 
   async search(query: OpportunityQuery): Promise<Opportunity[]> {
-    if (!this.apiKey) return [];
+    const apiKey = process.env.JOOBLE_API_KEY;
+    if (!apiKey) return [];
 
     // Adzuna only provides jobs, so skip if searching for scholarships etc
     if (query.category && query.category !== 'job' && query.category !== 'internship') {
       return [];
     }
 
-    const url = `https://api.jooble.org/api/${this.apiKey}`;
+    const url = `https://api.jooble.org/api/${apiKey}`;
     const body = {
       keywords: query.keyword || 'opportunities',
       location: query.location || '',
