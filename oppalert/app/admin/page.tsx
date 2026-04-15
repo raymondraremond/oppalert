@@ -528,13 +528,24 @@ export default function AdminPage() {
       })
       const data = await res.json()
       if (res.ok) {
-        setAdminToast({ message: `Sync complete: ${(data.results?.adzuna || 0) + (data.results?.jooble || 0)} items processed`, type: 'success' })
-        // Refresh stats
+        const adzunaCount = data.results?.adzuna || 0
+        const joobleCount = data.results?.jooble || 0
+        const totalNew = adzunaCount + joobleCount
+        const deletedCount = data.results?.deleted || 0
+        const errorsArr: string[] = data.results?.errors || []
+        
+        let msg = `Sync complete: +${totalNew} new, -${deletedCount} stale`
+        if (errorsArr.length > 0) msg += ` (${errorsArr.length} warning${errorsArr.length > 1 ? 's' : ''})`
+        setAdminToast({ message: msg, type: totalNew > 0 ? 'success' : 'success' })
+
+        // Refresh stats AND sync logs (syncLogs are embedded in the stats response)
         const statsRes = await fetch('/api/admin/stats', {
           headers: { Authorization: `Bearer ${token}` }
         })
-        const statsData = await statsRes.json()
-        if (statsData) setLiveStats(statsData)
+        if (statsRes.ok) {
+          const statsData = await statsRes.json()
+          if (statsData) setLiveStats(statsData)
+        }
       } else {
         setAdminToast({ message: data.error || 'Sync failed', type: 'error' })
       }

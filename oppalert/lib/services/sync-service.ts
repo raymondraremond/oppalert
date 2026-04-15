@@ -76,12 +76,14 @@ export class OpportunitySyncService {
 
   private async persistOpportunities(opps: Opportunity[], source: 'adzuna' | 'jooble'): Promise<number> {
     let count = 0;
+    console.log(`Persisting ${opps.length} opportunities from ${source}...`);
     
     for (const opp of opps) {
       try {
         const externalId = opp.id.startsWith(source) ? opp.id : `${source}-${opp.id}`;
         
-        await query(
+        // Use xmax=0 to detect whether the row was a genuine INSERT (new) vs UPDATE (existing)
+        const result = await query(
           `INSERT INTO opportunities (
             external_id, source, icon, title, organization, 
             category, location, funding_type, description, 
@@ -96,6 +98,7 @@ export class OpportunitySyncService {
             description = EXCLUDED.description,
             application_url = EXCLUDED.application_url,
             is_active = true
+          RETURNING (xmax = 0) AS is_new
           `,
           [
             externalId,
@@ -114,12 +117,14 @@ export class OpportunitySyncService {
             opp.deadline ? new Date(opp.deadline) : null
           ]
         );
-        count++;
+        // Only count rows that were genuinely new (not updates to existing)
+        if (result.rows[0]?.is_new) count++;
       } catch (err) {
         console.error(`Failed to persist ${source} job:`, err);
       }
     }
     
+    console.log(`${source}: ${count} new out of ${opps.length} fetched`);
     return count;
   }
 }

@@ -6,18 +6,23 @@ export class JoobleAdapter implements OpportunityAdapter {
 
   async search(query: OpportunityQuery): Promise<Opportunity[]> {
     const apiKey = process.env.JOOBLE_API_KEY;
-    if (!apiKey) return [];
+    if (!apiKey) {
+      console.warn('Jooble: Missing JOOBLE_API_KEY env var');
+      return [];
+    }
 
-    // Adzuna only provides jobs, so skip if searching for scholarships etc
+    // Jooble only provides jobs, so skip if searching for scholarships etc
     if (query.category && query.category !== 'job' && query.category !== 'internship') {
       return [];
     }
 
-    const url = `https://api.jooble.org/api/${apiKey}`;
+    const url = `https://jooble.org/api/${apiKey}`;
+    // Use broad, high-yield keywords — 'opportunities' returns near-zero on Jooble
     const body = {
-      keywords: query.keyword || 'opportunities',
+      keywords: query.keyword || 'remote jobs',
       location: query.location || '',
-      page: query.page || 1
+      page: query.page || 1,
+      resultonpage: query.limit || 20
     };
 
     try {
@@ -26,10 +31,16 @@ export class JoobleAdapter implements OpportunityAdapter {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       });
-      
+
+      if (!response.ok) {
+        console.error(`Jooble HTTP ${response.status}:`, await response.text());
+        return [];
+      }
+
       const data = await response.json();
-      
-      return (data.jobs || []).map((job: any) => this.mapToOpportunity(job));
+      const jobs = (data.jobs || []).map((job: any) => this.mapToOpportunity(job));
+      console.log(`Jooble: fetched ${jobs.length} jobs`);
+      return jobs;
     } catch (error) {
       console.error('Jooble API error:', error);
       return [];
