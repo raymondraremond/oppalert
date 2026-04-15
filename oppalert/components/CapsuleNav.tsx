@@ -141,7 +141,7 @@ export default function CapsuleNav() {
           <ThemeToggle />
           
           {isLoggedIn ? (
-            <div ref={dropdownRef} className="relative">
+            <div ref={dropdownRef} className="relative hidden sm:block">
               <button 
                 onClick={() => setShowDropdown(!showDropdown)}
                 className="flex items-center gap-2 pl-2 pr-4 py-2 bg-bg/50 border border-border rounded-full hover:border-emerald/40 transition-all group/btn"
@@ -190,7 +190,7 @@ export default function CapsuleNav() {
               </AnimatePresence>
             </div>
           ) : (
-            <Link href="/register">
+            <Link href="/register" className="hidden sm:block">
               <button className="bg-emerald text-black px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-emerald/10 flex items-center gap-2">
                 Join <span className="hidden sm:inline">Now</span>
                 <ChevronDown size={14} className="-rotate-90 group-hover:translate-x-1" />
