@@ -239,16 +239,16 @@ export default function HomePage() {
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
                  {[
-                   { icon: Globe, label: "Global Reach", count: `${stats.countries}+ Countries` },
-                   { icon: Rocket, label: "Daily Drops", count: `${stats.opportunities}+ New` },
-                   { icon: Users, label: "Peer Support", count: `${(stats.users / 1000).toFixed(0)}k+ Community` },
-                   { icon: Sparkles, label: "AI Matching", count: `${stats.accuracy}% Acc.` }
+                   { icon: Globe, label: "Global Reach", count: `${stats.countries}+ Countries`, href: "/opportunities" },
+                   { icon: Rocket, label: "Daily Drops", count: `${stats.opportunities}+ New`, href: "/opportunities" },
+                   { icon: Users, label: "Peer Support", count: `${(stats.users / 1000).toFixed(0)}k+ Community`, href: "/events" },
+                   { icon: Sparkles, label: "AI Matching", count: `${stats.accuracy}% Acc.`, href: "/opportunities" }
                  ].map((item, i) => (
-                    <div key={i} className="p-8 rounded-[2rem] bg-surface/30 border border-border hover:border-emerald/20 transition-all group">
+                    <Link href={item.href} key={i} className="block p-8 rounded-[2rem] bg-surface/30 border border-border hover:border-emerald/20 transition-all group scale-100 active:scale-95 duration-200">
                        <item.icon className="mx-auto mb-6 text-emerald opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all" size={32} />
                        <p className="text-[10px] font-black uppercase tracking-widest text-muted mb-2">{item.label}</p>
                        <p className="text-lg font-bold text-primary">{item.count}</p>
-                    </div>
+                    </Link>
                  ))}
               </div>
               
