@@ -26,7 +26,7 @@ export default function HomePage() {
       
     const interval = setInterval(() => {
       setHeroKey(prev => prev + 1)
-    }, 4500)
+    }, 6000)
     
     return () => clearInterval(interval)
   }, [])
@@ -61,27 +61,27 @@ export default function HomePage() {
           <AnimatePresence mode="wait">
             <h1 key={heroKey} className="text-5xl md:text-7xl lg:text-[8.5rem] leading-[0.85] text-primary tracking-tighter mb-12 font-syne mx-auto font-black flex flex-wrap justify-center gap-x-6 gap-y-2">
               <motion.span
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
-                transition={{ duration: 0.8, delay: 0.1, ease }}
+                exit={{ opacity: 0, y: -20, transition: { duration: 0.4 } }}
+                transition={{ duration: 1.2, delay: 0.2, ease }}
               >
                 Find.
               </motion.span>
               <motion.span
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
-                transition={{ duration: 0.8, delay: 0.3, ease }}
+                exit={{ opacity: 0, y: -20, transition: { duration: 0.4 } }}
+                transition={{ duration: 1.2, delay: 0.8, ease }}
               >
                 Host.
               </motion.span>
               <div className="w-full h-0 basis-full block"></div>
               <motion.span
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
-                transition={{ duration: 0.8, delay: 0.5, ease }}
+                exit={{ opacity: 0, y: -20, transition: { duration: 0.4 } }}
+                transition={{ duration: 1.2, delay: 1.4, ease }}
                 className="italic text-emerald-400 font-normal"
               >
                 Succeed.
