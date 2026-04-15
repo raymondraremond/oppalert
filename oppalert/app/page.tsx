@@ -57,7 +57,7 @@ export default function HomePage() {
           </motion.div>
 
           <AnimatePresence mode="wait">
-            <h1 key={heroKey} className="text-5xl md:text-7xl lg:text-[8.5rem] leading-[0.85] text-primary tracking-tighter mb-12 font-syne mx-auto font-black flex flex-wrap justify-center gap-x-6 gap-y-2">
+            <h1 key={heroKey} className="text-5xl md:text-7xl lg:text-[8.5rem] leading-tight text-primary tracking-tighter mb-16 font-syne mx-auto font-black flex flex-wrap justify-center gap-x-12 gap-y-10">
               <motion.span
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
