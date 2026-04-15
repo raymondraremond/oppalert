@@ -31,8 +31,6 @@ export default function HomePage() {
     return () => clearInterval(interval)
   }, [])
 
-  if (!mounted) return null
-
   return (
     <main className="min-h-screen bg-bg relative selection:bg-emerald-500/30 selection:text-emerald-100 overflow-hidden">
       {/* Cinematic Background Elements */}
