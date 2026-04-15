@@ -12,7 +12,7 @@ export default function PricingPage() {
   }, [])
 
   return (
-    <main className="min-h-screen bg-bg pt-10 pb-32 px-6">
+    <main className="min-h-screen bg-bg pt-32 pb-32 px-6">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-16 relative">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald/5 blur-[120px] rounded-full pointer-events-none -z-10" />
