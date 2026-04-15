@@ -95,15 +95,15 @@ export default function CapsuleNav() {
 
         {/* Branding */}
         <Link href="/" className="pl-3 group flex items-center gap-3 relative z-10 transition-transform active:scale-95">
-          <div className="w-9 h-9 rounded-xl bg-bg border border-border flex items-center justify-center shadow-inner overflow-hidden group-hover:border-amber/40 transition-colors">
+          <div className="w-9 h-9 rounded-xl bg-bg border border-border flex items-center justify-center shadow-inner overflow-hidden group-hover:border-emerald/40 transition-colors">
             <img 
               src="/icon.png" 
               alt="OppAlert" 
               className="w-5 h-5 object-contain group-hover:scale-110 transition-transform" 
             />
           </div>
-          <span className="font-extrabold text-primary text-xl tracking-tighter group-hover:text-amber transition-colors font-syne">
-            Opp<span className="text-amber italic">Alert</span>
+          <span className="font-extrabold text-primary text-xl tracking-tighter group-hover:text-emerald transition-colors font-syne">
+            Opp<span className="text-emerald italic">Alert</span>
           </span>
         </Link>
 
@@ -115,7 +115,7 @@ export default function CapsuleNav() {
               href={link.href}
               className={`px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
                 path.startsWith(link.href) 
-                  ? 'bg-amber text-black shadow-lg shadow-amber/10' 
+                  ? 'bg-emerald text-black shadow-lg shadow-emerald/10' 
                   : 'text-muted hover:text-primary hover:bg-surface2'
               }`}
             >
@@ -127,7 +127,7 @@ export default function CapsuleNav() {
               href="/organizer"
               className={`px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 ${
                 path.startsWith('/organizer') 
-                  ? 'bg-amber text-black shadow-lg shadow-amber/10' 
+                  ? 'bg-emerald text-black shadow-lg shadow-emerald/10' 
                   : 'text-muted hover:text-primary hover:bg-surface2'
               }`}
             >
@@ -144,9 +144,9 @@ export default function CapsuleNav() {
             <div ref={dropdownRef} className="relative">
               <button 
                 onClick={() => setShowDropdown(!showDropdown)}
-                className="flex items-center gap-2 pl-2 pr-4 py-2 bg-bg/50 border border-border rounded-full hover:border-amber/40 transition-all group/btn"
+                className="flex items-center gap-2 pl-2 pr-4 py-2 bg-bg/50 border border-border rounded-full hover:border-emerald/40 transition-all group/btn"
               >
-                <div className="w-8 h-8 rounded-full bg-amber text-black flex items-center justify-center font-black text-[10px] shadow-lg shadow-amber/10">
+                <div className="w-8 h-8 rounded-full bg-emerald text-black flex items-center justify-center font-black text-[10px] shadow-lg shadow-emerald/10">
                   {getInitials()}
                 </div>
                 <ChevronDown size={14} className={`text-muted transition-transform duration-300 ${showDropdown ? 'rotate-180' : ''}`} />
@@ -165,14 +165,14 @@ export default function CapsuleNav() {
                        <p className="text-xs font-bold text-primary truncate leading-none">{user.email}</p>
                     </div>
                     
-                    <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-primary hover:bg-amber hover:text-black rounded-xl transition-all mb-1">
+                    <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-primary hover:bg-emerald hover:text-black rounded-xl transition-all mb-1">
                       <LayoutDashboard size={14} /> My Dashboard
                     </Link>
-                    <Link href="/organizer" className="flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-primary hover:bg-amber hover:text-black rounded-xl transition-all mb-1">
+                    <Link href="/organizer" className="flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-primary hover:bg-emerald hover:text-black rounded-xl transition-all mb-1">
                        <Rocket size={14} /> Organizer Hub
                     </Link>
                     {isAdmin && (
-                      <Link href="/admin" className="flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-amber border border-amber/20 hover:bg-amber hover:text-black rounded-xl transition-all">
+                      <Link href="/admin" className="flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-emerald border border-emerald/20 hover:bg-emerald hover:text-black rounded-xl transition-all">
                         <Settings size={14} /> Global Admin
                       </Link>
                     )}
@@ -191,7 +191,7 @@ export default function CapsuleNav() {
             </div>
           ) : (
             <Link href="/register">
-              <button className="bg-amber text-black px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-amber/10 flex items-center gap-2">
+              <button className="bg-emerald text-black px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-emerald/10 flex items-center gap-2">
                 Join <span className="hidden sm:inline">Now</span>
                 <ChevronDown size={14} className="-rotate-90 group-hover:translate-x-1" />
               </button>
@@ -222,7 +222,7 @@ export default function CapsuleNav() {
                 <Link 
                   key={link.href} 
                   href={link.href}
-                  className={`p-5 rounded-2xl text-base font-bold transition-all ${path.startsWith(link.href) ? 'bg-amber text-black' : 'text-primary bg-bg/50 border border-border'}`}
+                  className={`p-5 rounded-2xl text-base font-bold transition-all ${path.startsWith(link.href) ? 'bg-emerald text-black' : 'text-primary bg-bg/50 border border-border'}`}
                 >
                   {link.label}
                 </Link>
@@ -239,7 +239,7 @@ export default function CapsuleNav() {
               ) : (
                 <div className="flex flex-col gap-4">
                   <Link href="/login" className="p-5 rounded-2xl bg-bg/50 border border-border font-bold text-center">Log In</Link>
-                  <Link href="/register" className="p-5 rounded-2xl bg-amber text-black font-black uppercase tracking-widest text-center shadow-amber/20 shadow-lg">Create Account</Link>
+                  <Link href="/register" className="p-5 rounded-2xl bg-emerald text-black font-black uppercase tracking-widest text-center shadow-emerald/20 shadow-lg">Create Account</Link>
                 </div>
               )}
             </div>

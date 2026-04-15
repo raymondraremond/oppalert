@@ -84,7 +84,7 @@ export default function AdminSyncPage() {
         {syncNodes.map((node) => (
           <div key={node.id} className="bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-6 flex flex-col relative overflow-hidden group">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-3 bg-amber/10 rounded-xl text-amber">
+              <div className="p-3 bg-emerald/10 rounded-xl text-emerald">
                 <node.icon size={24} />
               </div>
               <h2 className="font-bold text-lg">{node.title}</h2>

@@ -110,7 +110,7 @@ export default function NewsletterForm() {
               onClick={() => handleTogglePref(cat.id)}
               className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
                 prefs.includes(cat.id) 
-                  ? 'bg-amber text-bg shadow-glow-amber' 
+                  ? 'bg-emerald text-bg shadow-glow-emerald' 
                   : 'bg-[var(--icon-bg)] text-muted border border-[var(--glass-border)]'
               }`}
             >
@@ -123,7 +123,7 @@ export default function NewsletterForm() {
           type="button"
           onClick={handleSubmitPrefs}
           disabled={isLoading}
-          className="w-full py-3 rounded-xl bg-amber-gradient font-syne font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-glow-amber disabled:opacity-50 text-[#0D0F0B]"
+          className="w-full py-3 rounded-xl bg-emerald-gradient font-syne font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-glow-emerald disabled:opacity-50 text-[#0D0F0B]"
         >
           {isLoading ? (
             <div className="w-4 h-4 border-2 border-bg/30 border-t-bg rounded-full animate-spin" />
@@ -149,7 +149,7 @@ export default function NewsletterForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="px-6 rounded-full bg-amber-gradient font-syne font-black text-xs uppercase tracking-wider flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-glow-amber disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-6 rounded-full bg-emerald-gradient font-syne font-black text-xs uppercase tracking-wider flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 shadow-glow-emerald disabled:opacity-50 disabled:cursor-not-allowed"
           style={{color: '#0D0F0B'}}
         >
           {isLoading ? (

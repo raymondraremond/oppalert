@@ -8,12 +8,12 @@ export default function AboutPage() {
       <div className="max-w-7xl mx-auto">
         {/* Hero Section */}
         <section className="text-center max-w-4xl mx-auto mb-32 animate-fade-up">
-          <div className="inline-flex items-center gap-2 bg-amber/10 border border-amber/20 rounded-full px-5 py-2 mb-8 animate-fade-up">
-            <Star size={14} className="text-amber fill-amber" />
-            <span className="text-amber font-bold text-[10px] uppercase tracking-widest font-syne">Our Mission</span>
+          <div className="inline-flex items-center gap-2 bg-emerald/10 border border-emerald/20 rounded-full px-5 py-2 mb-8 animate-fade-up">
+            <Star size={14} className="text-emerald fill-emerald" />
+            <span className="text-emerald font-bold text-[10px] uppercase tracking-widest font-syne">Our Mission</span>
           </div>
           <h1 className="font-syne text-6xl md:text-8xl font-black tracking-tighter mb-10 text-primary leading-[0.9]">
-            The Future of <span className="text-amber-gradient drop-shadow-glow-amber">African Talent.</span>
+            The Future of <span className="text-emerald-gradient drop-shadow-glow-emerald">African Talent.</span>
           </h1>
           <p className="text-subtle text-xl md:text-2xl font-medium leading-relaxed max-w-3xl mx-auto">
             OppFetch is a mission-driven platform dedicated to connecting students and professionals across Africa with life-changing global opportunities.
@@ -24,7 +24,7 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center mb-40">
            <div className="space-y-10 animate-fade-up">
              <div className="space-y-6">
-               <h2 className="font-syne text-4xl font-black text-primary leading-tight">Why we <span className="text-amber italic">started.</span></h2>
+               <h2 className="font-syne text-4xl font-black text-primary leading-tight">Why we <span className="text-emerald italic">started.</span></h2>
                <p className="text-lg text-subtle font-medium leading-relaxed">
                  Information gap remains one of the biggest hurdles for African youth. While thousands of scholarships, grants, and jobs exist specifically for the continent, finding them shouldn&apos;t be a full-time job.
                </p>
@@ -35,20 +35,20 @@ export default function AboutPage() {
              
              <div className="grid grid-cols-2 gap-6">
                <div className="glass-gradient border border-[var(--border)] rounded-3xl p-8 group">
-                  <div className="font-syne text-4xl font-black text-primary mb-2 group-hover:text-amber transition-colors">48K+</div>
+                  <div className="font-syne text-4xl font-black text-primary mb-2 group-hover:text-emerald transition-colors">48K+</div>
                   <p className="text-xs font-black uppercase tracking-widest text-muted">Active Members</p>
                </div>
                <div className="glass-gradient border border-[var(--border)] rounded-3xl p-8 group">
-                  <div className="font-syne text-4xl font-black text-primary mb-2 group-hover:text-amber transition-colors">2.4K</div>
+                  <div className="font-syne text-4xl font-black text-primary mb-2 group-hover:text-emerald transition-colors">2.4K</div>
                   <p className="text-xs font-black uppercase tracking-widest text-muted">Annual Listings</p>
                </div>
              </div>
            </div>
 
            <div className="relative group animate-fade-up animate-delay-200">
-             <div className="absolute inset-0 bg-amber-gradient blur-[100px] opacity-10 -z-10 group-hover:opacity-20 transition-opacity" />
+             <div className="absolute inset-0 bg-emerald-gradient blur-[100px] opacity-10 -z-10 group-hover:opacity-20 transition-opacity" />
              <div className="glass-gradient border border-[var(--glass-border)] rounded-[4rem] p-12 aspect-square flex flex-col justify-center items-center text-center space-y-8">
-                <div className="w-32 h-32 rounded-[3rem] bg-amber/10 border border-amber/20 flex items-center justify-center text-amber shadow-premium-glow">
+                <div className="w-32 h-32 rounded-[3rem] bg-emerald/10 border border-emerald/20 flex items-center justify-center text-emerald shadow-premium-glow">
                    <Target size={64} className="stroke-[1.5]" />
                 </div>
                 <h3 className="font-syne text-3xl font-black text-primary">100% African Driven.</h3>
@@ -62,7 +62,7 @@ export default function AboutPage() {
           {[
             { icon: ShieldCheck, title: 'Verified Only', color: 'success', desc: 'Every opportunity is manually reviewed by our audit team. We filter out the noise and the scams.' },
             { icon: Users, title: 'Community First', color: 'primary', desc: 'Access resources and shared experiences from thousands of students who have navigated these paths.' },
-            { icon: Zap, title: 'Speed of Info', color: 'amber', desc: 'Our premium engine scans global clusters 24/7 to give you a 48-hour head start on high-demand roles.' }
+            { icon: Zap, title: 'Speed of Info', color: 'emerald', desc: 'Our premium engine scans global clusters 24/7 to give you a 48-hour head start on high-demand roles.' }
           ].map((pillar, idx) => (
             <div key={idx} className="glass-gradient border border-[var(--border)] rounded-[3rem] p-10 hover:border-white/20 transition-all group">
                <div className={`w-14 h-14 rounded-2xl bg-${pillar.color}/10 text-${pillar.color} flex items-center justify-center mb-8 shadow-inner group-hover:scale-110 transition-transform`}>
@@ -75,7 +75,7 @@ export default function AboutPage() {
         </div>
 
         {/* Join the story */}
-        <section className="bg-amber-gradient rounded-[4rem] p-12 md:p-24 text-center text-bg relative overflow-hidden animate-reveal group">
+        <section className="bg-emerald-gradient rounded-[4rem] p-12 md:p-24 text-center text-bg relative overflow-hidden animate-reveal group">
            <div className="absolute top-0 left-0 w-full h-full bg-white opacity-0 group-hover:opacity-10 transition-opacity" />
            <h2 className="font-syne text-4xl md:text-6xl font-black tracking-tighter mb-8 leading-tight">Ready to Land Your <br/>Next Big <span className="italic">Opportunity?</span></h2>
            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">

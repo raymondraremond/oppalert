@@ -100,7 +100,7 @@ export default function OpportunityDetailPage({ params }: Props) {
   return (
     <main className="min-h-screen pt-24 px-6 max-w-7xl mx-auto pb-20">
       <div className="mb-8 overflow-hidden">
-        <Link href="/opportunities" className="inline-flex items-center gap-2 text-muted hover:text-amber font-bold text-xs uppercase tracking-[0.2em] transition-all group">
+        <Link href="/opportunities" className="inline-flex items-center gap-2 text-muted hover:text-emerald font-bold text-xs uppercase tracking-[0.2em] transition-all group">
           <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
           Back to Listings
         </Link>
@@ -137,15 +137,15 @@ export default function OpportunityDetailPage({ params }: Props) {
         <div className="space-y-10">
           <ScrollReveal>
             <div className="bg-surface/30 border border-border/60 rounded-[3rem] p-8 md:p-12 relative overflow-hidden group backdrop-blur-sm">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-amber/5 blur-[80px] -z-10" />
+              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald/5 blur-[80px] -z-10" />
 
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-10">
                 <div className="flex items-center gap-6">
                   <div className="w-20 h-20 rounded-2xl bg-surface2 flex items-center justify-center border border-border group-hover:rotate-3 transition-transform shadow-inner">
-                    <CategoryIcon cat={cat} size={40} className="text-amber" />
+                    <CategoryIcon cat={cat} size={40} className="text-emerald" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-amber uppercase tracking-widest mb-2">{org}</p>
+                    <p className="text-sm font-bold text-emerald uppercase tracking-widest mb-2">{org}</p>
                     <div className="flex gap-2">
                       <span className="px-4 py-1.5 bg-surface2 border border-border rounded-full text-[10px] font-black text-primary/80 uppercase tracking-widest flex items-center gap-2">
                         <CategoryIcon cat={cat} size={14} />
@@ -172,12 +172,12 @@ export default function OpportunityDetailPage({ params }: Props) {
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 {[
-                  { label: 'Location', value: loc, icon: <MapPin size={18} className="text-amber" /> },
-                  { label: 'Closing Date', value: deadlineStr, icon: <Calendar size={18} className="text-amber" /> },
-                  { label: 'Funding', value: fund, icon: <Zap size={18} className="text-amber" /> },
+                  { label: 'Location', value: loc, icon: <MapPin size={18} className="text-emerald" /> },
+                  { label: 'Closing Date', value: deadlineStr, icon: <Calendar size={18} className="text-emerald" /> },
+                  { label: 'Funding', value: fund, icon: <Zap size={18} className="text-emerald" /> },
                 ].map((item) => (
-                  <div key={item.label} className="bg-surface2/50 border border-border rounded-2xl p-5 hover:border-amber/20 transition-colors group/item">
-                    <div className="flex items-center gap-2 text-muted mb-3 text-[10px] uppercase font-black tracking-widest group-hover/item:text-amber transition-colors">
+                  <div key={item.label} className="bg-surface2/50 border border-border rounded-2xl p-5 hover:border-emerald/20 transition-colors group/item">
+                    <div className="flex items-center gap-2 text-muted mb-3 text-[10px] uppercase font-black tracking-widest group-hover/item:text-emerald transition-colors">
                       {item.icon} {item.label}
                     </div>
                     <p className="text-sm font-bold text-primary flex-wrap">{item.value}</p>
@@ -191,10 +191,10 @@ export default function OpportunityDetailPage({ params }: Props) {
             <ScrollReveal delay={100}>
               <div className="bg-surface/30 border border-border rounded-[2.5rem] p-8 md:p-12 backdrop-blur-sm">
                 <div className="flex items-center gap-4 mb-8">
-                   <div className="w-12 h-12 rounded-xl bg-amber/10 flex items-center justify-center text-amber shadow-inner"><Globe size={24} /></div>
+                   <div className="w-12 h-12 rounded-xl bg-emerald/10 flex items-center justify-center text-emerald shadow-inner"><Globe size={24} /></div>
                    <h2 className="font-serif text-2xl font-bold text-primary">About</h2>
                 </div>
-                <p className="text-muted text-lg leading-relaxed whitespace-pre-line font-serif italic text-primary/80 mb-8 border-l-4 border-amber/20 pl-6">
+                <p className="text-muted text-lg leading-relaxed whitespace-pre-line font-serif italic text-primary/80 mb-8 border-l-4 border-emerald/20 pl-6">
                   {about}
                 </p>
                 <div className="h-px w-full bg-gradient-to-r from-border/50 to-transparent mb-8" />
@@ -205,13 +205,13 @@ export default function OpportunityDetailPage({ params }: Props) {
             <ScrollReveal delay={200}>
               <div className="bg-surface/30 border border-border rounded-[2.5rem] p-8 md:p-12 backdrop-blur-sm">
                 <div className="flex items-center gap-4 mb-8">
-                   <div className="w-12 h-12 rounded-xl bg-amber/10 flex items-center justify-center text-amber shadow-inner"><Check size={24} /></div>
+                   <div className="w-12 h-12 rounded-xl bg-emerald/10 flex items-center justify-center text-emerald shadow-inner"><Check size={24} /></div>
                    <h2 className="font-serif text-2xl font-bold text-primary">Eligibility</h2>
                 </div>
                 <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {elig.map((item, i) => (
-                    <li key={i} className="flex gap-4 p-4 bg-surface2/40 border border-border/50 rounded-2xl text-muted text-sm font-medium hover:border-amber/30 transition-colors">
-                      <span className="text-amber text-lg leading-none">✓</span> {item}
+                    <li key={i} className="flex gap-4 p-4 bg-surface2/40 border border-border/50 rounded-2xl text-muted text-sm font-medium hover:border-emerald/30 transition-colors">
+                      <span className="text-emerald text-lg leading-none">✓</span> {item}
                     </li>
                   ))}
                 </ul>
@@ -227,17 +227,17 @@ export default function OpportunityDetailPage({ params }: Props) {
 
           <ScrollReveal delay={350}>
             <div className="bg-surface/30 border border-border rounded-[2.5rem] p-8 text-center backdrop-blur-sm relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-b from-amber/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="absolute inset-0 bg-gradient-to-b from-emerald/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <p className="text-[10px] font-black uppercase tracking-[0.3em] mb-6 text-muted">
                 {days <= 0 ? 'Deadline Passed' : 'Time Remaining'}
               </p>
               <div className="font-serif text-7xl font-bold tracking-tight mb-2 text-primary">
                 {days <= 0 ? 0 : days}
               </div>
-              <p className="text-xs font-bold uppercase tracking-widest mb-10 text-amber">Days Left</p>
+              <p className="text-xs font-bold uppercase tracking-widest mb-10 text-emerald">Days Left</p>
               <div className="w-full bg-surface2 h-2.5 rounded-full overflow-hidden mb-6 border border-border">
                 <div 
-                  className={`h-full bg-gradient-to-r from-amber to-amber-light transition-all duration-1000 ${days <= 3 && days > 0 ? 'animate-pulse' : ''}`} 
+                  className={`h-full bg-gradient-to-r from-emerald to-emerald-light transition-all duration-1000 ${days <= 3 && days > 0 ? 'animate-pulse' : ''}`} 
                   style={{ width: `${progressPct}%` }} 
                 />
               </div>
@@ -272,7 +272,7 @@ export default function OpportunityDetailPage({ params }: Props) {
       {related.length > 0 && (
         <section className="mt-32 pt-20 border-t border-border/50">
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary mb-12 tracking-tight">
-            Similar <span className="text-amber italic">Opportunities</span>
+            Similar <span className="text-emerald italic">Opportunities</span>
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {related.map((r) => (

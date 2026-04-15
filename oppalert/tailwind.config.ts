@@ -18,18 +18,14 @@ const config: Config = {
         surface2: 'var(--surface2)',
         border: 'var(--border)',
         border2: 'var(--border2)',
-        amber: {
-          DEFAULT: 'var(--amber)',
-          light: '#F5B93A',
-          dim: 'var(--amber-dim)',
+        emerald: {
+          DEFAULT: 'var(--emerald)',
+          light: '#3DAA6A',
+          dim: 'var(--emerald-dim)',
         },
         terra: {
           DEFAULT: '#C45C2A',
           dim: '#3A1A0D',
-        },
-        emerald: {
-          DEFAULT: '#3DAA6A',
-          dim: '#0F2E1C',
         },
         primary: 'var(--primary)',
         muted: 'var(--muted)',
@@ -46,12 +42,12 @@ const config: Config = {
       boxShadow: {
         'premium': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
         'premium-hover': '0 8px 30px -4px rgba(0, 0, 0, 0.1)',
-        'glow-amber': '0 4px 14px rgba(232, 160, 32, 0.1)',
-        'glow-amber-strong': '0 6px 20px rgba(232, 160, 32, 0.2)',
+        'glow-emerald': '0 4px 14px rgba(52, 194, 122, 0.1)',
+        'glow-emerald-strong': '0 6px 20px rgba(52, 194, 122, 0.2)',
       },
       backgroundImage: {
         'glass-gradient': 'linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0) 100%)',
-        'amber-gradient': 'linear-gradient(135deg, var(--amber) 0%, #D88030 100%)',
+        'emerald-gradient': 'linear-gradient(135deg, var(--emerald) 0%, #2E8854 100%)',
       },
       backdropBlur: {
         'xs': '2px',

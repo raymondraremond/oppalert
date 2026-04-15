@@ -16,7 +16,7 @@ export default function ContactPage() {
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-20 animate-fade-up">
           <h1 className="font-syne text-5xl md:text-7xl font-black tracking-tighter mb-6 text-primary">
-            Get in <span className="text-amber-gradient drop-shadow-glow-amber">Touch</span>
+            Get in <span className="text-emerald-gradient drop-shadow-glow-emerald">Touch</span>
           </h1>
           <p className="text-subtle text-lg font-medium leading-relaxed">
             Have questions about a listing? Want to partner with us? Our team is ready to help you navigate your journey.
@@ -27,7 +27,7 @@ export default function ContactPage() {
           {/* Info Side */}
           <div className="space-y-8 animate-fade-up animate-delay-100">
             <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-10 space-y-10 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-amber/5 blur-3xl -z-10" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald/5 blur-3xl -z-10" />
               
               <h2 className="font-syne text-3xl font-black text-primary">Contact Information</h2>
               
@@ -38,7 +38,7 @@ export default function ContactPage() {
                   { icon: MapPin, label: 'Headquarters', value: 'Lagos, Nigeria', sub: 'Remote-first globally' }
                 ].map((item, idx) => (
                   <div key={idx} className="flex gap-6 group/item">
-                    <div className="w-12 h-12 rounded-2xl bg-[var(--icon-bg)] border border-[var(--glass-border)] flex items-center justify-center text-amber group-hover/item:scale-110 transition-transform shadow-inner">
+                    <div className="w-12 h-12 rounded-2xl bg-[var(--icon-bg)] border border-[var(--glass-border)] flex items-center justify-center text-emerald group-hover/item:scale-110 transition-transform shadow-inner">
                       <item.icon size={20} />
                     </div>
                     <div>
@@ -60,9 +60,9 @@ export default function ContactPage() {
                   ))}
                   <div className="flex -space-x-3 items-center ml-auto">
                     {[...Array(3)].map((_, i) => (
-                      <div key={i} className="w-8 h-8 rounded-full border-2 border-bg bg-amber/20" />
+                      <div key={i} className="w-8 h-8 rounded-full border-2 border-bg bg-emerald/20" />
                     ))}
-                    <span className="text-[10px] font-black text-amber ml-4">+48k Members</span>
+                    <span className="text-[10px] font-black text-emerald ml-4">+48k Members</span>
                   </div>
                 </div>
               </div>
@@ -93,7 +93,7 @@ export default function ContactPage() {
                   </div>
                   <h2 className="font-syne text-3xl font-black text-primary mb-4">Message Received</h2>
                   <p className="text-subtle font-medium">We appreciate you reaching out. A member of our team will contact you shortly.</p>
-                  <button onClick={() => setSubmitted(false)} className="mt-10 text-amber font-black uppercase tracking-widest text-xs hover:underline decoration-amber/30 underline-offset-8">Send another message</button>
+                  <button onClick={() => setSubmitted(false)} className="mt-10 text-emerald font-black uppercase tracking-widest text-xs hover:underline decoration-emerald/30 underline-offset-8">Send another message</button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -102,17 +102,17 @@ export default function ContactPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-[10px] font-black uppercase tracking-widest text-muted ml-1">Full Name</label>
-                      <input required className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-amber/30 transition-all" placeholder="Adewale Okafor" />
+                      <input required className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-emerald/30 transition-all" placeholder="Adewale Okafor" />
                     </div>
                     <div className="space-y-2">
                       <label className="text-[10px] font-black uppercase tracking-widest text-muted ml-1">Email Address</label>
-                      <input required type="email" className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-amber/30 transition-all" placeholder="adewale@mail.com" />
+                      <input required type="email" className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-emerald/30 transition-all" placeholder="adewale@mail.com" />
                     </div>
                   </div>
 
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-muted ml-1">Subject</label>
-                    <select className="w-full bg-[#1A1F15] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-amber/30 transition-all cursor-pointer appearance-none">
+                    <select className="w-full bg-[#1A1F15] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-emerald/30 transition-all cursor-pointer appearance-none">
                       <option>General Inquiry</option>
                       <option>Partnership & Advertising</option>
                       <option>Technical Support</option>
@@ -122,10 +122,10 @@ export default function ContactPage() {
 
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-muted ml-1">Your Message</label>
-                    <textarea required className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-3xl p-6 text-sm font-bold text-primary focus:outline-none focus:border-amber/30 transition-all h-40 resize-none" placeholder="How can we help you?" />
+                    <textarea required className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-3xl p-6 text-sm font-bold text-primary focus:outline-none focus:border-emerald/30 transition-all h-40 resize-none" placeholder="How can we help you?" />
                   </div>
 
-                  <button className="btn-primary w-full py-5 rounded-2xl shadow-glow-amber text-bg font-black uppercase tracking-[0.2em] text-xs flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                  <button className="btn-primary w-full py-5 rounded-2xl shadow-glow-emerald text-bg font-black uppercase tracking-[0.2em] text-xs flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all">
                     Initialize Transmission
                     <Send size={18} className="stroke-[2.5]" />
                   </button>

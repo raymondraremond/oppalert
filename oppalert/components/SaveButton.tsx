@@ -122,7 +122,7 @@ export default function SaveButton({ oppId, oppTitle, variant = 'full' }: Props)
         >
           <Heart 
             size={18} 
-            className={`transition-all duration-500 ${saved ? 'fill-amber text-amber scale-110' : 'text-white group-hover/save:text-amber'}`} 
+            className={`transition-all duration-500 ${saved ? 'fill-emerald text-emerald scale-110' : 'text-white group-hover/save:text-emerald'}`} 
             strokeWidth={saved ? 0 : 2.5}
           />
         </button>
@@ -135,13 +135,13 @@ export default function SaveButton({ oppId, oppTitle, variant = 'full' }: Props)
       disabled={loading}
       className={`w-full py-4 rounded-2xl border font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-3 active:scale-[0.98] ${
         saved 
-          ? 'bg-amber/10 border-amber text-amber shadow-lg shadow-amber/10' 
-          : 'bg-surface2/50 border-border text-muted hover:border-amber hover:text-primary'
+          ? 'bg-emerald/10 border-emerald text-emerald shadow-lg shadow-emerald/10' 
+          : 'bg-surface2/50 border-border text-muted hover:border-emerald hover:text-primary'
       } ${loading ? 'opacity-70 cursor-wait' : ''}`}
     >
       <Heart 
         size={16} 
-        className={`transition-transform duration-500 ${saved ? 'fill-amber text-amber scale-110' : ''}`} 
+        className={`transition-transform duration-500 ${saved ? 'fill-emerald text-emerald scale-110' : ''}`} 
         strokeWidth={saved ? 0 : 2.5}
       />
       {loading ? 'Processing...' : saved ? 'In your Collection' : 'Save for Later'}

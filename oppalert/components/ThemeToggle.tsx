@@ -32,7 +32,7 @@ export default function ThemeToggle() {
       title={`Switch to ${currentTheme === "dark" ? "Light" : "Dark"} Mode`}
     >
       {currentTheme === "dark" ? (
-        <Sun className="w-4 h-4 text-amber" />
+        <Sun className="w-4 h-4 text-emerald" />
       ) : (
         <Moon className="w-4 h-4 text-primary" />
       )}

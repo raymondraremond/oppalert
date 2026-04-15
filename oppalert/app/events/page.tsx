@@ -132,13 +132,13 @@ export default function EventsPage() {
     <div className="min-h-screen bg-bg pb-32">
       {/* Hero bar */}
       <section className="relative pt-32 pb-20 px-6 bg-bg overflow-hidden border-b border-border/50">
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-amber/20 to-transparent"></div>
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-emerald/20 to-transparent"></div>
         <div className="absolute top-[-10%] right-1/4 w-[500px] h-[500px] bg-emerald/5 blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
-        <div className="absolute top-[-20%] left-1/4 w-[600px] h-[600px] bg-amber/5 blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
+        <div className="absolute top-[-20%] left-1/4 w-[600px] h-[600px] bg-emerald/5 blur-[120px] rounded-full mix-blend-screen pointer-events-none" />
 
         <div className="max-w-6xl mx-auto relative z-10 text-center">
           <h1 className="font-serif text-5xl md:text-7xl font-bold text-primary mb-6 tracking-tight" style={{ animation: 'fadeUp 0.6s ease both' }}>
-            {"Next-Gen "}<span className="text-amber italic">Events.</span>
+            {"Next-Gen "}<span className="text-emerald italic">Events.</span>
           </h1>
           <p className="text-muted text-lg max-w-2xl mx-auto leading-relaxed font-medium" style={{ animation: 'fadeUp 0.6s ease both', animationDelay: '150ms' }}>
             Discover workshops, webinars, and meetups designed to accelerate 
@@ -158,8 +158,8 @@ export default function EventsPage() {
                 style={{ animation: 'fadeUp 0.5s ease both' }}
                 className={`px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest whitespace-nowrap transition-all duration-300 ${
                   typeFilter === type
-                    ? 'bg-amber border border-amber text-[#080A07] shadow-glow-amber scale-[1.02]'
-                    : 'bg-surface/50 border border-border text-muted hover:border-amber/40 hover:text-primary'
+                    ? 'bg-emerald border border-emerald text-[#080A07] shadow-glow-emerald scale-[1.02]'
+                    : 'bg-surface/50 border border-border text-muted hover:border-emerald/40 hover:text-primary'
                 }`}
               >
                 {type}
@@ -173,9 +173,9 @@ export default function EventsPage() {
           {filteredEvents.map((event, idx) => (
             <ScrollReveal key={event.id} delay={idx * 80}>
               <div 
-                className="bg-surface/30 border border-border backdrop-blur-sm rounded-3xl p-8 transition-all duration-500 group flex flex-col hover:border-amber/40 hover:shadow-glow-amber h-full relative overflow-hidden"
+                className="bg-surface/30 border border-border backdrop-blur-sm rounded-3xl p-8 transition-all duration-500 group flex flex-col hover:border-emerald/40 hover:shadow-glow-emerald h-full relative overflow-hidden"
               >
-                <div className="absolute top-0 left-0 w-1.5 h-full" style={{ backgroundColor: event.color || 'var(--amber)' }} />
+                <div className="absolute top-0 left-0 w-1.5 h-full" style={{ backgroundColor: event.color || 'var(--emerald)' }} />
                 
                 <div className="flex justify-between items-start mb-6">
                   <span className="px-3 py-1.5 bg-surface2 rounded-md text-[10px] font-black uppercase text-primary/80 border border-border">
@@ -183,14 +183,14 @@ export default function EventsPage() {
                   </span>
                   <span className={`text-xs font-black tracking-widest px-3 py-1.5 rounded-full border ${
                     event.is_paid 
-                      ? 'bg-amber/10 text-amber border-amber/20' 
+                      ? 'bg-emerald/10 text-emerald border-emerald/20' 
                       : 'bg-emerald/10 text-emerald border-emerald/20'
                   }`}>
                     {event.is_paid ? `NGN ${Number(event.ticket_price).toLocaleString()}` : 'FREE'}
                   </span>
                 </div>
                 
-                <h3 className="font-serif text-2xl font-bold text-primary mb-3 group-hover:text-amber transition-colors line-clamp-2 tracking-tight">
+                <h3 className="font-serif text-2xl font-bold text-primary mb-3 group-hover:text-emerald transition-colors line-clamp-2 tracking-tight">
                   {event.title}
                 </h3>
                 
@@ -200,7 +200,7 @@ export default function EventsPage() {
 
                 <div className="space-y-4 mb-8 flex-grow">
                   <div className="text-[11px] font-bold text-muted flex items-center gap-3 uppercase tracking-wider">
-                    <Calendar size={16} className="text-amber" />
+                    <Calendar size={16} className="text-emerald" />
                     {new Date(event.start_date).toLocaleDateString('en-US', { 
                       month: 'short', 
                       day: 'numeric', 
@@ -220,14 +220,14 @@ export default function EventsPage() {
                   </div>
                   <div className="w-full bg-surface2 rounded-full h-2 mb-8 overflow-hidden border border-border/50">
                     <div 
-                      className="h-full bg-gradient-to-r from-amber to-amber-light transition-all duration-1000" 
+                      className="h-full bg-gradient-to-r from-emerald to-emerald-light transition-all duration-1000" 
                       style={{ width: `${Math.min((event.current_registrations / (event.max_capacity || 100)) * 100, 100)}%` }}
                     ></div>
                   </div>
                   
                   <Link 
                     href={`/events/${event.slug}`}
-                    className="flex items-center justify-center gap-2 w-full py-4 bg-surface text-primary border border-border font-bold rounded-xl hover:bg-amber hover:text-[#080A07] hover:border-amber transition-all uppercase text-xs tracking-widest active:scale-[0.98]"
+                    className="flex items-center justify-center gap-2 w-full py-4 bg-surface text-primary border border-border font-bold rounded-xl hover:bg-emerald hover:text-[#080A07] hover:border-emerald transition-all uppercase text-xs tracking-widest active:scale-[0.98]"
                   >
                     View & Register <ArrowRight size={16} strokeWidth={2.5} />
                   </Link>

@@ -71,7 +71,7 @@ function UsersTab() {
   if (loading) {
     return (
       <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-10 text-center">
-        <Loader2 size={32} className="mx-auto text-amber animate-spin mb-4" />
+        <Loader2 size={32} className="mx-auto text-emerald animate-spin mb-4" />
         <p className="text-muted font-bold text-sm">Loading users...</p>
       </div>
     )
@@ -102,7 +102,7 @@ function UsersTab() {
                   <td className="px-8 py-6 text-[11px] text-muted font-bold uppercase tracking-wider opacity-70">{u.email}</td>
                   <td className="px-8 py-6">
                     {u.status === 'admin' ? (
-                      <span className="px-4 py-1.5 rounded-full bg-amber/10 border border-amber/30 text-amber text-[9px] font-black uppercase tracking-widest shadow-sm shadow-amber/5">
+                      <span className="px-4 py-1.5 rounded-full bg-emerald/10 border border-emerald/30 text-emerald text-[9px] font-black uppercase tracking-widest shadow-sm shadow-emerald/5">
                         System Admin
                       </span>
                     ) : u.status === 'premium' ? (
@@ -125,14 +125,14 @@ function UsersTab() {
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => updateUserStatus(u.id, 'admin')}
-                          className="px-4 py-2 bg-amber/10 border border-amber/30 text-amber rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-amber hover:text-black transition-all"
+                          className="px-4 py-2 bg-emerald/10 border border-emerald/30 text-emerald rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald hover:text-black transition-all"
                         >
                           Dev Admin
                         </button>
                         {u.status !== 'premium' && (
                           <button
                             onClick={() => updateUserStatus(u.id, 'premium')}
-                            className="px-4 py-2 bg-surface border border-border text-muted rounded-xl text-[10px] font-black uppercase tracking-widest hover:border-amber hover:text-amber transition-all"
+                            className="px-4 py-2 bg-surface border border-border text-muted rounded-xl text-[10px] font-black uppercase tracking-widest hover:border-emerald hover:text-emerald transition-all"
                           >
                             Set Premium
                           </button>
@@ -199,7 +199,7 @@ function EventsTab() {
   if (loading) {
     return (
       <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-10 text-center">
-        <Loader2 size={32} className="mx-auto text-amber animate-spin mb-4" />
+        <Loader2 size={32} className="mx-auto text-emerald animate-spin mb-4" />
         <p className="text-muted font-bold text-sm">Loading events...</p>
       </div>
     )
@@ -209,7 +209,7 @@ function EventsTab() {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <h3 className="text-2xl font-serif font-bold text-primary">{events.length} Live Opportunities</h3>
-        <Link href="/organizer/create" className="px-8 py-4 bg-amber text-black font-black rounded-2xl text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-amber/10 hover:scale-105 active:scale-95 transition-all">
+        <Link href="/organizer/create" className="px-8 py-4 bg-emerald text-black font-black rounded-2xl text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-emerald/10 hover:scale-105 active:scale-95 transition-all">
           Index Opportunity
         </Link>
       </div>
@@ -247,7 +247,7 @@ function EventsTab() {
                     <button 
                       onClick={() => toggleFeatured(event.id, event.is_featured)}
                       className={`p-2 rounded-xl border transition-all ${
-                        event.is_featured ? "bg-amber/10 border-amber/30 text-amber" : "bg-[var(--icon-bg)] border-[var(--border)] text-muted"
+                        event.is_featured ? "bg-emerald/10 border-emerald/30 text-emerald" : "bg-[var(--icon-bg)] border-[var(--border)] text-muted"
                       }`}
                     >
                       <Star size={16} fill={event.is_featured ? "currentColor" : "none"} />
@@ -255,7 +255,7 @@ function EventsTab() {
                   </td>
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-3">
-                       <Link href={`/events/${event.slug}`} target="_blank" className="p-2.5 rounded-xl bg-[var(--icon-bg)] border border-[var(--border)] text-muted hover:text-amber transition-all">
+                       <Link href={`/events/${event.slug}`} target="_blank" className="p-2.5 rounded-xl bg-[var(--icon-bg)] border border-[var(--border)] text-muted hover:text-emerald transition-all">
                          <Eye size={16} />
                        </Link>
                        <button 
@@ -306,7 +306,7 @@ function SubmissionsTab() {
   if (loading) {
     return (
       <div className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-10 text-center">
-        <Loader2 size={32} className="mx-auto text-amber animate-spin mb-4" />
+        <Loader2 size={32} className="mx-auto text-emerald animate-spin mb-4" />
         <p className="text-muted font-bold text-sm">Loading submissions...</p>
       </div>
     )
@@ -368,7 +368,7 @@ function SyncTab({ syncLogs, onSyncTrigger }: { syncLogs: any[], onSyncTrigger: 
         <button
           onClick={handleSync}
           disabled={isSyncing}
-          className="px-10 py-5 bg-amber text-black font-black uppercase text-xs tracking-[0.2em] rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-amber/10 flex items-center gap-3 disabled:opacity-50"
+          className="px-10 py-5 bg-emerald text-black font-black uppercase text-xs tracking-[0.2em] rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-emerald/10 flex items-center gap-3 disabled:opacity-50"
         >
           {isSyncing ? <Loader2 size={18} className="animate-spin" /> : <Zap size={18} className="fill-current" />}
           {isSyncing ? 'Synchronizing Index...' : 'Force System Sync'}
@@ -401,10 +401,10 @@ function SyncTab({ syncLogs, onSyncTrigger }: { syncLogs: any[], onSyncTrigger: 
                   </td>
                   <td className="px-10 py-6">
                     <span className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-widest ${
-                      log.status === 'success' ? 'text-success' : log.status === 'partial' ? 'text-amber' : 'text-danger'
+                      log.status === 'success' ? 'text-success' : log.status === 'partial' ? 'text-emerald' : 'text-danger'
                     }`}>
                       <span className={`w-1.5 h-1.5 rounded-full ${
-                        log.status === 'success' ? 'bg-success' : log.status === 'partial' ? 'bg-amber' : 'bg-danger'
+                        log.status === 'success' ? 'bg-success' : log.status === 'partial' ? 'bg-emerald' : 'bg-danger'
                       }`} />
                       {log.status}
                     </span>
@@ -497,14 +497,14 @@ export default function AdminPage() {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[80vh] space-y-4">
-        <div className="w-16 h-16 border-4 border-[var(--border)] border-t-amber rounded-full animate-spin" />
-        <p className="text-sm font-bold text-amber uppercase tracking-widest animate-pulse">Initializing Terminal...</p>
+        <div className="w-16 h-16 border-4 border-[var(--border)] border-t-emerald rounded-full animate-spin" />
+        <p className="text-sm font-bold text-emerald uppercase tracking-widest animate-pulse">Initializing Terminal...</p>
       </div>
     )
   }
 
   const statCards = [
-    { num: liveStats?.totalOpps || '0', label: 'Total Listings', change: '+Active DB listings', icon: TrendingUp, color: 'amber' },
+    { num: liveStats?.totalOpps || '0', label: 'Total Listings', change: '+Active DB listings', icon: TrendingUp, color: 'emerald' },
     { num: liveStats?.totalUsers || '0', label: 'Registered Users', change: 'Since launch', icon: Users, color: 'primary' },
     { num: liveStats?.premiumUsers || '0', label: 'Active Subscriptions', change: 'Managed Role', icon: Crown, color: 'blue' },
     { num: liveStats?.estimatedRevenue ? `₦${(liveStats.estimatedRevenue / 1000).toFixed(1)}K` : '₦0', label: 'Est. Revenue', change: 'Proxy Metric', icon: DollarSign, color: 'success' },
@@ -619,14 +619,14 @@ export default function AdminPage() {
               Restricted Terminal — Level 4 Access
             </div>
             <h1 className="font-serif text-5xl md:text-7xl font-black text-primary tracking-tight mb-2">
-              System <span className="text-amber italic">Control.</span>
+              System <span className="text-emerald italic">Control.</span>
             </h1>
             <p className="text-muted text-xl font-medium max-w-xl">Global management of the African opportunity index.</p>
           </div>
           
           <button
             onClick={() => setShowCreateModal(true)}
-            className="group relative px-10 py-5 bg-amber text-black font-black uppercase text-xs tracking-[0.2em] rounded-[2rem] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-amber/10 flex items-center gap-3 overflow-hidden"
+            className="group relative px-10 py-5 bg-emerald text-black font-black uppercase text-xs tracking-[0.2em] rounded-[2rem] hover:scale-105 active:scale-95 transition-all shadow-xl shadow-emerald/10 flex items-center gap-3 overflow-hidden"
           >
             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
             <Plus size={18} className="relative z-10" />
@@ -658,7 +658,7 @@ export default function AdminPage() {
                 onClick={() => setActiveTab(t.id)}
                 className={`px-8 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap ${
                   activeTab === t.id 
-                    ? 'bg-[var(--icon-bg)] text-amber border border-[var(--glass-border)] shadow-inner' 
+                    ? 'bg-[var(--icon-bg)] text-emerald border border-[var(--glass-border)] shadow-inner' 
                     : 'text-muted hover:text-primary hover:bg-[var(--icon-bg)]'
                 }`}
               >
@@ -674,10 +674,10 @@ export default function AdminPage() {
             <div className="space-y-6">
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="relative flex-1 group">
-                  <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-amber transition-colors" />
+                  <Search size={18} className="absolute left-5 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-emerald transition-colors" />
                   <input
                     placeholder="Search global clusters..."
-                    className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl py-4 pl-14 pr-4 text-sm font-bold text-primary focus:outline-none focus:border-amber/30 transition-all shadow-inner"
+                    className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl py-4 pl-14 pr-4 text-sm font-bold text-primary focus:outline-none focus:border-emerald/30 transition-all shadow-inner"
                   />
                 </div>
                 <div className="flex gap-4">
@@ -708,7 +708,7 @@ export default function AdminPage() {
                         return (
                         <tr key={opp.id} className="hover:bg-[var(--icon-bg)] transition-colors group">
                           <td className="px-8 py-6">
-                            <div className="font-bold text-primary group-hover:text-amber transition-colors">{opp.title}</div>
+                            <div className="font-bold text-primary group-hover:text-emerald transition-colors">{opp.title}</div>
                             <div className="text-[10px] font-bold text-muted uppercase tracking-widest mt-1">{opp.organization || opp.org || 'Independent'}</div>
                           </td>
                           <td className="px-8 py-6">
@@ -728,7 +728,7 @@ export default function AdminPage() {
                           </td>
                           <td className="px-8 py-6">
                             <div className="flex items-center gap-3">
-                               <Link href={`/opportunities/${opp.id}`} target="_blank" className="p-2.5 rounded-xl bg-[var(--icon-bg)] border border-[var(--border)] text-muted hover:text-amber hover:border-amber/20 transition-all cursor-pointer">
+                               <Link href={`/opportunities/${opp.id}`} target="_blank" className="p-2.5 rounded-xl bg-[var(--icon-bg)] border border-[var(--border)] text-muted hover:text-emerald hover:border-emerald/20 transition-all cursor-pointer">
                                  <Eye size={16} />
                                </Link>
                                <button onClick={() => handleDelete(opp.id)} className="p-2.5 rounded-xl bg-[var(--icon-bg)] border border-[var(--border)] text-muted hover:text-danger hover:border-danger/20 transition-all">
@@ -835,7 +835,7 @@ export default function AdminPage() {
       {showCreateModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 bg-bg/80 backdrop-blur-xl animate-fade-in overflow-y-auto" onClick={() => setShowCreateModal(false)}>
           <div className="bg-bg2 border border-[var(--glass-border)] rounded-[3rem] p-8 md:p-14 w-full max-w-2xl shadow-premium relative my-auto" onClick={e => e.stopPropagation()}>
-            <div className="absolute top-0 right-0 w-64 h-64 bg-amber/5 blur-[100px] -z-10" />
+            <div className="absolute top-0 right-0 w-64 h-64 bg-emerald/5 blur-[100px] -z-10" />
             
             {publishSuccess ? (
               <div className="text-center py-20 animate-fade-up">
@@ -860,15 +860,15 @@ export default function AdminPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-muted ml-1">Entity Title</label>
-                    <input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-amber/30 transition-all" placeholder="e.g. Mandela Rhodes 2025" />
+                    <input value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-emerald/30 transition-all" placeholder="e.g. Mandela Rhodes 2025" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-muted ml-1">Parent Org</label>
-                    <input value={formData.organization} onChange={e => setFormData({...formData, organization: e.target.value})} className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-amber/30 transition-all" placeholder="e.g. MRF Foundation" />
+                    <input value={formData.organization} onChange={e => setFormData({...formData, organization: e.target.value})} className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-emerald/30 transition-all" placeholder="e.g. MRF Foundation" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-muted ml-1">Cluster Type</label>
-                    <select value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full bg-[#1A1F15] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-amber/30 transition-all cursor-pointer appearance-none">
+                    <select value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full bg-[#1A1F15] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-emerald/30 transition-all cursor-pointer appearance-none">
                       <option value="scholarship">Scholarship</option>
                       <option value="fellowship">Fellowship</option>
                       <option value="grant">Grant</option>
@@ -881,11 +881,11 @@ export default function AdminPage() {
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-muted ml-1">Closing Sequence</label>
-                    <input type="date" value={formData.deadline} onChange={e => setFormData({...formData, deadline: e.target.value})} className="w-full bg-[#1A1F15] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-amber/30 transition-all cursor-pointer" />
+                    <input type="date" value={formData.deadline} onChange={e => setFormData({...formData, deadline: e.target.value})} className="w-full bg-[#1A1F15] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-emerald/30 transition-all cursor-pointer" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-muted ml-1">Location / Target</label>
-                    <input value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-amber/30 transition-all" placeholder="e.g. Remote, Nigeria, Global" />
+                    <input value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-bold text-primary focus:outline-none focus:border-emerald/30 transition-all" placeholder="e.g. Remote, Nigeria, Global" />
                   </div>
                 </div>
 
@@ -894,7 +894,7 @@ export default function AdminPage() {
                   <textarea 
                     value={formData.description} 
                     onChange={e => setFormData({...formData, description: e.target.value})} 
-                    className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-medium text-primary focus:outline-none focus:border-amber/30 transition-all min-h-[120px] resize-none" 
+                    className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl p-4 text-sm font-medium text-primary focus:outline-none focus:border-emerald/30 transition-all min-h-[120px] resize-none" 
                     placeholder="Provide details about the eligibility, benefits, and how to apply..." 
                   />
                 </div>
@@ -902,15 +902,15 @@ export default function AdminPage() {
                 <div className="space-y-2">
                   <label className="text-[10px] font-black uppercase tracking-widest text-muted ml-1">Access URL</label>
                   <div className="relative group">
-                    <Globe size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-amber transition-colors" />
-                    <input value={formData.application_url} onChange={e => setFormData({...formData, application_url: e.target.value})} className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-primary focus:outline-none focus:border-amber/30 transition-all" placeholder="https://..." />
+                    <Globe size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-emerald transition-colors" />
+                    <input value={formData.application_url} onChange={e => setFormData({...formData, application_url: e.target.value})} className="w-full bg-[var(--icon-bg)] border border-[var(--glass-border)] rounded-2xl py-4 pl-12 pr-4 text-sm font-bold text-primary focus:outline-none focus:border-emerald/30 transition-all" placeholder="https://..." />
                   </div>
                 </div>
 
                 <button 
                   onClick={handlePublish}
                   disabled={isPublishing}
-                  className="btn-primary w-full py-5 rounded-2xl shadow-glow-amber text-bg font-black uppercase tracking-[0.2em] text-xs flex items-center justify-center gap-3 active:scale-95 transition-all disabled:opacity-50"
+                  className="btn-primary w-full py-5 rounded-2xl shadow-glow-emerald text-bg font-black uppercase tracking-[0.2em] text-xs flex items-center justify-center gap-3 active:scale-95 transition-all disabled:opacity-50"
                 >
                   {isPublishing ? 'Transmitting...' : 'Verify & Publish'}
                   <Zap size={18} className="fill-current" />

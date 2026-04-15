@@ -124,7 +124,7 @@ export default function CreateEventPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-bg">
-        <div className="w-12 h-12 border-4 border-amber/20 border-t-amber rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-emerald/20 border-t-emerald rounded-full animate-spin" />
       </div>
     )
   }
@@ -134,11 +134,11 @@ export default function CreateEventPage() {
   if (success) {
     return (
       <div className="min-h-screen bg-bg flex items-center justify-center p-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-glow-amber opacity-20" />
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-amber/5 blur-[120px] rounded-full animate-pulse-soft" />
+        <div className="absolute inset-0 bg-glow-emerald opacity-20" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-emerald/5 blur-[120px] rounded-full animate-pulse-soft" />
         
         <div className="max-w-xl w-full bg-surface/30 backdrop-blur-3xl border border-border/60 rounded-[3rem] p-12 text-center relative z-10 animate-fade-up shadow-premium">
-          <div className="w-24 h-24 bg-amber/10 border border-amber/20 rounded-[2rem] flex items-center justify-center text-amber mx-auto mb-8 shadow-glow-amber">
+          <div className="w-24 h-24 bg-emerald/10 border border-emerald/20 rounded-[2rem] flex items-center justify-center text-emerald mx-auto mb-8 shadow-glow-emerald">
              <PartyPopper size={48} />
           </div>
           <h2 className="font-serif text-4xl font-bold text-primary mb-4 tracking-tight">
@@ -154,7 +154,7 @@ export default function CreateEventPage() {
             <div className="bg-bg/40 border border-border/60 rounded-2xl p-6 mb-10 text-left">
               <div className="text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-3">Live Access Node</div>
               <div className="flex items-center justify-between gap-4">
-                <span className="text-sm font-bold text-amber font-mono truncate">
+                <span className="text-sm font-bold text-emerald font-mono truncate">
                   {typeof window !== 'undefined' ? `${window.location.host}/${success.slug}` : `oppfetch.com/${success.slug}`}
                 </span>
                 <button
@@ -165,7 +165,7 @@ export default function CreateEventPage() {
                     setTimeout(() => setCopied(false), 2000)
                   }}
                   className={`px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                    copied ? 'bg-emerald text-black' : 'bg-surface border border-border text-muted hover:text-amber hover:border-amber/40'
+                    copied ? 'bg-emerald text-black' : 'bg-surface border border-border text-muted hover:text-emerald hover:border-emerald/40'
                   }`}
                 >
                   {copied ? 'Copied' : 'Copy'}
@@ -175,7 +175,7 @@ export default function CreateEventPage() {
           )}
 
           <div className="grid grid-cols-2 gap-4 mb-10">
-             <Link href="/organizer" className="px-8 py-5 bg-amber text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-2xl shadow-xl shadow-amber/10 hover:scale-[1.02] active:scale-[0.98] transition-all">
+             <Link href="/organizer" className="px-8 py-5 bg-emerald text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-2xl shadow-xl shadow-emerald/10 hover:scale-[1.02] active:scale-[0.98] transition-all">
                Dashboard
              </Link>
              <button
@@ -188,9 +188,9 @@ export default function CreateEventPage() {
 
           {success.published && (
             <div className="flex items-center justify-center gap-6 pt-6 border-t border-border/40">
-               <a href="#" className="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-muted hover:text-amber transition-all"><Mail size={18} /></a>
-               <a href="#" className="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-muted hover:text-amber transition-all"><Linkedin size={18} /></a>
-               <a href="#" className="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-muted hover:text-amber transition-all"><ExternalLink size={18} /></a>
+               <a href="#" className="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-muted hover:text-emerald transition-all"><Mail size={18} /></a>
+               <a href="#" className="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-muted hover:text-emerald transition-all"><Linkedin size={18} /></a>
+               <a href="#" className="w-10 h-10 rounded-xl bg-surface border border-border flex items-center justify-center text-muted hover:text-emerald transition-all"><ExternalLink size={18} /></a>
             </div>
           )}
         </div>
@@ -200,17 +200,17 @@ export default function CreateEventPage() {
 
   return (
     <div className="min-h-screen bg-bg pt-32 pb-40 px-6 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-amber/5 blur-[150px] rounded-full -z-10" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald/5 blur-[150px] rounded-full -z-10" />
       
       <div className="max-w-3xl mx-auto">
-        <Link href="/organizer" className="group inline-flex items-center gap-3 text-amber text-[10px] font-black uppercase tracking-[0.3em] mb-12 hover:translate-x-[-4px] transition-transform">
+        <Link href="/organizer" className="group inline-flex items-center gap-3 text-emerald text-[10px] font-black uppercase tracking-[0.3em] mb-12 hover:translate-x-[-4px] transition-transform">
           <ArrowLeft size={16} /> Dashboard
         </Link>
 
         <div className="mb-16">
-          <h4 className="text-[10px] font-black text-amber uppercase tracking-[0.4em] mb-4">Organizer Portal</h4>
+          <h4 className="text-[10px] font-black text-emerald uppercase tracking-[0.4em] mb-4">Organizer Portal</h4>
           <h1 className="font-serif text-5xl md:text-6xl font-black text-primary tracking-tight mb-4">
-            Deployment <span className="text-amber italic">Hub.</span>
+            Deployment <span className="text-emerald italic">Hub.</span>
           </h1>
           <p className="text-muted text-lg font-medium opacity-80 leading-relaxed">
             Configure your next opportunity cluster for the African student ecosystem.
@@ -228,7 +228,7 @@ export default function CreateEventPage() {
           {/* Section 1: Core Intelligence */}
           <div className="space-y-8">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-1 bg-amber/30 rounded-full" />
+              <div className="w-10 h-1 bg-emerald/30 rounded-full" />
               <h3 className="text-[11px] font-black text-muted uppercase tracking-[0.3em]">Core Intelligence</h3>
             </div>
             
@@ -236,13 +236,13 @@ export default function CreateEventPage() {
               <div className="space-y-3">
                 <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] ml-1">Event Designation</label>
                 <div className="relative group">
-                  <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-amber transition-colors" size={18} />
+                  <Tag className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-emerald transition-colors" size={18} />
                   <input
                     name="title"
                     value={form.title}
                     onChange={handleChange}
                     placeholder="e.g. Mandela Rhodes Summit 2025"
-                    className="w-full bg-surface/30 border border-border/80 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold focus:border-amber/40 focus:bg-surface/50 outline-none transition-all"
+                    className="w-full bg-surface/30 border border-border/80 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold focus:border-emerald/40 focus:bg-surface/50 outline-none transition-all"
                   />
                 </div>
               </div>
@@ -253,7 +253,7 @@ export default function CreateEventPage() {
                   name="eventType"
                   value={form.eventType}
                   onChange={handleChange}
-                  className="w-full bg-surface/30 border border-border/80 rounded-2xl py-4 px-6 text-sm font-bold focus:border-amber/40 focus:bg-surface/50 outline-none transition-all appearance-none cursor-pointer"
+                  className="w-full bg-surface/30 border border-border/80 rounded-2xl py-4 px-6 text-sm font-bold focus:border-emerald/40 focus:bg-surface/50 outline-none transition-all appearance-none cursor-pointer"
                 >
                   <option value="bootcamp">Bootcamp</option>
                   <option value="workshop">Workshop</option>
@@ -274,7 +274,7 @@ export default function CreateEventPage() {
                 onChange={handleChange}
                 placeholder="Provide a detailed breakdown of the opportunity requirements, benefits, and schedule..."
                 rows={6}
-                className="w-full bg-surface/30 border border-border/80 rounded-3xl p-6 text-sm font-medium leading-relaxed focus:border-amber/40 focus:bg-surface/50 outline-none transition-all resize-none"
+                className="w-full bg-surface/30 border border-border/80 rounded-3xl p-6 text-sm font-medium leading-relaxed focus:border-emerald/40 focus:bg-surface/50 outline-none transition-all resize-none"
               />
             </div>
           </div>
@@ -282,7 +282,7 @@ export default function CreateEventPage() {
           {/* Section 2: Temporal Parameters */}
           <div className="space-y-8">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-1 bg-amber/30 rounded-full" />
+              <div className="w-10 h-1 bg-emerald/30 rounded-full" />
               <h3 className="text-[11px] font-black text-muted uppercase tracking-[0.3em]">Temporal Parameters</h3>
             </div>
             
@@ -290,26 +290,26 @@ export default function CreateEventPage() {
               <div className="space-y-3">
                 <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] ml-1">Commencement</label>
                 <div className="relative group">
-                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-amber transition-colors" size={18} />
+                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-emerald transition-colors" size={18} />
                   <input
                     type="datetime-local"
                     name="startDate"
                     value={form.startDate}
                     onChange={handleChange}
-                    className="w-full bg-surface/30 border border-border/80 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold focus:border-amber/40 focus:bg-surface/50 outline-none transition-all cursor-pointer"
+                    className="w-full bg-surface/30 border border-border/80 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold focus:border-emerald/40 focus:bg-surface/50 outline-none transition-all cursor-pointer"
                   />
                 </div>
               </div>
               <div className="space-y-3">
                 <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] ml-1">Conclusion</label>
                 <div className="relative group">
-                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-amber transition-colors" size={18} />
+                  <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-emerald transition-colors" size={18} />
                   <input
                     type="datetime-local"
                     name="endDate"
                     value={form.endDate}
                     onChange={handleChange}
-                    className="w-full bg-surface/30 border border-border/80 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold focus:border-amber/40 focus:bg-surface/50 outline-none transition-all cursor-pointer"
+                    className="w-full bg-surface/30 border border-border/80 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold focus:border-emerald/40 focus:bg-surface/50 outline-none transition-all cursor-pointer"
                   />
                 </div>
               </div>
@@ -319,7 +319,7 @@ export default function CreateEventPage() {
           {/* Section 3: Physical & Digital Presence */}
           <div className="space-y-8">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-1 bg-amber/30 rounded-full" />
+              <div className="w-10 h-1 bg-emerald/30 rounded-full" />
               <h3 className="text-[11px] font-black text-muted uppercase tracking-[0.3em]">Presence Mode</h3>
             </div>
             
@@ -333,7 +333,7 @@ export default function CreateEventPage() {
                     onChange={handleChange}
                     className="sr-only peer"
                   />
-                  <div className="absolute left-1 top-1 w-4 h-4 bg-muted rounded-full transition-all peer-checked:left-7 peer-checked:bg-amber" />
+                  <div className="absolute left-1 top-1 w-4 h-4 bg-muted rounded-full transition-all peer-checked:left-7 peer-checked:bg-emerald" />
                 </div>
                 <div>
                   <span className="text-sm font-black text-primary uppercase tracking-widest block mb-0.5">Digital Overide</span>
@@ -345,13 +345,13 @@ export default function CreateEventPage() {
                 <div className="space-y-3 animate-fade-down">
                   <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] ml-1">Access URL</label>
                   <div className="relative group">
-                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-amber transition-colors" size={18} />
+                    <Globe className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-emerald transition-colors" size={18} />
                     <input
                       name="onlineLink"
                       value={form.onlineLink}
                       onChange={handleChange}
                       placeholder="https://meet.nexus.com/..."
-                      className="w-full bg-bg/40 border border-border/80 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold focus:border-amber/40 outline-none transition-all"
+                      className="w-full bg-bg/40 border border-border/80 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold focus:border-emerald/40 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -359,13 +359,13 @@ export default function CreateEventPage() {
                 <div className="space-y-3 animate-fade-down">
                   <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] ml-1">Physical Node</label>
                   <div className="relative group">
-                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-amber transition-colors" size={18} />
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-emerald transition-colors" size={18} />
                     <input
                       name="location"
                       value={form.location}
                       onChange={handleChange}
                       placeholder="e.g. Civic Center, Victoria Island, Lagos"
-                      className="w-full bg-bg/40 border border-border/80 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold focus:border-amber/40 outline-none transition-all"
+                      className="w-full bg-bg/40 border border-border/80 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold focus:border-emerald/40 outline-none transition-all"
                     />
                   </div>
                 </div>
@@ -376,7 +376,7 @@ export default function CreateEventPage() {
           {/* Section 4: Economic Parameters */}
           <div className="space-y-8">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-1 bg-amber/30 rounded-full" />
+              <div className="w-10 h-1 bg-emerald/30 rounded-full" />
               <h3 className="text-[11px] font-black text-muted uppercase tracking-[0.3em]">Economic Parameters</h3>
             </div>
             
@@ -391,7 +391,7 @@ export default function CreateEventPage() {
                       onChange={handleChange}
                       className="sr-only peer"
                     />
-                    <div className="absolute left-1 top-1 w-4 h-4 bg-muted rounded-full transition-all peer-checked:left-7 peer-checked:bg-amber" />
+                    <div className="absolute left-1 top-1 w-4 h-4 bg-muted rounded-full transition-all peer-checked:left-7 peer-checked:bg-emerald" />
                   </div>
                   <span className="text-sm font-black text-primary uppercase tracking-widest">Entry Fee Required</span>
                 </label>
@@ -400,14 +400,14 @@ export default function CreateEventPage() {
                   <div className="space-y-3 animate-fade-down">
                     <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] ml-1">Fee Amount (NGN)</label>
                     <div className="relative group">
-                      <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-amber transition-colors" size={18} />
+                      <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-emerald transition-colors" size={18} />
                       <input
                         type="number"
                         name="ticketPrice"
                         value={form.ticketPrice}
                         onChange={handleChange}
                         placeholder="e.g. 15000"
-                        className="w-full bg-bg/40 border border-border/80 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold focus:border-amber/40 outline-none transition-all"
+                        className="w-full bg-bg/40 border border-border/80 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold focus:border-emerald/40 outline-none transition-all"
                       />
                     </div>
                   </div>
@@ -417,14 +417,14 @@ export default function CreateEventPage() {
               <div className="space-y-3">
                 <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] ml-1">Node Capacity</label>
                 <div className="relative group">
-                  <Users className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-amber transition-colors" size={18} />
+                  <Users className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-emerald transition-colors" size={18} />
                   <input
                     type="number"
                     name="maxCapacity"
                     value={form.maxCapacity}
                     onChange={handleChange}
                     placeholder="Infinite if empty"
-                    className="w-full bg-surface/30 border border-border/80 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold focus:border-amber/40 focus:bg-surface/50 outline-none transition-all"
+                    className="w-full bg-surface/30 border border-border/80 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold focus:border-emerald/40 focus:bg-surface/50 outline-none transition-all"
                   />
                 </div>
               </div>
@@ -443,7 +443,7 @@ export default function CreateEventPage() {
             <button
               onClick={() => handleSubmit(true)}
               disabled={submitting}
-              className="flex-1 group relative px-10 py-5 bg-amber text-black font-black uppercase text-[11px] tracking-[0.2em] rounded-2xl shadow-xl shadow-amber/10 hover:scale-[1.02] active:scale-[0.98] transition-all overflow-hidden"
+              className="flex-1 group relative px-10 py-5 bg-emerald text-black font-black uppercase text-[11px] tracking-[0.2em] rounded-2xl shadow-xl shadow-emerald/10 hover:scale-[1.02] active:scale-[0.98] transition-all overflow-hidden"
             >
               <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
               <div className="flex items-center justify-center gap-3 relative z-10">

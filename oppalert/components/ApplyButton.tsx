@@ -29,7 +29,7 @@ export default function ApplyButton({ applyUrl, oppId, disabled }: { applyUrl: s
   return (
     <button
       onClick={handleApply}
-      className="btn-primary w-full py-5 px-8 text-sm font-black uppercase tracking-[0.2em] rounded-2xl shadow-glow-amber hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
+      className="btn-primary w-full py-5 px-8 text-sm font-black uppercase tracking-[0.2em] rounded-2xl shadow-glow-emerald hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
     >
       Apply Now
       <ExternalLink size={18} className="stroke-[2.5]" />

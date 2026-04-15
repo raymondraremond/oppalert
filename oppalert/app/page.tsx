@@ -102,16 +102,16 @@ export default function HomePage() {
              transition={{ duration: 1, delay: 0.4, ease }}
              className="group relative h-full"
            >
-             <Link href="/organizer" className="block h-full p-10 rounded-[3rem] bg-surface/40 backdrop-blur-3xl border border-white/10 hover:border-amber-500/30 transition-all duration-500 overflow-hidden">
+             <Link href="/organizer" className="block h-full p-10 rounded-[3rem] bg-surface/40 backdrop-blur-3xl border border-white/10 hover:border-emerald-500/30 transition-all duration-500 overflow-hidden">
                 <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-                   <Calendar size={140} className="text-amber" />
+                   <Calendar size={140} className="text-emerald" />
                 </div>
-                <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-8 text-amber">
+                <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-8 text-emerald">
                    <Users size={28} />
                 </div>
                 <h3 className="text-3xl font-syne font-bold text-primary mb-4">I am an Organizer</h3>
                 <p className="text-muted/70 mb-8 leading-relaxed">Host workshops, summits, or cohorts. Get a dedicated URL and manage your attendees with ease.</p>
-                <div className="flex items-center gap-2 text-amber font-bold text-sm tracking-widest uppercase">
+                <div className="flex items-center gap-2 text-emerald font-bold text-sm tracking-widest uppercase">
                   Launch Event <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
                 </div>
              </Link>

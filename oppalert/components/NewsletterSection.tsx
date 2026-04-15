@@ -10,11 +10,11 @@ export default function NewsletterSection() {
         <div className="absolute bottom-0 left-0 w-80 h-80 blur-[100px] -z-10 group-hover:scale-150 transition-transform duration-1000" style={{backgroundColor: 'var(--icon-bg)'}} />
         
         <div className="text-center max-w-xl mx-auto relative z-10">
-          <div className="w-20 h-20 rounded-[2rem] bg-amber-gradient text-bg flex items-center justify-center mx-auto mb-10 shadow-glow-amber animate-pulse">
+          <div className="w-20 h-20 rounded-[2rem] bg-emerald-gradient text-bg flex items-center justify-center mx-auto mb-10 shadow-glow-emerald animate-pulse">
             <Bell size={36} className="stroke-[2.5]" />
           </div>
           <h2 className="font-syne text-4xl md:text-5xl font-black mb-6 text-primary">
-            Weekly alerts, <span className="text-amber">zero noise.</span>
+            Weekly alerts, <span className="text-emerald">zero noise.</span>
           </h2>
           <p className="text-subtle text-lg font-medium mb-12">
             Join 48,000+ African students and graduates. Get the opportunities you actually want, delivered to your inbox.

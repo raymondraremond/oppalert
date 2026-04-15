@@ -64,8 +64,8 @@ export default function OrganizerDashboard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-bg flex flex-col items-center justify-center relative overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber/10 blur-[120px] rounded-full" />
-        <div className="w-12 h-12 border-4 border-amber border-t-transparent rounded-full animate-spin mb-6 relative z-10" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald/10 blur-[120px] rounded-full" />
+        <div className="w-12 h-12 border-4 border-emerald border-t-transparent rounded-full animate-spin mb-6 relative z-10" />
         <p className="text-muted font-bold uppercase tracking-[0.2em] text-[10px] animate-pulse relative z-10">Initializing Dashboard</p>
       </div>
     )
@@ -74,22 +74,22 @@ export default function OrganizerDashboard() {
   return (
     <main className="min-h-screen bg-bg pt-32 pb-32 px-6 relative overflow-hidden">
       {/* Background Decorative Elements */}
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-amber/5 blur-[150px] rounded-full pointer-events-none -z-10" />
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald/5 blur-[150px] rounded-full pointer-events-none -z-10" />
       <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-emerald/5 blur-[150px] rounded-full pointer-events-none -z-10" />
 
       <div className="container mx-auto max-w-7xl">
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-16 gap-8">
           <div className="space-y-2">
-            <h4 className="text-[10px] font-black text-amber uppercase tracking-[0.4em] mb-4">Organizer Portal</h4>
+            <h4 className="text-[10px] font-black text-emerald uppercase tracking-[0.4em] mb-4">Organizer Portal</h4>
             <h1 className="font-serif text-5xl md:text-6xl font-black text-primary tracking-tight">
-               Event <span className="text-amber italic">Hub.</span>
+               Event <span className="text-emerald italic">Hub.</span>
             </h1>
             <p className="text-muted text-lg max-w-xl font-medium pt-2">
               Transforming communities, one event at a time. Welcome back, <span className="text-primary font-bold">{user?.fullName || user?.full_name}</span>.
             </p>
           </div>
-          <Link href="/organizer/create" className="group relative px-10 py-5 bg-amber text-black font-black uppercase text-xs tracking-widest rounded-3xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-amber/10 flex items-center gap-3">
+          <Link href="/organizer/create" className="group relative px-10 py-5 bg-emerald text-black font-black uppercase text-xs tracking-widest rounded-3xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-emerald/10 flex items-center gap-3">
             <Plus size={18} /> Create New Event
           </Link>
         </div>
@@ -108,7 +108,7 @@ export default function OrganizerDashboard() {
                   <p className="text-sm text-muted font-medium">You have unlimited event creation in our current system. Share your unique links to grow.</p>
                 </div>
               </div>
-              <Link href="/pricing" className="px-8 py-4 bg-surface2 border border-border rounded-2xl text-[11px] font-black uppercase tracking-widest hover:border-amber/40 hover:text-amber transition-all">
+              <Link href="/pricing" className="px-8 py-4 bg-surface2 border border-border rounded-2xl text-[11px] font-black uppercase tracking-widest hover:border-emerald/40 hover:text-emerald transition-all">
                 Boost Visibility &rarr;
               </Link>
             </div>
@@ -135,17 +135,17 @@ export default function OrganizerDashboard() {
 
           <div className="p-8 bg-surface/40 backdrop-blur-xl border border-border/80 rounded-[2.5rem] group relative overflow-hidden">
             <div className="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
-               <Calendar size={120} className="text-amber" />
+               <Calendar size={120} className="text-emerald" />
             </div>
             <div className="relative z-10">
               <p className="text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-4">Live Sessions</p>
               <div className="flex items-baseline gap-2 mb-4">
                  <span className="text-5xl font-serif font-black text-primary">{stats.activeEvents}</span>
-                 <span className="text-[10px] font-bold text-amber">Active</span>
+                 <span className="text-[10px] font-bold text-emerald">Active</span>
               </div>
               <div className="flex gap-1.5">
                    {[3, 5, 4, 7, 5].map((h, i) => (
-                      <div key={i} className={`flex-1 rounded-full bg-amber/${i * 20 + 20}`} style={{ height: h * 4 }} />
+                      <div key={i} className={`flex-1 rounded-full bg-emerald/${i * 20 + 20}`} style={{ height: h * 4 }} />
                    ))}
               </div>
             </div>
@@ -209,9 +209,9 @@ export default function OrganizerDashboard() {
                     <tr key={event.id} className="hover:bg-surface2/30 transition-all duration-300 group">
                       <td className="px-10 py-8">
                          <div className="flex flex-col">
-                            <span className="font-bold text-primary text-lg mb-1 group-hover:text-amber transition-colors">{event.title}</span>
+                            <span className="font-bold text-primary text-lg mb-1 group-hover:text-emerald transition-colors">{event.title}</span>
                             <span className="text-[10px] font-black text-muted uppercase tracking-widest opacity-60 flex items-center gap-2">
-                               <div className="w-1 h-1 rounded-full bg-amber" /> {event.event_type}
+                               <div className="w-1 h-1 rounded-full bg-emerald" /> {event.event_type}
                             </span>
                          </div>
                       </td>
@@ -231,7 +231,7 @@ export default function OrganizerDashboard() {
                           </div>
                           <div className="w-40 h-1.5 bg-bg/50 rounded-full overflow-hidden">
                              <div 
-                                className="h-full bg-amber rounded-full" 
+                                className="h-full bg-emerald rounded-full" 
                                 style={{ width: `${Math.min(100, (event.current_registrations / (event.max_capacity || 100)) * 100)}%` }} 
                              />
                           </div>
@@ -241,16 +241,16 @@ export default function OrganizerDashboard() {
                         <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${
                           event.is_published 
                             ? "bg-emerald/10 text-emerald border border-emerald/20" 
-                            : "bg-amber/10 text-amber border border-amber/20"
+                            : "bg-emerald/10 text-emerald border border-emerald/20"
                         }`}>
-                           <div className={`w-1 h-1 rounded-full ${event.is_published ? 'bg-emerald' : 'bg-amber'} animate-pulse`} />
+                           <div className={`w-1 h-1 rounded-full ${event.is_published ? 'bg-emerald' : 'bg-emerald'} animate-pulse`} />
                            {event.is_published ? "Live" : "Draft"}
                         </div>
                       </td>
                       <td className="px-10 py-8 text-right">
                         <div className="flex items-center justify-end gap-3">
                           <Link href={`/organizer/events/${event.id}`}>
-                            <button className="px-6 py-2.5 bg-surface text-primary border border-border rounded-xl text-[10px] font-black uppercase tracking-widest hover:border-amber hover:text-amber transition-all shadow-sm">
+                            <button className="px-6 py-2.5 bg-surface text-primary border border-border rounded-xl text-[10px] font-black uppercase tracking-widest hover:border-emerald hover:text-emerald transition-all shadow-sm">
                               Detail &rarr;
                             </button>
                           </Link>
@@ -261,7 +261,7 @@ export default function OrganizerDashboard() {
                                 setCopyingId(event.id);
                                 setTimeout(() => setCopyingId(null), 2000);
                               }}
-                              className="p-2.5 hover:bg-surface rounded-lg transition-colors text-muted hover:text-amber"
+                              className="p-2.5 hover:bg-surface rounded-lg transition-colors text-muted hover:text-emerald"
                             >
                               {copyingId === event.id ? <div className="text-[10px] font-bold text-emerald px-1">Copied!</div> : <Copy size={16} />}
                             </button>
@@ -295,7 +295,7 @@ export default function OrganizerDashboard() {
                 <p className="text-muted text-lg max-w-sm mx-auto mb-10 leading-relaxed">
                   Start creating your first impact-driven event today and reach thousands of Africans.
                 </p>
-                <Link href="/organizer/create" className="px-12 py-5 bg-amber text-black font-black uppercase text-xs tracking-widest rounded-2xl hover:scale-105 transition-all shadow-xl shadow-amber/20 inline-flex items-center gap-3">
+                <Link href="/organizer/create" className="px-12 py-5 bg-emerald text-black font-black uppercase text-xs tracking-widest rounded-2xl hover:scale-105 transition-all shadow-xl shadow-emerald/20 inline-flex items-center gap-3">
                    Create First Event <ChevronRight size={18} />
                 </Link>
               </div>

@@ -25,7 +25,7 @@ export default function EventsCreateLandingPage() {
           OppFetch gives African educators and community leaders professional tools to host events that matter. From intimate workshops to large conferences.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/organizer" className="px-10 py-4 bg-[#E8A020] text-[#080A07] font-black rounded-2xl hover:scale-105 transition-all text-lg shadow-glow-amber">
+          <Link href="/organizer" className="px-10 py-4 bg-[#E8A020] text-[#080A07] font-black rounded-2xl hover:scale-105 transition-all text-lg shadow-glow-emerald">
             Create Your First Event →
           </Link>
           <button className="px-10 py-4 bg-transparent text-primary border border-border font-black rounded-2xl hover:bg-bg2 transition-all text-lg">
@@ -87,7 +87,7 @@ export default function EventsCreateLandingPage() {
           </div>
 
           {/* PREMIUM */}
-          <div className="p-12 bg-bg2 border-2 border-[#E8A020] rounded-[3rem] relative overflow-hidden flex flex-col shadow-glow-amber">
+          <div className="p-12 bg-bg2 border-2 border-[#E8A020] rounded-[3rem] relative overflow-hidden flex flex-col shadow-glow-emerald">
             <div className="absolute top-6 right-6 px-3 py-1 bg-[#E8A020] text-[#080A07] text-[10px] font-black rounded-full uppercase">POPULAR</div>
             <div className="mb-8">
               <h3 className="text-sm font-black text-[#E8A020] uppercase tracking-[0.2em] mb-2">Go Professional</h3>
@@ -139,7 +139,7 @@ export default function EventsCreateLandingPage() {
             <p className="text-xl text-muted mb-12 max-w-2xl mx-auto">
               Join hundreds of African organizers already using OppFetch to grow their communities.
             </p>
-            <Link href="/organizer" className="px-12 py-5 bg-[#E8A020] text-[#080A07] font-black rounded-2xl hover:scale-105 transition-all text-xl shadow-glow-amber inline-block">
+            <Link href="/organizer" className="px-12 py-5 bg-[#E8A020] text-[#080A07] font-black rounded-2xl hover:scale-105 transition-all text-xl shadow-glow-emerald inline-block">
               Get Started Free →
             </Link>
           </div>

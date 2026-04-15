@@ -94,12 +94,12 @@ export default function Navbar() {
         
         {/* Branding */}
         <Link href="/" className="group flex items-center gap-3 transition-transform active:scale-95 outline-none">
-          <div className="w-10 h-10 rounded-xl bg-surface2 border border-border flex items-center justify-center shadow-inner relative overflow-hidden group-hover:border-amber/40 transition-colors">
-            <div className="absolute inset-0 bg-amber/5 blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="w-10 h-10 rounded-xl bg-surface2 border border-border flex items-center justify-center shadow-inner relative overflow-hidden group-hover:border-emerald/40 transition-colors">
+            <div className="absolute inset-0 bg-emerald/5 blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
             <img src="/icon.png" alt="OppAlert" className="w-5 h-5 object-contain relative z-10 filter drop-shadow-sm" />
           </div>
           <span className="font-serif text-2xl font-bold tracking-tight text-primary">
-            Opp<span className="text-amber italic">Alert</span>
+            Opp<span className="text-emerald italic">Alert</span>
           </span>
         </Link>
 
@@ -113,7 +113,7 @@ export default function Navbar() {
                 href={link.href}
                 className={`px-6 py-2.5 rounded-full text-[11px] font-black uppercase tracking-[0.15em] transition-all duration-300 ${
                   isActive 
-                    ? 'bg-amber text-black shadow-lg shadow-amber/10' 
+                    ? 'bg-emerald text-black shadow-lg shadow-emerald/10' 
                     : 'text-muted hover:text-primary hover:bg-surface2'
                 }`}
               >
@@ -131,9 +131,9 @@ export default function Navbar() {
             <div ref={dropdownRef} className="relative">
               <button 
                 onClick={() => setShowDropdown(!showDropdown)}
-                className="flex items-center gap-3 pl-2 pr-4 py-2 bg-surface/40 border border-border rounded-full hover:border-amber/40 transition-all active:scale-95"
+                className="flex items-center gap-3 pl-2 pr-4 py-2 bg-surface/40 border border-border rounded-full hover:border-emerald/40 transition-all active:scale-95"
               >
-                <div className="w-8 h-8 rounded-full bg-amber text-black flex items-center justify-center font-black text-[10px] shadow-lg shadow-amber/10">
+                <div className="w-8 h-8 rounded-full bg-emerald text-black flex items-center justify-center font-black text-[10px] shadow-lg shadow-emerald/10">
                   {getInitials()}
                 </div>
                 <ChevronDown size={14} className={`text-muted transition-transform duration-300 ${showDropdown ? 'rotate-180' : ''}`} />
@@ -146,14 +146,14 @@ export default function Navbar() {
                     <p className="text-[10px] text-muted font-bold uppercase tracking-wider truncate opacity-60">{user?.email}</p>
                   </div>
                   
-                  <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-primary hover:bg-amber hover:text-black rounded-xl transition-all mb-1">
+                  <Link href="/dashboard" className="flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-primary hover:bg-emerald hover:text-black rounded-xl transition-all mb-1">
                     <LayoutDashboard size={14} /> Dashboard
                   </Link>
-                  <Link href="/organizer" className="flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-primary hover:bg-amber hover:text-black rounded-xl transition-all mb-1">
+                  <Link href="/organizer" className="flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-primary hover:bg-emerald hover:text-black rounded-xl transition-all mb-1">
                     <Briefcase size={14} /> Organizer Portal
                   </Link>
                   {isAdmin && (
-                    <Link href="/admin" className="flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-amber hover:bg-amber hover:text-black rounded-xl transition-all mb-1 border border-amber/20">
+                    <Link href="/admin" className="flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-emerald hover:bg-emerald hover:text-black rounded-xl transition-all mb-1 border border-emerald/20">
                       <Zap size={14} /> Admin Panel
                     </Link>
                   )}
@@ -168,10 +168,10 @@ export default function Navbar() {
             </div>
           ) : (
             <>
-              <Link href="/login" className="px-6 py-3 text-[11px] font-black uppercase tracking-[0.2em] text-muted hover:text-amber transition-colors">
+              <Link href="/login" className="px-6 py-3 text-[11px] font-black uppercase tracking-[0.2em] text-muted hover:text-emerald transition-colors">
                 Log In
               </Link>
-              <Link href="/register" className="px-8 py-4 bg-amber text-black font-black uppercase text-[11px] tracking-[0.2em] rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-amber/10">
+              <Link href="/register" className="px-8 py-4 bg-emerald text-black font-black uppercase text-[11px] tracking-[0.2em] rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-xl shadow-emerald/10">
                 Join Free
               </Link>
             </>
@@ -203,7 +203,7 @@ export default function Navbar() {
               <div className="pt-8 space-y-4">
                  {isLoggedIn ? (
                    <>
-                     <Link href="/dashboard" className="block p-5 bg-amber text-black rounded-2xl font-black uppercase tracking-widest text-center shadow-lg shadow-amber/10">
+                     <Link href="/dashboard" className="block p-5 bg-emerald text-black rounded-2xl font-black uppercase tracking-widest text-center shadow-lg shadow-emerald/10">
                         Go to Dashboard
                      </Link>
                      <button onClick={handleLogout} className="w-full p-5 bg-red-500/10 text-red-500 border border-red-500/20 rounded-2xl font-black uppercase tracking-widest">
@@ -212,7 +212,7 @@ export default function Navbar() {
                    </>
                  ) : (
                    <div className="grid grid-cols-1 gap-4">
-                      <Link href="/register" className="p-6 bg-amber text-black rounded-[2.5rem] font-black uppercase tracking-widest text-center shadow-xl shadow-amber/10">
+                      <Link href="/register" className="p-6 bg-emerald text-black rounded-[2.5rem] font-black uppercase tracking-widest text-center shadow-xl shadow-emerald/10">
                         Join OppAlert Free
                       </Link>
                       <Link href="/login" className="p-6 bg-surface border border-border rounded-[2.5rem] font-bold text-muted text-center">

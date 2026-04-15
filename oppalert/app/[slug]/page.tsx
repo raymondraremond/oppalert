@@ -96,7 +96,7 @@ export default function BrandedEventPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#080A07] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-amber border-t-transparent rounded-full animate-spin" />
+        <div className="w-12 h-12 border-4 border-emerald border-t-transparent rounded-full animate-spin" />
       </div>
     )
   }
@@ -107,7 +107,7 @@ export default function BrandedEventPage() {
     return (
       <div className="min-h-screen bg-[#080A07] flex flex-col items-center justify-center p-6 text-center">
         <div className="w-24 h-24 bg-bg2 rounded-[2rem] flex items-center justify-center mb-8 rotate-12">
-          <span className="text-4xl text-amber">🎪</span>
+          <span className="text-4xl text-emerald">🎪</span>
         </div>
         <h1 className="font-syne text-3xl font-black text-primary mb-4">Event Not Found</h1>
         <p className="text-muted mb-8 max-w-sm">The branded link you followed doesn&apos;t exist or has been moved.</p>
@@ -124,14 +124,14 @@ export default function BrandedEventPage() {
   return (
     <main className="min-h-screen bg-[#080A07] text-primary pt-24 pb-32">
       <div className="max-w-6xl mx-auto px-6">
-        <Link href="/events" className="inline-flex items-center gap-2 text-subtle hover:text-amber transition-colors mb-12 text-xs font-bold uppercase tracking-widest">
+        <Link href="/events" className="inline-flex items-center gap-2 text-subtle hover:text-emerald transition-colors mb-12 text-xs font-bold uppercase tracking-widest">
           <ArrowLeft size={16} /> Back to Hub
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-16 items-start">
           {/* Main Info */}
           <div className="animate-fade-up">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-amber/10 border border-amber/20 rounded-full text-amber text-[10px] font-black uppercase tracking-widest mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald/10 border border-emerald/20 rounded-full text-emerald text-[10px] font-black uppercase tracking-widest mb-8">
               <Sparkles size={12} /> {event.event_type}
             </div>
 
@@ -142,7 +142,7 @@ export default function BrandedEventPage() {
             <div className="flex flex-wrap gap-8 mb-12 border-y border-white/5 py-8">
               <div>
                 <p className="text-[10px] font-black text-subtle uppercase tracking-widest mb-2 flex items-center gap-2">
-                  <Calendar size={12} className="text-amber" /> Date & Time
+                  <Calendar size={12} className="text-emerald" /> Date & Time
                 </p>
                 <p className="text-sm font-bold text-primary">
                   {startDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
@@ -151,15 +151,15 @@ export default function BrandedEventPage() {
               </div>
               <div>
                 <p className="text-[10px] font-black text-subtle uppercase tracking-widest mb-2 flex items-center gap-2">
-                  <MapPin size={12} className="text-amber" /> Location
+                  <MapPin size={12} className="text-emerald" /> Location
                 </p>
                 <p className="text-sm font-bold text-primary">{event.is_online ? 'Remote / Online' : event.location}</p>
-                {event.is_online && <p className="text-xs text-amber mt-1 font-bold">Zoom/Meet link shared after RSVP</p>}
+                {event.is_online && <p className="text-xs text-emerald mt-1 font-bold">Zoom/Meet link shared after RSVP</p>}
               </div>
             </div>
 
             <div className="space-y-6">
-              <h3 className="font-syne text-xl font-black text-amber uppercase tracking-widest">Details</h3>
+              <h3 className="font-syne text-xl font-black text-emerald uppercase tracking-widest">Details</h3>
               <p className="text-muted leading-relaxed whitespace-pre-line text-lg">
                 {event.description}
               </p>
@@ -168,7 +168,7 @@ export default function BrandedEventPage() {
             <div className="mt-12 p-8 bg-bg2 rounded-[2rem] border border-border">
                <p className="text-xs font-bold text-muted uppercase tracking-[0.2em] mb-4">Organized By</p>
                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-amber flex items-center justify-center font-black text-[#080A07]">
+                  <div className="w-12 h-12 rounded-full bg-emerald flex items-center justify-center font-black text-[#080A07]">
                     {event.organizer_name?.[0] || 'O'}
                   </div>
                   <div>
@@ -182,7 +182,7 @@ export default function BrandedEventPage() {
           {/* Registration Sidebar */}
           <aside className="sticky top-32 animate-fade-up" style={{ animationDelay: '200ms' }}>
             <div className="glass-card rounded-[2.5rem] p-8 lg:p-10 border border-white/10 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-amber/5 blur-3xl -z-10" />
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald/5 blur-3xl -z-10" />
               
               <div className="flex items-end justify-between mb-8">
                 <div>
@@ -192,7 +192,7 @@ export default function BrandedEventPage() {
                   </p>
                 </div>
                 <div className="text-right">
-                   <Users size={20} className="text-amber ml-auto mb-1" />
+                   <Users size={20} className="text-emerald ml-auto mb-1" />
                    <p className="text-[10px] font-bold text-muted uppercase">{event.current_registrations}/{event.max_capacity || '∞'} RSVPs</p>
                 </div>
               </div>
@@ -204,7 +204,7 @@ export default function BrandedEventPage() {
                   </div>
                   <h3 className="font-syne text-xl font-black text-primary mb-2">You&apos;re In!</h3>
                   <p className="text-sm text-subtle leading-relaxed mb-8">Confirmation sent to <span className="text-primary font-bold">{regForm.email}</span></p>
-                  <button onClick={() => setRegSuccess(false)} className="text-[10px] font-black text-amber uppercase tracking-widest hover:underline">
+                  <button onClick={() => setRegSuccess(false)} className="text-[10px] font-black text-emerald uppercase tracking-widest hover:underline">
                     Register another person
                   </button>
                 </div>
@@ -221,7 +221,7 @@ export default function BrandedEventPage() {
                       type="text"
                       placeholder="Full Name"
                       required
-                      className="w-full bg-[#141710] border border-white/5 rounded-xl px-5 py-4 text-sm font-medium focus:border-amber/50 outline-none transition-all placeholder:text-white/20"
+                      className="w-full bg-[#141710] border border-white/5 rounded-xl px-5 py-4 text-sm font-medium focus:border-emerald/50 outline-none transition-all placeholder:text-white/20"
                       value={regForm.fullName}
                       onChange={e => setRegForm({...regForm, fullName: e.target.value})}
                     />
@@ -229,7 +229,7 @@ export default function BrandedEventPage() {
                       type="email"
                       placeholder="Email Address"
                       required
-                      className="w-full bg-[#141710] border border-white/5 rounded-xl px-5 py-4 text-sm font-medium focus:border-amber/50 outline-none transition-all placeholder:text-white/20"
+                      className="w-full bg-[#141710] border border-white/5 rounded-xl px-5 py-4 text-sm font-medium focus:border-emerald/50 outline-none transition-all placeholder:text-white/20"
                       value={regForm.email}
                       onChange={e => setRegForm({...regForm, email: e.target.value})}
                     />
@@ -238,7 +238,7 @@ export default function BrandedEventPage() {
                   <button
                     type="submit"
                     disabled={regLoading || isPast}
-                    className="w-full bg-amber text-[#080A07] font-black uppercase text-[10px] tracking-[0.2em] py-5 rounded-2xl shadow-glow-amber hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:scale-100 mt-4"
+                    className="w-full bg-emerald text-[#080A07] font-black uppercase text-[10px] tracking-[0.2em] py-5 rounded-2xl shadow-glow-emerald hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:scale-100 mt-4"
                   >
                     {isPast ? 'Event Ended' : regLoading ? 'RSVPing...' : 'Register for Event'}
                   </button>
@@ -258,7 +258,7 @@ export default function BrandedEventPage() {
                   setShared(true)
                   setTimeout(() => setShared(false), 2000)
                 }}
-                className="flex items-center gap-2 text-subtle hover:text-amber transition-colors text-[10px] font-black uppercase tracking-widest"
+                className="flex items-center gap-2 text-subtle hover:text-emerald transition-colors text-[10px] font-black uppercase tracking-widest"
               >
                 <Share2 size={16} /> {shared ? 'Copied Branded Link!' : 'Copy Branded URL'}
               </button>

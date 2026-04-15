@@ -27,7 +27,7 @@ export default function PrivacyPage() {
       <div className="max-w-4xl mx-auto">
         <div className="mb-20 animate-fade-up">
            <h1 className="font-syne text-5xl md:text-7xl font-black tracking-tighter mb-6 text-primary">
-             Privacy <span className="text-amber-gradient drop-shadow-glow-amber">Policy</span>
+             Privacy <span className="text-emerald-gradient drop-shadow-glow-emerald">Policy</span>
            </h1>
            <p className="text-subtle text-lg font-medium">Last updated: March 17, 2026</p>
         </div>
@@ -35,7 +35,7 @@ export default function PrivacyPage() {
         <div className="space-y-12 animate-fade-up animate-delay-100">
           {sections.map((section, idx) => (
             <div key={idx} className="glass-gradient border border-[var(--border)] rounded-[2.5rem] p-10 group hover:border-[var(--glass-border)] transition-all">
-              <h2 className="font-syne text-2xl font-black text-primary mb-6 group-hover:text-amber transition-colors">{section.title}</h2>
+              <h2 className="font-syne text-2xl font-black text-primary mb-6 group-hover:text-emerald transition-colors">{section.title}</h2>
               <p className="text-subtle text-lg leading-relaxed font-medium">
                 {section.content}
               </p>
