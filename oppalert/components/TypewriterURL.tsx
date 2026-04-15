@@ -41,11 +41,11 @@ export default function TypewriterURL() {
   }, [displayText, isDeleting, slugIndex, typingSpeed])
 
   return (
-    <div className="flex items-center gap-2 font-mono text-xs md:text-sm lg:text-base">
-      <span className="text-muted/60">oppalert.com/e/</span>
-      <span className="text-emerald-400 font-bold tracking-tight">
+    <div className="flex items-center gap-1 sm:gap-2 font-mono text-[10px] sm:text-xs md:text-sm lg:text-base flex-wrap">
+      <span className="text-muted">oppalert.com/e/</span>
+      <span className="text-emerald font-bold tracking-tight break-all">
         {displayText}
-        <span className="animate-blink border-r-2 border-emerald-400 ml-1" />
+        <span className="animate-blink border-r-2 border-emerald ml-1 md:ml-2" />
       </span>
     </div>
   )
