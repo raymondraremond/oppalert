@@ -9,6 +9,7 @@ const ease = [0.16, 1, 0.3, 1] as any
 
 export default function HomePage() {
   const [mounted, setMounted] = useState(false)
+  const [heroKey, setHeroKey] = useState(0)
   const [stats, setStats] = useState({
     users: 50000,
     opportunities: 45,
@@ -22,6 +23,12 @@ export default function HomePage() {
       .then(res => res.json())
       .then(data => setStats(data))
       .catch(() => {})
+      
+    const interval = setInterval(() => {
+      setHeroKey(prev => prev + 1)
+    }, 4500)
+    
+    return () => clearInterval(interval)
   }, [])
 
   if (!mounted) return null
@@ -51,31 +58,36 @@ export default function HomePage() {
              </div>
           </motion.div>
 
-          <h1 className="text-5xl md:text-7xl lg:text-[8.5rem] leading-[0.85] text-primary tracking-tighter mb-12 font-syne mx-auto font-black flex flex-wrap justify-center gap-x-6 gap-y-2">
-            <motion.span
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1, ease }}
-            >
-              Find.
-            </motion.span>
-            <motion.span
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3, ease }}
-            >
-              Host.
-            </motion.span>
-            <div className="w-full h-0 basis-full block"></div>
-            <motion.span
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5, ease }}
-              className="italic text-emerald-400 font-normal"
-            >
-              Succeed.
-            </motion.span>
-          </h1>
+          <AnimatePresence mode="wait">
+            <h1 key={heroKey} className="text-5xl md:text-7xl lg:text-[8.5rem] leading-[0.85] text-primary tracking-tighter mb-12 font-syne mx-auto font-black flex flex-wrap justify-center gap-x-6 gap-y-2">
+              <motion.span
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
+                transition={{ duration: 0.8, delay: 0.1, ease }}
+              >
+                Find.
+              </motion.span>
+              <motion.span
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
+                transition={{ duration: 0.8, delay: 0.3, ease }}
+              >
+                Host.
+              </motion.span>
+              <div className="w-full h-0 basis-full block"></div>
+              <motion.span
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20, transition: { duration: 0.2 } }}
+                transition={{ duration: 0.8, delay: 0.5, ease }}
+                className="italic text-emerald-400 font-normal"
+              >
+                Succeed.
+              </motion.span>
+            </h1>
+          </AnimatePresence>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
