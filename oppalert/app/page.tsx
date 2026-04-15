@@ -51,15 +51,31 @@ export default function HomePage() {
              </div>
           </motion.div>
 
-          <motion.h1 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.1, ease }}
-            className="text-5xl md:text-7xl lg:text-[8.5rem] leading-[0.85] text-primary tracking-tighter mb-12 font-syne mx-auto font-black"
-          >
-            Find. Host. <br />
-            <span className="italic text-emerald-400 font-normal">Succeed.</span>
-          </motion.h1>
+          <h1 className="text-5xl md:text-7xl lg:text-[8.5rem] leading-[0.85] text-primary tracking-tighter mb-12 font-syne mx-auto font-black flex flex-wrap justify-center gap-x-6 gap-y-2">
+            <motion.span
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1, ease }}
+            >
+              Find.
+            </motion.span>
+            <motion.span
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease }}
+            >
+              Host.
+            </motion.span>
+            <div className="w-full h-0 basis-full block"></div>
+            <motion.span
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5, ease }}
+              className="italic text-emerald-400 font-normal"
+            >
+              Succeed.
+            </motion.span>
+          </h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
