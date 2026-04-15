@@ -215,7 +215,7 @@ export default function CapsuleNav() {
             initial={{ opacity: 0, y: -20, scale: 0.95 }}
             animate={{ opacity: 1, y: 15, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className="lg:hidden max-w-[500px] mx-auto bg-surface/90 backdrop-blur-3xl border border-border/60 rounded-[3rem] p-8 shadow-premium"
+            className="lg:hidden max-w-[500px] mx-auto bg-surface/90 backdrop-blur-3xl border border-border/60 rounded-[3rem] p-8 shadow-premium pointer-events-auto"
           >
             <div className="flex flex-col gap-3">
               {navLinks.map((link) => (
