@@ -17,8 +17,20 @@ export default function ChatWidget() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const { messages, input, handleInputChange, handleSubmit, isLoading, error, reload } = useChat({
-    api: '/api/chat',
+    onResponse: (response) => {
+      console.log('[OppBot] Server Responded:', response.status, response.statusText);
+      if (!response.ok) {
+        console.error('[OppBot] Response Error Body:', response.body);
+      }
+    },
+    onFinish: (message) => {
+      console.log('[OppBot] Stream Finished:', message.content.substring(0, 50) + '...');
+    },
+    onError: (err) => {
+      console.error('[OppBot] Stream Error:', err);
+    }
   });
+
 
   // Diagnostic logging for connection errors
   useEffect(() => {

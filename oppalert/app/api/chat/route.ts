@@ -1,4 +1,4 @@
-import { createOpenAI } from '@ai-sdk/openai';
+import { groq } from '@ai-sdk/groq';
 import { streamText, tool } from 'ai';
 import { z } from 'zod';
 import { getUserFromRequest } from '@/lib/auth';
@@ -9,11 +9,6 @@ import { NextRequest, NextResponse } from 'next/server';
 export const runtime = 'nodejs';
 export const maxDuration = 30; // 30 seconds for Pro plan, 10 for Hobby
 export const preferredRegion = 'iad1';
-
-const groq = createOpenAI({
-  baseURL: 'https://api.groq.com/openai/v1',
-  apiKey: process.env.GROQ_API_KEY,
-});
 
 // Helper for timing out DB queries
 const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number = 5000): Promise<T> => {
@@ -26,8 +21,10 @@ const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number = 5000): Pr
 };
 
 export async function POST(req: NextRequest) {
+  console.log('[OppBot] INCOMING REQUEST');
   try {
     if (!process.env.GROQ_API_KEY) {
+      console.error('[OppBot] ERROR: Missing GROQ_API_KEY');
       return new Response(JSON.stringify({ error: 'Missing API Key' }), { 
         status: 401,
         headers: { 'Content-Type': 'application/json' }
@@ -35,10 +32,14 @@ export async function POST(req: NextRequest) {
     }
 
     const { messages } = await req.json();
+    console.log('[OppBot] PARSED MESSAGES:', messages.length);
+    
     const user = getUserFromRequest(req);
+    console.log('[OppBot] USER AUTH:', user ? `User ${user.id}` : 'Guest');
 
+    console.log('[OppBot] INITIALIZING STREAM...');
     const result = await streamText({
-      model: groq('llama-3.1-8b-instant'),
+      model: groq('llama-3.1-8b-instant') as any,
       system: `### CRITICAL DIRECTIVE: NO TECHNICAL LEAKAGE
 - NEVER MENTION internal tool names like 'get_my_events', 'search_opportunities', or 'get_system_status'.
 - NEVER EXPLAIN that you are using a function or that a tool returned an error.
@@ -62,16 +63,20 @@ PERSONALITY:
 Efficient, elite, and growth-oriented. Using emerald/green metaphors for success.`,
       messages,
       maxSteps: 2, 
+      onFinish: () => console.log('[OppBot] STREAM FINISHED SUCCESSFULLY'),
       tools: {
         get_system_status: tool({
           description: 'Check if the OppBot intelligence system is online and updated.',
           parameters: z.object({}),
-          execute: async () => ({
-            status: 'online',
-            version: 'v1.4.2-Ironclad',
-            updatedAt: '2026-04-16T15:08:00Z',
-            mode: 'production-optimized'
-          })
+          execute: async () => {
+            console.log('[OppBot] TOOL: get_system_status');
+            return {
+              status: 'online',
+              version: 'v1.5.0-GroqNative',
+              updatedAt: new Date().toISOString(),
+              mode: 'production-optimized'
+            };
+          }
         }),
         search_opportunities: tool({
           description: 'Search for scholarships, remote jobs, fellowships, or grants.',
@@ -81,7 +86,7 @@ Efficient, elite, and growth-oriented. Using emerald/green metaphors for success
             limit: z.number().optional().default(5),
           }),
           execute: async ({ query: searchQuery, category, limit }) => {
-            console.log(`[OppBot] SEARCH: ${searchQuery}`);
+            console.log(`[OppBot] TOOL: search_opportunities -> ${searchQuery}`);
             try {
               const results = await withTimeout(opportunityService.searchAll({
                 keyword: searchQuery,
@@ -90,7 +95,7 @@ Efficient, elite, and growth-oriented. Using emerald/green metaphors for success
               }));
               return results && results.length > 0 ? results.slice(0, limit) : "No results found.";
             } catch (err) {
-              console.error('[OppBot] SEARCH TIMEOUT:', err);
+              console.error('[OppBot] TOOL ERROR: search_opportunities:', err);
               return "Search service temporarily busy.";
             }
           },
@@ -99,7 +104,7 @@ Efficient, elite, and growth-oriented. Using emerald/green metaphors for success
           description: 'Get a list of all events managed by the current organizer.',
           parameters: z.object({}),
           execute: async () => {
-            console.log(`[OppBot] EVENTS: ${user?.id}`);
+            console.log(`[OppBot] TOOL: get_my_events`);
             try {
               if (!user) return "Unauthorized.";
               const { rows } = await withTimeout(query(
@@ -108,7 +113,7 @@ Efficient, elite, and growth-oriented. Using emerald/green metaphors for success
               ));
               return rows;
             } catch (err) {
-              console.error('[OppBot] EVENTS TIMEOUT:', err);
+              console.error('[OppBot] TOOL ERROR: get_my_events:', err);
               return "Event service busy.";
             }
           },
@@ -117,7 +122,7 @@ Efficient, elite, and growth-oriented. Using emerald/green metaphors for success
           description: 'Get high-level stats for an organizer.',
           parameters: z.object({}),
           execute: async () => {
-            console.log(`[OppBot] SUMMARY: ${user?.id}`);
+            console.log(`[OppBot] TOOL: get_organizer_summary`);
             try {
               if (!user) return "Unauthorized.";
               const { rows } = await withTimeout(query(
@@ -126,7 +131,7 @@ Efficient, elite, and growth-oriented. Using emerald/green metaphors for success
               ));
               return rows[0];
             } catch (err) {
-              console.error('[OppBot] SUMMARY TIMEOUT:', err);
+              console.error('[OppBot] TOOL ERROR: get_organizer_summary:', err);
               return "Stats service busy.";
             }
           },
@@ -134,21 +139,15 @@ Efficient, elite, and growth-oriented. Using emerald/green metaphors for success
       },
     });
 
-
-
+    console.log('[OppBot] STREAM CREATED, RESPONDING...');
     return result.toDataStreamResponse();
   } catch (error: any) {
-    console.error('OppBot API Error:', error);
-    const isAccessDenied = error?.message?.includes('Access denied') || error?.status === 403;
-    const details = isAccessDenied 
-      ? 'Access to the AI service is restricted. This usually happens due to regional geoblocking.' 
-      : (error instanceof Error ? error.message : 'Unknown error');
-      
+    console.error('[OppBot] CRITICAL API ERROR:', error);
     return new NextResponse(JSON.stringify({ 
-      error: isAccessDenied ? 'Access Restricted' : 'Error processing request', 
-      details 
+      error: 'Error processing request', 
+      details: error instanceof Error ? error.message : 'Unknown' 
     }), { 
-      status: isAccessDenied ? 403 : 500,
+      status: 500,
       headers: { 'Content-Type': 'application/json' }
     });
   }
