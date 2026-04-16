@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { getUserFromRequest } from '@/lib/auth';
 import { query } from '@/lib/db';
 import { opportunityService } from '@/lib/services/opportunity-service';
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 // Set to true to use the Groq API
 export const maxDuration = 30;
