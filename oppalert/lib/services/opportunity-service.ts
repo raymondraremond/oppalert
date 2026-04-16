@@ -10,10 +10,12 @@ class OpportunityService {
 
   constructor() {
     this.adapters.push(new DbAdapter());
-    this.adapters.push(new AdzunaAdapter());
-    this.adapters.push(new JoobleAdapter());
+    // External adapters removed to focus on local platform data and prevent hangs
+    // this.adapters.push(new AdzunaAdapter());
+    // this.adapters.push(new JoobleAdapter());
     this.adapters.push(new MockAdapter());
   }
+
 
   addAdapter(adapter: OpportunityAdapter) {
     this.adapters.push(adapter);
