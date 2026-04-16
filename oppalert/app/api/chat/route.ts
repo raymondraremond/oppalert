@@ -103,21 +103,32 @@ Efficient, elite, and growth-oriented. Using emerald/green metaphors for success
         search_opportunities: {
           description: 'Search for scholarships, remote jobs, fellowships, or grants.',
           parameters: z.object({
-            keyword: z.string().describe('The search query or keyword.'),
+            keyword: z.string().optional().describe('Main keyword'),
+            search_term: z.string().optional().describe('Alias for keyword'),
+            query: z.string().optional().describe('Alias for keyword'),
+            q: z.string().optional().describe('Short alias for keyword'),
+            location: z.string().optional().describe('Geographic location'),
+            type: z.string().optional().describe('Opportunity type'),
+            opportunity_type: z.string().optional().describe('Alias for type'),
             category: z.string().optional(),
-            location: z.string().optional(),
-            type: z.string().optional(),
             limit: z.number().optional().default(5),
           }),
-          execute: async ({ keyword, category, limit, location, type }: any) => {
-            console.log(`[OppBot] TOOL: search_opportunities -> k:${keyword} l:${location} t:${type}`);
+          execute: async (args: any) => {
+            const { keyword, search_term, query: qStr, q, location, type, opportunity_type, category, limit } = args;
+            const finalKeyword = (keyword || search_term || qStr || q || 'scholarship').trim();
+            const finalLocation = location || '';
+            const finalType = type || opportunity_type || '';
+            
+            console.log(`[OppBot] TOOL: search_opportunities -> k:${finalKeyword} l:${finalLocation} t:${finalType}`);
+            
             try {
+              const fullQuery = `${finalKeyword} ${finalLocation} ${finalType}`.trim();
               const results = await withTimeout(opportunityService.searchAll({
-                keyword: keyword,
+                keyword: fullQuery,
                 category: category as any,
                 limit
               }));
-              return results && results.length > 0 ? results.slice(0, limit) : "No results found.";
+              return results && results.length > 0 ? results.slice(0, limit) : "No results found matching those specific terms.";
             } catch (err) {
               console.error('[OppBot] TOOL ERROR: search_opportunities:', err);
               return "Search service temporarily busy.";
