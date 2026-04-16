@@ -21,13 +21,32 @@ class OpportunityService {
 
   async searchAll(query: OpportunityQuery): Promise<Opportunity[]> {
     const results = await Promise.all(
-      this.adapters.map(adapter => adapter.search(query))
+      this.adapters.map(async adapter => {
+        try {
+          return await adapter.search(query);
+        } catch (error) {
+          console.error(`Adapter ${adapter.name} failed:`, error);
+          return [];
+        }
+      })
     );
     
-    // Flatten and deduplicate by ID if necessary
-    // For now, just flatten and sort by mock 'days' (deadline)
-    return results.flat().sort((a, b) => a.days - b.days);
+    // Flatten and deduplicate by title + organization
+    const seen = new Set();
+    const flattened = results.flat();
+    return flattened.filter(opp => {
+      const key = `${opp.title || 'no-title'}-${opp.organization || 'no-org'}`.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).sort((a, b) => {
+      const daysA = typeof a.days === 'number' ? a.days : 30;
+      const daysB = typeof b.days === 'number' ? b.days : 30;
+      return daysA - daysB;
+    });
+
   }
+
 
   async getOne(id: string): Promise<Opportunity | null> {
     for (const adapter of this.adapters) {

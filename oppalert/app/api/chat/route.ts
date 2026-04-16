@@ -3,6 +3,7 @@ import { streamText, tool } from 'ai';
 import { z } from 'zod';
 import { getUserFromRequest } from '@/lib/auth';
 import { query } from '@/lib/db';
+import { opportunityService } from '@/lib/services/opportunity-service';
 import { NextRequest } from 'next/server';
 
 // Set to true to use the Groq API
@@ -19,7 +20,7 @@ export async function POST(req: NextRequest) {
     const user = getUserFromRequest(req);
 
     const result = await streamText({
-      model: groq('llama-3.1-70b-versatile'),
+      model: groq('llama3-70b-8192'), // Using a very stable Groq model
       system: `You are OppBot, the official Virtual Assistant for OppAlert.
 OppAlert is an opportunity discovery platform for students, graduates, and founders in Africa.
 Your goal is to help users find opportunities (scholarships, remote jobs, fellowships) and help organizers manage their events.
@@ -39,45 +40,50 @@ OPPALERT BRANDING:
 - Colors: Emerald, Dark/Night mode.
 - Vibe: Premium, Fast, Reliable.`,
       messages,
+      maxSteps: 5, // Allow the model to call tools and reflect on results
       tools: {
         search_opportunities: tool({
-          description: 'Search for scholarships, remote jobs, fellowships, or grants.',
+          description: 'Search for scholarships, remote jobs, fellowships, or grants across all providers.',
           parameters: z.object({
             query: z.string().describe('The search query (e.g., "scholarships for Nigerians")'),
             category: z.string().optional().describe('The category (e.g., "Scholarship", "Job")'),
             limit: z.number().optional().default(5),
           }),
           execute: async ({ query: searchQuery, category, limit }) => {
-            const params: any[] = [`%${searchQuery}%`];
-            let sql = `
-              SELECT id, title, organization, category, funding_type, deadline, location 
-              FROM opportunities 
-              WHERE is_active = TRUE 
-              AND (title ILIKE $1 OR organization ILIKE $1 OR description ILIKE $1)
-            `;
-            
-            if (category) {
-              sql += ` AND category = $2`;
-              params.push(category);
+            try {
+              // Use the architecture's service layer instead of raw SQL
+              // This is more resilient as it includes mock data and external APIs
+              const results = await opportunityService.searchAll({
+                keyword: searchQuery,
+                category: category as any,
+                limit
+              });
+              
+              if (!results || results.length === 0) {
+                return "No opportunities found at the moment. Try a broader search term.";
+              }
+              
+              return results.slice(0, limit);
+            } catch (err) {
+              console.error('Search tool error:', err);
+              return "The search service is temporarily experiencing issues. Please try again in a few moments.";
             }
-            
-            sql += ` ORDER BY created_at DESC LIMIT $${params.length + 1}`;
-            params.push(limit);
-            
-            const res = await query(sql, params);
-            return res.rows;
           },
         }),
         get_my_events: tool({
           description: 'Get a list of events created by the logged-in organizer.',
           parameters: z.object({}),
           execute: async () => {
-            if (!user) return "Please log in to see your events.";
-            const { rows } = await query(
-              'SELECT id, title, slug, current_registrations, max_capacity FROM events WHERE organizer_id = $1',
-              [user.id]
-            );
-            return rows.length > 0 ? rows : "You haven't created any events yet.";
+            try {
+              if (!user) return "Please log in to see your events.";
+              const { rows } = await query(
+                'SELECT id, title, slug, current_registrations, max_capacity FROM events WHERE organizer_id = $1',
+                [user.id]
+              );
+              return rows.length > 0 ? rows : "You haven't created any events yet.";
+            } catch (err) {
+              return "Error fetching your events. Please check your connection.";
+            }
           },
         }),
         get_event_registrations: tool({
@@ -86,22 +92,26 @@ OPPALERT BRANDING:
             event_id: z.string().describe('The UUID of the event'),
           }),
           execute: async ({ event_id }) => {
-            if (!user) return "Please log in.";
-            // Security check: Ensure the event belongs to this organizer
-            const eventCheck = await query(
-              'SELECT id FROM events WHERE id = $1 AND organizer_id = $2',
-              [event_id, user.id]
-            );
-            if (eventCheck.rows.length === 0) return "Event not found or unauthorized.";
+            try {
+              if (!user) return "Please log in.";
+              // Security check: Ensure the event belongs to this organizer
+              const eventCheck = await query(
+                'SELECT id FROM events WHERE id = $1 AND organizer_id = $2',
+                [event_id, user.id]
+              );
+              if (eventCheck.rows.length === 0) return "Event not found or unauthorized.";
 
-            const { rows } = await query(
-              'SELECT full_name, email, registered_at FROM event_registrations WHERE event_id = $1 ORDER BY registered_at DESC',
-              [event_id]
-            );
-            return {
-              count: rows.length,
-              recent_registrations: rows.slice(0, 5)
-            };
+              const { rows } = await query(
+                'SELECT full_name, email, registered_at FROM event_registrations WHERE event_id = $1 ORDER BY registered_at DESC',
+                [event_id]
+              );
+              return {
+                count: rows.length,
+                recent_registrations: rows.slice(0, 5)
+              };
+            } catch (err) {
+              return "Error fetching registration details.";
+            }
           },
         }),
       },
@@ -110,6 +120,12 @@ OPPALERT BRANDING:
     return result.toDataStreamResponse();
   } catch (error) {
     console.error('OppBot API Error:', error);
-    return new Response('Error processing request', { status: 500 });
+    // Return a more descriptive error if possible
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return new Response(JSON.stringify({ error: 'Error processing request', details: message }), { 
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }
+

@@ -154,10 +154,19 @@ export default function ChatWidget() {
                   )}
                   
                   {error && (
-                    <div className="p-3 bg-danger/10 border border-danger/20 rounded-xl text-[11px] text-danger-light text-center">
-                      Failed to connect. Please check your API configuration.
+                    <div className="p-3 bg-danger/10 border border-danger/20 rounded-xl text-[11px] text-danger-light text-center flex flex-col gap-1">
+                      <p className="font-semibold">Connection Error</p>
+                      <p className="opacity-80">
+                        {error.message.includes('Access denied') 
+                          ? 'Access to the AI service is restricted in your region. Please check your network or use a VPN.'
+                          : 'Failed to connect. Please check your API configuration.'}
+                      </p>
+                      {process.env.NODE_ENV === 'development' && (
+                        <p className="text-[9px] mt-1 break-all opacity-50">{error.message}</p>
+                      )}
                     </div>
                   )}
+
                 </div>
 
                 {/* Input Area */}
