@@ -34,7 +34,7 @@ export default function ChatWidget() {
     if (!chatInput.trim() || isLoading) return;
     const content = chatInput;
     setChatInput('');
-    await sendMessage(content as any);
+    await sendMessage({ message: content } as any);
   };
 
 
