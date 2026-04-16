@@ -61,7 +61,7 @@ ${user ? `- Status: Logged In\n- ID: ${user.id}\n- Plan: ${user.plan}` : '- Stat
 
 PERSONALITY:
 Efficient, elite, and growth-oriented. Using emerald/green metaphors for success.`,
-      messages: convertToModelMessages(messages),
+      messages: await convertToModelMessages(messages),
       maxSteps: 2, 
       onFinish: () => console.log('[OppBot] STREAM FINISHED SUCCESSFULLY'),
       tools: {
