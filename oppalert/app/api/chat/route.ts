@@ -101,9 +101,10 @@ Efficient, elite, and growth-oriented. Using emerald/green metaphors for success
           }
         },
         search_opportunities: {
-          description: 'Search for scholarships, remote jobs, fellowships, or grants.',
+          description: 'Search for scholarships, remote jobs, fellowships, or grants. Only use keyword or limit if possible.',
           parameters: z.object({
-            keyword: z.string().optional().describe('Main search term'),
+            keyword: z.string().optional(),
+            keywords: z.string().optional(),
             search_term: z.string().optional(),
             search_terms: z.string().optional(),
             query: z.string().optional(),
@@ -114,25 +115,27 @@ Efficient, elite, and growth-oriented. Using emerald/green metaphors for success
             opportunity_type: z.string().optional(),
             category: z.string().optional(),
             limit: z.number().optional().default(5),
-          }).passthrough(),
+          }),
           execute: async (args: any) => {
             const { 
-              keyword, search_term, search_terms, query: qStr, q, 
+              keyword, keywords, search_term, search_terms, query: qStr, q, 
               location, remote, type, opportunity_type, category, limit 
             } = args;
             
-            const finalKeyword = (keyword || search_term || search_terms || qStr || q || 'scholarship').trim();
-            const finalLocation = location || '';
-            const isRemote = remote ? '(Remote)' : '';
-            const finalType = type || opportunity_type || '';
+            // Collect all possible query inputs into one string
+            const terms = [
+              keyword, keywords, search_term, search_terms, qStr, q,
+              location, remote ? 'remote' : '', type, opportunity_type, category
+            ].filter(Boolean).join(' ');
+
+            const finalQuery = terms.length > 0 ? terms : 'scholarship';
             
-            console.log(`[OppBot] TOOL: search_opportunities -> k:${finalKeyword} l:${finalLocation} r:${isRemote}`);
+            console.log(`[OppBot] TOOL: search_opportunities -> Raw Args:`, JSON.stringify(args));
+            console.log(`[OppBot] TOOL: search_opportunities -> Final Query: "${finalQuery}"`);
             
             try {
-              const fullQuery = `${finalKeyword} ${finalLocation} ${isRemote} ${finalType}`.trim();
               const results = await withTimeout(opportunityService.searchAll({
-                keyword: fullQuery,
-                category: category as any,
+                keyword: finalQuery,
                 limit
               }));
               return results && results.length > 0 ? results.slice(0, limit) : "No results found matching those specific terms.";
