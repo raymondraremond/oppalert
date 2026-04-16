@@ -3,6 +3,7 @@ import { Inter, Syne } from 'next/font/google'
 import './globals.css'
 import CapsuleNav from '@/components/CapsuleNav'
 import Footer from '@/components/Footer'
+import ChatWidget from '@/components/ChatWidget'
 import { NextAuthProvider } from '@/components/providers'
 import { ThemeProvider } from '@/components/theme-provider'
 
@@ -60,6 +61,7 @@ export default function RootLayout({
             <CapsuleNav />
             <main className="flex-grow">{children}</main>
             <Footer />
+            <ChatWidget />
           </NextAuthProvider>
         </ThemeProvider>
       </body>
