@@ -53,40 +53,51 @@ export async function POST(req: NextRequest) {
       return { role, content };
     }).filter((m: any) => m.content.trim().length > 0);
 
+    // 2. INTENT DETECTION & DIRECT DATA INJECTION
+    const lastUserMsg = normalizedMessages.filter(m => m.role === 'user').at(-1)?.content || '';
+    let searchData = '';
+    
+    // Simple regex to detect if user is asking for database info
+    const isSearchRequest = /find|show|search|scholarship|job|grant|internship/i.test(lastUserMsg);
+
+    if (isSearchRequest) {
+      console.log('[OppBot] SEARCH INTENT DETECTED. PRE-FETCHING DATA...');
+      const keywords = lastUserMsg.replace(/find|show|me|search|for|available/gi, '').trim();
+      try {
+        const results = await withTimeout(opportunityService.searchAll({
+          keyword: keywords || 'scholarship',
+          limit: 5
+        }));
+        
+        if (results && results.length > 0) {
+          searchData = `\n### CURRENT DATABASE RESULTS FOR "${keywords || 'Scholarships'}":\n` + 
+            results.map((r: any) => `- [${r.icon || '🎓'}] ${r.title} at ${r.organization || 'Various'}. Type: ${r.funding_type || 'Fully Funded'}. URL: /opportunities/${r.id}`).join('\n');
+        } else {
+          searchData = `\n### DATABASE NOTE: No exact matches found in the live database for "${keywords}". Suggest the user browse all /opportunities.`;
+        }
+      } catch (err) {
+        console.error('[OppBot] PRE-FETCH ERROR:', err);
+      }
+    }
+
     const result = await streamText({
       model: groq('llama-3.3-70b-versatile'),
-      system: `### CRITICAL DIRECTIVE: ALWAYS SUMMARIZE DATA
-- AFTER using a tool to find scholarships/jobs, YOU MUST describe the results in text.
-- NEVER send an empty response.
-- PERSONALITY: Elite, emerald-green growth metrics.`,
-      messages: normalizedMessages,
-      maxSteps: 5, 
-      experimental_continueSteps: true,
-      onFinish: () => console.log('[OppBot] STREAM FINISHED SUCCESSFULLY'),
-      tools: {
-        find_opportunities: {
-          description: 'Search for scholarships, remote jobs, fellowships, or grants.',
-          parameters: z.record(z.any()),
-          execute: async (args: any) => {
-            console.log(`[OppBot] TOOL: find_opportunities -> Args:`, JSON.stringify(args));
-            const keyword = args.keyword || args.keywords || args.search_term || args.search_terms || args.query || args.q || 'scholarship';
-            const limit = args.limit || 5;
-            try {
-              const results = await withTimeout(opportunityService.searchAll({
-                keyword: String(keyword),
-                limit: Number(limit)
-              }));
-              return results && results.length > 0 ? results.slice(0, Number(limit)) : "No results found.";
-            } catch (err) {
-              console.error('[OppBot] TOOL ERROR: find_opportunities:', err);
-              return "Search service temporarily busy.";
-            }
-          },
-        },
-      }
-    } as any);
+      system: `### YOUR IDENTITY:
+- You are OppBot, an elite, emerald-themed assistant for OppAlert.
+- You guide users to scholarships, jobs, and grants.
+- PERSONALITY: Concise, professional, and results-oriented.
 
-    console.log('[OppBot] STREAM CREATED, RESPONDING...');
+### CRITICAL:
+${searchData ? `I have pre-fetched some data for you to use in this response: ${searchData}\n\nUSE THIS DATA DIRECTLY. DO NOT hallucinate or pretend to search.` : 'Answer the user naturally. If they ask for opportunities, provide general guidance or suggest they try a specific search.'}
+
+### GUIDELINES:
+- ALWAYS provide direct links like [/opportunities](/opportunities) or specific item links if provided.
+- NO technical jargon or tool names.`,
+      messages: normalizedMessages,
+      onFinish: () => console.log('[OppBot] STREAM FINISHED SUCCESSFULLY'),
+    });
+
+    console.log('[OppBot] STREAM CREATED (DIRECT INJECTION), RESPONDING...');
     return result.toTextStreamResponse();
   } catch (error: any) {
     console.error('[OppBot] CRITICAL API ERROR:', error);
