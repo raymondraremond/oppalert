@@ -84,7 +84,7 @@ ${user ? `- Status: Logged In\n- ID: ${user.id}\n- Plan: ${user.plan}` : '- Stat
 PERSONALITY:
 Efficient, elite, and growth-oriented. Using emerald/green metaphors for success.`,
       messages: normalizedMessages,
-      maxSteps: 2, 
+      maxSteps: 5, 
       onFinish: () => console.log('[OppBot] STREAM FINISHED SUCCESSFULLY'),
       tools: {
         get_system_status: {
