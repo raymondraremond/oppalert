@@ -55,48 +55,26 @@ export async function POST(req: NextRequest) {
 
     const result = await streamText({
       model: groq('llama-3.1-8b-instant'),
-      system: `### CRITICAL DIRECTIVE: NO TECHNICAL LEAKAGE
-- NEVER output pseudo-code, XML tags, or function syntax like <function=...>.
-- NEVER show internal tool names.
-- THE USER CANNOT RUN COMMANDS. Do not try to teach them internal syntax.
-- ALWAYS respond in natural, elite, premium English.
+      system: `### CRITICAL: YOU ARE AN ASSISTANT, NOT A CODER
+- NEVER type out stuff like ".function", "<function", or "find_opportunities".
+- NEVER explain that you are searching. Just use the tool silently.
+- IF you find nothing, say "I couldn't find any exact matches."
+- ONLY talk in warm, professional English.
 
-### THE PLATFORM:
-OppAlert supports Seekers (Scholarships/Jobs) and Organizers (Events).
-
-### YOUR ROLE:
-- Find opportunities, monitor events, and guide users naturally.
-- Personality: Elite, emerald-green growthMETAPHORS.
-
-CURRENT USER CONTEXT:
-${user ? `- ID: ${user.id} (${user.plan})` : '- Guest User'}`,
+### YOUR CORE TASK:
+- Find scholarships, jobs, and grants for the user.
+- Use the 'find_opportunities' tool for ALL searches.`,
       messages: normalizedMessages,
       maxSteps: 5, 
       onFinish: () => console.log('[OppBot] STREAM FINISHED SUCCESSFULLY'),
       tools: {
-        get_system_status: {
-          description: 'Check if the OppBot intelligence system is online and updated.',
-          parameters: z.object({}),
-          execute: async () => {
-            console.log('[OppBot] TOOL: get_system_status');
-            return {
-              status: 'online',
-              version: 'v1.6.2-FinalStability',
-              updatedAt: new Date().toISOString(),
-              mode: 'production-optimized'
-            };
-          }
-        },
         find_opportunities: {
           description: 'Search for scholarships, remote jobs, fellowships, or grants.',
           parameters: z.record(z.any()),
           execute: async (args: any) => {
             console.log(`[OppBot] TOOL: find_opportunities -> Args:`, JSON.stringify(args));
-            
-            // Defensively extract any possible keyword/search-term
             const keyword = args.keyword || args.keywords || args.search_term || args.search_terms || args.query || args.q || 'scholarship';
             const limit = args.limit || 5;
-            
             try {
               const results = await withTimeout(opportunityService.searchAll({
                 keyword: String(keyword),
@@ -106,42 +84,6 @@ ${user ? `- ID: ${user.id} (${user.plan})` : '- Guest User'}`,
             } catch (err) {
               console.error('[OppBot] TOOL ERROR: find_opportunities:', err);
               return "Search service temporarily busy.";
-            }
-          },
-        },
-        get_my_events: {
-          description: 'Get a list of all events managed by the current organizer.',
-          parameters: z.object({}),
-          execute: async () => {
-            console.log(`[OppBot] TOOL: get_my_events`);
-            try {
-              if (!user) return "Unauthorized.";
-              const { rows } = await withTimeout(query(
-                'SELECT id, title, slug, current_registrations, max_capacity FROM events WHERE organizer_id = $1 AND is_active = true',
-                [user.id]
-              ));
-              return rows;
-            } catch (err) {
-              console.error('[OppBot] TOOL ERROR: get_my_events:', err);
-              return "Event service busy.";
-            }
-          },
-        },
-        get_organizer_summary: {
-          description: 'Get high-level stats for an organizer.',
-          parameters: z.object({}),
-          execute: async () => {
-            console.log(`[OppBot] TOOL: get_organizer_summary`);
-            try {
-              if (!user) return "Unauthorized.";
-              const { rows } = await withTimeout(query(
-                'SELECT COUNT(id) as total_events, SUM(current_registrations) as total_registrations FROM events WHERE organizer_id = $1 AND is_active = true',
-                [user.id]
-              ));
-              return rows[0];
-            } catch (err) {
-              console.error('[OppBot] TOOL ERROR: get_organizer_summary:', err);
-              return "Stats service busy.";
             }
           },
         },
