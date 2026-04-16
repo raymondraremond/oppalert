@@ -103,15 +103,17 @@ Efficient, elite, and growth-oriented. Using emerald/green metaphors for success
         search_opportunities: {
           description: 'Search for scholarships, remote jobs, fellowships, or grants.',
           parameters: z.object({
-            query: z.string(),
+            keyword: z.string().describe('The search query or keyword.'),
             category: z.string().optional(),
+            location: z.string().optional(),
+            type: z.string().optional(),
             limit: z.number().optional().default(5),
           }),
-          execute: async ({ query: searchQuery, category, limit }: any) => {
-            console.log(`[OppBot] TOOL: search_opportunities -> ${searchQuery}`);
+          execute: async ({ keyword, category, limit, location, type }: any) => {
+            console.log(`[OppBot] TOOL: search_opportunities -> k:${keyword} l:${location} t:${type}`);
             try {
               const results = await withTimeout(opportunityService.searchAll({
-                keyword: searchQuery,
+                keyword: keyword,
                 category: category as any,
                 limit
               }));
