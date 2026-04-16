@@ -25,11 +25,27 @@ export async function GET(req: NextRequest) {
         const params: any[] = [];
         let idx = 1;
 
-        if (category) { sql += ` AND category = $${idx++}`; params.push(category); }
-        if (fundingType) { sql += ` AND funding_type = $${idx++}`; params.push(fundingType); }
-        if (location) { sql += ` AND location ILIKE $${idx++}`; params.push(`%${location}%`); }
+        let countSql = 'SELECT COUNT(*) FROM opportunities WHERE is_active = true';
+        const countParams: any[] = [];
+        let countIdx = 1;
+
+        if (category) { 
+          sql += ` AND category = $${idx++}`; params.push(category); 
+          countSql += ` AND category = $${countIdx++}`; countParams.push(category);
+        }
+        if (fundingType) { 
+          sql += ` AND funding_type = $${idx++}`; params.push(fundingType); 
+          countSql += ` AND funding_type = $${countIdx++}`; countParams.push(fundingType);
+        }
+        if (location) { 
+          sql += ` AND location ILIKE $${idx++}`; params.push(`%${location}%`); 
+          countSql += ` AND location ILIKE $${countIdx++}`; countParams.push(`%${location}%`);
+        }
         const source = searchParams.get('source');
-        if (source) { sql += ` AND source = $${idx++}`; params.push(source); }
+        if (source) { 
+          sql += ` AND source = $${idx++}`; params.push(source); 
+          countSql += ` AND source = $${countIdx++}`; countParams.push(source);
+        }
         if (search) { 
           const searchKeywords = search.split(/\s+/).filter(k => k.length > 1);
           const searchPatterns = searchKeywords.map(k => `%${k}%`);
