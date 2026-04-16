@@ -38,6 +38,28 @@ export async function POST(req: NextRequest) {
     console.log('[OppBot] USER AUTH:', user ? `User ${user.id}` : 'Guest');
 
     console.log('[OppBot] INITIALIZING STREAM...');
+    // Manual normalization to prevent "map of undefined" errors in strict v6 schema
+    const normalizedMessages = (messages || []).map((m: any) => {
+      // Ensure role is valid
+      const role = ['user', 'assistant', 'system', 'tool'].includes(m.role) ? m.role : 'user';
+      
+      // Defensively extract content
+      let content = '';
+      if (typeof m.content === 'string') {
+        content = m.content;
+      } else if (Array.isArray(m.parts)) {
+        content = m.parts.map((p: any) => p.text || '').join(' ');
+      } else if (m.message) {
+        content = m.message;
+      } else if (m.text) {
+        content = m.text;
+      }
+
+      return { role, content };
+    }).filter((m: any) => m.content.trim().length > 0);
+
+    console.log('[OppBot] NORMALIZED MESSAGES:', normalizedMessages.length);
+
     const result = await streamText({
       model: groq('llama-3.1-8b-instant'),
       system: `### CRITICAL DIRECTIVE: NO TECHNICAL LEAKAGE
@@ -61,7 +83,7 @@ ${user ? `- Status: Logged In\n- ID: ${user.id}\n- Plan: ${user.plan}` : '- Stat
 
 PERSONALITY:
 Efficient, elite, and growth-oriented. Using emerald/green metaphors for success.`,
-      messages: await convertToModelMessages(messages),
+      messages: normalizedMessages,
       maxSteps: 2, 
       onFinish: () => console.log('[OppBot] STREAM FINISHED SUCCESSFULLY'),
       tools: {

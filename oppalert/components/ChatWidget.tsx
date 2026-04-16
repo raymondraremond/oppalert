@@ -34,7 +34,7 @@ export default function ChatWidget() {
     if (!chatInput.trim() || isLoading) return;
     const content = chatInput;
     setChatInput('');
-    await sendMessage({ message: content } as any);
+    await sendMessage({ role: 'user', content } as any);
   };
 
 
