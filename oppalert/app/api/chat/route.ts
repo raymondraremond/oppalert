@@ -38,51 +38,37 @@ export async function POST(req: NextRequest) {
     console.log('[OppBot] USER AUTH:', user ? `User ${user.id}` : 'Guest');
 
     console.log('[OppBot] INITIALIZING STREAM...');
-    // Manual normalization to prevent "map of undefined" errors in strict v6 schema
-    const normalizedMessages = (messages || []).map((m: any) => {
-      // Ensure role is valid
-      const role = ['user', 'assistant', 'system', 'tool'].includes(m.role) ? m.role : 'user';
-      
-      // Defensively extract content
-      let content = '';
-      if (typeof m.content === 'string') {
-        content = m.content;
-      } else if (Array.isArray(m.parts)) {
-        content = m.parts.map((p: any) => p.text || '').join(' ');
-      } else if (m.message) {
-        content = m.message;
-      } else if (m.text) {
-        content = m.text;
-      }
+    // 1. PRUNING: Only send the last 6 messages to stay within Free Tier TPM limits
+    const recentMessages = messages.length > 6 ? messages.slice(-6) : messages;
+    console.log('[OppBot] PRUNED HISTORY:', recentMessages.length);
 
+    // 2. NORMALIZATION
+    const normalizedMessages = (recentMessages || []).map((m: any) => {
+      const role = ['user', 'assistant', 'system', 'tool'].includes(m.role) ? m.role : 'user';
+      let content = '';
+      if (typeof m.content === 'string') content = m.content;
+      else if (Array.isArray(m.parts)) content = m.parts.map((p: any) => p.text || '').join(' ');
+      else if (m.message) content = m.message;
+      else if (m.text) content = m.text;
       return { role, content };
     }).filter((m: any) => m.content.trim().length > 0);
 
-    console.log('[OppBot] NORMALIZED MESSAGES:', normalizedMessages.length);
-
     const result = await streamText({
-      model: groq('llama-3.3-70b-versatile'),
-      system: `### CRITICAL DIRECTIVE: NO TECHNICAL LEAKAGE
-- NEVER MENTION internal tool names like 'get_my_events', 'search_opportunities', or 'get_system_status'.
-- NEVER EXPLAIN that you are using a function or that a tool returned an error.
-- INTEGRATE all findings naturally. If a search fails, say "I couldn't find any exact matches right now."
-- YOU ARE OppBot, a high-end personal assistant, not a technical diagnostic log.
+      model: groq('llama-3.1-8b-instant'),
+      system: `### CRITICAL DIRECTIVE: ALWAYS RESPOND WITH TEXT
+- AFTER every tool call (search, status, etc.), YOU MUST provide a natural language summary.
+- NEVER send an empty response after a tool result. 
+- NEVER mention internal tool names or tech jargon.
 
 ### THE PLATFORM:
-OppAlert supports:
-1. **Seekers**: Finding scholarships, remote jobs, and grants.
-2. **Organizers**: Hosting events and managing registrations.
+OppAlert supports Seekers (Scholarships/Jobs) and Organizers (Events).
 
 ### YOUR ROLE:
-- **For Seekers**: Find opportunities. If results are zero, suggest broader terms.
-- **For Organizers**: Monitor events. Use tools silently. Point to /organizer for dashboard access.
-- **Navigation**: Use: /opportunities, /organizer/create, /dashboard, /pricing.
+- Find opportunities, monitor events, and guide users to: /opportunities, /organizer/create, /dashboard, /pricing.
+- Personality: Elite, emerald-green growthMETAPHORS.
 
 CURRENT USER CONTEXT:
-${user ? `- Status: Logged In\n- ID: ${user.id}\n- Plan: ${user.plan}` : '- Status: Guest User (Encourage Sign-up)'}
-
-PERSONALITY:
-Efficient, elite, and growth-oriented. Using emerald/green metaphors for success.`,
+${user ? `- ID: ${user.id} (${user.plan})` : '- Guest User'}`,
       messages: normalizedMessages,
       maxSteps: 5, 
       onFinish: () => console.log('[OppBot] STREAM FINISHED SUCCESSFULLY'),
