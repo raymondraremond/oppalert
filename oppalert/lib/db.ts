@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS opportunities (
   about TEXT,
   eligibility TEXT[],
   benefits TEXT[],
+  tags TEXT[], -- Additional keywords like 'Fully Funded', 'SME', 'Tech'
   application_url TEXT,
   deadline DATE,
   days_remaining INT DEFAULT 30,
@@ -48,6 +49,8 @@ CREATE TABLE IF NOT EXISTS opportunities (
 
 CREATE INDEX IF NOT EXISTS idx_opps_source ON opportunities(source);
 CREATE INDEX IF NOT EXISTS idx_opps_verified ON opportunities(is_verified);
+CREATE INDEX IF NOT EXISTS idx_opps_tags ON opportunities USING GIN(tags);
+
 
 CREATE TABLE IF NOT EXISTS saved_opportunities (
   user_id UUID REFERENCES users(id) ON DELETE CASCADE,

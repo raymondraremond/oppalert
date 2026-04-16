@@ -30,20 +30,28 @@ export async function GET(req: NextRequest) {
         if (location) { sql += ` AND location ILIKE $${idx++}`; params.push(`%${location}%`); }
         const source = searchParams.get('source');
         if (source) { sql += ` AND source = $${idx++}`; params.push(source); }
-        if (search) { sql += ` AND (title ILIKE $${idx++} OR organization ILIKE $${idx++} OR description ILIKE $${idx++})`; params.push(`%${search}%`, `%${search}%`, `%${search}%`); idx += 2; }
+        if (search) { 
+          const searchKeywords = search.split(/\s+/).filter(k => k.length > 1);
+          const searchPatterns = searchKeywords.map(k => `%${k}%`);
+          
+          let searchClauses = [];
+          for (let i = 0; i < searchKeywords.length; i++) {
+            searchClauses.push(`(title ILIKE $${idx} OR organization ILIKE $${idx} OR description ILIKE $${idx} OR category ILIKE $${idx} OR array_to_string(tags, ' ') ILIKE $${idx})`);
+            params.push(`%${searchKeywords[i]}%`);
+            idx++;
+          }
+          sql += ` AND (${searchClauses.join(' AND ')})`;
+
+          // Update count params similarly
+          for (let i = 0; i < searchKeywords.length; i++) {
+            countSql += ` AND (title ILIKE $${countIdx} OR organization ILIKE $${countIdx} OR description ILIKE $${countIdx} OR category ILIKE $${countIdx} OR array_to_string(tags, ' ') ILIKE $${countIdx})`;
+            countParams.push(`%${searchKeywords[i]}%`);
+            countIdx++;
+          }
+        }
 
         sql += ` ORDER BY is_verified DESC, is_featured DESC, created_at DESC LIMIT $${idx++} OFFSET $${idx++}`;
         const finalParams = [...params, limit, offset];
-
-        let countSql = 'SELECT COUNT(*) FROM opportunities WHERE is_active = true';
-        const countParams: any[] = [];
-        let countIdx = 1;
-        if (category) { countSql += ` AND category = $${countIdx++}`; countParams.push(category); }
-        if (fundingType) { countSql += ` AND funding_type = $${countIdx++}`; countParams.push(fundingType); }
-        if (location) { countSql += ` AND location ILIKE $${countIdx++}`; countParams.push(`%${location}%`); }
-        const countSource = searchParams.get('source');
-        if (countSource) { countSql += ` AND source = $${countIdx++}`; countParams.push(countSource); }
-        if (search) { countSql += ` AND (title ILIKE $${countIdx++} OR organization ILIKE $${countIdx++} OR description ILIKE $${countIdx++})`; countParams.push(`%${search}%`, `%${search}%`, `%${search}%`); }
 
         try {
           const dataRes = await query(sql, finalParams);
@@ -52,7 +60,15 @@ export async function GET(req: NextRequest) {
           dbTotal = parseInt(countRes.rows[0].count);
         } catch (err: any) {
           console.error('Database query failed for opportunities:', err);
-          if (err.message && err.message.includes('relation "opportunities" does not exist')) {
+          if (err.message && err.message.includes('column "tags" does not exist')) {
+            // Self-repair: Add tags column if missing
+            await query('ALTER TABLE opportunities ADD COLUMN IF NOT EXISTS tags TEXT[]');
+            await query('CREATE INDEX IF NOT EXISTS idx_opps_tags ON opportunities USING GIN(tags)');
+            const dataRes = await query(sql, finalParams);
+            dbData = dataRes.rows;
+            const countRes = await query(countSql, countParams);
+            dbTotal = parseInt(countRes.rows[0].count);
+          } else if (err.message && err.message.includes('relation "opportunities" does not exist')) {
              try {
                const { SCHEMA_SQL } = await import('@/lib/db');
                await query(SCHEMA_SQL);
@@ -91,13 +107,21 @@ export async function GET(req: NextRequest) {
         filtered = filtered.filter((o: any) => (o.loc || o.location || '').toLowerCase().includes(location.toLowerCase()));
       }
       if (search) {
-        const s = search.toLowerCase();
-        filtered = filtered.filter((o: any) => 
-          (o.title || '').toLowerCase().includes(s) || 
-          (o.org || o.organization || '').toLowerCase().includes(s) || 
-          (o.desc || o.description || '').toLowerCase().includes(s)
-        );
+        const keywords = search.toLowerCase().split(/\s+/).filter(k => k.length > 1);
+        filtered = filtered.filter((o: any) => {
+          const searchableText = `
+            ${o.title} 
+            ${o.organization || o.org || ''} 
+            ${o.description || o.desc || ''} 
+            ${o.category || o.cat || ''} 
+            ${(o.tags || []).join(' ')}
+          `.toLowerCase();
+          
+          // Match if ALL keywords are present somewhere (Simple AND search)
+          return keywords.every(kw => searchableText.includes(kw));
+        });
       }
+
 
       return NextResponse.json({
         data: filtered.slice(offset, offset + limit),

@@ -17,13 +17,21 @@ export class MockAdapter implements OpportunityAdapter {
     }
 
     if (query.keyword) {
-      const kw = query.keyword.toLowerCase();
-      filtered = filtered.filter(o => 
-        (o.title || '').toLowerCase().includes(kw) || 
-        (o.desc || o.description || '').toLowerCase().includes(kw) ||
-        (o.org || o.organization || '').toLowerCase().includes(kw)
-      );
+      const keywords = query.keyword.toLowerCase().split(/\s+/).filter(k => k.length > 1);
+      filtered = filtered.filter(o => {
+        const searchableText = `
+          ${o.title} 
+          ${o.organization || o.org || ''} 
+          ${o.description || o.desc || ''} 
+          ${o.category || o.cat || ''} 
+          ${((o as any).tags || []).join(' ')}
+        `.toLowerCase();
+        
+        // Match if ALL keywords are present somewhere (Simple AND search)
+        return keywords.every(kw => searchableText.includes(kw));
+      });
     }
+
 
     if (query.location && query.location !== 'Any Location') {
       const loc = query.location.toLowerCase();
