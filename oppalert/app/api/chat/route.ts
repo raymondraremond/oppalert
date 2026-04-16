@@ -70,9 +70,12 @@ export async function POST(req: NextRequest) {
         }));
         
         if (results && results.length > 0) {
+          console.log(`[OppBot] SUCCESS: Found ${results.length} results.`);
+          results.forEach((r: any) => console.log(` - ${r.title}`));
           searchData = `\n### CURRENT DATABASE RESULTS FOR "${keywords || 'Scholarships'}":\n` + 
             results.map((r: any) => `- [${r.icon || '🎓'}] ${r.title} at ${r.organization || 'Various'}. Type: ${r.funding_type || 'Fully Funded'}. URL: /opportunities/${r.id}`).join('\n');
         } else {
+          console.log(`[OppBot] NO RESULTS for "${keywords}"`);
           searchData = `\n### DATABASE NOTE: No exact matches found in the live database for "${keywords}". Suggest the user browse all /opportunities.`;
         }
       } catch (err) {

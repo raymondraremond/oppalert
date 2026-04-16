@@ -168,16 +168,9 @@ export default function ChatWidget() {
                           : "bg-surface border border-border2/50 text-primary rounded-tl-none shadow-premium"
                       )}>
                         <div className="whitespace-pre-wrap">
-                          {m.parts && m.parts.length > 0 ? m.parts.map((part: any, i: number) => {
-                            if (part.type === 'text') return <span key={i}>{part.text}</span>;
-                            if (part.type === 'tool-call') return (
-                              <div key={i} className="flex items-center gap-2 text-[10px] text-emerald font-black my-1 p-2 bg-emerald/5 rounded-lg border border-emerald/20 uppercase tracking-tighter">
-                                <div className="w-1.5 h-1.5 bg-emerald rounded-full animate-pulse" />
-                                {part.toolName.replace(/_/g, ' ')}...
-                              </div>
-                            );
-                            return null;
-                          }) : (m as any).content}
+                          {(m as any).content || (
+                            <span className="italic text-muted/50">Processing results...</span>
+                          )}
 
                           {/* Render Tool Invocations explicitly for v6 protocol visibility */}
                           {(m as any).toolInvocations && (m as any).toolInvocations.map((ti: any) => (
