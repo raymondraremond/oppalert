@@ -140,7 +140,7 @@ Efficient, elite, and growth-oriented. Using emerald/green metaphors for success
     } as any);
 
     console.log('[OppBot] STREAM CREATED, RESPONDING...');
-    return (result as any).toDataStreamResponse();
+    return result.toUIMessageStreamResponse();
   } catch (error: any) {
     console.error('[OppBot] CRITICAL API ERROR:', error);
     return new NextResponse(JSON.stringify({ 
