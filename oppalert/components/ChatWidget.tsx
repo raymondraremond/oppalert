@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { useChat } from 'ai/react';
+import { useChat } from '@ai-sdk/react';
 import { MessageSquare, X, Send, Bot, User, Loader2, Minimize2, Maximize2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { clsx, type ClassValue } from 'clsx';
@@ -16,20 +16,26 @@ export default function ChatWidget() {
   const [isMinimized, setIsMinimized] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading, error, reload } = useChat({
-    onResponse: (response) => {
-      console.log('[OppBot] Server Responded:', response.status, response.statusText);
-      if (!response.ok) {
-        console.error('[OppBot] Response Error Body:', response.body);
-      }
-    },
-    onFinish: (message) => {
-      console.log('[OppBot] Stream Finished:', message.content.substring(0, 50) + '...');
+  const [chatInput, setChatInput] = useState('');
+  const { messages, sendMessage, regenerate, status, error } = useChat({
+    onFinish: (messageData: any) => {
+      const msg = messageData?.message || messageData;
+      console.log('[OppBot] Stream Finished:', (msg.content || '').substring(0, 50) + '...');
     },
     onError: (err) => {
       console.error('[OppBot] Stream Error:', err);
     }
   });
+
+  const isLoading = status === 'submitted' || status === 'streaming';
+
+  const onHandleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chatInput.trim() || isLoading) return;
+    const content = chatInput;
+    setChatInput('');
+    await sendMessage(content as any);
+  };
 
 
   // Diagnostic logging for connection errors
@@ -130,9 +136,7 @@ export default function ChatWidget() {
                           <button
                             key={suggestion}
                             onClick={() => {
-                              // Manually trigger handleInputChange then handleSubmit
-                              const e = { target: { value: suggestion } } as any;
-                              handleInputChange(e);
+                              setChatInput(suggestion);
                             }}
                             className="text-xs text-left p-2.5 rounded-xl border border-border2/30 bg-surface/30 hover:bg-emerald/5 hover:border-emerald/30 transition-all text-muted hover:text-primary"
                           >
@@ -163,7 +167,11 @@ export default function ChatWidget() {
                           ? "bg-emerald text-bg font-medium rounded-tr-none shadow-premium" 
                           : "bg-surface border border-border2/50 text-primary rounded-tl-none shadow-premium"
                       )}>
-                        <div className="whitespace-pre-wrap">{m.content}</div>
+                        <div className="whitespace-pre-wrap">
+                          {m.parts && m.parts.length > 0 ? m.parts.map((part: any, i: number) => (
+                            part.type === 'text' ? <span key={i}>{part.text}</span> : null
+                          )) : (m as any).content}
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -191,7 +199,7 @@ export default function ChatWidget() {
                       </div>
 
                       <button 
-                        onClick={() => reload()}
+                        onClick={() => regenerate()}
                         className="w-full py-2 bg-danger/10 hover:bg-danger/20 border border-danger/30 rounded-xl font-black uppercase text-[9px] tracking-[0.2em] transition-all hover:scale-[1.02] active:scale-[0.98]"
                       >
                         Try Again &rarr;
@@ -212,21 +220,21 @@ export default function ChatWidget() {
 
                 {/* Input Area */}
                 <form 
-                  onSubmit={handleSubmit}
+                  onSubmit={onHandleSubmit}
                   className="p-4 bg-surface border-t border-border2/50 flex gap-2"
                 >
                   <input
-                    value={input}
-                    onChange={handleInputChange}
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
                     placeholder="Ask OppBot anything..."
                     className="flex-grow bg-surface2/50 border border-border2/50 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald/50 focus:border-emerald transition-all placeholder:text-muted"
                   />
                   <button
                     type="submit"
-                    disabled={isLoading || !input.trim()}
+                    disabled={isLoading || !chatInput.trim()}
                     className={cn(
                       "p-2 rounded-xl flex items-center justify-center transition-all",
-                      isLoading || !input.trim() 
+                      isLoading || !chatInput.trim() 
                         ? "bg-surface2 text-muted cursor-not-allowed" 
                         : "bg-emerald text-bg shadow-glow-emerald hover:bg-emerald-light active:scale-95"
                     )}

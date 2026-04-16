@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
     console.log('[OppBot] INITIALIZING STREAM...');
     const result = await streamText({
-      model: groq('llama-3.1-8b-instant') as any,
+      model: groq('llama-3.1-8b-instant'),
       system: `### CRITICAL DIRECTIVE: NO TECHNICAL LEAKAGE
 - NEVER MENTION internal tool names like 'get_my_events', 'search_opportunities', or 'get_system_status'.
 - NEVER EXPLAIN that you are using a function or that a tool returned an error.
@@ -65,27 +65,27 @@ Efficient, elite, and growth-oriented. Using emerald/green metaphors for success
       maxSteps: 2, 
       onFinish: () => console.log('[OppBot] STREAM FINISHED SUCCESSFULLY'),
       tools: {
-        get_system_status: tool({
+        get_system_status: {
           description: 'Check if the OppBot intelligence system is online and updated.',
           parameters: z.object({}),
           execute: async () => {
             console.log('[OppBot] TOOL: get_system_status');
             return {
               status: 'online',
-              version: 'v1.5.0-GroqNative',
+              version: 'v1.6.2-FinalStability',
               updatedAt: new Date().toISOString(),
               mode: 'production-optimized'
             };
           }
-        }),
-        search_opportunities: tool({
+        },
+        search_opportunities: {
           description: 'Search for scholarships, remote jobs, fellowships, or grants.',
           parameters: z.object({
             query: z.string(),
             category: z.string().optional(),
             limit: z.number().optional().default(5),
           }),
-          execute: async ({ query: searchQuery, category, limit }) => {
+          execute: async ({ query: searchQuery, category, limit }: any) => {
             console.log(`[OppBot] TOOL: search_opportunities -> ${searchQuery}`);
             try {
               const results = await withTimeout(opportunityService.searchAll({
@@ -99,8 +99,8 @@ Efficient, elite, and growth-oriented. Using emerald/green metaphors for success
               return "Search service temporarily busy.";
             }
           },
-        }),
-        get_my_events: tool({
+        },
+        get_my_events: {
           description: 'Get a list of all events managed by the current organizer.',
           parameters: z.object({}),
           execute: async () => {
@@ -117,8 +117,8 @@ Efficient, elite, and growth-oriented. Using emerald/green metaphors for success
               return "Event service busy.";
             }
           },
-        }),
-        get_organizer_summary: tool({
+        },
+        get_organizer_summary: {
           description: 'Get high-level stats for an organizer.',
           parameters: z.object({}),
           execute: async () => {
@@ -135,12 +135,12 @@ Efficient, elite, and growth-oriented. Using emerald/green metaphors for success
               return "Stats service busy.";
             }
           },
-        }),
-      },
-    });
+        },
+      }
+    } as any);
 
     console.log('[OppBot] STREAM CREATED, RESPONDING...');
-    return result.toDataStreamResponse();
+    return (result as any).toDataStreamResponse();
   } catch (error: any) {
     console.error('[OppBot] CRITICAL API ERROR:', error);
     return new NextResponse(JSON.stringify({ 
