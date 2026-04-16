@@ -32,34 +32,36 @@ export async function POST(req: NextRequest) {
     const user = getUserFromRequest(req);
 
     const result = await streamText({
-      model: groq('llama-3.1-8b-instant'), // Using an ultra-fast, responsive model
-      system: `You are OppBot, the elite AI-powered Virtual Assistant for OppAlert.
+      model: groq('llama-3.1-8b-instant'),
+      system: `You are OppBot, the dual-purpose Elite Virtual Assistant for OppAlert.
 
-ABOUT OPPALERT:
-OppAlert is a mission-driven platform dedicated to connecting African students, graduates, and founders with high-impact opportunities. We solve the accessibility gap for scholarships, startup funding, and remote jobs. Our platform is mobile-first, designed to work smoothly even in low-bandwidth regions.
+THE PLATFORM:
+OppAlert has two major pillars that you must support:
+1. **The Seeker Pillar**: Helping students, graduates, and founders find high-impact opportunities (scholarships, remote jobs, fellowships, grants).
+2. **The Organizer Pillar**: Empowering event hosts and opportunity providers to list programs, manage registrations, and track their impact.
 
 YOUR ROLE:
-You lead users to their next big breakthrough. 
-1. **Search Specialist**: When users ask for opportunities, use the 'search_opportunities' tool. Be smart—if a specific search like "Nigerian tech grants" fails, try broader terms like "tech grants" or "African funding".
-2. **Ambassador**: You understand the African context. You know that "startup grants" often refer to "funding" or "SMEs".
-3. **Guide**: If a user is lost, explain that they can find curated lists in the 'Opportunities' page or manage their own events in the 'Organizer Dashboard'.
-4. **Resilience**: If the search tool returns no results, DON'T just say "not found". Say: "I couldn't find specific results for [query] right now, but I found some similar programs in the [Category] section you should check out!"
+- **For Seekers**: Use 'search_opportunities' to find results. If a search is narrow, broaden it. Encourage them to save items to their dashboard.
+- **For Organizers**: Help them monitor their events and registrations. Use 'get_my_events' and 'get_organizer_summary'. Guide them to the 'Organizer Dashboard' (/organizer) for creation.
+- **As a Navigator**: If someone asks how to do something, provide direct links:
+    - Explore Opportunities: /opportunities
+    - Become an Organizer: /organizer/setup
+    - List an Opportunity: /organizer/create
+    - User Dashboard: /dashboard
+    - Pricing/Pro Plans: /pricing
 
 CURRENT USER CONTEXT:
-${user ? `- Status: Logged In\n- User ID: ${user.id}\n- Plan: ${user.plan}\n- Email: ${user.email}` : '- Status: Guest User'}
+${user ? `- Status: Logged In (${user.role})\n- User ID: ${user.id}\n- Plan: ${user.status || 'free'}\n- Email: ${user.email}` : '- Status: Guest User (Encourage sign-up/login)'}
 
-OPPALERT PERSONALITY:
-- Encouraging, high-energy, and professional. 
-- Use emerald/green themed metaphors occasionally (e.g., "planting the seeds for your future").
-- Keep responses concise but impactful.`,
-
+PERSONALITY:
+Empathetic, efficient, and deeply knowledgeable about the African opportunity landscape. Use emerald/green metaphors for growth and success.`,
       messages,
-      maxSteps: 5, // Allow the model to call tools and reflect on results
+      maxSteps: 5,
       tools: {
         search_opportunities: tool({
-          description: 'Search for scholarships, remote jobs, fellowships, or grants across all providers.',
+          description: 'Search for scholarships, remote jobs, fellowships, or grants.',
           parameters: z.object({
-            query: z.string().describe('The search query (e.g., "scholarships for Nigerians")'),
+            query: z.string().describe('The search query (e.g., "startup grants")'),
             category: z.string().optional().describe('The category (e.g., "Scholarship", "Job")'),
             limit: z.number().optional().default(5),
           }),
@@ -72,43 +74,67 @@ OPPALERT PERSONALITY:
               });
               
               if (!results || results.length === 0) {
-                return "No opportunities found at the moment. Try a broader search term.";
+                return "No exact matches found. I suggest looking at broader categories on the /opportunities page.";
               }
               
               return results.slice(0, limit);
             } catch (err) {
               console.error('Search tool error:', err);
-              return "The search service is temporarily experiencing issues. Please try again in a few moments.";
+              return "The search service is temporarily offline. Please try again soon.";
             }
           },
         }),
         get_my_events: tool({
-          description: 'Get a list of events created by the logged-in organizer.',
+          description: 'Get a list of all events managed by the current organizer.',
           parameters: z.object({}),
           execute: async () => {
             try {
               if (!user) return "Please log in to see your events.";
               const { rows } = await query(
-                'SELECT id, title, slug, current_registrations, max_capacity FROM events WHERE organizer_id = $1',
+                'SELECT id, title, slug, current_registrations, max_capacity, is_published FROM events WHERE organizer_id = $1 AND is_active = true',
                 [user.id]
               );
-              return rows.length > 0 ? rows : "You haven't created any events yet.";
+              return rows.length > 0 ? rows : "You haven't created any events yet. You can start at /organizer/create.";
             } catch (err) {
-              return "Error fetching your events. Please check your connection.";
+              return "Error fetching your events.";
+            }
+          },
+        }),
+        get_organizer_summary: tool({
+          description: 'Get high-level stats for an organizer (total events, total registrations).',
+          parameters: z.object({}),
+          execute: async () => {
+            try {
+              if (!user) return "Please log in.";
+              const { rows } = await query(
+                `SELECT 
+                  COUNT(id) as total_events,
+                  SUM(current_registrations) as total_registrations
+                 FROM events 
+                 WHERE organizer_id = $1 AND is_active = true`,
+                [user.id]
+              );
+              const stats = rows[0];
+              return {
+                totalEvents: parseInt(stats.total_events) || 0,
+                totalRegistrations: parseInt(stats.total_registrations) || 0,
+                dashboardLink: '/organizer'
+              };
+            } catch (err) {
+              return "Error calculating your impact stats.";
             }
           },
         }),
         get_event_registrations: tool({
-          description: 'Get details about registrations for a specific event.',
+          description: 'Get registrant details for a specific event.',
           parameters: z.object({
             event_id: z.string().describe('The UUID of the event'),
           }),
           execute: async ({ event_id }) => {
             try {
               if (!user) return "Please log in.";
-              // Security check: Ensure the event belongs to this organizer
               const eventCheck = await query(
-                'SELECT id FROM events WHERE id = $1 AND organizer_id = $2',
+                'SELECT id, title FROM events WHERE id = $1 AND organizer_id = $2',
                 [event_id, user.id]
               );
               if (eventCheck.rows.length === 0) return "Event not found or unauthorized.";
@@ -118,8 +144,9 @@ OPPALERT PERSONALITY:
                 [event_id]
               );
               return {
+                eventTitle: eventCheck.rows[0].title,
                 count: rows.length,
-                recent_registrations: rows.slice(0, 5)
+                recent: rows.slice(0, 5)
               };
             } catch (err) {
               return "Error fetching registration details.";
@@ -132,8 +159,6 @@ OPPALERT PERSONALITY:
     return result.toDataStreamResponse();
   } catch (error: any) {
     console.error('OppBot API Error:', error);
-    
-    // Check for specific error types
     const isAccessDenied = error?.message?.includes('Access denied') || error?.status === 403;
     const details = isAccessDenied 
       ? 'Access to the AI service is restricted. This usually happens due to regional geoblocking.' 
@@ -147,6 +172,8 @@ OPPALERT PERSONALITY:
       headers: { 'Content-Type': 'application/json' }
     });
   }
+}
+
 }
 
 
