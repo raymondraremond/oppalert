@@ -155,17 +155,20 @@ export default function ChatWidget() {
                   
                   {error && (
                     <div className="p-3 bg-danger/10 border border-danger/20 rounded-xl text-[11px] text-danger-light text-center flex flex-col gap-1">
-                      <p className="font-semibold">Connection Error</p>
-                      <p className="opacity-80">
-                        {error.message.includes('Access denied') 
+                      <p className="font-semibold text-xs text-danger">Connection Error</p>
+                      <p className="opacity-90">
+                        {error.message === 'Access Restricted' || error.message.includes('403') 
                           ? 'Access to the AI service is restricted in your region. Please check your network or use a VPN.'
-                          : 'Failed to connect. Please check your API configuration.'}
+                          : 'Failed to connect. Please check your API configuration or Vercel Environment Variables.'}
                       </p>
-                      {process.env.NODE_ENV === 'development' && (
-                        <p className="text-[9px] mt-1 break-all opacity-50">{error.message}</p>
-                      )}
+                      <div className="mt-2 p-1.5 bg-bg/50 rounded-lg border border-danger/10 text-[9px] text-danger break-all text-left">
+                        <strong>Source:</strong> {error.name} <br/>
+                        <strong>Message:</strong> {error.message}
+                      </div>
+                      <p className="text-[8px] opacity-40 mt-1">Check /api/health for system status</p>
                     </div>
                   )}
+
 
                 </div>
 

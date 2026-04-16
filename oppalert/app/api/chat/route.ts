@@ -16,11 +16,23 @@ const groq = createOpenAI({
 
 export async function POST(req: NextRequest) {
   try {
+    // Check for API key first
+    if (!process.env.GROQ_API_KEY) {
+      console.error('OppBot Error: GROQ_API_KEY is not defined in environment variables.');
+      return new Response(JSON.stringify({ 
+        error: 'API Configuration Missing', 
+        details: 'The Groq API key is not configured on the server. Please check environment variables.' 
+      }), { 
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     const { messages } = await req.json();
     const user = getUserFromRequest(req);
 
     const result = await streamText({
-      model: groq('llama3-70b-8192'), // Using a very stable Groq model
+      model: groq('llama-3.1-8b-instant'), // Using an ultra-fast, responsive model
       system: `You are OppBot, the official Virtual Assistant for OppAlert.
 OppAlert is an opportunity discovery platform for students, graduates, and founders in Africa.
 Your goal is to help users find opportunities (scholarships, remote jobs, fellowships) and help organizers manage their events.
@@ -51,8 +63,6 @@ OPPALERT BRANDING:
           }),
           execute: async ({ query: searchQuery, category, limit }) => {
             try {
-              // Use the architecture's service layer instead of raw SQL
-              // This is more resilient as it includes mock data and external APIs
               const results = await opportunityService.searchAll({
                 keyword: searchQuery,
                 category: category as any,
@@ -118,14 +128,23 @@ OPPALERT BRANDING:
     });
 
     return result.toDataStreamResponse();
-  } catch (error) {
+  } catch (error: any) {
     console.error('OppBot API Error:', error);
-    // Return a more descriptive error if possible
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    return new Response(JSON.stringify({ error: 'Error processing request', details: message }), { 
-      status: 500,
+    
+    // Check for specific error types
+    const isAccessDenied = error?.message?.includes('Access denied') || error?.status === 403;
+    const details = isAccessDenied 
+      ? 'Access to the AI service is restricted. This usually happens due to regional geoblocking.' 
+      : (error instanceof Error ? error.message : 'Unknown error');
+      
+    return new NextResponse(JSON.stringify({ 
+      error: isAccessDenied ? 'Access Restricted' : 'Error processing request', 
+      details 
+    }), { 
+      status: isAccessDenied ? 403 : 500,
       headers: { 'Content-Type': 'application/json' }
     });
   }
 }
+
 
