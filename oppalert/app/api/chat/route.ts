@@ -54,18 +54,14 @@ export async function POST(req: NextRequest) {
     }).filter((m: any) => m.content.trim().length > 0);
 
     const result = await streamText({
-      model: groq('llama-3.1-8b-instant'),
-      system: `### CRITICAL: YOU ARE AN ASSISTANT, NOT A CODER
-- NEVER type out stuff like ".function", "<function", or "find_opportunities".
-- NEVER explain that you are searching. Just use the tool silently.
-- IF you find nothing, say "I couldn't find any exact matches."
-- ONLY talk in warm, professional English.
-
-### YOUR CORE TASK:
-- Find scholarships, jobs, and grants for the user.
-- Use the 'find_opportunities' tool for ALL searches.`,
+      model: groq('llama-3.3-70b-versatile'),
+      system: `### CRITICAL DIRECTIVE: ALWAYS SUMMARIZE DATA
+- AFTER using a tool to find scholarships/jobs, YOU MUST describe the results in text.
+- NEVER send an empty response.
+- PERSONALITY: Elite, emerald-green growth metrics.`,
       messages: normalizedMessages,
       maxSteps: 5, 
+      experimental_continueSteps: true,
       onFinish: () => console.log('[OppBot] STREAM FINISHED SUCCESSFULLY'),
       tools: {
         find_opportunities: {
