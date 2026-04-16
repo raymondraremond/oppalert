@@ -16,9 +16,22 @@ export default function ChatWidget() {
   const [isMinimized, setIsMinimized] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-   const { messages, input, handleInputChange, handleSubmit, isLoading, error, reload } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error, reload } = useChat({
     api: '/api/chat',
   });
+
+  // Diagnostic logging for connection errors
+  useEffect(() => {
+    if (error) {
+      console.error('[OppBot Diagnostic] Connection Error:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack,
+        timestamp: new Date().toISOString()
+      });
+    }
+  }, [error]);
+
 
 
   // Auto-scroll to bottom when messages change
