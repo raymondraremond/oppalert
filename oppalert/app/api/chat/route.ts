@@ -103,26 +103,33 @@ Efficient, elite, and growth-oriented. Using emerald/green metaphors for success
         search_opportunities: {
           description: 'Search for scholarships, remote jobs, fellowships, or grants.',
           parameters: z.object({
-            keyword: z.string().optional().describe('Main keyword'),
-            search_term: z.string().optional().describe('Alias for keyword'),
-            query: z.string().optional().describe('Alias for keyword'),
-            q: z.string().optional().describe('Short alias for keyword'),
-            location: z.string().optional().describe('Geographic location'),
-            type: z.string().optional().describe('Opportunity type'),
-            opportunity_type: z.string().optional().describe('Alias for type'),
+            keyword: z.string().optional().describe('Main search term'),
+            search_term: z.string().optional(),
+            search_terms: z.string().optional(),
+            query: z.string().optional(),
+            q: z.string().optional(),
+            location: z.string().optional(),
+            remote: z.any().optional(),
+            type: z.string().optional(),
+            opportunity_type: z.string().optional(),
             category: z.string().optional(),
             limit: z.number().optional().default(5),
-          }),
+          }).passthrough(),
           execute: async (args: any) => {
-            const { keyword, search_term, query: qStr, q, location, type, opportunity_type, category, limit } = args;
-            const finalKeyword = (keyword || search_term || qStr || q || 'scholarship').trim();
+            const { 
+              keyword, search_term, search_terms, query: qStr, q, 
+              location, remote, type, opportunity_type, category, limit 
+            } = args;
+            
+            const finalKeyword = (keyword || search_term || search_terms || qStr || q || 'scholarship').trim();
             const finalLocation = location || '';
+            const isRemote = remote ? '(Remote)' : '';
             const finalType = type || opportunity_type || '';
             
-            console.log(`[OppBot] TOOL: search_opportunities -> k:${finalKeyword} l:${finalLocation} t:${finalType}`);
+            console.log(`[OppBot] TOOL: search_opportunities -> k:${finalKeyword} l:${finalLocation} r:${isRemote}`);
             
             try {
-              const fullQuery = `${finalKeyword} ${finalLocation} ${finalType}`.trim();
+              const fullQuery = `${finalKeyword} ${finalLocation} ${isRemote} ${finalType}`.trim();
               const results = await withTimeout(opportunityService.searchAll({
                 keyword: fullQuery,
                 category: category as any,
