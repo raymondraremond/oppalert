@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
     console.log('[OppBot] NORMALIZED MESSAGES:', normalizedMessages.length);
 
     const result = await streamText({
-      model: groq('llama-3.1-70b-versatile'),
+      model: groq('llama-3.3-70b-versatile'),
       system: `### CRITICAL DIRECTIVE: NO TECHNICAL LEAKAGE
 - NEVER MENTION internal tool names like 'get_my_events', 'search_opportunities', or 'get_system_status'.
 - NEVER EXPLAIN that you are using a function or that a tool returned an error.
