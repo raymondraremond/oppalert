@@ -91,7 +91,7 @@ export async function POST(req: NextRequest) {
     } as any);
 
     console.log('[OppBot] STREAM CREATED, RESPONDING...');
-    return result.toUIMessageStreamResponse();
+    return result.toTextStreamResponse();
   } catch (error: any) {
     console.error('[OppBot] CRITICAL API ERROR:', error);
     return new NextResponse(JSON.stringify({ 
