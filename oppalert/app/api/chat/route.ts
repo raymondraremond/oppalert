@@ -41,46 +41,41 @@ OppAlert has two major pillars that you must support:
 2. **The Organizer Pillar**: Empowering event hosts and opportunity providers to list programs, manage registrations, and track their impact.
 
 YOUR ROLE:
-- **For Seekers**: Use 'search_opportunities' to find results. If a search is narrow, broaden it. Encourage them to save items to their dashboard.
-- **For Organizers**: Help them monitor their events and registrations. Use 'get_my_events' and 'get_organizer_summary'. Guide them to the 'Organizer Dashboard' (/organizer) for creation.
-- **As a Navigator**: If someone asks how to do something, provide direct links:
+- **For Seekers**: Use 'search_opportunities' to find results. If a search is narrow, broaden it. 
+- **For Organizers**: Help them monitor their events. Use 'get_my_events' and 'get_organizer_summary'.
+- **CRITICAL**: DO NOT explain technical details to the user. Never say "I will use the get_my_events function" or "The tool returned...". Just provide the answer. If you use a tool, integrate the data naturally into your conversation.
+- **As a Navigator**: Use these direct links for guidance:
     - Explore Opportunities: /opportunities
-    - Become an Organizer: /organizer/setup
     - List an Opportunity: /organizer/create
     - User Dashboard: /dashboard
-    - Pricing/Pro Plans: /pricing
 
 CURRENT USER CONTEXT:
-${user ? `- Status: Logged In\n- User ID: ${user.id}\n- Plan: ${user.plan}\n- Email: ${user.email}` : '- Status: Guest User (Encourage sign-up/login)'}
+${user ? `- Status: Logged In\n- User ID: ${user.id}\n- Plan: ${user.plan}\n- Email: ${user.email}` : '- Status: Guest User (Encourage sign-up)'}
 
 PERSONALITY:
-Empathetic, efficient, and deeply knowledgeable about the African opportunity landscape. Use emerald/green metaphors for growth and success.`,
+Empathetic, professional, and efficient. Use emerald/green metaphors for growth and success.`,
       messages,
-      maxSteps: 5,
+      maxSteps: 2, // Reduced to prevent serverless timeouts
       tools: {
         search_opportunities: tool({
           description: 'Search for scholarships, remote jobs, fellowships, or grants.',
           parameters: z.object({
-            query: z.string().describe('The search query (e.g., "startup grants")'),
-            category: z.string().optional().describe('The category (e.g., "Scholarship", "Job")'),
+            query: z.string().describe('The search query'),
+            category: z.string().optional(),
             limit: z.number().optional().default(5),
           }),
           execute: async ({ query: searchQuery, category, limit }) => {
+            console.log(`[OppBot] Searching for: ${searchQuery}`);
             try {
               const results = await opportunityService.searchAll({
                 keyword: searchQuery,
                 category: category as any,
                 limit
               });
-              
-              if (!results || results.length === 0) {
-                return "No exact matches found. I suggest looking at broader categories on the /opportunities page.";
-              }
-              
-              return results.slice(0, limit);
+              return results && results.length > 0 ? results.slice(0, limit) : "No results found.";
             } catch (err) {
-              console.error('Search tool error:', err);
-              return "The search service is temporarily offline. Please try again soon.";
+              console.error('[OppBot] Search failed:', err);
+              return "Search service offline.";
             }
           },
         }),
@@ -88,40 +83,35 @@ Empathetic, efficient, and deeply knowledgeable about the African opportunity la
           description: 'Get a list of all events managed by the current organizer.',
           parameters: z.object({}),
           execute: async () => {
+            console.log(`[OppBot] Fetching events for user: ${user?.id}`);
             try {
-              if (!user) return "Please log in to see your events.";
+              if (!user) return "Please log in.";
               const { rows } = await query(
-                'SELECT id, title, slug, current_registrations, max_capacity, is_published FROM events WHERE organizer_id = $1 AND is_active = true',
+                'SELECT id, title, slug, current_registrations, max_capacity FROM events WHERE organizer_id = $1 AND is_active = true',
                 [user.id]
               );
-              return rows.length > 0 ? rows : "You haven't created any events yet. You can start at /organizer/create.";
+              return rows;
             } catch (err) {
-              return "Error fetching your events.";
+              console.error('[OppBot] get_my_events failed:', err);
+              return "Error fetching events.";
             }
           },
         }),
         get_organizer_summary: tool({
-          description: 'Get high-level stats for an organizer (total events, total registrations).',
+          description: 'Get high-level stats for an organizer.',
           parameters: z.object({}),
           execute: async () => {
+            console.log(`[OppBot] Fetching stats for user: ${user?.id}`);
             try {
               if (!user) return "Please log in.";
               const { rows } = await query(
-                `SELECT 
-                  COUNT(id) as total_events,
-                  SUM(current_registrations) as total_registrations
-                 FROM events 
-                 WHERE organizer_id = $1 AND is_active = true`,
+                'SELECT COUNT(id) as total_events, SUM(current_registrations) as total_registrations FROM events WHERE organizer_id = $1 AND is_active = true',
                 [user.id]
               );
-              const stats = rows[0];
-              return {
-                totalEvents: parseInt(stats.total_events) || 0,
-                totalRegistrations: parseInt(stats.total_registrations) || 0,
-                dashboardLink: '/organizer'
-              };
+              return rows[0];
             } catch (err) {
-              return "Error calculating your impact stats.";
+              console.error('[OppBot] get_organizer_summary failed:', err);
+              return "Error fetching stats.";
             }
           },
         }),
@@ -131,30 +121,23 @@ Empathetic, efficient, and deeply knowledgeable about the African opportunity la
             event_id: z.string().describe('The UUID of the event'),
           }),
           execute: async ({ event_id }) => {
+            console.log(`[OppBot] Fetching registrations for event: ${event_id}`);
             try {
               if (!user) return "Please log in.";
-              const eventCheck = await query(
-                'SELECT id, title FROM events WHERE id = $1 AND organizer_id = $2',
-                [event_id, user.id]
-              );
-              if (eventCheck.rows.length === 0) return "Event not found or unauthorized.";
-
               const { rows } = await query(
                 'SELECT full_name, email, registered_at FROM event_registrations WHERE event_id = $1 ORDER BY registered_at DESC',
                 [event_id]
               );
-              return {
-                eventTitle: eventCheck.rows[0].title,
-                count: rows.length,
-                recent: rows.slice(0, 5)
-              };
+              return rows.slice(0, 10);
             } catch (err) {
-              return "Error fetching registration details.";
+              console.error('[OppBot] get_event_registrations failed:', err);
+              return "Error fetching details.";
             }
           },
         }),
       },
     });
+
 
     return result.toDataStreamResponse();
   } catch (error: any) {

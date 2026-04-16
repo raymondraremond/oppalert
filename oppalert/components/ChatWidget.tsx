@@ -16,9 +16,10 @@ export default function ChatWidget() {
   const [isMinimized, setIsMinimized] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat({
+   const { messages, input, handleInputChange, handleSubmit, isLoading, error, reload } = useChat({
     api: '/api/chat',
   });
+
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -154,20 +155,32 @@ export default function ChatWidget() {
                   )}
                   
                   {error && (
-                    <div className="p-3 bg-danger/10 border border-danger/20 rounded-xl text-[11px] text-danger-light text-center flex flex-col gap-1">
-                      <p className="font-semibold text-xs text-danger">Connection Error</p>
-                      <p className="opacity-90">
-                        {error.message === 'Access Restricted' || error.message.includes('403') 
-                          ? 'Access to the AI service is restricted in your region. Please check your network or use a VPN.'
-                          : 'Failed to connect. Please check your API configuration or Vercel Environment Variables.'}
-                      </p>
-                      <div className="mt-2 p-1.5 bg-bg/50 rounded-lg border border-danger/10 text-[9px] text-danger break-all text-left">
-                        <strong>Source:</strong> {error.name} <br/>
-                        <strong>Message:</strong> {error.message}
+                    <div className="p-4 bg-danger/10 border border-danger/20 rounded-2xl text-[11px] text-danger-light text-center flex flex-col gap-3 shadow-lg shadow-danger/5">
+                      <div className="space-y-1">
+                        <p className="font-bold text-xs text-danger uppercase tracking-widest">Connection Interrupted</p>
+                        <p className="opacity-90 leading-relaxed">
+                          {error.message === 'Access Restricted' || error.message.includes('403') 
+                            ? 'Access to the AI service is restricted in your region. VPN or Proxy usage may be required.'
+                            : 'The connection timed out or was lost. This often happens on serverless platforms.'}
+                        </p>
                       </div>
-                      <p className="text-[8px] opacity-40 mt-1">Check /api/health for system status</p>
+
+                      <button 
+                        onClick={() => reload()}
+                        className="w-full py-2 bg-danger/10 hover:bg-danger/20 border border-danger/30 rounded-xl font-black uppercase text-[9px] tracking-[0.2em] transition-all hover:scale-[1.02] active:scale-[0.98]"
+                      >
+                        Try Again &rarr;
+                      </button>
+
+                      <div className="p-2 bg-bg/40 rounded-xl border border-danger/10 text-[9px] text-danger/70 break-all text-left font-mono">
+                        <strong>Code:</strong> {error.name} <br/>
+                        <strong>Detail:</strong> {error.message}
+                      </div>
+                      
+                      <p className="text-[8px] opacity-40 uppercase tracking-tighter">Diagnostic Health Check: /api/health</p>
                     </div>
                   )}
+
 
 
                 </div>
