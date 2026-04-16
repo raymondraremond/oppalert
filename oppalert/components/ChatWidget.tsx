@@ -178,6 +178,14 @@ export default function ChatWidget() {
                             );
                             return null;
                           }) : (m as any).content}
+
+                          {/* Render Tool Invocations explicitly for v6 protocol visibility */}
+                          {(m as any).toolInvocations && (m as any).toolInvocations.map((ti: any) => (
+                            <div key={ti.toolCallId} className="flex items-center gap-2 text-[10px] text-emerald font-black my-1 p-2 bg-emerald/5 rounded-lg border border-emerald/20 uppercase tracking-tighter">
+                              <div className="w-1.5 h-1.5 bg-emerald rounded-full animate-pulse" />
+                              PROBING DATA: {ti.toolName.replace(/_/g, ' ')}...
+                            </div>
+                          ))}
                         </div>
                       </div>
                     </div>
