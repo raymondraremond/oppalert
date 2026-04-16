@@ -51,7 +51,7 @@ YOUR ROLE:
     - Pricing/Pro Plans: /pricing
 
 CURRENT USER CONTEXT:
-${user ? `- Status: Logged In (${user.role})\n- User ID: ${user.id}\n- Plan: ${user.status || 'free'}\n- Email: ${user.email}` : '- Status: Guest User (Encourage sign-up/login)'}
+${user ? `- Status: Logged In\n- User ID: ${user.id}\n- Plan: ${user.plan}\n- Email: ${user.email}` : '- Status: Guest User (Encourage sign-up/login)'}
 
 PERSONALITY:
 Empathetic, efficient, and deeply knowledgeable about the African opportunity landscape. Use emerald/green metaphors for growth and success.`,
@@ -173,7 +173,3 @@ Empathetic, efficient, and deeply knowledgeable about the African opportunity la
     });
   }
 }
-
-}
-
-
