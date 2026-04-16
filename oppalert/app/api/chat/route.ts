@@ -87,47 +87,24 @@ ${user ? `- ID: ${user.id} (${user.plan})` : '- Guest User'}`,
             };
           }
         },
-        search_opportunities: {
-          description: 'Search for scholarships, remote jobs, fellowships, or grants. Only use keyword or limit if possible.',
-          parameters: z.object({
-            keyword: z.string().optional(),
-            keywords: z.string().optional(),
-            search_term: z.string().optional(),
-            search_terms: z.string().optional(),
-            query: z.string().optional(),
-            q: z.string().optional(),
-            location: z.string().optional(),
-            remote: z.any().optional(),
-            type: z.string().optional(),
-            opportunity_type: z.string().optional(),
-            category: z.string().optional(),
-            limit: z.number().optional().default(5),
-          }),
+        find_opportunities: {
+          description: 'Search for scholarships, remote jobs, fellowships, or grants.',
+          parameters: z.record(z.any()),
           execute: async (args: any) => {
-            const { 
-              keyword, keywords, search_term, search_terms, query: qStr, q, 
-              location, remote, type, opportunity_type, category, limit 
-            } = args;
+            console.log(`[OppBot] TOOL: find_opportunities -> Args:`, JSON.stringify(args));
             
-            // Collect all possible query inputs into one string
-            const terms = [
-              keyword, keywords, search_term, search_terms, qStr, q,
-              location, remote ? 'remote' : '', type, opportunity_type, category
-            ].filter(Boolean).join(' ');
-
-            const finalQuery = terms.length > 0 ? terms : 'scholarship';
-            
-            console.log(`[OppBot] TOOL: search_opportunities -> Raw Args:`, JSON.stringify(args));
-            console.log(`[OppBot] TOOL: search_opportunities -> Final Query: "${finalQuery}"`);
+            // Defensively extract any possible keyword/search-term
+            const keyword = args.keyword || args.keywords || args.search_term || args.search_terms || args.query || args.q || 'scholarship';
+            const limit = args.limit || 5;
             
             try {
               const results = await withTimeout(opportunityService.searchAll({
-                keyword: finalQuery,
-                limit
+                keyword: String(keyword),
+                limit: Number(limit)
               }));
-              return results && results.length > 0 ? results.slice(0, limit) : "No results found matching those specific terms.";
+              return results && results.length > 0 ? results.slice(0, Number(limit)) : "No results found.";
             } catch (err) {
-              console.error('[OppBot] TOOL ERROR: search_opportunities:', err);
+              console.error('[OppBot] TOOL ERROR: find_opportunities:', err);
               return "Search service temporarily busy.";
             }
           },
