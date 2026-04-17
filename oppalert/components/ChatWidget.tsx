@@ -17,24 +17,21 @@ export default function ChatWidget() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const [chatInput, setChatInput] = useState('');
-  const { messages, sendMessage, regenerate, status, error } = useChat({
+  const { messages, append, reload, isLoading, error } = useChat({
     onFinish: (messageData: any) => {
-      const msg = messageData?.message || messageData;
-      console.log('[OppBot] Stream Finished:', (msg.content || '').substring(0, 50) + '...');
+      console.log('[OppBot] Stream Finished');
     },
     onError: (err) => {
       console.error('[OppBot] Stream Error:', err);
     }
   });
 
-  const isLoading = status === 'submitted' || status === 'streaming';
-
   const onHandleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatInput.trim() || isLoading) return;
     const content = chatInput;
     setChatInput('');
-    await sendMessage({ role: 'user', content } as any);
+    await append({ role: 'user', content });
   };
 
 
@@ -207,7 +204,7 @@ export default function ChatWidget() {
                       </div>
 
                       <button 
-                        onClick={() => regenerate()}
+                        onClick={() => reload()}
                         className="w-full py-2 bg-danger/10 hover:bg-danger/20 border border-danger/30 rounded-xl font-black uppercase text-[9px] tracking-[0.2em] transition-all hover:scale-[1.02] active:scale-[0.98]"
                       >
                         Try Again &rarr;

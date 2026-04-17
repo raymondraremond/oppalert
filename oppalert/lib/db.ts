@@ -107,6 +107,18 @@ CREATE TABLE IF NOT EXISTS event_registrations (
   UNIQUE(event_id, email)
 );
 
+CREATE TABLE IF NOT EXISTS organizer_profiles (
+  user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+  organization_name VARCHAR(255) NOT NULL,
+  bio TEXT,
+  website TEXT,
+  twitter TEXT,
+  linkedin TEXT,
+  logo_url TEXT,
+  verified BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS subscriptions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID REFERENCES users(id),

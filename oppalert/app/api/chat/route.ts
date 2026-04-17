@@ -2,23 +2,11 @@ import { groq } from '@ai-sdk/groq';
 import { streamText, tool, convertToModelMessages } from 'ai';
 import { z } from 'zod';
 import { getUserFromRequest } from '@/lib/auth';
-import { query } from '@/lib/db';
 import { opportunityService } from '@/lib/services/opportunity-service';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
-export const maxDuration = 30; // 30 seconds for Pro plan, 10 for Hobby
-export const preferredRegion = 'iad1';
-
-// Helper for timing out DB queries
-const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number = 5000): Promise<T> => {
-  return Promise.race([
-    promise,
-    new Promise<never>((_, reject) => 
-      setTimeout(() => reject(new Error('Operation Timed Out')), timeoutMs)
-    )
-  ]);
-};
+export const maxDuration = 30;
 
 export async function POST(req: NextRequest) {
   console.log('[OppBot] INCOMING REQUEST');
@@ -32,75 +20,101 @@ export async function POST(req: NextRequest) {
     }
 
     const { messages } = await req.json();
-    console.log('[OppBot] PARSED MESSAGES:', messages.length);
-    
     const user = getUserFromRequest(req);
-    console.log('[OppBot] USER AUTH:', user ? `User ${user.id}` : 'Guest');
-
-    console.log('[OppBot] INITIALIZING STREAM...');
-    // 1. PRUNING: Only send the last 6 messages to stay within Free Tier TPM limits
-    const recentMessages = messages.length > 6 ? messages.slice(-6) : messages;
-    console.log('[OppBot] PRUNED HISTORY:', recentMessages.length);
-
-    // 2. NORMALIZATION
-    const normalizedMessages = (recentMessages || []).map((m: any) => {
-      const role = ['user', 'assistant', 'system', 'tool'].includes(m.role) ? m.role : 'user';
-      let content = '';
-      if (typeof m.content === 'string') content = m.content;
-      else if (Array.isArray(m.parts)) content = m.parts.map((p: any) => p.text || '').join(' ');
-      else if (m.message) content = m.message;
-      else if (m.text) content = m.text;
-      return { role, content };
-    }).filter((m: any) => m.content.trim().length > 0);
-
-    // 2. INTENT DETECTION & DIRECT DATA INJECTION
-    const lastUserMsg = normalizedMessages.filter(m => m.role === 'user').at(-1)?.content || '';
-    let searchData = '';
-    
-    // Simple regex to detect if user is asking for database info
-    const isSearchRequest = /find|show|search|scholarship|job|grant|internship/i.test(lastUserMsg);
-
-    if (isSearchRequest) {
-      console.log('[OppBot] SEARCH INTENT DETECTED. PRE-FETCHING DATA...');
-      const keywords = lastUserMsg.replace(/find|show|me|search|for|available/gi, '').trim();
-      try {
-        const results = await withTimeout(opportunityService.searchAll({
-          keyword: keywords || 'scholarship',
-          limit: 5
-        }));
-        
-        if (results && results.length > 0) {
-          console.log(`[OppBot] SUCCESS: Found ${results.length} results.`);
-          results.forEach((r: any) => console.log(` - ${r.title}`));
-          searchData = `\n### CURRENT DATABASE RESULTS FOR "${keywords || 'Scholarships'}":\n` + 
-            results.map((r: any) => `- [${r.icon || '🎓'}] ${r.title} at ${r.organization || 'Various'}. Type: ${r.funding_type || 'Fully Funded'}. URL: /opportunities/${r.id}`).join('\n');
-        } else {
-          console.log(`[OppBot] NO RESULTS for "${keywords}"`);
-          searchData = `\n### DATABASE NOTE: No exact matches found in the live database for "${keywords}". Suggest the user browse all /opportunities.`;
-        }
-      } catch (err) {
-        console.error('[OppBot] PRE-FETCH ERROR:', err);
-      }
-    }
 
     const result = await streamText({
       model: groq('llama-3.3-70b-versatile'),
       system: `### YOUR IDENTITY:
-- You are OppBot, an elite, emerald-themed assistant for OppAlert.
-- You guide users to scholarships, jobs, and grants.
-- PERSONALITY: Concise, professional, and results-oriented.
+- You are OppBot, an elite assistant for OppAlert, the premier opportunity platform for Africa.
+- You guide users to scholarships, jobs, grants, and fellowships.
+- PERSONALITY: Concise, professional, and helpful.
 
-### CRITICAL:
-${searchData ? `I have pre-fetched some data for you to use in this response: ${searchData}\n\nUSE THIS DATA DIRECTLY. DO NOT hallucinate or pretend to search.` : 'Answer the user naturally. If they ask for opportunities, provide general guidance or suggest they try a specific search.'}
+### YOUR CAPABILITIES:
+- You can SEARCH the live database for opportunities using the 'search_opportunities' tool.
+- You can get DETAILED information about a specific opportunity using 'get_opportunity_details'.
+- If a user asks "find me scholarships" or "what is available", ALWAYS call 'search_opportunities' first.
 
-### GUIDELINES:
-- ALWAYS provide direct links like [/opportunities](/opportunities) or specific item links if provided.
-- NO technical jargon or tool names.`,
-      messages: normalizedMessages,
-      onFinish: () => console.log('[OppBot] STREAM FINISHED SUCCESSFULLY'),
+### RULES:
+- If you find results, present them clearly with their titles and organizations.
+- Provide links in the format: [/opportunities/ID](/opportunities/ID).
+- If no results are found, suggest they browse all opportunities at [/opportunities](/opportunities).
+- NEVER hallucinate opportunities. Only use data from tools.`,
+      messages: convertToModelMessages(messages),
+      maxSteps: 5, // Allow multiple tool calls if needed
+      tools: {
+        search_opportunities: tool({
+          description: 'Search for scholarships, jobs, grants, or fellowships in the OppAlert database.',
+          parameters: z.object({
+            keyword: z.string().optional().describe('Keywords like "scholarship", "engineering", "UK", etc.'),
+            category: z.enum(['scholarship', 'job', 'fellowship', 'grant', 'internship', 'startup', 'all']).optional(),
+            limit: z.number().optional().default(5),
+          }),
+          execute: async ({ keyword, category, limit }) => {
+            console.log(`[OppBot Tool] Searching for: ${keyword || 'all'} in ${category || 'all'}`);
+            try {
+              const results = await opportunityService.searchAll({
+                keyword: keyword || undefined,
+                category: category === 'all' ? undefined : category,
+                limit
+              });
+              console.log(`[OppBot Tool] Found ${results.length} results.`);
+              return results;
+            } catch (error) {
+              console.error('[OppBot Tool] Search Error:', error);
+              return { error: 'Failed to search database' };
+            }
+          },
+        }),
+        get_opportunity_details: tool({
+          description: 'Get full details about a specific opportunity by its ID.',
+          parameters: z.object({
+            id: z.string().describe('The UUID of the opportunity'),
+          }),
+          execute: async ({ id }) => {
+            console.log(`[OppBot Tool] Getting details for: ${id}`);
+            try {
+              const opp = await opportunityService.getOne(id);
+              return opp || { error: 'Opportunity not found' };
+            } catch (error) {
+              console.error('[OppBot Tool] GetOne Error:', error);
+              return { error: 'Failed to fetch details' };
+            }
+          },
+        }),
+        search_events: tool({
+          description: 'Search for upcoming events, webinars, or workshops on the platform.',
+          parameters: z.object({
+            type: z.enum(['event', 'webinar', 'workshop', 'all']).optional().default('all'),
+            limit: z.number().optional().default(5),
+          }),
+          execute: async ({ type, limit }) => {
+            console.log(`[OppBot Tool] Searching for events: ${type}`);
+            try {
+              const { query } = await import('@/lib/db');
+              if (!process.env.DATABASE_URL) return { message: 'Database not connected. Visit /events to see local events.' };
+              
+              const sql = `
+                SELECT title, slug, event_type, location, start_date 
+                FROM events 
+                WHERE is_published = true AND is_active = true 
+                ${type !== 'all' ? 'AND event_type = $1' : ''}
+                ORDER BY start_date ASC LIMIT ${type !== 'all' ? '$2' : '$1'}
+              `;
+              const params = type !== 'all' ? [type, limit] : [limit];
+              const res = await query(sql, params);
+              return res.rows;
+            } catch (error) {
+              console.error('[OppBot Tool] SearchEvents Error:', error);
+              return { error: 'Failed to search events' };
+            }
+          },
+        }),
+      },
+      onFinish: ({ text }) => {
+        console.log('[OppBot] Response finished:', text.substring(0, 50) + '...');
+      },
     });
 
-    console.log('[OppBot] STREAM CREATED (DIRECT INJECTION), RESPONDING...');
     return result.toTextStreamResponse();
   } catch (error: any) {
     console.error('[OppBot] CRITICAL API ERROR:', error);
