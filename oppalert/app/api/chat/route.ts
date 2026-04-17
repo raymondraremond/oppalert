@@ -165,7 +165,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return result.toTextStreamResponse();
+    return result.toUIMessageStreamResponse();
   } catch (error: any) {
     console.error('[OppBot] CRITICAL API ERROR:', error);
     return new NextResponse(JSON.stringify({ 
