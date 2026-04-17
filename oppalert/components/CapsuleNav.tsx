@@ -87,7 +87,6 @@ export default function CapsuleNav() {
   return (
     <div className="fixed top-8 left-0 right-0 z-[100] px-6 pointer-events-none">
       <motion.nav 
-        initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
         className="max-w-[760px] mx-auto bg-surface/80 backdrop-blur-xl border border-border rounded-full px-4 py-2 flex items-center justify-between pointer-events-auto shadow-sm relative"

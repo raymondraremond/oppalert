@@ -11,30 +11,63 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// Helper to extract text content from a v6 UIMessage
+function getMessageText(message: any): string {
+  // v6 UIMessage: parts is an array of { type: 'text', text: '...' } etc.
+  if (message.parts && Array.isArray(message.parts)) {
+    return message.parts
+      .filter((p: any) => p.type === 'text')
+      .map((p: any) => p.text)
+      .join('');
+  }
+  // Fallback for any legacy content field
+  if (typeof message.content === 'string') {
+    return message.content;
+  }
+  return '';
+}
+
+// Helper to extract tool invocation parts from a v6 UIMessage
+function getToolParts(message: any): any[] {
+  if (message.parts && Array.isArray(message.parts)) {
+    return message.parts.filter((p: any) => p.type === 'tool-invocation');
+  }
+  // Fallback for legacy toolInvocations
+  if (message.toolInvocations && Array.isArray(message.toolInvocations)) {
+    return message.toolInvocations.map((ti: any) => ({
+      type: 'tool-invocation',
+      toolInvocation: ti,
+    }));
+  }
+  return [];
+}
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-
   const [chatInput, setChatInput] = useState('');
-  // @ts-ignore
-  const { messages, append, reload, isLoading, error } = useChat({
-    onFinish: (messageData: any) => {
+
+  // AI SDK v6: useChat returns sendMessage, regenerate, status, messages, error
+  const { messages, sendMessage, regenerate, status, error, setMessages } = useChat({
+    onFinish: (message: any) => {
       console.log('[OppBot] Stream Finished');
     },
-    onError: (err) => {
+    onError: (err: any) => {
       console.error('[OppBot] Stream Error:', err);
     }
   });
+
+  const isLoading = status === 'submitted' || status === 'streaming';
 
   const onHandleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!chatInput.trim() || isLoading) return;
     const content = chatInput;
     setChatInput('');
-    await append({ role: 'user', content });
+    // v6 API: sendMessage accepts { text: string }
+    sendMessage({ text: content });
   };
-
 
   // Diagnostic logging for connection errors
   useEffect(() => {
@@ -47,8 +80,6 @@ export default function ChatWidget() {
       });
     }
   }, [error]);
-
-
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -146,42 +177,53 @@ export default function ChatWidget() {
                     </div>
                   )}
 
-                  {messages.map((m) => (
-                    <div
-                      key={m.id}
-                      className={cn(
-                        "flex gap-3",
-                        m.role === 'user' ? "flex-row-reverse" : "flex-row"
-                      )}
-                    >
-                      <div className={cn(
-                        "w-7 h-7 rounded-full flex items-center justify-center shrink-0",
-                        m.role === 'user' ? "bg-surface border border-border" : "bg-emerald shadow-glow-emerald"
-                      )}>
-                        {m.role === 'user' ? <User size={14} className="text-primary" /> : <Bot size={14} className="text-bg" />}
-                      </div>
-                      <div className={cn(
-                        "max-w-[80%] rounded-2xl p-3 text-sm leading-relaxed",
-                        m.role === 'user' 
-                          ? "bg-emerald text-bg font-medium rounded-tr-none shadow-premium" 
-                          : "bg-surface border border-border2/50 text-primary rounded-tl-none shadow-premium"
-                      )}>
-                        <div className="whitespace-pre-wrap">
-                          {(m as any).content || (
-                            <span className="italic text-muted/50">Processing results...</span>
-                          )}
+                  {messages.map((m: any) => {
+                    const text = getMessageText(m);
+                    const toolParts = getToolParts(m);
 
-                          {/* Render Tool Invocations explicitly for v6 protocol visibility */}
-                          {(m as any).toolInvocations && (m as any).toolInvocations.map((ti: any) => (
-                            <div key={ti.toolCallId} className="flex items-center gap-2 text-[10px] text-emerald font-black my-1 p-2 bg-emerald/5 rounded-lg border border-emerald/20 uppercase tracking-tighter">
-                              <div className="w-1.5 h-1.5 bg-emerald rounded-full animate-pulse" />
-                              PROBING DATA: {ti.toolName.replace(/_/g, ' ')}...
-                            </div>
-                          ))}
+                    return (
+                      <div
+                        key={m.id}
+                        className={cn(
+                          "flex gap-3",
+                          m.role === 'user' ? "flex-row-reverse" : "flex-row"
+                        )}
+                      >
+                        <div className={cn(
+                          "w-7 h-7 rounded-full flex items-center justify-center shrink-0",
+                          m.role === 'user' ? "bg-surface border border-border" : "bg-emerald shadow-glow-emerald"
+                        )}>
+                          {m.role === 'user' ? <User size={14} className="text-primary" /> : <Bot size={14} className="text-bg" />}
+                        </div>
+                        <div className={cn(
+                          "max-w-[80%] rounded-2xl p-3 text-sm leading-relaxed",
+                          m.role === 'user' 
+                            ? "bg-emerald text-bg font-medium rounded-tr-none shadow-premium" 
+                            : "bg-surface border border-border2/50 text-primary rounded-tl-none shadow-premium"
+                        )}>
+                          <div className="whitespace-pre-wrap">
+                            {text || (
+                              m.role === 'assistant' && toolParts.length > 0 ? null : (
+                                <span className="italic text-muted/50">Processing results...</span>
+                              )
+                            )}
+
+                            {/* Render Tool Invocations for v6 parts-based protocol */}
+                            {toolParts.map((tp: any, idx: number) => {
+                              const toolName = tp.toolInvocation?.toolName || tp.toolName || 'unknown';
+                              const toolCallId = tp.toolInvocation?.toolCallId || tp.toolCallId || `tool-${idx}`;
+                              return (
+                                <div key={toolCallId} className="flex items-center gap-2 text-[10px] text-emerald font-black my-1 p-2 bg-emerald/5 rounded-lg border border-emerald/20 uppercase tracking-tighter">
+                                  <div className="w-1.5 h-1.5 bg-emerald rounded-full animate-pulse" />
+                                  PROBING DATA: {toolName.replace(/_/g, ' ')}...
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                   
                   {isLoading && (
                     <div className="flex gap-3">
@@ -206,7 +248,7 @@ export default function ChatWidget() {
                       </div>
 
                       <button 
-                        onClick={() => reload()}
+                        onClick={() => regenerate()}
                         className="w-full py-2 bg-danger/10 hover:bg-danger/20 border border-danger/30 rounded-xl font-black uppercase text-[9px] tracking-[0.2em] transition-all hover:scale-[1.02] active:scale-[0.98]"
                       >
                         Try Again &rarr;

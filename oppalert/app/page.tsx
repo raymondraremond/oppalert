@@ -47,7 +47,6 @@ export default function HomePage() {
           {/* Left Column: Typography */}
           <div className="text-left w-full">
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease }}
             >
@@ -91,7 +90,6 @@ export default function HomePage() {
             </AnimatePresence>
 
             <motion.p
-              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease }}
               className="text-lg md:text-xl text-muted/70 max-w-xl mb-12 font-medium leading-relaxed"
@@ -104,7 +102,6 @@ export default function HomePage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-6 w-full relative z-10">
              {/* Seeker Path */}
              <motion.div
-               initial={{ opacity: 0, x: 50 }}
                animate={{ opacity: 1, x: 0 }}
                transition={{ duration: 1, delay: 0.4, ease }}
                className="group relative h-full"
@@ -126,7 +123,6 @@ export default function HomePage() {
 
              {/* Organizer Path */}
              <motion.div
-               initial={{ opacity: 0, x: 50 }}
                animate={{ opacity: 1, x: 0 }}
                transition={{ duration: 1, delay: 0.6, ease }}
                className="group relative h-full"
