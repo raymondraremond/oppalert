@@ -19,7 +19,7 @@ if (fs.existsSync(envPath)) {
 
 async function testGroqChat() {
   const apiKey = process.env.GROQ_API_KEY;
-  const model = 'llama3-70b-8192';
+  const model = 'llama-3.3-70b-versatile';
   console.log(`Testing Groq Chat (${model}) with key:`, apiKey ? apiKey.substring(0, 5) + '...' : 'MISSING');
   
   try {

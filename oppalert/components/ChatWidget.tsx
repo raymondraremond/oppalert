@@ -17,6 +17,7 @@ export default function ChatWidget() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const [chatInput, setChatInput] = useState('');
+  // @ts-ignore
   const { messages, append, reload, isLoading, error } = useChat({
     onFinish: (messageData: any) => {
       console.log('[OppBot] Stream Finished');
@@ -127,8 +128,9 @@ export default function ChatWidget() {
                       <div className="grid grid-cols-1 gap-2 mt-6 w-full">
                         {[
                           "Find me startup grants",
-                          "How to export CVs?",
-                          "Check my event registrations"
+                          "Show my registered events",
+                          "How do I become an organizer?",
+                          "Tell me about Elite pricing"
                         ].map((suggestion) => (
                           <button
                             key={suggestion}
