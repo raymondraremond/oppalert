@@ -22,8 +22,26 @@ export async function POST(req: NextRequest) {
     const { messages } = await req.json();
     const user = getUserFromRequest(req);
 
+    if (!user) {
+      return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    if (user.plan !== 'admin') {
+      const userMessagesCount = messages.filter((m: any) => m.role === 'user').length;
+      if (userMessagesCount > 2) {
+        return new NextResponse(JSON.stringify({ error: 'Message limit reached.' }), {
+          status: 403,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
     const result = await streamText({
       model: groq('llama-3.3-70b-versatile'),
+      maxSteps: 5,
       system: `### YOUR IDENTITY:
 - You are OppBot, the elite AI guide for the OppAlert platform.
 - You help African students, graduates, and founders find life-changing opportunities.

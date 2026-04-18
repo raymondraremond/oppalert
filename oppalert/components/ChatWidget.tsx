@@ -47,6 +47,18 @@ export default function ChatWidget() {
   const [isMinimized, setIsMinimized] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [chatInput, setChatInput] = useState('');
+  const [isMounted, setIsMounted] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    setIsMounted(true);
+    try {
+      const stored = localStorage.getItem('user');
+      if (stored) {
+        setCurrentUser(JSON.parse(stored));
+      }
+    } catch {}
+  }, []);
 
   // AI SDK v6: useChat returns sendMessage, regenerate, status, messages, error
   const { messages, sendMessage, regenerate, status, error, setMessages } = useChat({
@@ -88,8 +100,12 @@ export default function ChatWidget() {
     }
   }, [messages, isLoading]);
 
+  if (!isMounted || !currentUser) {
+    return null;
+  }
+
   return (
-    <div className="fixed bottom-6 right-6 z-[100] font-sans">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[100] font-sans">
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -98,8 +114,8 @@ export default function ChatWidget() {
               opacity: 1, 
               y: 0, 
               scale: 1,
-              height: isMinimized ? '60px' : '600px',
-              width: isMinimized ? '250px' : '400px'
+              height: isMinimized ? '60px' : 'min(600px, calc(100vh - 120px))',
+              width: isMinimized ? '250px' : 'min(400px, calc(100vw - 32px))'
             }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             className={cn(
@@ -196,12 +212,12 @@ export default function ChatWidget() {
                           {m.role === 'user' ? <User size={14} className="text-primary" /> : <Bot size={14} className="text-bg" />}
                         </div>
                         <div className={cn(
-                          "max-w-[80%] rounded-2xl p-3 text-sm leading-relaxed",
+                          "max-w-[85%] sm:max-w-[80%] rounded-2xl p-3 text-sm leading-relaxed",
                           m.role === 'user' 
                             ? "bg-emerald text-bg font-medium rounded-tr-none shadow-premium" 
                             : "bg-surface border border-border2/50 text-primary rounded-tl-none shadow-premium"
                         )}>
-                          <div className="whitespace-pre-wrap">
+                          <div className="whitespace-pre-wrap break-words">
                             {text || (
                               m.role === 'assistant' && toolParts.length > 0 ? null : (
                                 <span className="italic text-muted/50">Processing results...</span>
@@ -241,7 +257,9 @@ export default function ChatWidget() {
                       <div className="space-y-1">
                         <p className="font-bold text-xs text-danger uppercase tracking-widest">Connection Interrupted</p>
                         <p className="opacity-90 leading-relaxed">
-                          {error.message === 'Access Restricted' || error.message.includes('403') 
+                          {error.message?.includes('Message limit') || error.message?.includes('403')
+                            ? 'You have reached the maximum number of messages allowed for free users. Upgrade your account for unlimited access.'
+                            : error.message === 'Access Restricted'
                             ? 'Access to the AI service is restricted in your region. VPN or Proxy usage may be required.'
                             : 'The connection timed out or was lost. This often happens on serverless platforms.'}
                         </p>
