@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
       tools: {
         search_opportunities: tool({
           description: 'Search for scholarships, jobs, grants, or fellowships.',
-          parameters: z.object({
+          inputSchema: z.object({
             keyword: z.string().optional().describe('e.g. "tech", "undergraduate", "Nigeria"'),
             category: z.enum(['scholarship', 'job', 'fellowship', 'grant', 'internship', 'startup', 'all']).optional(),
             limit: z.number().optional().default(5),
@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
         }),
         get_opportunity_details: tool({
           description: 'Show full details (eligibility, benefits) for an opportunity.',
-          parameters: z.object({ id: z.string() }),
+          inputSchema: z.object({ id: z.string() }),
           // @ts-ignore
           execute: async ({ id }: any): Promise<any> => {
             try {
@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
         }),
         get_my_status: tool({
           description: 'Retrieve the user\'s registered events and saved opportunities.',
-          parameters: z.object({}),
+          inputSchema: z.object({}),
           // @ts-ignore
           execute: async (): Promise<any> => {
             if (!user) return { error: 'You need to be logged in to see your registrations and saved items.' };
@@ -127,7 +127,7 @@ export async function POST(req: NextRequest) {
         }),
         get_platform_info: tool({
           description: 'Get information about platform features, pricing, or "how-to" guides.',
-          parameters: z.object({
+          inputSchema: z.object({
             topic: z.string().describe('The feature or question the user has (e.g. "pricing", "organizer portal", "CV export")'),
           }),
           // @ts-ignore
@@ -159,7 +159,7 @@ export async function POST(req: NextRequest) {
         }),
         search_events: tool({
           description: 'Find upcoming webinars and workshops.',
-          parameters: z.object({
+          inputSchema: z.object({
             type: z.enum(['event', 'webinar', 'workshop', 'all']).optional().default('all'),
           }),
           // @ts-ignore
@@ -180,6 +180,8 @@ export async function POST(req: NextRequest) {
       onFinish: ({ text }) => {
         console.log('[OppBot] Interaction complete.');
       },
+      // @ts-ignore
+      maxSteps: 5,
     });
 
     return result.toUIMessageStreamResponse();

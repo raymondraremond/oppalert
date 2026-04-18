@@ -16,7 +16,7 @@ function getMessageText(message: any): string {
   // v6 UIMessage: parts is an array of { type: 'text', text: '...' } etc.
   if (message.parts && Array.isArray(message.parts)) {
     return message.parts
-      .filter((p: any) => p.type === 'text')
+      .filter((p: any) => p.type === 'text' || p.type === 'reasoning')
       .map((p: any) => p.text)
       .join('');
   }
@@ -29,17 +29,28 @@ function getMessageText(message: any): string {
 
 // Helper to extract tool invocation parts from a v6 UIMessage
 function getToolParts(message: any): any[] {
+  let parts: any[] = [];
+
   if (message.parts && Array.isArray(message.parts)) {
-    return message.parts.filter((p: any) => p.type === 'tool-invocation');
+    parts = message.parts.filter((p: any) => 
+      p.type === 'tool-invocation' || 
+      p.type === 'dynamic-tool' || 
+      p.type === 'tool-call' ||
+      p.type.startsWith('tool-')
+    );
   }
+
   // Fallback for legacy toolInvocations
-  if (message.toolInvocations && Array.isArray(message.toolInvocations)) {
+  if (parts.length === 0 && message.toolInvocations && Array.isArray(message.toolInvocations)) {
     return message.toolInvocations.map((ti: any) => ({
       type: 'tool-invocation',
       toolInvocation: ti,
+      toolName: ti.toolName,
+      toolCallId: ti.toolCallId,
     }));
   }
-  return [];
+
+  return parts;
 }
 
 export default function ChatWidget() {
@@ -226,7 +237,13 @@ export default function ChatWidget() {
 
                             {/* Render Tool Invocations for v6 parts-based protocol */}
                             {toolParts.map((tp: any, idx: number) => {
-                              const toolName = tp.toolInvocation?.toolName || tp.toolName || 'unknown';
+                              // Extract tool name from type if it's 'tool-NAME'
+                              let toolName = tp.toolInvocation?.toolName || tp.toolName;
+                              if (!toolName && tp.type.startsWith('tool-')) {
+                                toolName = tp.type.substring(5);
+                              }
+                              toolName = toolName || 'unknown';
+                              
                               const toolCallId = tp.toolInvocation?.toolCallId || tp.toolCallId || `tool-${idx}`;
                               return (
                                 <div key={toolCallId} className="flex items-center gap-2 text-[10px] text-emerald font-black my-1 p-2 bg-emerald/5 rounded-lg border border-emerald/20 uppercase tracking-tighter">
