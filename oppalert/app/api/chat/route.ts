@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     }
 
     const result = await streamText({
-      model: groq('llama-3.3-70b-versatile'),
+      model: groq('llama-3.1-70b-versatile'),
       system: `### YOUR IDENTITY:
 - You are OppBot, the elite AI guide for the OppAlert platform.
 - You help African students, graduates, and founders find life-changing opportunities.
@@ -62,6 +62,7 @@ export async function POST(req: NextRequest) {
 5. **get_platform_info**: Call this if the user asks "How do I..." or "What's the difference between..." regarding platform features.
 
 ### RULES:
+- IMPORTANT: When calling a tool, DO NOT provide any conversational preamble. Just execute the tool immediately.
 - ALWAYS provide internal links in markdown: [Link Name](/path).
 - If the user is NOT logged in and asks for personal data ('get_my_status'), tell them to [Login](/login) or [Register](/register) first.
 - If a search tool returns no results, suggest they check back later or browse all at [/opportunities](/opportunities).
@@ -73,8 +74,8 @@ export async function POST(req: NextRequest) {
           description: 'Search for scholarships, jobs, grants, or fellowships.',
           inputSchema: z.object({
             keyword: z.string().optional().describe('e.g. "tech", "undergraduate", "Nigeria"'),
-            category: z.enum(['scholarship', 'job', 'fellowship', 'grant', 'internship', 'startup', 'all']).optional(),
-            limit: z.number().optional().default(5),
+            category: z.string().optional().describe('scholarship, job, fellowship, grant, internship, startup, or all'),
+            limit: z.number().optional(),
           }),
           // @ts-ignore
           execute: async ({ keyword, category, limit }: any): Promise<any> => {
@@ -160,7 +161,7 @@ export async function POST(req: NextRequest) {
         search_events: tool({
           description: 'Find upcoming webinars and workshops.',
           inputSchema: z.object({
-            type: z.enum(['event', 'webinar', 'workshop', 'all']).optional().default('all'),
+            type: z.string().optional().describe('event, webinar, workshop, or all'),
           }),
           // @ts-ignore
           execute: async ({ type }: any): Promise<any> => {
