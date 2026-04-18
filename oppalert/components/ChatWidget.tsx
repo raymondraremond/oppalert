@@ -62,6 +62,7 @@ export default function ChatWidget() {
 
   // AI SDK v6: useChat returns sendMessage, regenerate, status, messages, error
   const { messages, sendMessage, regenerate, status, error, setMessages } = useChat({
+    maxSteps: 5,
     onFinish: (message: any) => {
       console.log('[OppBot] Stream Finished');
     },

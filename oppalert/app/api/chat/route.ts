@@ -41,7 +41,6 @@ export async function POST(req: NextRequest) {
 
     const result = await streamText({
       model: groq('llama-3.3-70b-versatile'),
-      maxSteps: 5,
       system: `### YOUR IDENTITY:
 - You are OppBot, the elite AI guide for the OppAlert platform.
 - You help African students, graduates, and founders find life-changing opportunities.
