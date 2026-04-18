@@ -230,9 +230,13 @@ export default function ChatWidget() {
                         )}>
                           <div className="whitespace-pre-wrap break-words">
                             {text || (
-                              m.role === 'assistant' && toolParts.length > 0 ? null : (
-                                <span className="italic text-muted/50">Processing results...</span>
-                              )
+                              m.role === 'assistant' ? (
+                                toolParts.length > 0 ? (
+                                  <span className="italic text-muted/50">Analyzing data...</span>
+                                ) : (
+                                  <span className="italic text-muted/50">Processing results...</span>
+                                )
+                              ) : null
                             )}
 
                             {/* Render Tool Invocations for v6 parts-based protocol */}

@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
     }
 
     const { messages } = await req.json();
+    console.log('[OppBot] Messages received:', JSON.stringify(messages, null, 2));
     const user = getUserFromRequest(req);
 
     if (!user) {
@@ -55,8 +56,10 @@ export async function POST(req: NextRequest) {
 - **Blog** (/blog): Success stories and career advice.
 
 ### YOUR SUPER POWERS (TOOLS):
-1. **search_opportunities**: ALWAYS call this when someone asks for "scholarships", "jobs", "grants", or "internships".
-2. **get_opportunity_details**: Use this to give more depth when a user is interested in a specific opportunity.
+1. **search_opportunities**: Search the database. 
+   - keyword: Extract relevant search terms from user input (e.g., "scholarship", "internship", "tech"). NEVER generate gibberish or random characters.
+   - category: 'scholarship', 'job', 'fellowship', 'grant', 'internship', 'startup', or 'all'.
+2. **get_opportunity_details**: Use this when a user asks about a specific opportunity by ID.
 3. **search_events**: Find upcoming workshops or webinars.
 4. **get_my_status**: Call this to show the user their own saved items and registrations.
 5. **get_platform_info**: Call this if the user asks "How do I..." or "What's the difference between..." regarding platform features.
@@ -66,7 +69,7 @@ export async function POST(req: NextRequest) {
 - ALWAYS provide internal links in markdown: [Link Name](/path).
 - If the user is NOT logged in and asks for personal data ('get_my_status'), tell them to [Login](/login) or [Register](/register) first.
 - If a search tool returns no results, suggest they check back later or browse all at [/opportunities](/opportunities).
-- NEVER hallucinate data. If you don't know, use 'get_platform_info' or refer them to [Support](/support).
+- NEVER hallucinate data or keywords. If you don't find results, admit it and suggest a broader search.
 - Keep responses concise but impactful. Use bullet points for lists.`,
       messages: await convertToModelMessages(messages),
       tools: {
@@ -79,14 +82,26 @@ export async function POST(req: NextRequest) {
           }),
           // @ts-ignore
           execute: async ({ keyword, category, limit }: any): Promise<any> => {
+            console.log(`[OppBot] Searching: keyword="${keyword}", cat="${category}", limit=${limit}`);
             try {
               const results = await opportunityService.searchAll({
                 keyword: keyword || undefined,
                 category: category === 'all' ? undefined : category,
                 limit
               });
+              
+              if (!results || results.length === 0) {
+                console.log('[OppBot] No results found.');
+                return { 
+                  message: 'No matching opportunities found in the database.',
+                  suggestions: ['Try a broader keyword', 'Check for typos', 'Check different categories']
+                };
+              }
+              
+              console.log(`[OppBot] Found ${results.length} results.`);
               return results;
             } catch (error) {
+              console.error('[OppBot] Search Error:', error);
               return { error: 'Search service temporarily unavailable.' };
             }
           },

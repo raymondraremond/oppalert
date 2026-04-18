@@ -64,12 +64,15 @@ export class DbAdapter implements OpportunityAdapter {
       filtered = filtered.filter((o: any) => (o.fund || o.funding_type) === fundingType);
     }
     if (location && location !== 'Any Location') {
-      filtered = filtered.filter((o: any) => (o.loc || o.location || '').toLowerCase().includes(location.toLowerCase()));
+      filtered = filtered.filter((o: any) => {
+        const loc = (o.loc || o.location || '').toLowerCase();
+        return loc.includes(location.toLowerCase());
+      });
     }
     if (keyword) {
       const keywords = keyword.toLowerCase().split(/\s+/).filter(k => k.length > 1);
       filtered = filtered.filter((o: any) => {
-        const text = `${o.title} ${o.organization || ''} ${o.description || ''} ${o.category || ''}`.toLowerCase();
+        const text = `${o.title} ${o.org || o.organization || ''} ${o.description || ''} ${o.cat || o.category || ''}`.toLowerCase();
         return keywords.every(kw => text.includes(kw));
       });
     }

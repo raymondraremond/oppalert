@@ -1,3 +1,21 @@
+data: {"type":"start"}
+
+data: {"type":"start-step"}
+
+data: {"type":"tool-input-start","toolCallId":"xnanwt23x","toolName":"search_opportunities"}
+
+data: {"type":"tool-input-delta","toolCallId":"xnanwt23x","inputTextDelta":"{\"category\":\"all\",\"keyword\":\"fgedbh\",\"limit\":5}"}
+
+data: {"type":"tool-input-available","toolCallId":"xnanwt23x","toolName":"search_opportunities","input":{"keyword":"fgedbh","category":"all","limit":5}}
+
+data: {"type":"tool-output-available","toolCallId":"xnanwt23x","output":[]}
+
+data: {"type":"finish-step"}
+
+data: {"type":"finish","finishReason":"tool-calls"}
+
+data: [DONE]
+
 # OppFetch 🚀
 
 > **"Never miss an opportunity again."**
